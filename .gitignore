@@ -4,8 +4,8 @@ node_modules/
 .pnp.js
 
 # Next.js
-koru-site/koru-viewer/.next/
-koru-site/koru-viewer/out/
+.next/
+out/
 
 # Environment variables
 .env

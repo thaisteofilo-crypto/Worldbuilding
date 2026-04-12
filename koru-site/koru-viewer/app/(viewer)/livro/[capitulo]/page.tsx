@@ -1,0 +1,98 @@
+import { readMarkdown, livroChapters } from "@/lib/content"
+import { MDXRemote } from "next-mdx-remote/rsc"
+import { mdxComponents } from "@/components/koru/mdx-components"
+import { sanitizeForMdx } from "@/lib/sanitize-md"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { DocNav } from "@/components/koru/doc-nav"
+
+interface Props {
+  params: Promise<{ capitulo: string }>
+}
+
+const LIVRO_ITEMS = [
+  { slug: "01", title: "Capítulo 1" },
+  { slug: "02", title: "Capítulo 2" },
+  { slug: "03", title: "Capítulo 3" },
+  { slug: "04", title: "Capítulo 4" },
+  { slug: "05", title: "Capítulo 5" },
+  { slug: "06", title: "Capítulo 6" },
+  { slug: "epilogo", title: "Epílogo" },
+]
+
+const literaryComponents = {
+  ...mdxComponents,
+  p: ({ children }: { children?: React.ReactNode }) => (
+    <p
+      className="text-lg leading-[1.85] mb-5"
+      style={{
+        fontFamily: "var(--font-serif), Georgia, serif",
+        color: "var(--foreground)",
+      }}
+    >
+      {children}
+    </p>
+  ),
+  h3: ({ children }: { children?: React.ReactNode }) => (
+    <h3
+      className="font-serif text-2xl leading-tight mt-10 mb-3"
+      style={{
+        fontFamily: "var(--font-serif), Georgia, serif",
+        color: "var(--foreground)",
+      }}
+    >
+      {children}
+    </h3>
+  ),
+  h4: ({ children }: { children?: React.ReactNode }) => (
+    <h4
+      className="font-serif text-xl leading-tight mt-8 mb-2 opacity-75"
+      style={{
+        fontFamily: "var(--font-serif), Georgia, serif",
+        color: "var(--foreground)",
+      }}
+    >
+      {children}
+    </h4>
+  ),
+}
+
+export async function generateStaticParams() {
+  return livroChapters()
+}
+
+export default async function LivroPage({ params }: Props) {
+  const { capitulo } = await params
+
+  const filePath =
+    capitulo === "epilogo"
+      ? "livro/epilogo.md"
+      : `livro/capitulo-${capitulo}.md`
+
+  const doc = readMarkdown(filePath)
+  const safeContent = sanitizeForMdx(doc.content)
+
+  return (
+    <ScrollArea className="h-[calc(100vh-3rem)]">
+      <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
+        <div className="mb-8">
+          <p
+            className="text-xs uppercase tracking-[0.2em] font-sans mb-2"
+            style={{ color: "var(--accent)" }}
+          >
+            {capitulo === "epilogo" ? "Epílogo" : `Capítulo ${capitulo}`}
+          </p>
+          <div
+            className="h-px w-16"
+            style={{ backgroundColor: "var(--accent)" }}
+          />
+        </div>
+        <div style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+          <MDXRemote source={safeContent} components={literaryComponents} />
+        </div>
+        {capitulo !== "epilogo" && (
+          <DocNav items={LIVRO_ITEMS} current={capitulo} basePath="/livro" />
+        )}
+      </article>
+    </ScrollArea>
+  )
+}
