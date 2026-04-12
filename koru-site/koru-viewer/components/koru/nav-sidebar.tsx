@@ -49,7 +49,7 @@ function NavItem({
 export function NavSidebar() {
   return (
     <Sidebar
-      style={{ width: "260px" }}
+      style={{ width: "200px" }}
       className="border-none"
       aria-label="Navegação principal"
     >
