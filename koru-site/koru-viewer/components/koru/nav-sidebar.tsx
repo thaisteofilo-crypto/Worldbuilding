@@ -9,7 +9,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -49,34 +48,15 @@ function NavItem({
 export function NavSidebar() {
   return (
     <Sidebar
-      style={{ width: "200px" }}
+      style={{ width: "260px" }}
       className="border-none"
       aria-label="Navegação principal"
     >
-      <SidebarHeader className="px-4 py-4">
-        <Link
-          href="/"
-          className="font-serif text-2xl leading-none transition-opacity hover:opacity-80"
-          style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
-          }}
-        >
-          Korú
-        </Link>
-        <p
-          className="text-xs font-sans mt-1"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          Worldbuilding
-        </p>
-      </SidebarHeader>
-
-      <SidebarContent>
+      <SidebarContent className="pt-4">
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--gold)" }}
+            style={{ color: "var(--foreground)" }}
           >
             Bíblia
           </SidebarGroupLabel>
@@ -94,7 +74,7 @@ export function NavSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--accent)" }}
+            style={{ color: "var(--foreground)" }}
           >
             Livro
           </SidebarGroupLabel>
@@ -112,7 +92,7 @@ export function NavSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--blue-cold)" }}
+            style={{ color: "var(--foreground)" }}
           >
             Contos
           </SidebarGroupLabel>
@@ -129,7 +109,7 @@ export function NavSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
+            className="text-xs uppercase tracking-[0.15em] font-sans"
             style={{ color: "var(--foreground)" }}
           >
             Personagens
@@ -141,20 +121,6 @@ export function NavSidebar() {
                   {p.title}
                 </NavItem>
               ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
-            style={{ color: "var(--foreground)" }}
-          >
-            Galeria
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <NavItem href="/galeria">Cenas do Akwu</NavItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
