@@ -2,23 +2,15 @@ import { readMarkdown, livroChapters } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
-import { sanitizeForMdx } from "@/lib/sanitize-md"
+import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
+import { HeroBanner } from "@/components/koru/hero-banner"
+import { LIVRO_ITEMS } from "@/lib/navigation"
 
 interface Props {
   params: Promise<{ capitulo: string }>
 }
-
-const LIVRO_ITEMS = [
-  { slug: "01", title: "Capítulo 1" },
-  { slug: "02", title: "Capítulo 2" },
-  { slug: "03", title: "Capítulo 3" },
-  { slug: "04", title: "Capítulo 4" },
-  { slug: "05", title: "Capítulo 5" },
-  { slug: "06", title: "Capítulo 6" },
-  { slug: "epilogo", title: "Epílogo" },
-]
 
 const literaryComponents = {
   ...mdxComponents,
@@ -61,23 +53,19 @@ export default async function LivroPage({ params }: Props) {
       : `livro/capitulo-${capitulo}.md`
 
   const doc = readMarkdown(filePath)
-  const safeContent = sanitizeForMdx(doc.content)
+  const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
+
+  const item = LIVRO_ITEMS.find((i) => i.slug === capitulo)
 
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
+      <HeroBanner
+        title={item?.title ?? doc.title}
+        subtitle="Livro"
+        accentColor="var(--accent)"
+        fallbackHue={290}
+      />
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
-        <div className="mb-8">
-          <p
-            className="text-xs uppercase tracking-[0.2em] font-sans mb-2"
-            style={{ color: "var(--accent)" }}
-          >
-            {capitulo === "epilogo" ? "Epílogo" : `Capítulo ${capitulo}`}
-          </p>
-          <div
-            className="h-px w-16"
-            style={{ backgroundColor: "var(--accent)" }}
-          />
-        </div>
         <MDXRemote source={safeContent} components={literaryComponents} options={mdxOptions} />
         {capitulo !== "epilogo" && (
           <DocNav items={LIVRO_ITEMS} current={capitulo} basePath="/livro" />

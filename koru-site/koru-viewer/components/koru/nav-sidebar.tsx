@@ -14,48 +14,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-const bibliaParts = [
-  { parte: "parte-00", title: "Introdução" },
-  { parte: "parte-01", title: "Física e Cosmologia" },
-  { parte: "parte-02", title: "Geografia" },
-  { parte: "parte-03", title: "Ecossistema" },
-  { parte: "parte-04", title: "Criaturas" },
-  { parte: "parte-05", title: "Personagens" },
-  { parte: "parte-06", title: "Regras" },
-  { parte: "parte-07", title: "Cultura" },
-  { parte: "parte-08", title: "Linha do Tempo" },
-]
-
-const livroChapters = [
-  { slug: "01", title: "Capítulo 1" },
-  { slug: "02", title: "Capítulo 2" },
-  { slug: "03", title: "Capítulo 3" },
-  { slug: "04", title: "Capítulo 4" },
-  { slug: "05", title: "Capítulo 5" },
-  { slug: "06", title: "Capítulo 6" },
-  { slug: "epilogo", title: "Epílogo" },
-]
-
-const contos = [
-  { slug: "temiku", title: "Temiku" },
-  { slug: "amara", title: "Amara" },
-  { slug: "oruku", title: "Oruku" },
-  { slug: "beku", title: "Beku" },
-  { slug: "obaru", title: "Obaru" },
-  { slug: "kemdi", title: "Kemdi" },
-  { slug: "orike", title: "Orike" },
-]
-
-const personagens = [
-  { slug: "temiku", title: "Temiku" },
-  { slug: "amara", title: "Amara" },
-  { slug: "oruku", title: "Oruku" },
-  { slug: "beku", title: "Beku" },
-  { slug: "obaru", title: "Obaru" },
-  { slug: "kemdi", title: "Kemdi" },
-  { slug: "orike", title: "Orike" },
-]
+import {
+  BIBLIA_ITEMS,
+  LIVRO_ITEMS,
+  CONTOS_ITEMS,
+  PERSONAGENS_ITEMS,
+} from "@/lib/navigation"
 
 function NavItem({
   href,
@@ -87,6 +51,7 @@ export function NavSidebar() {
     <Sidebar
       style={{ width: "260px" }}
       className="border-none"
+      aria-label="Navegação principal"
     >
       <SidebarHeader className="px-4 py-4">
         <Link
@@ -117,8 +82,8 @@ export function NavSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {bibliaParts.map((part) => (
-                <NavItem key={part.parte} href={`/biblia/${part.parte}`}>
+              {BIBLIA_ITEMS.map((part) => (
+                <NavItem key={part.slug} href={`/biblia/${part.slug}`}>
                   {part.title}
                 </NavItem>
               ))}
@@ -135,7 +100,7 @@ export function NavSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {livroChapters.map((ch) => (
+              {LIVRO_ITEMS.map((ch) => (
                 <NavItem key={ch.slug} href={`/livro/${ch.slug}`}>
                   {ch.title}
                 </NavItem>
@@ -153,7 +118,7 @@ export function NavSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {contos.map((conto) => (
+              {CONTOS_ITEMS.map((conto) => (
                 <NavItem key={conto.slug} href={`/contos/${conto.slug}`}>
                   {conto.title}
                 </NavItem>
@@ -171,7 +136,7 @@ export function NavSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {personagens.map((p) => (
+              {PERSONAGENS_ITEMS.map((p) => (
                 <NavItem key={p.slug} href={`/personagens/${p.slug}`}>
                   {p.title}
                 </NavItem>
@@ -190,21 +155,6 @@ export function NavSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <NavItem href="/galeria">Cenas do Akwu</NavItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
-            style={{ color: "var(--foreground)" }}
-          >
-            Referência
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <NavItem href="/briefing">Briefing do Mundo</NavItem>
-              <NavItem href="/workflow">Workflow</NavItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -16,6 +16,43 @@ export async function GET() {
   return NextResponse.json({ characters: characters ?? [] })
 }
 
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { name, slug, role, species, morphology } = body
+
+  if (!name || !slug) {
+    return NextResponse.json({ error: "name and slug are required" }, { status: 400 })
+  }
+
+  const admin = createAdminClient()
+
+  // Check for duplicate slug
+  const { data: existing } = await admin.from("characters").select("id").eq("slug", slug).maybeSingle()
+  if (existing) {
+    return NextResponse.json({ error: "Slug already exists" }, { status: 409 })
+  }
+
+  const insertData: Record<string, string | null> = {
+    name,
+    slug,
+    role: role || null,
+    morphology: morphology || null,
+    status: species || null,
+  }
+
+  const { data: character, error } = await admin
+    .from("characters")
+    .insert(insertData)
+    .select("*")
+    .single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ character })
+}
+
 export async function PATCH(req: NextRequest) {
   const { id, ...fields } = await req.json()
 

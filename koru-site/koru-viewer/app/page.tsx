@@ -76,7 +76,7 @@ function SectionBanner({ url }: { url?: string }) {
 
   return (
     <>
-      <Image src={url} alt="" fill className="object-cover" priority={false} unoptimized />
+      <Image src={url} alt="" fill className="object-cover" priority={false} />
       <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 50%, oklch(0 0 0 / 0.15) 100%)" }} />
     </>
   )
@@ -162,7 +162,7 @@ export default async function HomePage() {
           </>
         ) : banners.hero ? (
           <>
-            <Image src={banners.hero} alt="Korú" fill className="object-cover" priority unoptimized />
+            <Image src={banners.hero} alt="Korú" fill className="object-cover" priority />
             <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.4)" }} />
           </>
         ) : (
@@ -227,7 +227,7 @@ export default async function HomePage() {
               <Link key={key} href={`/personagens/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {characterImages[key] ? (
-                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
+                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -250,7 +250,7 @@ export default async function HomePage() {
             <Link key={part.parte} href={`/biblia/parte-${part.parte}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[`biblia-parte-${part.parte}`] ? (
-                  <Image src={cardImages[`biblia-parte-${part.parte}`]} alt={part.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
+                  <Image src={cardImages[`biblia-parte-${part.parte}`]} alt={part.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -272,7 +272,7 @@ export default async function HomePage() {
             <Link key={ch.slug} href={`/livro/${ch.slug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[`livro-${ch.slug}`] ? (
-                  <Image src={cardImages[`livro-${ch.slug}`]} alt={ch.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
+                  <Image src={cardImages[`livro-${ch.slug}`]} alt={ch.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -296,7 +296,7 @@ export default async function HomePage() {
               <Link key={key} href={`/contos/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {characterImages[key] ? (
-                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
+                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -319,7 +319,7 @@ export default async function HomePage() {
             <div key={ref.title} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[`ref-${slugify(ref.title)}`] ? (
-                  <Image src={cardImages[`ref-${slugify(ref.title)}`]} alt={ref.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" unoptimized />
+                  <Image src={cardImages[`ref-${slugify(ref.title)}`]} alt={ref.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <ImagePlaceholder />
                 )}

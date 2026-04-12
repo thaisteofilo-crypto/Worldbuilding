@@ -17,6 +17,20 @@ interface ChapterData {
   tensionScore: number
 }
 
+interface EmotionEntry {
+  name: string
+  intensity: number
+  peak_excerpt: string
+}
+
+interface ChapterEmotion {
+  chapter: string
+  emotions: EmotionEntry[]
+  overall_tension: number
+  narrative_arc: "rising" | "falling" | "climax" | "resolution"
+  summary: string
+}
+
 interface Analytics {
   totalWords: number
   sectionWords: Record<string, number>
@@ -70,6 +84,8 @@ function ProgressRing({ value, max, size = 48, color }: { value: number; max: nu
 export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
   const [loading, setLoading] = useState(true)
+  const [emotionData, setEmotionData] = useState<ChapterEmotion[]>([])
+  const [analyzingEmotions, setAnalyzingEmotions] = useState(false)
 
   useEffect(() => {
     fetch("/api/analytics")
@@ -77,6 +93,29 @@ export default function AdminDashboardPage() {
       .then((data) => { setAnalytics(data); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
+
+  const analyzeEmotions = useCallback(async () => {
+    if (!analytics || analytics.chapters.length === 0) return
+    setAnalyzingEmotions(true)
+    const results: ChapterEmotion[] = []
+    for (const ch of analytics.chapters) {
+      try {
+        const res = await fetch("/api/analyze-emotion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chapter: ch.slug }),
+        })
+        if (res.ok) {
+          const data = await res.json()
+          results.push(data)
+          setEmotionData([...results])
+        }
+      } catch {
+        // skip failed chapters
+      }
+    }
+    setAnalyzingEmotions(false)
+  }, [analytics])
 
   if (loading) {
     return (
@@ -134,9 +173,31 @@ export default function AdminDashboardPage() {
         {/* Story Arc */}
         <div className="lg:col-span-2 rounded-xl p-6 glass-card">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Arco da Historia</h2>
-              <p className="font-sans text-xs mt-0.5" style={{ color: "var(--muted-foreground)" }}>Tensao narrativa por capitulo</p>
+            <div className="flex items-center gap-3">
+              <div>
+                <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Arco da Historia</h2>
+                <p className="font-sans text-xs mt-0.5" style={{ color: "var(--muted-foreground)" }}>Tensao narrativa por capitulo</p>
+              </div>
+              <button
+                onClick={analyzeEmotions}
+                disabled={analyzingEmotions || !analytics || analytics.chapters.length === 0}
+                className="rounded-full px-4 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                style={{ background: "oklch(0.40 0.12 290)", color: "white" }}
+              >
+                {analyzingEmotions ? (
+                  <>
+                    <span className="w-3 h-3 rounded-full border border-white/40 border-t-white animate-spin" />
+                    Analisando...
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    Analisar com IA
+                  </>
+                )}
+              </button>
             </div>
             <div className="flex gap-3">
               <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
@@ -177,6 +238,54 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Emotion Analysis */}
+      {emotionData.length > 0 && (
+        <div className="mb-8">
+          <div className="rounded-xl p-6 glass-card mb-4">
+            <h2 className="font-serif text-xl mb-1" style={{ color: "var(--foreground)" }}>Mapa Emocional</h2>
+            <p className="font-sans text-xs mb-4" style={{ color: "var(--muted-foreground)" }}>
+              Intensidade emocional por capitulo (analise IA)
+            </p>
+            <EmotionChart data={emotionData} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {emotionData.map((ch) => {
+              const dominant = ch.emotions.reduce((best, e) => e.intensity > best.intensity ? e : best, ch.emotions[0])
+              const arcLabels: Record<string, string> = { rising: "Ascensao", falling: "Queda", climax: "Climax", resolution: "Resolucao" }
+              return (
+                <div key={ch.chapter} className="rounded-xl p-4 glass-card">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-serif text-sm" style={{ color: "var(--foreground)" }}>
+                      {ch.chapter === "epilogo" ? "Epilogo" : `Cap. ${ch.chapter}`}
+                    </span>
+                    <span
+                      className="rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide"
+                      style={{
+                        color: EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)",
+                        background: `color-mix(in oklch, ${EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)"} 12%, transparent)`,
+                      }}
+                    >
+                      {dominant.name} ({Math.round(dominant.intensity * 100)}%)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-sans text-[10px] uppercase tracking-wide" style={{ color: "var(--muted-foreground)" }}>
+                      {arcLabels[ch.narrative_arc] ?? ch.narrative_arc}
+                    </span>
+                    <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+                      Tensao: {Math.round(ch.overall_tension * 100)}%
+                    </span>
+                  </div>
+                  <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
+                    {ch.summary}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Progress bars */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -309,6 +418,112 @@ function StoryArcChart({ chapters }: { chapters: ChapterData[] }) {
         )
       })}
     </svg>
+  )
+}
+
+/* ─── Emotion Colors ─── */
+
+const EMOTION_COLORS: Record<string, string> = {
+  melancolia: "oklch(0.45 0.12 290)",
+  "esperança": "oklch(0.48 0.12 65)",
+  medo: "oklch(0.50 0.15 27)",
+  ternura: "oklch(0.45 0.12 150)",
+  "tensão": "oklch(0.42 0.10 230)",
+}
+
+/* ─── Emotion Chart (SVG) ─── */
+
+function EmotionChart({ data }: { data: ChapterEmotion[] }) {
+  if (data.length === 0) return null
+
+  const W = 600
+  const H = 220
+  const padX = 50
+  const padY = 20
+  const chartW = W - padX * 2
+  const chartH = H - padY * 2
+
+  const emotionNames = ["melancolia", "esperança", "medo", "ternura", "tensão"]
+  const colors = [
+    "oklch(0.45 0.12 290)",
+    "oklch(0.48 0.12 65)",
+    "oklch(0.50 0.15 27)",
+    "oklch(0.45 0.12 150)",
+    "oklch(0.42 0.10 230)",
+  ]
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: "240px" }}>
+        {/* Grid lines */}
+        {[0, 0.25, 0.5, 0.75, 1].map((v) => {
+          const y = padY + chartH - v * chartH
+          return (
+            <g key={v}>
+              <line x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" />
+              <text x={padX - 6} y={y + 3} textAnchor="end" className="font-sans" fill="var(--muted-foreground)" fontSize="8">
+                {Math.round(v * 100)}%
+              </text>
+            </g>
+          )
+        })}
+
+        {/* Emotion lines */}
+        {emotionNames.map((name, ei) => {
+          const points = data.map((ch, i) => {
+            const emotion = ch.emotions.find((e) => e.name === name)
+            const intensity = emotion?.intensity ?? 0
+            const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
+            const y = padY + chartH - intensity * chartH
+            return `${x},${y}`
+          })
+          return (
+            <polyline
+              key={name}
+              points={points.join(" ")}
+              fill="none"
+              stroke={colors[ei]}
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          )
+        })}
+
+        {/* Dots */}
+        {emotionNames.map((name, ei) =>
+          data.map((ch, i) => {
+            const emotion = ch.emotions.find((e) => e.name === name)
+            const intensity = emotion?.intensity ?? 0
+            const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
+            const y = padY + chartH - intensity * chartH
+            return (
+              <circle key={`${name}-${ch.chapter}`} cx={x} cy={y} r={2.5} fill={colors[ei]} />
+            )
+          })
+        )}
+
+        {/* X axis labels */}
+        {data.map((ch, i) => {
+          const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
+          return (
+            <text key={ch.chapter} x={x} y={H - 2} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9">
+              {ch.chapter === "epilogo" ? "Epi" : `Cap ${ch.chapter}`}
+            </text>
+          )
+        })}
+      </svg>
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-3 mt-2 justify-center">
+        {emotionNames.map((name, i) => (
+          <span key={name} className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+            <span className="w-2 h-2 rounded-full" style={{ background: colors[i] }} />
+            {name.charAt(0).toUpperCase() + name.slice(1)}
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }
 

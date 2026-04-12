@@ -174,13 +174,127 @@ function EditableField({
   )
 }
 
+function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void }) {
+  const [open, setOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [form, setForm] = useState({ name: "", slug: "", role: "", species: "", morphology: "" })
+
+  function handleChange(field: string, value: string) {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+      ...(field === "name" ? { slug: value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") } : {}),
+    }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.name.trim() || !form.slug.trim()) return
+    setSaving(true)
+    try {
+      const res = await fetch("/api/characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        onCreated(data.character)
+        setForm({ name: "", slug: "", role: "", species: "", morphology: "" })
+        setOpen(false)
+      } else {
+        const data = await res.json()
+        alert(data.error || "Erro ao criar personagem")
+      }
+    } catch {
+      alert("Erro de rede")
+    }
+    setSaving(false)
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="rounded-full px-5 py-2 font-sans text-sm transition-opacity hover:opacity-80 flex items-center gap-2"
+        style={{ background: "var(--foreground)", color: "var(--background)" }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Novo personagem
+      </button>
+    )
+  }
+
+  const fieldStyle = {
+    background: "var(--background)",
+    border: "1px solid var(--border)",
+    color: "var(--foreground)",
+  }
+
+  return (
+    <div className="rounded-xl p-5 glass-card">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-serif text-lg" style={{ color: "var(--foreground)" }}>Novo personagem</h3>
+        <button
+          onClick={() => setOpen(false)}
+          className="rounded-full w-7 h-7 flex items-center justify-center transition-opacity hover:opacity-70"
+          style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Nome *</label>
+          <input value={form.name} onChange={(e) => handleChange("name", e.target.value)} required
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Ex: Temiku" />
+        </div>
+        <div>
+          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Slug *</label>
+          <input value={form.slug} onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))} required
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="temiku" />
+        </div>
+        <div>
+          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Papel</label>
+          <input value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Protagonista, Antagonista..." />
+        </div>
+        <div>
+          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Especie</label>
+          <input value={form.species} onChange={(e) => setForm((p) => ({ ...p, species: e.target.value }))}
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Azuri, Onkweri, Hibrido..." />
+        </div>
+        <div className="md:col-span-2">
+          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Morfologia</label>
+          <textarea value={form.morphology} onChange={(e) => setForm((p) => ({ ...p, morphology: e.target.value }))} rows={2}
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none resize-y" style={fieldStyle}
+            placeholder="Quadrupede com chifres, pelagem..." />
+        </div>
+        <div className="md:col-span-2 flex gap-2 justify-end pt-1">
+          <button type="button" onClick={() => setOpen(false)}
+            className="rounded-full px-4 py-1.5 font-sans text-xs" style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}>
+            Cancelar
+          </button>
+          <button type="submit" disabled={saving || !form.name.trim()}
+            className="rounded-full px-5 py-1.5 font-sans text-xs transition-opacity disabled:opacity-50"
+            style={{ background: "var(--foreground)", color: "var(--background)" }}>
+            {saving ? "Criando..." : "Criar personagem"}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
 export default function CharactersPage() {
   const [characters, setCharacters] = useState<Character[]>([])
   const [charImages, setCharImages] = useState<Record<string, Record<string, string>>>({})
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
 
-  useEffect(() => {
+  const fetchCharacters = () => {
     Promise.all([
       fetch("/api/characters").then((r) => r.json()),
       fetch("/api/characters/image").then((r) => r.json()),
@@ -189,6 +303,10 @@ export default function CharactersPage() {
       setCharImages(imageData.images || {})
       setLoading(false)
     })
+  }
+
+  useEffect(() => {
+    fetchCharacters()
   }, [])
 
   function updateCharacter(id: string, updates: Partial<Character>) {
@@ -266,12 +384,21 @@ export default function CharactersPage() {
     )
   }
 
+  function handleCharacterCreated(char: Character) {
+    setCharacters((prev) => [...prev, char])
+  }
+
   return (
     <div>
-      <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
-      <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-        {characters.length} personagens — 3 vistas por personagem (frente, perfil, costa) — clique nos campos para editar
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
+          <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
+            {characters.length} personagens — 3 vistas por personagem (frente, perfil, costa) — clique nos campos para editar
+          </p>
+        </div>
+        <NewCharacterForm onCreated={handleCharacterCreated} />
+      </div>
 
       <div className="mt-8 flex flex-col gap-8">
         {characters.length === 0 ? (

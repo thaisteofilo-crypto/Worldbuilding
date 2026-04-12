@@ -77,7 +77,7 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
             border: "1px solid oklch(1 0 0 / 0.3)",
             boxShadow: "0 4px 12px oklch(0 0 0 / 0.2)",
           }}
-          aria-label="Proximo"
+          aria-label="Próximo"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 6 15 12 9 18" />

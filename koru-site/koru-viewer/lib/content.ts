@@ -74,7 +74,16 @@ export function readMarkdown(relativePath: string): DocContent {
     resolvedPath = fallback
   }
 
-  const raw = fs.readFileSync(resolvedPath, "utf-8")
+  let raw: string
+  try {
+    raw = fs.readFileSync(resolvedPath, "utf-8")
+  } catch {
+    return {
+      title: "Erro de leitura",
+      content: `Não foi possível ler o arquivo \`${relativePath}\`.`,
+      frontmatter: {},
+    }
+  }
   const { data, content } = matter(raw)
 
   const title =

@@ -1,4 +1,29 @@
 /**
+ * Strips leading h1 (# ) and h2 (## ) lines from the beginning of markdown.
+ * Stops as soon as it encounters a non-heading, non-empty line.
+ * Use this to prevent duplicate titles when HeroBanner already shows them.
+ */
+export function stripLeadingHeadings(content: string): string {
+  const lines = content.split("\n")
+  let i = 0
+  while (i < lines.length) {
+    const trimmed = lines[i].trimStart()
+    if (trimmed === "") {
+      // skip blank lines at the top
+      i++
+      continue
+    }
+    if (trimmed.startsWith("# ") || trimmed.startsWith("## ")) {
+      i++
+      continue
+    }
+    // first non-heading, non-blank line — stop stripping
+    break
+  }
+  return lines.slice(i).join("\n")
+}
+
+/**
  * Sanitizes markdown content for safe use with next-mdx-remote.
  * Removes patterns that MDX would try to parse as JSX.
  */
