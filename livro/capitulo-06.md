@@ -1,5 +1,5 @@
-# VI — O QUE ELA PAGA
-*Korú — A História de Temiku*
+# VI, O QUE ELA PAGA
+*Korú, A História de Temiku*
 
 ---
 
@@ -18,5 +18,5 @@ A pedra ainda estava no bolso. Segurou. A pedra estava fria. Sempre havia estado
 O Bomi Veh ao redor das colônias de Ubomi-chi começou a voltar - primeiro lilás, depois denso, depois com a textura de chão que guarda muita coisa. Beku, ao receber a frequência das Jobi-Koro que Kemdi levou a ele, passou uma noite com a mão numa raiz Ariku. Na manhã seguinte, ordenou a desativação das torres. Não fez discurso. Não pediu desculpa. Apenas fez.
 
 ---
-*Status: rascunho original — a expandir*
+*Status: rascunho original, a expandir*
 *Expansões necessárias: ver livro/briefings/briefing-capitulo-06.md*

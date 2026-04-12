@@ -1,5 +1,5 @@
-# V — O LIMIAR COMO MORADA
-*Korú — A História de Temiku*
+# V, O LIMIAR COMO MORADA
+*Korú, A História de Temiku*
 
 ---
 
@@ -28,5 +28,5 @@ A pedra na mão de Temiku ficou quente pela primeira vez na vida.
 Amara não disse o nome da filha. Mas Temiku sentiu, na pressão do limiar, uma sequência que ela levaria tempo para traduzir em palavras - e quando traduzisse, seriam: você não veio de um erro. Você veio de uma escolha. A diferença é tudo.
 
 ---
-*Status: rascunho original — a expandir*
+*Status: rascunho original, a expandir*
 *Expansões necessárias: ver livro/briefings/briefing-capitulo-05.md*

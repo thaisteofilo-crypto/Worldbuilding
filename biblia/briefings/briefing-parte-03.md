@@ -1,4 +1,4 @@
-# Briefing: Parte 3 — Ecossistema Completo
+# Briefing: Parte 3, Ecossistema Completo
 
 ## Em uma frase
 Esta parte documenta o funcionamento completo do ciclo de memória-energia de Korú: como a memória circula entre morte, solo, árvores e criaturas, os cinco estados do Bomi Veh, a diferença entre extração sustentável e destrutiva, e como cada espécie nasce, se sustenta e morre.
@@ -9,9 +9,9 @@ Esta parte documenta o funcionamento completo do ciclo de memória-energia de Ko
 
 2. **O estado do Bomi Veh é o indicador de saúde narrativa do ambiente.** Lilás vivo = ciclo funcionando. Preto = Ubomi-chi mortos por extração excessiva. Cinza permanente = violação do acordo (memória sem destinatário). Azul-frio = frequência sem categoria (único caso: dissolução de Amara). O estado do chão em qualquer cena comunica o estado do ciclo naquele ponto.
 
-3. **Onkweri surgem do solo — não têm pais biológicos.** A origem geográfica é constitutiva: Onkweri sabem de onde vieram da mesma forma que sabem seu nome. Não é sentimento — é dado. Esse fato é relevante para caracterização e para motivações que envolvem vínculo com lugar específico.
+3. **Onkweri surgem do solo, não têm pais biológicos.** A origem geográfica é constitutiva: Onkweri sabem de onde vieram da mesma forma que sabem seu nome. Não é sentimento, é dado. Esse fato é relevante para caracterização e para motivações que envolvem vínculo com lugar específico.
 
-6. **Temiku é o único caso documentado de origem híbrida — e revela uma brecha no sistema.** Ela não emergiu de memória acumulada (processo Onkweri) nem do limiar por necessidade de tradução (processo Azuri). Emergiu de Bomi Veh saturado simultaneamente pelas duas frequências: dissolução de Amara + Luz Limiar de Oruku no mesmo ponto. O solo nunca havia recebido essa combinação e coagulou com ambas. Ela não tem origem de lugar — tem origem de evento. O círculo azul-frio no Bomi Veh é o excesso que não coagulou em Temiku.
+6. **Temiku é o único caso documentado de origem híbrida, e revela uma brecha no sistema.** Ela não emergiu de memória acumulada (processo Onkweri) nem do limiar por necessidade de tradução (processo Azuri). Emergiu de Bomi Veh saturado simultaneamente pelas duas frequências: dissolução de Amara + Luz Limiar de Oruku no mesmo ponto. O solo nunca havia recebido essa combinação e coagulou com ambas. Ela não tem origem de lugar, tem origem de evento. O círculo azul-frio no Bomi Veh é o excesso que não coagulou em Temiku.
 
 4. **A morte de cada espécie é diferente e tem consequência ecológica distinta.** Onkweri: dissolução gradual, local de morte fica rico por ciclos (plantio deliberado de memória é prática cultural). Azuri: cessam sem deixar corpo ou memória. Ariku: morte lenta, tronco permanece como arquivo passivo por séculos. Ubomi-chi: silêncio e Bomi Veh preto ao redor, irreversível, colônia vizinha em risco. Nkosi-ha: corpo vira nutriente limiar, presença ecoa por dias.
 
@@ -23,9 +23,9 @@ Esta parte documenta o funcionamento completo do ciclo de memória-energia de Ko
 
 2. **O Bomi Veh tem cinco estados visuais distintos:** lilás-rosado com fosforescência suave (vivo), denso e escuro (solidificado, como Onkweri são), ausência total de cor e fosforescência (preto/morto), cinza frio sem lilás (congestionado/Jobi-Koro), azul-esbranquiçado frio (único caso documentado).
 
-3. **Morte de Onkweri como cena visual:** dissolução gradual — a estrutura de terra estratificada se dissolve de volta ao Bomi Veh. O local ficará mais rico por ciclos. Pode ser representado como o chão ao redor gradualmente ficando mais vivo (mais lilás, mais bioluminescência).
+3. **Morte de Onkweri como cena visual:** dissolução gradual, a estrutura de terra estratificada se dissolve de volta ao Bomi Veh. O local ficará mais rico por ciclos. Pode ser representado como o chão ao redor gradualmente ficando mais vivo (mais lilás, mais bioluminescência).
 
-4. **Morte de Nkosi-ha:** o corpo translúcido permanece no local. Nos dias seguintes, a presença ecoa — criaturas que passam por ali ainda sentem algo. Isso pode ser representado como halo residual, frequência visual persistente.
+4. **Morte de Nkosi-ha:** o corpo translúcido permanece no local. Nos dias seguintes, a presença ecoa, criaturas que passam por ali ainda sentem algo. Isso pode ser representado como halo residual, frequência visual persistente.
 
 5. **A cadeia de dependências como diagrama visual:** Akwu no topo, descendo por Ariku, Ubomi-chi, Bomi Veh, Onkweri, com Azuri e Nkosi-ha em posições de interface. Nenhuma espécie flutua fora dessa cadeia.
 

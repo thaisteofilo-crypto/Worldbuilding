@@ -1,5 +1,5 @@
 # Conto: Beku
-*Korú — O arquiteto que decidiu substituir o design cruel*
+*Korú, O arquiteto que decidiu substituir o design cruel*
 
 ---
 

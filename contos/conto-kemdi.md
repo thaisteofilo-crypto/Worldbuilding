@@ -1,5 +1,5 @@
 # Conto: Kemdi
-*Korú — O que acontece quando você é a única que não tem medo*
+*Korú, O que acontece quando você é a única que não tem medo*
 
 ---
 

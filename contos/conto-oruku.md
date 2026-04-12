@@ -1,5 +1,5 @@
 # Conto: Oruku
-*Korú — A luz que aprendeu a querer ficar*
+*Korú, A luz que aprendeu a querer ficar*
 
 ---
 

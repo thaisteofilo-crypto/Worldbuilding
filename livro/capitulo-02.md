@@ -1,5 +1,5 @@
-# II — A MENTIRA SILENCIOSA
-*Korú — A História de Temiku*
+# II, A MENTIRA SILENCIOSA
+*Korú, A História de Temiku*
 
 ---
 
@@ -22,5 +22,5 @@ Obaru estava esperando na entrada do Rimba Ngozi - um Onkweri de meia vida com o
 'Você também,' disse ela.
 
 ---
-*Status: rascunho original — a expandir*
+*Status: rascunho original, a expandir*
 *Expansões necessárias: ver livro/briefings/briefing-capitulo-02.md*

@@ -1,5 +1,5 @@
-# EPÍLOGO — DEPOIS
-*Korú — A História de Temiku*
+# EPÍLOGO, DEPOIS
+*Korú, A História de Temiku*
 
 ---
 
@@ -24,5 +24,5 @@ O Asa Temu voltou ao seu ciclo natural. O primeiro depois da restauração foi o
 Temiku ficou acordada durante todo o Temu. Não por missão. Porque era o período em que sua luz ficava mais visível no escuro - e ela havia decidido, naquele ciclo, não apagar.
 
 ---
-*Status: COMPLETO — NÃO MODIFICAR*
+*Status: COMPLETO, NÃO MODIFICAR*
 *Ver livro/briefings/briefing-epilogo.md*

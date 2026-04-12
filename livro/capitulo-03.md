@@ -1,5 +1,5 @@
-# III — O QUE A FLORESTA GUARDA
-*Korú — A História de Temiku*
+# III, O QUE A FLORESTA GUARDA
+*Korú, A História de Temiku*
 
 ---
 
@@ -18,5 +18,5 @@ Quando se afastou, havia algo no rosto que não era dela - a umidade de uma emo�
 'Ela não disse. Ela mostrou. A direção de onde o apagamento vem.' Pausa. 'É Orunjó.'
 
 ---
-*Status: rascunho original — a expandir*
+*Status: rascunho original, a expandir*
 *Expansões necessárias: ver livro/briefings/briefing-capitulo-03.md*

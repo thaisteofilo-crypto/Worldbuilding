@@ -1,5 +1,5 @@
-# IV — O PROJETO DO FIM DO LUTO
-*Korú — A História de Temiku*
+# IV, O PROJETO DO FIM DO LUTO
+*Korú, A História de Temiku*
 
 ---
 
@@ -12,5 +12,5 @@ Beku não odiava o Asa Temu por tradição. Odiava com a precisão de um arquite
 O projeto Mwanga-ji (Swahili Mwanga = luz constante + Igbo Ji = sustento): extrair energia dos Ubomi-chi e usá-la para criar uma fonte de Oru permanente. Nenhum Temu. Nenhum silêncio coletivo. Um mundo em estado constante de presença e calor. O que o projeto não declarava: extrair os Ubomi-chi os matava. Cada fonte de luz permanente exigia a morte de uma colônia inteira de memória viva. Sem os Ubomi-chi, o Bomi ficava mudo. E sem pele, Koru começaria a perder a capacidade de sentir.
 
 ---
-*Status: rascunho original — a expandir*
+*Status: rascunho original, a expandir*
 *Expansões necessárias: ver livro/briefings/briefing-capitulo-04.md*

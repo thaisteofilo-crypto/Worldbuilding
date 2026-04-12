@@ -1,5 +1,5 @@
 # Conto: Orike
-*Korú — O que o arquivo sentiu quando o acordo quebrou*
+*Korú, O que o arquivo sentiu quando o acordo quebrou*
 
 ---
 

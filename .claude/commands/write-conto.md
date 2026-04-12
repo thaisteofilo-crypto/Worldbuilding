@@ -39,4 +39,4 @@ Escreve um conto literário para um personagem de Korú.
 4. obaru
 5. kemdi
 6. temi
-7. orike (formato especial — perspectiva do Bomi Veh ou Ubomi-chi)
+7. orike (formato especial, perspectiva do Bomi Veh ou Ubomi-chi)

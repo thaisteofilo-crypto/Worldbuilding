@@ -1,5 +1,5 @@
 # Conto: Temi
-*Korú — O que pertence à criatura que pertence a nenhum lugar*
+*Korú, O que pertence à criatura que pertence a nenhum lugar*
 
 ---
 

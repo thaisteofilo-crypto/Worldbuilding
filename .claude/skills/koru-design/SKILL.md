@@ -29,9 +29,9 @@ Definidas em `koru-site/koru-viewer/app/globals.css`:
 | `--card` | oklch(1.00 0 0) | Cards (branco puro) |
 | `--border` | oklch(0.75 0.01 280) | Bordas |
 | `--muted-foreground` | oklch(0.40 0.01 280) | Texto secundário |
-| `--accent` | oklch(0.40 0.12 290) | Lilás — Bomi Veh |
-| `--gold` | oklch(0.48 0.12 65) | Dourado — Oru |
-| `--blue-cold` | oklch(0.42 0.10 230) | Azul-frio — Azuri |
+| `--accent` | oklch(0.40 0.12 290) | Lilás, Bomi Veh |
+| `--gold` | oklch(0.48 0.12 65) | Dourado, Oru |
+| `--blue-cold` | oklch(0.42 0.10 230) | Azul-frio, Azuri |
 | `--primary` | oklch(0.40 0.12 290) | Botão principal |
 
 ### Dark mode (`.dark`)
@@ -43,9 +43,9 @@ Definidas em `koru-site/koru-viewer/app/globals.css`:
 | `--foreground` | oklch(0.92 0.012 85) | Texto principal |
 | `--border` | oklch(0.18 0.006 280) | Bordas |
 | `--muted-foreground` | oklch(0.55 0.01 280) | Texto secundário |
-| `--accent` | oklch(0.65 0.09 290) | Lilás — Bomi Veh |
-| `--gold` | oklch(0.72 0.10 75) | Dourado — Oru |
-| `--blue-cold` | oklch(0.62 0.09 220) | Azul-frio — Azuri |
+| `--accent` | oklch(0.65 0.09 290) | Lilás, Bomi Veh |
+| `--gold` | oklch(0.72 0.10 75) | Dourado, Oru |
+| `--blue-cold` | oklch(0.62 0.09 220) | Azul-frio, Azuri |
 | `--primary` | oklch(0.65 0.09 290) | Botão principal |
 
 ---
@@ -66,8 +66,8 @@ Definidas em `koru-site/koru-viewer/app/globals.css`:
 Duas classes utilitárias:
 
 ```css
-.glass       /* Header, overlays — blur + translúcido */
-.glass-card  /* Cards — branco sólido com sombra (light) ou escuro sólido (dark) */
+.glass       /* Header, overlays, blur + translúcido */
+.glass-card  /* Cards, branco sólido com sombra (light) ou escuro sólido (dark) */
 ```
 
 **Light:** fundo branco opaco `oklch(1.00)`, borda `oklch(0.80)`, sombra suave
@@ -80,23 +80,23 @@ Duas classes utilitárias:
 Cada seção da home tem gradiente próprio (light e dark separados com `dark:hidden` / `hidden dark:block`):
 
 ```css
-/* Personagens — lilás */
+/* Personagens, lilás */
 Light: linear-gradient(160deg, oklch(0.88 0.04 290), oklch(0.92 0.02 310))
 Dark:  linear-gradient(160deg, oklch(0.10 0.02 290), oklch(0.13 0.03 310))
 
-/* Bíblia — dourado */
+/* Bíblia, dourado */
 Light: linear-gradient(160deg, oklch(0.90 0.05 75), oklch(0.88 0.04 60))
 Dark:  linear-gradient(160deg, oklch(0.12 0.04 75), oklch(0.10 0.03 60))
 
-/* Livro — azul-frio */
+/* Livro, azul-frio */
 Light: linear-gradient(160deg, oklch(0.88 0.05 220), oklch(0.92 0.03 240))
 Dark:  linear-gradient(160deg, oklch(0.10 0.04 220), oklch(0.12 0.03 240))
 
-/* Contos — lilás profundo */
+/* Contos, lilás profundo */
 Light: linear-gradient(160deg, oklch(0.87 0.05 290), oklch(0.90 0.04 310))
 Dark:  linear-gradient(160deg, oklch(0.10 0.04 290), oklch(0.12 0.03 310))
 
-/* Referências — dourado suave */
+/* Referências, dourado suave */
 Light: linear-gradient(160deg, oklch(0.90 0.04 60), oklch(0.88 0.05 80))
 Dark:  linear-gradient(160deg, oklch(0.12 0.04 60), oklch(0.10 0.03 80))
 ```

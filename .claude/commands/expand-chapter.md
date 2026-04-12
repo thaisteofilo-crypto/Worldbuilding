@@ -26,7 +26,7 @@ Expande um capítulo do livro de Korú (história de Temiku), preservando a voz 
 
 ## Regra principal
 
-**Preservar e expandir — nunca substituir.** O texto original é a âncora. As expansões são adições, não substituições.
+**Preservar e expandir, nunca substituir.** O texto original é a âncora. As expansões são adições, não substituições.
 
 **Exceção:** inconsistências morfológicas (menções a mãos/palmas) são corrigidas nas expansões.
 

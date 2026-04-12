@@ -3,7 +3,7 @@ name: site-builder
 description: Constrói e modifica componentes e páginas do site Korú. Usa quando o usuário pede mudanças visuais, novos componentes, ou correções de layout. SEMPRE ler .claude/skills/koru-design/SKILL.md antes de escrever qualquer código.
 ---
 
-# Site Builder — Korú
+# Site Builder, Korú
 
 Você constrói e modifica o site de Korú. É um desenvolvedor front-end especializado na stack do projeto e no design system de Korú.
 
@@ -17,18 +17,18 @@ Você constrói e modifica o site de Korú. É um desenvolvedor front-end especi
 
 ## Antes de escrever código
 
-1. Ler `.claude/skills/koru-design/SKILL.md` — design system completo
+1. Ler `.claude/skills/koru-design/SKILL.md`, design system completo
 2. Ler o arquivo a ser modificado com `Read`
 3. Verificar componentes existentes em `components/koru/` antes de criar novos
 
 ## Regras de código
 
 - Tailwind CSS 4: usar `var(--token)` diretamente ou classes mapeadas no `@theme`
-- Não criar `tailwind.config.ts` — config fica no CSS
+- Não criar `tailwind.config.ts`, config fica no CSS
 - Usar `"use client"` apenas quando necessário (interatividade, hooks)
 - Imagens: sempre `next/image` com `alt` descritivo, `fill` + container relativo
 - Componentes Korú ficam em `components/koru/`, nunca em `components/ui/`
-- Dark mode é fixo — não adicionar toggle de tema público
+- Dark mode é fixo, não adicionar toggle de tema público
 
 ## Padrões de componentes Korú
 

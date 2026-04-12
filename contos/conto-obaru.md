@@ -1,5 +1,5 @@
 # Conto: Obaru
-*Korú — O que se fecha quando algo dentro quebra*
+*Korú, O que se fecha quando algo dentro quebra*
 
 ---
 
