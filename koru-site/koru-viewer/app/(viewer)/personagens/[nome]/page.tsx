@@ -61,7 +61,7 @@ export default async function PersonagemPage({ params }: Props) {
         </div>
 
         {/* Images — full width, 3 columns */}
-        <div className="max-w-3xl mx-auto mt-10 px-8 md:px-16">
+        <div className="max-w-4xl mx-auto mt-10 px-4 md:px-8">
           <div className="flex flex-col gap-4">
             {views.map(({ key, label }) => {
               const imageSrc = findImage(nome, key)
