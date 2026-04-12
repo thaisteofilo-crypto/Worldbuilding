@@ -30,17 +30,19 @@ function NavItem({
   const isActive = pathname === href
 
   return (
-    <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={isActive}>
-        <Link
-          href={href}
-          className="font-sans text-sm"
-          aria-current={isActive ? "page" : undefined}
-        >
-          {children}
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
+    <li>
+      <Link
+        href={href}
+        className="block px-3 py-1 font-sans text-sm transition-opacity hover:opacity-70"
+        style={{
+          color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
+          fontWeight: isActive ? 600 : 400,
+        }}
+        aria-current={isActive ? "page" : undefined}
+      >
+        {children}
+      </Link>
+    </li>
   )
 }
 
@@ -70,15 +72,13 @@ function CollapsibleSection({
         {title}
       </button>
       {open && (
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <NavItem key={item.slug} href={`${basePath}/${item.slug}`}>
-                {item.title}
-              </NavItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
+        <ul className="mt-1 mb-2">
+          {items.map((item) => (
+            <NavItem key={item.slug} href={`${basePath}/${item.slug}`}>
+              {item.title}
+            </NavItem>
+          ))}
+        </ul>
       )}
     </SidebarGroup>
   )
