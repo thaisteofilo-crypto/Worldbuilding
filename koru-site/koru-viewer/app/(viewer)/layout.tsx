@@ -1,7 +1,6 @@
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { NavSidebar } from "@/components/koru/nav-sidebar"
 import { Breadcrumb } from "@/components/koru/breadcrumb"
-import { SidebarTitleTrigger } from "@/components/koru/sidebar-title-trigger"
 
 export default function ViewerLayout({
   children,
@@ -9,7 +8,7 @@ export default function ViewerLayout({
   children: React.ReactNode
 }) {
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={true}>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-2 focus:text-sm focus:rounded focus:font-sans"
@@ -23,7 +22,7 @@ export default function ViewerLayout({
           className="glass sticky top-0 z-10 flex items-center gap-3 px-4 h-12"
           aria-label="Barra de navegação do viewer"
         >
-          <SidebarTitleTrigger />
+          <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
           <Breadcrumb />
         </header>
         <main id="main-content" className="flex-1">{children}</main>
