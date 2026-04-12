@@ -8,8 +8,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -46,6 +44,46 @@ function NavItem({
   )
 }
 
+function CollapsibleSection({
+  title,
+  items,
+  basePath,
+}: {
+  title: string
+  items: { slug: string; title: string }[]
+  basePath: string
+}) {
+  const pathname = usePathname()
+  const isActiveSection = pathname.startsWith(basePath)
+  const [open, setOpen] = React.useState(isActiveSection)
+
+  return (
+    <SidebarGroup>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full text-left px-3 py-2 font-serif text-base transition-opacity hover:opacity-70"
+        style={{
+          fontFamily: "var(--font-serif), Georgia, serif",
+          color: "var(--foreground)",
+        }}
+      >
+        {title}
+      </button>
+      {open && (
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map((item) => (
+              <NavItem key={item.slug} href={`${basePath}/${item.slug}`}>
+                {item.title}
+              </NavItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      )}
+    </SidebarGroup>
+  )
+}
+
 export function NavSidebar() {
   return (
     <Sidebar
@@ -53,110 +91,38 @@ export function NavSidebar() {
       className="border-none"
       aria-label="Navegação principal"
     >
-      <SidebarHeader className="px-4 py-4">
-        <Link
-          href="/"
-          className="font-serif text-2xl leading-none transition-opacity hover:opacity-80"
-          style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
-          }}
-        >
-          Korú
-        </Link>
-        <p
-          className="text-xs font-sans mt-1"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          Worldbuilding
-        </p>
-      </SidebarHeader>
-
-      <SidebarContent>
+      <SidebarContent className="pt-6">
+        <CollapsibleSection
+          title="Bíblia"
+          items={BIBLIA_ITEMS}
+          basePath="/biblia"
+        />
+        <CollapsibleSection
+          title="Livro"
+          items={LIVRO_ITEMS}
+          basePath="/livro"
+        />
+        <CollapsibleSection
+          title="Contos"
+          items={CONTOS_ITEMS}
+          basePath="/contos"
+        />
+        <CollapsibleSection
+          title="Personagens"
+          items={PERSONAGENS_ITEMS}
+          basePath="/personagens"
+        />
         <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--gold)" }}
-          >
-            Bíblia
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {BIBLIA_ITEMS.map((part) => (
-                <NavItem key={part.slug} href={`/biblia/${part.slug}`}>
-                  {part.title}
-                </NavItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--accent)" }}
-          >
-            Livro
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {LIVRO_ITEMS.map((ch) => (
-                <NavItem key={ch.slug} href={`/livro/${ch.slug}`}>
-                  {ch.title}
-                </NavItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans"
-            style={{ color: "var(--blue-cold)" }}
-          >
-            Contos
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {CONTOS_ITEMS.map((conto) => (
-                <NavItem key={conto.slug} href={`/contos/${conto.slug}`}>
-                  {conto.title}
-                </NavItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
-            style={{ color: "var(--foreground)" }}
-          >
-            Personagens
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {PERSONAGENS_ITEMS.map((p) => (
-                <NavItem key={p.slug} href={`/personagens/${p.slug}`}>
-                  {p.title}
-                </NavItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel
-            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
-            style={{ color: "var(--foreground)" }}
+          <Link
+            href="/galeria"
+            className="px-3 py-2 font-serif text-base transition-opacity hover:opacity-70 block"
+            style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              color: "var(--foreground)",
+            }}
           >
             Galeria
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <NavItem href="/galeria">Cenas do Akwu</NavItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+          </Link>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
