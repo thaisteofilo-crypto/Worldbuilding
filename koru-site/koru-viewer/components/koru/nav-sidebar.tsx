@@ -33,7 +33,7 @@ function NavItem({
     <li>
       <Link
         href={href}
-        className="block px-3 py-1 font-sans text-sm transition-opacity hover:opacity-70"
+        className="block px-4 py-1 font-sans text-sm transition-opacity hover:opacity-70"
         style={{
           color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
           fontWeight: isActive ? 600 : 400,
@@ -63,7 +63,7 @@ function CollapsibleSection({
     <SidebarGroup>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left px-3 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
+        className="w-full text-left px-4 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
         style={{
           fontFamily: "var(--font-serif), Georgia, serif",
           color: "var(--foreground)",
@@ -127,7 +127,7 @@ export function NavSidebar() {
         <SidebarGroup>
           <Link
             href="/galeria"
-            className="px-3 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70 block"
+            className="px-4 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70 block"
             style={{
               fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
