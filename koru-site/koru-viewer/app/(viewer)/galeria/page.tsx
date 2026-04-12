@@ -79,7 +79,6 @@ export default function GaleriaPage() {
             {!loading && `${images.length} ${images.length === 1 ? "imagem" : "imagens"}`}
           </div>
         </div>
-        <div className="mt-3 h-px" style={{ background: "var(--border)" }} />
       </div>
 
       {/* Content */}
