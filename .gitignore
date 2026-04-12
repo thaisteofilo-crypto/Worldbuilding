@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+koru-site/koru-viewer/.next/
+koru-site/koru-viewer/out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Playwright / browser automation
+.playwright-mcp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Binary / large files
+*.docx
+koru-completo-extracted.txt
