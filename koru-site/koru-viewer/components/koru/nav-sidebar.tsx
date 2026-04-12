@@ -61,7 +61,7 @@ function CollapsibleSection({
     <SidebarGroup>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left px-3 py-2 font-serif text-base transition-opacity hover:opacity-70"
+        className="w-full text-left px-3 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
         style={{
           fontFamily: "var(--font-serif), Georgia, serif",
           color: "var(--foreground)",
@@ -91,7 +91,19 @@ export function NavSidebar() {
       className="border-none"
       aria-label="Navegação principal"
     >
-      <SidebarContent className="pt-6">
+      <div className="px-4 pt-6 pb-2">
+        <Link
+          href="/"
+          className="font-serif text-4xl leading-none transition-opacity hover:opacity-80"
+          style={{
+            fontFamily: "var(--font-serif), Georgia, serif",
+            color: "var(--foreground)",
+          }}
+        >
+          Korú
+        </Link>
+      </div>
+      <SidebarContent className="pt-2 gap-0">
         <CollapsibleSection
           title="Bíblia"
           items={BIBLIA_ITEMS}
@@ -115,7 +127,7 @@ export function NavSidebar() {
         <SidebarGroup>
           <Link
             href="/galeria"
-            className="px-3 py-2 font-serif text-base transition-opacity hover:opacity-70 block"
+            className="px-3 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70 block"
             style={{
               fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
