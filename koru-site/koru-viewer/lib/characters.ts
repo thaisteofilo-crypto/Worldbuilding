@@ -27,7 +27,7 @@ export const characters: Record<string, Character> = {
     role: "Ser de limiar, origem de evento",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.25 0.08 220) 50%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--blue-cold)",
+    accentColor: "var(--foreground)",
     morphology:
       "Quadrúpede com chifres. Partes sólidas (herança Onkweri) coexistindo com partes translúcidas (herança Azuri).",
     ability:
@@ -51,7 +51,7 @@ export const characters: Record<string, Character> = {
     role: "Azuri, dissolvida",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.28 0.10 290) 50%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--accent)",
+    accentColor: "var(--foreground)",
     morphology:
       "Azuri, quadrúpede com chifres, sem mãos. Toque pela testa ou focinho.",
     ability:
@@ -74,7 +74,7 @@ export const characters: Record<string, Character> = {
     role: "Onkweri, passagem presa",
     gradient:
       "linear-gradient(160deg, oklch(0.10 0.01 280) 0%, oklch(0.22 0.08 220) 40%, oklch(0.12 0.01 280) 100%)",
-    accentColor: "var(--blue-cold)",
+    accentColor: "var(--foreground)",
     morphology:
       "Onkweri, quadrúpede sólido. Bomi Veh solidificado. Chifres.",
     ability:
@@ -97,7 +97,7 @@ export const characters: Record<string, Character> = {
     role: "Azuri",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.25 0.09 270) 50%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--accent)",
+    accentColor: "var(--foreground)",
     morphology: "Azuri, quadrúpede com chifres.",
     ability: "A definir.",
     status: "A definir",
@@ -117,7 +117,7 @@ export const characters: Record<string, Character> = {
     role: "Onkweri",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.26 0.09 75) 50%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--gold)",
+    accentColor: "var(--foreground)",
     morphology: "Onkweri, quadrúpede sólido. Bomi Veh solidificado.",
     ability: "A definir.",
     status: "A definir",
@@ -138,7 +138,7 @@ export const characters: Record<string, Character> = {
     role: "Onkweri",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.25 0.07 300) 50%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--accent)",
+    accentColor: "var(--foreground)",
     morphology: "Onkweri, quadrúpede sólido.",
     ability: "A definir.",
     status: "A definir",
@@ -158,7 +158,7 @@ export const characters: Record<string, Character> = {
     role: "Perspectiva do Bomi Veh",
     gradient:
       "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.25 0.07 290) 30%, oklch(0.22 0.10 75) 70%, oklch(0.14 0.01 280) 100%)",
-    accentColor: "var(--gold)",
+    accentColor: "var(--foreground)",
     morphology:
       "Bomi Veh, campo de memória fosforescente. Não tem forma física definida.",
     ability: "Percepção total do campo de memória do Akwu.",

@@ -53,14 +53,6 @@ export function HeroBanner({
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full max-w-3xl mx-auto px-6 md:px-10 pb-8">
-        {subtitle && (
-          <p
-            className="text-xs uppercase tracking-[0.25em] font-sans mb-3 opacity-80"
-            style={{ color: accentColor }}
-          >
-            {subtitle}
-          </p>
-        )}
         <h1
           className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
           style={{

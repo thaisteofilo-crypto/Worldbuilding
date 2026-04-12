@@ -21,7 +21,7 @@ export function GlossaryTerm({ term, definition, category, children }: GlossaryT
         <TooltipTrigger asChild>
           <span
             className="cursor-help border-b border-dotted transition-colors"
-            style={{ borderColor: "var(--gold)", color: "inherit" }}
+            style={{ borderColor: "var(--foreground)", color: "inherit" }}
           >
             {children}
           </span>
@@ -31,7 +31,7 @@ export function GlossaryTerm({ term, definition, category, children }: GlossaryT
           className="max-w-xs rounded-xl px-4 py-3 shadow-lg"
           style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
         >
-          <p className="font-serif text-sm font-medium mb-1" style={{ color: "var(--gold)" }}>
+          <p className="font-serif text-sm font-medium mb-1" style={{ color: "var(--foreground)" }}>
             {term}
           </p>
           <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--foreground)" }}>

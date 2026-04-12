@@ -32,7 +32,7 @@ export function ReadingProgress() {
       className="fixed top-0 left-0 z-50 h-[3px] transition-all duration-150 ease-out"
       style={{
         width: `${progress}%`,
-        background: "var(--gold)",
+        background: "var(--foreground)",
       }}
       role="progressbar"
       aria-valuenow={Math.round(progress)}
