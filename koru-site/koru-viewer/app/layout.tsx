@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif } from "next/font/google"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { ThemeProvider } from "@/components/koru/theme-provider"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -25,10 +26,12 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn("dark antialiased", inter.variable, instrumentSerif.variable)}
+      className={cn("antialiased", inter.variable, instrumentSerif.variable)}
       suppressHydrationWarning
     >
-      <body className="bg-background text-foreground min-h-screen">{children}</body>
+      <body className="bg-background text-foreground min-h-screen">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   )
 }

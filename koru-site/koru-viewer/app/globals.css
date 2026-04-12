@@ -39,7 +39,6 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
-    --color-accent: var(--accent);
     --color-gold: var(--gold);
     --color-blue-cold: var(--blue-cold);
     --color-surface: var(--surface);
@@ -52,7 +51,47 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ─── Light mode (editorial) ─── */
 :root {
+    --background: oklch(0.93 0.006 280);
+    --surface: oklch(0.88 0.008 280);
+    --foreground: oklch(0.15 0.01 280);
+    --card: oklch(1.00 0.000 0);
+    --card-foreground: oklch(0.15 0.01 280);
+    --popover: oklch(1.00 0.000 0);
+    --popover-foreground: oklch(0.15 0.01 280);
+    --primary: oklch(0.40 0.12 290);
+    --primary-foreground: oklch(0.97 0.003 80);
+    --secondary: oklch(0.92 0.008 280);
+    --secondary-foreground: oklch(0.22 0.01 280);
+    --muted: oklch(0.92 0.008 280);
+    --muted-foreground: oklch(0.40 0.01 280);
+    --accent: oklch(0.40 0.12 290);
+    --accent-foreground: oklch(0.97 0.003 80);
+    --destructive: oklch(0.50 0.20 27);
+    --border: oklch(0.75 0.01 280);
+    --input: oklch(0.75 0.01 280);
+    --ring: oklch(0.40 0.12 290);
+    --gold: oklch(0.48 0.12 65);
+    --blue-cold: oklch(0.42 0.10 230);
+    --radius: 1rem;
+    --chart-1: oklch(0.40 0.12 290);
+    --chart-2: oklch(0.48 0.12 65);
+    --chart-3: oklch(0.42 0.10 230);
+    --chart-4: oklch(0.45 0.01 280);
+    --chart-5: oklch(0.88 0.006 280);
+    --sidebar: oklch(0.96 0.004 280);
+    --sidebar-foreground: oklch(0.16 0.01 280);
+    --sidebar-primary: oklch(0.40 0.12 290);
+    --sidebar-primary-foreground: oklch(0.97 0.003 80);
+    --sidebar-accent: oklch(0.94 0.005 280);
+    --sidebar-accent-foreground: oklch(0.22 0.01 280);
+    --sidebar-border: oklch(0.90 0.004 80);
+    --sidebar-ring: oklch(0.40 0.12 290);
+}
+
+/* ─── Dark mode (original Korú — conforme design system) ─── */
+.dark {
     --background: oklch(0.07 0.008 280);
     --surface: oklch(0.10 0.006 280);
     --foreground: oklch(0.92 0.012 85);
@@ -74,7 +113,6 @@
     --ring: oklch(0.65 0.09 290);
     --gold: oklch(0.72 0.10 75);
     --blue-cold: oklch(0.62 0.09 220);
-    --radius: 0.5rem;
     --chart-1: oklch(0.65 0.09 290);
     --chart-2: oklch(0.72 0.10 75);
     --chart-3: oklch(0.62 0.09 220);
@@ -106,6 +144,17 @@
 }
 
 @keyframes float-particle {
+  0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.15; }
+  25% { transform: translateY(-20px) translateX(10px); opacity: 0.35; }
+  50% { transform: translateY(-40px) translateX(-5px); opacity: 0.2; }
+  75% { transform: translateY(-20px) translateX(-15px); opacity: 0.3; }
+}
+
+:is(.dark) .particle {
+  animation: float-particle-dark linear infinite;
+}
+
+@keyframes float-particle-dark {
   0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
   25% { transform: translateY(-20px) translateX(10px); opacity: 0.7; }
   50% { transform: translateY(-40px) translateX(-5px); opacity: 0.4; }
@@ -114,4 +163,56 @@
 
 .particle {
   animation: float-particle linear infinite;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: oklch(0.97 0.002 80 / 0.7);
+  border: 1px solid oklch(0.75 0.01 280 / 0.3);
+}
+
+.dark .glass {
+  background: oklch(0.10 0.006 280 / 0.75);
+  border: 1px solid oklch(0.30 0.01 280 / 0.4);
+}
+
+.glass-card {
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  background: oklch(1.00 0 0);
+  border: 1px solid oklch(0.80 0.01 280);
+  box-shadow: 0 2px 8px oklch(0.30 0.02 280 / 0.15);
+}
+
+.dark .glass-card {
+  background: oklch(0.14 0.008 280 / 0.75);
+  border: 1px solid oklch(0.30 0.01 280 / 0.5);
+  box-shadow: 0 2px 12px oklch(0 0 0 / 0.5), inset 0 1px 0 oklch(1 0 0 / 0.04);
+}
+
+/* Hide scrollbar for carousels */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive carousel cards */
+.carousel-card {
+  width: calc((100% - 8px) / 2);    /* mobile: 2 cards */
+}
+@media (min-width: 640px) {
+  .carousel-card {
+    width: calc((100% - 16px) / 3);  /* sm: 3 cards */
+  }
+}
+@media (min-width: 1024px) {
+  .carousel-card {
+    width: calc((100% - 32px) / 4);  /* lg: 4 cards */
+  }
+}
+@media (min-width: 1280px) {
+  .carousel-card {
+    width: calc((100% - 40px) / 6);  /* xl: 6 cards */
+  }
 }

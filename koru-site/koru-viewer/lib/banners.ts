@@ -1,0 +1,72 @@
+import { createAdminClient } from "./supabase/admin"
+
+const BANNER_SLOTS = ["hero", "hero-video", "personagens", "biblia", "livro", "contos", "referencias"]
+
+export async function getBannerUrls(): Promise<Record<string, string>> {
+  const admin = createAdminClient()
+
+  const { data: files } = await admin.storage.from("banners").list("", {
+    sortBy: { column: "name", order: "asc" },
+  })
+
+  const banners: Record<string, string> = {}
+  for (const file of files || []) {
+    const slot = file.name.split(".")[0]
+    if (BANNER_SLOTS.includes(slot)) {
+      const { data } = admin.storage.from("banners").getPublicUrl(file.name)
+      banners[slot] = data.publicUrl
+    }
+  }
+
+  return banners
+}
+
+export async function getCardImages(): Promise<Record<string, string>> {
+  const admin = createAdminClient()
+
+  const { data: files } = await admin.storage.from("card-images").list("", {
+    sortBy: { column: "name", order: "asc" },
+  })
+
+  const images: Record<string, string> = {}
+  for (const file of files ?? []) {
+    if (file.name.startsWith(".")) continue
+    const key = file.name.replace(/\.[^.]+$/, "")
+    const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
+    images[key] = data.publicUrl
+  }
+
+  return images
+}
+
+export async function getGalleryImages(): Promise<{ name: string; url: string }[]> {
+  const admin = createAdminClient()
+
+  const { data: files } = await admin.storage.from("gallery").list("", {
+    sortBy: { column: "created_at", order: "desc" },
+  })
+
+  return (files ?? [])
+    .filter((f) => !f.name.startsWith("."))
+    .map((f) => {
+      const { data } = admin.storage.from("gallery").getPublicUrl(f.name)
+      return { name: f.name, url: data.publicUrl }
+    })
+}
+
+export async function getCharacterImageUrls(): Promise<Record<string, string>> {
+  const admin = createAdminClient()
+
+  const { data: characters } = await admin
+    .from("characters")
+    .select("slug, image_url")
+
+  const images: Record<string, string> = {}
+  for (const char of characters || []) {
+    if (char.image_url) {
+      images[char.slug] = char.image_url
+    }
+  }
+
+  return images
+}

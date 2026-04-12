@@ -1,6 +1,7 @@
 import { readMarkdown } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
+import { mdxOptions } from "@/lib/mdx-options"
 import { sanitizeForMdx } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -23,7 +24,7 @@ export default async function WorkflowPage() {
             style={{ backgroundColor: "var(--accent)" }}
           />
         </div>
-        <MDXRemote source={safeContent} components={mdxComponents} />
+        <MDXRemote source={safeContent} components={mdxComponents} options={mdxOptions} />
       </article>
     </ScrollArea>
   )

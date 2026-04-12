@@ -14,11 +14,10 @@ export const mdxComponents: MDXComponents = {
   ),
   h2: ({ children }) => (
     <h2
-      className="font-serif text-3xl md:text-4xl leading-tight mt-10 mb-4 pb-3 border-b"
+      className="font-serif text-3xl md:text-4xl leading-tight mt-10 mb-4 pb-3"
       style={{
         fontFamily: "var(--font-serif), Georgia, serif",
         color: "var(--accent)",
-        borderColor: "var(--border)",
       }}
     >
       {children}
@@ -72,7 +71,7 @@ export const mdxComponents: MDXComponents = {
       className="font-mono text-sm p-4 rounded-sm overflow-x-auto my-6"
       style={{
         backgroundColor: "var(--surface)",
-        borderLeft: "3px solid var(--border)",
+        borderLeft: "3px solid var(--gold)",
         color: "var(--foreground)",
       }}
     >
@@ -94,7 +93,7 @@ export const mdxComponents: MDXComponents = {
   ),
   ul: ({ children }) => (
     <ul
-      className="font-sans text-base leading-[1.8] mb-4 pl-6 list-none space-y-1"
+      className="font-sans text-base leading-[1.8] mb-4 pl-6 list-disc space-y-1"
       style={{ color: "var(--foreground)" }}
     >
       {children}
@@ -110,58 +109,43 @@ export const mdxComponents: MDXComponents = {
   ),
   li: ({ children }) => (
     <li
-      className="relative pl-4 before:absolute before:left-0 before:content-['—'] before:opacity-40"
+      className="relative pl-1"
       style={{ color: "var(--foreground)" }}
     >
       {children}
     </li>
   ),
   hr: () => (
-    <hr
-      className="my-10 border-none h-px"
-      style={{ backgroundColor: "var(--border)" }}
-    />
+    <hr className="my-10 border-none h-px opacity-0" />
   ),
   table: ({ children }) => (
-    <div className="overflow-x-auto my-6">
-      <table
-        className="w-full text-sm font-sans border-collapse"
-        style={{ borderColor: "var(--border)" }}
-      >
+    <div className="overflow-x-auto my-6 glass-card rounded-2xl">
+      <table className="w-full text-sm font-sans border-collapse">
         {children}
       </table>
     </div>
   ),
   thead: ({ children }) => (
-    <thead style={{ backgroundColor: "var(--surface)" }}>{children}</thead>
+    <thead style={{ backgroundColor: "color-mix(in oklch, var(--surface) 50%, transparent)" }}>{children}</thead>
   ),
   th: ({ children }) => (
     <th
-      className="px-4 py-2 text-left text-xs uppercase tracking-[0.1em] font-medium border"
-      style={{
-        borderColor: "var(--border)",
-        color: "var(--muted-foreground)",
-      }}
+      className="px-4 py-3 text-left text-xs uppercase tracking-[0.1em] font-medium"
+      style={{ color: "var(--muted-foreground)" }}
     >
       {children}
     </th>
   ),
   td: ({ children }) => (
     <td
-      className="px-4 py-2 border"
-      style={{
-        borderColor: "var(--border)",
-        color: "var(--foreground)",
-      }}
+      className="px-4 py-3"
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </td>
   ),
   tr: ({ children }) => (
-    <tr
-      className="hover:bg-surface/50 transition-colors"
-      style={{}}
-    >
+    <tr className="transition-colors" style={{ borderBottom: "1px solid color-mix(in oklch, var(--border) 30%, transparent)" }}>
       {children}
     </tr>
   ),

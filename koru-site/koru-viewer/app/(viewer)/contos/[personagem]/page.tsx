@@ -1,6 +1,7 @@
 import { readMarkdown, contoSlugs } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
+import { mdxOptions } from "@/lib/mdx-options"
 import { sanitizeForMdx } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { characters } from "@/lib/characters"
@@ -24,33 +25,24 @@ const literaryComponents = {
   ...mdxComponents,
   p: ({ children }: { children?: React.ReactNode }) => (
     <p
-      className="text-lg leading-[1.85] mb-5"
-      style={{
-        fontFamily: "var(--font-serif), Georgia, serif",
-        color: "var(--foreground)",
-      }}
+      className="font-sans text-base leading-[1.85] mb-5"
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </p>
   ),
   h3: ({ children }: { children?: React.ReactNode }) => (
     <h3
-      className="font-serif text-2xl leading-tight mt-10 mb-3"
-      style={{
-        fontFamily: "var(--font-serif), Georgia, serif",
-        color: "var(--foreground)",
-      }}
+      className="font-sans font-semibold text-xl leading-tight mt-10 mb-3"
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </h3>
   ),
   h4: ({ children }: { children?: React.ReactNode }) => (
     <h4
-      className="font-serif text-xl leading-tight mt-8 mb-2 opacity-75"
-      style={{
-        fontFamily: "var(--font-serif), Georgia, serif",
-        color: "var(--foreground)",
-      }}
+      className="font-sans font-medium text-lg leading-tight mt-8 mb-2 opacity-75"
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </h4>
@@ -100,9 +92,7 @@ export default async function ContoPage({ params }: Props) {
             style={{ backgroundColor: "var(--blue-cold)" }}
           />
         </div>
-        <div style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-          <MDXRemote source={safeContent} components={literaryComponents} />
-        </div>
+        <MDXRemote source={safeContent} components={literaryComponents} options={mdxOptions} />
         <DocNav items={CONTOS_ITEMS} current={personagem} basePath="/contos" />
       </article>
     </ScrollArea>

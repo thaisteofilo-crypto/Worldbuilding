@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { NavSidebar } from "@/components/koru/nav-sidebar"
 import { Breadcrumb } from "@/components/koru/breadcrumb"
+import { ThemeToggle } from "@/components/koru/theme-toggle"
 
 export default function ViewerLayout({
   children,
@@ -18,19 +19,12 @@ export default function ViewerLayout({
       </a>
       <NavSidebar />
       <SidebarInset>
-        <header
-          className="sticky top-0 z-10 flex items-center gap-3 px-4 h-12 border-b"
-          style={{
-            backgroundColor: "var(--background)",
-            borderColor: "var(--border)",
-          }}
-        >
+        <header className="glass sticky top-0 z-10 flex items-center gap-3 px-4 h-12">
           <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
-          <div
-            className="h-4 w-px shrink-0"
-            style={{ backgroundColor: "var(--border)" }}
-          />
           <Breadcrumb />
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </header>
         <main id="main-content" className="flex-1">{children}</main>
       </SidebarInset>

@@ -13,11 +13,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar"
 
 const bibliaParts = [
-  { parte: "parte-00", title: "Manifesto" },
+  { parte: "parte-00", title: "Introdução" },
   { parte: "parte-01", title: "Física e Cosmologia" },
   { parte: "parte-02", title: "Geografia" },
   { parte: "parte-03", title: "Ecossistema" },
@@ -87,7 +86,7 @@ export function NavSidebar() {
   return (
     <Sidebar
       style={{ width: "260px" }}
-      className="border-r"
+      className="border-none"
     >
       <SidebarHeader className="px-4 py-4">
         <Link
@@ -104,14 +103,11 @@ export function NavSidebar() {
           className="text-xs font-sans mt-1"
           style={{ color: "var(--muted-foreground)" }}
         >
-          Brand System Viewer
+          Worldbuilding
         </p>
       </SidebarHeader>
 
-      <SidebarSeparator />
-
       <SidebarContent>
-        {/* Biblia */}
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
@@ -122,10 +118,7 @@ export function NavSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {bibliaParts.map((part) => (
-                <NavItem
-                  key={part.parte}
-                  href={`/biblia/${part.parte}`}
-                >
+                <NavItem key={part.parte} href={`/biblia/${part.parte}`}>
                   {part.title}
                 </NavItem>
               ))}
@@ -133,9 +126,6 @@ export function NavSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
-
-        {/* Livro */}
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
@@ -154,9 +144,6 @@ export function NavSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
-
-        {/* Contos */}
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans"
@@ -175,9 +162,6 @@ export function NavSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
-
-        {/* Personagens */}
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
@@ -196,9 +180,20 @@ export function NavSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <SidebarGroup>
+          <SidebarGroupLabel
+            className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
+            style={{ color: "var(--foreground)" }}
+          >
+            Galeria
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <NavItem href="/galeria">Cenas do Akwu</NavItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-        {/* Briefing / Workflow */}
         <SidebarGroup>
           <SidebarGroupLabel
             className="text-xs uppercase tracking-[0.15em] font-sans opacity-65"
