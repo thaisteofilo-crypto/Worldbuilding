@@ -61,7 +61,7 @@ export default async function PersonagemPage({ params }: Props) {
         </div>
 
         {/* Images — full width, 3 columns */}
-        <div className="w-full mt-10 px-2">
+        <div className="max-w-3xl mx-auto mt-10 px-8 md:px-16">
           <div className="flex flex-col gap-4">
             {views.map(({ key, label }) => {
               const imageSrc = findImage(nome, key)
@@ -70,7 +70,7 @@ export default async function PersonagemPage({ params }: Props) {
                   key={key}
                   className="relative overflow-hidden rounded-2xl"
                   style={{
-                    aspectRatio: "3/1",
+                    aspectRatio: "16/9",
                     backgroundColor: "var(--surface)",
                   }}
                 >
