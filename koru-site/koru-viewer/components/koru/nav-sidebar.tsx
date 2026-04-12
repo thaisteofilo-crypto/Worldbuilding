@@ -86,7 +86,7 @@ export function NavSidebar() {
         <nav className="px-8 pt-6 flex flex-col gap-1">
           <Link
             href="/"
-            className="font-serif text-4xl leading-none transition-opacity hover:opacity-80 mb-4"
+            className="font-serif text-5xl leading-none transition-opacity hover:opacity-80 mb-6"
             style={{
               fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
