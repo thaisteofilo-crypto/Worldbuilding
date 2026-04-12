@@ -84,7 +84,7 @@ export function NavSidebar() {
       aria-label="Navegação principal"
     >
       <SidebarContent>
-        <nav className="px-4 pt-6 flex flex-col gap-1">
+        <nav className="px-8 pt-6 flex flex-col gap-1">
           <Link
             href="/"
             className="font-serif text-4xl leading-none transition-opacity hover:opacity-80 mb-4"
