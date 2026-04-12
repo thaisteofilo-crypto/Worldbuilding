@@ -104,7 +104,6 @@ export function NavSidebar() {
             href="/galeria"
             className="py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
             style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
             }}
           >
