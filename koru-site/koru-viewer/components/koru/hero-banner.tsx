@@ -8,7 +8,6 @@ interface HeroBannerProps {
   accentColor?: string
   imageSrc?: string
   videoSrc?: string
-  fallbackHue?: number
 }
 
 function assetExists(src: string): boolean {
@@ -22,13 +21,15 @@ export function HeroBanner({
   accentColor = "var(--gold)",
   imageSrc,
   videoSrc,
-  fallbackHue = 65,
 }: HeroBannerProps) {
   const hasImage = imageSrc && assetExists(imageSrc)
   const hasVideo = videoSrc && assetExists(videoSrc)
 
   return (
-    <div className="relative w-full h-[360px] md:h-[440px] overflow-hidden">
+    <div
+      className="relative w-full h-[360px] md:h-[440px] overflow-hidden"
+      style={{ backgroundColor: "#0a0a0a" }}
+    >
       {/* Background media */}
       {hasVideo ? (
         <video
@@ -48,40 +49,13 @@ export function HeroBanner({
           className="object-cover"
           priority
         />
-      ) : (
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(
-              160deg,
-              oklch(0.12 0.03 ${fallbackHue}) 0%,
-              oklch(0.08 0.05 ${(fallbackHue + 30) % 360}) 50%,
-              oklch(0.06 0.02 ${(fallbackHue - 15 + 360) % 360}) 100%
-            )`,
-          }}
-        />
-      )}
-
-      {/* Bottom fade to background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to top, var(--background) 0%, transparent 30%)",
-        }}
-      />
-
-      {/* Accent line glow */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-px opacity-40"
-        style={{ backgroundColor: accentColor }}
-      />
+      ) : null}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full max-w-3xl mx-auto px-6 md:px-10 pb-8">
         {subtitle && (
           <p
-            className="text-xs uppercase tracking-[0.25em] font-sans mb-3 opacity-70"
+            className="text-xs uppercase tracking-[0.25em] font-sans mb-3 opacity-80"
             style={{ color: accentColor }}
           >
             {subtitle}
