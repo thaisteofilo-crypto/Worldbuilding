@@ -55,9 +55,8 @@ function CollapsibleSection({
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
+        className="w-full text-left py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
         style={{
-          fontFamily: "var(--font-serif), Georgia, serif",
           color: "var(--foreground)",
         }}
       >
@@ -80,7 +79,7 @@ export function NavSidebar() {
   return (
     <Sidebar
       style={{ width: "260px" }}
-      className="border-none"
+      className="border-none border-0 shadow-none"
       aria-label="Navegação principal"
     >
       <SidebarContent>
@@ -103,7 +102,7 @@ export function NavSidebar() {
 
           <Link
             href="/galeria"
-            className="py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
+            className="py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
             style={{
               fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
