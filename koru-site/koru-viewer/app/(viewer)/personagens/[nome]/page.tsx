@@ -70,7 +70,7 @@ export default async function PersonagemPage({ params }: Props) {
                   key={key}
                   className="relative overflow-hidden rounded-2xl"
                   style={{
-                    aspectRatio: "16/9",
+                    aspectRatio: "21/9",
                     backgroundColor: "var(--surface)",
                   }}
                 >
