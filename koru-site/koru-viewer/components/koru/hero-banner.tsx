@@ -28,7 +28,7 @@ export function HeroBanner({
   const hasVideo = videoSrc && assetExists(videoSrc)
 
   return (
-    <div className="relative w-full h-[280px] md:h-[340px] overflow-hidden">
+    <div className="relative w-full h-[360px] md:h-[440px] overflow-hidden">
       {/* Background media */}
       {hasVideo ? (
         <video
@@ -62,12 +62,12 @@ export function HeroBanner({
         />
       )}
 
-      {/* Dark overlay for text readability */}
+      {/* Bottom fade to background */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to top, var(--background) 0%, var(--background)/60 40%, transparent 100%)",
+            "linear-gradient(to top, var(--background) 0%, transparent 30%)",
         }}
       />
 
@@ -91,7 +91,7 @@ export function HeroBanner({
           className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
+            color: "white",
           }}
         >
           {title}

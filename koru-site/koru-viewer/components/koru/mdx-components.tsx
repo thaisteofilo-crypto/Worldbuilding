@@ -6,7 +6,7 @@ export const mdxComponents: MDXComponents = {
       className="font-serif text-5xl md:text-6xl leading-tight mt-10 mb-6"
       style={{
         fontFamily: "var(--font-serif), Georgia, serif",
-        color: "var(--gold)",
+        color: "var(--foreground)",
       }}
     >
       {children}
@@ -17,7 +17,7 @@ export const mdxComponents: MDXComponents = {
       className="font-serif text-3xl md:text-4xl leading-tight mt-10 mb-4 pb-3"
       style={{
         fontFamily: "var(--font-serif), Georgia, serif",
-        color: "var(--accent)",
+        color: "var(--foreground)",
       }}
     >
       {children}
@@ -34,7 +34,7 @@ export const mdxComponents: MDXComponents = {
   h4: ({ children }) => (
     <h4
       className="font-sans font-medium text-base uppercase tracking-[0.1em] mt-6 mb-2"
-      style={{ color: "var(--muted-foreground)" }}
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </h4>
@@ -48,19 +48,19 @@ export const mdxComponents: MDXComponents = {
     </p>
   ),
   strong: ({ children }) => (
-    <strong style={{ color: "var(--gold)", fontWeight: 600 }}>
+    <strong style={{ color: "var(--foreground)", fontWeight: 600 }}>
       {children}
     </strong>
   ),
   em: ({ children }) => (
-    <em style={{ color: "var(--accent)", fontStyle: "italic" }}>{children}</em>
+    <em style={{ color: "var(--foreground)", fontStyle: "italic" }}>{children}</em>
   ),
   code: ({ children }) => (
     <code
       className="font-mono text-sm px-1.5 py-0.5 rounded-sm"
       style={{
         backgroundColor: "var(--surface)",
-        color: "var(--blue-cold)",
+        color: "var(--foreground)",
       }}
     >
       {children}
@@ -71,7 +71,6 @@ export const mdxComponents: MDXComponents = {
       className="font-mono text-sm p-4 rounded-sm overflow-x-auto my-6"
       style={{
         backgroundColor: "var(--surface)",
-        borderLeft: "3px solid var(--gold)",
         color: "var(--foreground)",
       }}
     >
@@ -80,12 +79,10 @@ export const mdxComponents: MDXComponents = {
   ),
   blockquote: ({ children }) => (
     <blockquote
-      className="my-6 pl-5 py-3 italic font-serif text-lg leading-[1.8]"
+      className="my-6 pl-5 py-3 font-sans text-base leading-[1.8]"
       style={{
-        borderLeft: "3px solid var(--accent)",
-        backgroundColor: "color-mix(in oklch, var(--surface) 80%, transparent)",
+        borderLeft: "3px solid var(--border)",
         color: "var(--foreground)",
-        fontFamily: "var(--font-serif), Georgia, serif",
       }}
     >
       {children}
@@ -115,9 +112,7 @@ export const mdxComponents: MDXComponents = {
       {children}
     </li>
   ),
-  hr: () => (
-    <hr className="my-10 border-none h-px opacity-0" />
-  ),
+  hr: () => null,
   table: ({ children }) => (
     <div className="overflow-x-auto my-6 glass-card rounded-2xl">
       <table className="w-full text-sm font-sans border-collapse">
@@ -131,7 +126,7 @@ export const mdxComponents: MDXComponents = {
   th: ({ children }) => (
     <th
       className="px-4 py-3 text-left text-xs uppercase tracking-[0.1em] font-medium"
-      style={{ color: "var(--muted-foreground)" }}
+      style={{ color: "var(--foreground)" }}
     >
       {children}
     </th>
@@ -153,7 +148,7 @@ export const mdxComponents: MDXComponents = {
     <a
       href={href}
       className="underline underline-offset-2 transition-colors hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-      style={{ color: "var(--accent)", outlineColor: "var(--accent)" }}
+      style={{ color: "var(--foreground)", outlineColor: "var(--foreground)" }}
     >
       {children}
     </a>

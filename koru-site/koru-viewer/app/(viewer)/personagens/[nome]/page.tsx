@@ -48,67 +48,39 @@ export default async function PersonagemPage({ params }: Props) {
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
       <article className="pb-20" role="article" aria-label={`Perfil de ${char.name}`}>
-        {/* Hero banner with character gradient */}
-        <div
-          className="relative w-full h-[280px] md:h-[340px] overflow-hidden"
-          aria-hidden="true"
-        >
-          <div className="absolute inset-0" style={{ background: char.gradient }} />
-          <div
-            className="absolute inset-0"
+        {/* Header */}
+        <div className="max-w-5xl mx-auto px-8 md:px-16 pt-10">
+          <p
+            className="text-xs uppercase tracking-[0.25em] font-sans mb-3"
+            style={{ color: char.accentColor }}
+          >
+            Personagem
+          </p>
+          <h1
+            className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-4"
             style={{
-              background:
-                "linear-gradient(to top, var(--background) 0%, transparent 60%, transparent 100%)",
+              fontFamily: "var(--font-serif), Georgia, serif",
+              color: "var(--foreground)",
             }}
-          />
+          >
+            {char.name}
+          </h1>
+          <Badge
+            className="border-0 text-xs font-sans tracking-[0.1em] uppercase px-2 py-0.5"
+            style={{
+              backgroundColor: `color-mix(in oklch, ${char.accentColor} 15%, transparent)`,
+              color: char.accentColor,
+            }}
+          >
+            {char.role}
+          </Badge>
           <div
-            className="absolute bottom-0 left-0 right-0 h-px opacity-40"
+            className="h-px w-16 mt-8"
             style={{ backgroundColor: char.accentColor }}
           />
-          <div className="relative z-10 flex flex-col justify-end h-full max-w-5xl mx-auto px-8 md:px-16 pb-8">
-            <p
-              className="text-xs uppercase tracking-[0.25em] font-sans mb-3 opacity-70"
-              style={{ color: char.accentColor }}
-            >
-              Personagem
-            </p>
-            <h1
-              className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
-              style={{
-                fontFamily: "var(--font-serif), Georgia, serif",
-                color: "var(--foreground)",
-              }}
-            >
-              {char.name}
-            </h1>
-            <div className="mt-4">
-              <Badge
-                className="border-0 text-xs font-sans tracking-[0.1em] uppercase px-2 py-0.5"
-                style={{
-                  backgroundColor: `color-mix(in oklch, ${char.accentColor} 15%, transparent)`,
-                  color: char.accentColor,
-                }}
-              >
-                {char.role}
-              </Badge>
-            </div>
-          </div>
         </div>
 
         <div className="max-w-5xl mx-auto px-8 md:px-16">
-          {/* Quote */}
-          <blockquote
-            className="my-10 pl-5 py-2 border-l-2 italic"
-            style={{ borderColor: char.accentColor }}
-          >
-            <p
-              className="font-serif text-lg md:text-xl leading-relaxed"
-              style={{ color: "var(--foreground)" }}
-            >
-              {char.quote}
-            </p>
-          </blockquote>
-
           {/* About */}
           <section className="mb-12" aria-label="Sobre">
             <p
