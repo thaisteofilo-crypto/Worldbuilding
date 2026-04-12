@@ -3,15 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
 import {
   BIBLIA_ITEMS,
   LIVRO_ITEMS,
@@ -33,7 +25,7 @@ function NavItem({
     <li>
       <Link
         href={href}
-        className="block px-4 py-1 font-sans text-sm transition-opacity hover:opacity-70"
+        className="block py-1 font-sans text-sm transition-opacity hover:opacity-70"
         style={{
           color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
           fontWeight: isActive ? 600 : 400,
@@ -60,10 +52,10 @@ function CollapsibleSection({
   const [open, setOpen] = React.useState(isActiveSection)
 
   return (
-    <SidebarGroup>
+    <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left px-4 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
+        className="w-full text-left py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
         style={{
           fontFamily: "var(--font-serif), Georgia, serif",
           color: "var(--foreground)",
@@ -80,7 +72,7 @@ function CollapsibleSection({
           ))}
         </ul>
       )}
-    </SidebarGroup>
+    </div>
   )
 }
 
@@ -91,43 +83,27 @@ export function NavSidebar() {
       className="border-none"
       aria-label="Navegação principal"
     >
-      <div className="px-4 pt-6 pb-2">
-        <Link
-          href="/"
-          className="font-serif text-4xl leading-none transition-opacity hover:opacity-80"
-          style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
-          }}
-        >
-          Korú
-        </Link>
-      </div>
-      <SidebarContent className="pt-2 gap-0">
-        <CollapsibleSection
-          title="Bíblia"
-          items={BIBLIA_ITEMS}
-          basePath="/biblia"
-        />
-        <CollapsibleSection
-          title="Livro"
-          items={LIVRO_ITEMS}
-          basePath="/livro"
-        />
-        <CollapsibleSection
-          title="Contos"
-          items={CONTOS_ITEMS}
-          basePath="/contos"
-        />
-        <CollapsibleSection
-          title="Personagens"
-          items={PERSONAGENS_ITEMS}
-          basePath="/personagens"
-        />
-        <SidebarGroup>
+      <SidebarContent>
+        <nav className="px-4 pt-6 flex flex-col gap-1">
+          <Link
+            href="/"
+            className="font-serif text-4xl leading-none transition-opacity hover:opacity-80 mb-4"
+            style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              color: "var(--foreground)",
+            }}
+          >
+            Korú
+          </Link>
+
+          <CollapsibleSection title="Bíblia" items={BIBLIA_ITEMS} basePath="/biblia" />
+          <CollapsibleSection title="Livro" items={LIVRO_ITEMS} basePath="/livro" />
+          <CollapsibleSection title="Contos" items={CONTOS_ITEMS} basePath="/contos" />
+          <CollapsibleSection title="Personagens" items={PERSONAGENS_ITEMS} basePath="/personagens" />
+
           <Link
             href="/galeria"
-            className="px-4 py-1.5 font-serif text-2xl transition-opacity hover:opacity-70 block"
+            className="py-1.5 font-serif text-2xl transition-opacity hover:opacity-70"
             style={{
               fontFamily: "var(--font-serif), Georgia, serif",
               color: "var(--foreground)",
@@ -135,7 +111,7 @@ export function NavSidebar() {
           >
             Galeria
           </Link>
-        </SidebarGroup>
+        </nav>
       </SidebarContent>
     </Sidebar>
   )
