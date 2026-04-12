@@ -62,7 +62,7 @@ export default async function PersonagemPage({ params }: Props) {
 
         {/* Images — full width, 3 columns */}
         <div className="w-full mt-10">
-          <div className="grid grid-cols-3 gap-0">
+          <div className="grid grid-cols-3 gap-2">
             {views.map(({ key, label }) => {
               const imageSrc = findImage(nome, key)
               return (
