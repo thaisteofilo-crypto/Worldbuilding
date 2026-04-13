@@ -107,14 +107,14 @@ export function AdminSidebar() {
 
   return (
     <aside
-      className="flex w-56 flex-col border-r glass"
+      className="flex w-56 flex-col"
       style={{
-        borderColor: 'var(--border)',
+        background: 'var(--background)',
       }}
     >
       <div
-        className="flex h-12 items-center border-b px-5"
-        style={{ borderColor: 'var(--border)' }}
+        className="flex h-12 items-center px-5"
+        style={{}}
       >
         <span
           className="font-serif text-lg"
@@ -184,8 +184,8 @@ export function AdminSidebar() {
       </nav>
 
       <div
-        className="mt-auto border-t p-3"
-        style={{ borderColor: 'var(--border)' }}
+        className="mt-auto p-3"
+        style={{}}
       >
         <LogoutButton />
       </div>
