@@ -56,6 +56,11 @@ export function sanitizeForMdx(content: string): string {
 }
 
 function escapeOutsideInlineCode(line: string): string {
+  // Don't escape lines that are HTML media tags
+  const trimmed = line.trim()
+  if (trimmed.startsWith("<video") || trimmed.startsWith("<audio") || trimmed.startsWith("<img")) {
+    return line
+  }
   // Split by inline code spans, escape braces only outside them
   const parts = line.split(/(`[^`]*`)/)
   return parts

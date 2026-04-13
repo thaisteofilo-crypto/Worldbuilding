@@ -55,6 +55,12 @@ const DOC_GROUPS: DocGroup[] = [
 
 function basicMarkdownToHtml(md: string): string {
   let html = md
+    // Images
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;margin:0.5rem 0" />')
+    // Video tags (pass through)
+    .replace(/<video([^>]*)><\/video>/g, '<video$1></video>')
+    // Audio tags (pass through)
+    .replace(/<audio([^>]*)><\/audio>/g, '<audio$1></audio>')
     // Headings
     .replace(/^### (.+)$/gm, '<h3 style="font-size:1.1rem;font-weight:600;margin:1rem 0 0.5rem">$1</h3>')
     .replace(/^## (.+)$/gm, '<h2 style="font-size:1.25rem;font-weight:600;margin:1.25rem 0 0.5rem">$1</h2>')
@@ -65,8 +71,6 @@ function basicMarkdownToHtml(md: string): string {
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     // Lists
     .replace(/^- (.+)$/gm, '<li style="margin-left:1.5rem;list-style:disc">$1</li>')
-    // Horizontal rules
-    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #ddd;margin:1rem 0">')
     // Paragraphs (double newlines)
     .replace(/\n\n/g, '</p><p style="margin:0.5rem 0">')
 
@@ -83,6 +87,9 @@ export default function EditorPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [showPreview, setShowPreview] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadType, setUploadType] = useState<'image' | 'video' | 'audio'>('image')
 
   const loadFile = useCallback(async (docPath: string, label: string) => {
     setLoading(true)
@@ -133,6 +140,46 @@ export default function EditorPage() {
       setMessage({ type: 'error', text: 'Erro de conexão.' })
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleMediaUpload(file: File, type: 'image' | 'video' | 'audio') {
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/editor/upload', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.url) {
+        const ta = textareaRef.current
+        const pos = ta ? ta.selectionStart : content.length
+        let markup = ''
+        if (type === 'image') {
+          markup = `\n\n![${file.name}](${data.url})\n\n`
+        } else if (type === 'video') {
+          markup = `\n\n<video src="${data.url}" controls width="100%"></video>\n\n`
+        } else {
+          markup = `\n\n<audio src="${data.url}" controls></audio>\n\n`
+        }
+        setContent(content.substring(0, pos) + markup + content.substring(pos))
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Erro no upload.' })
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Erro no upload.' })
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  function triggerUpload(type: 'image' | 'video' | 'audio') {
+    setUploadType(type)
+    const accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : 'audio/*'
+    const input = fileInputRef.current
+    if (input) {
+      input.accept = accept
+      input.value = ''
+      input.click()
     }
   }
 
@@ -262,6 +309,41 @@ export default function EditorPage() {
                 >
                   &bull; Lista
                 </button>
+                <span className="mx-1 h-4 w-px bg-neutral-200" />
+                <button
+                  onClick={() => triggerUpload('image')}
+                  disabled={uploading}
+                  className="rounded px-2 py-1 text-xs text-black hover:bg-neutral-100 disabled:opacity-40"
+                  title="Inserir imagem"
+                >
+                  Imagem
+                </button>
+                <button
+                  onClick={() => triggerUpload('video')}
+                  disabled={uploading}
+                  className="rounded px-2 py-1 text-xs text-black hover:bg-neutral-100 disabled:opacity-40"
+                  title="Inserir vídeo"
+                >
+                  Video
+                </button>
+                <button
+                  onClick={() => triggerUpload('audio')}
+                  disabled={uploading}
+                  className="rounded px-2 py-1 text-xs text-black hover:bg-neutral-100 disabled:opacity-40"
+                  title="Inserir áudio"
+                >
+                  Audio
+                </button>
+                {uploading && <span className="text-xs text-neutral-400 ml-2">Enviando...</span>}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleMediaUpload(file, uploadType)
+                  }}
+                />
               </div>
 
               {/* Message */}

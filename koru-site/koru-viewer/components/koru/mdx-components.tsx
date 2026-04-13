@@ -153,4 +153,27 @@ export const mdxComponents: MDXComponents = {
       {children}
     </a>
   ),
+  img: ({ src, alt }) => (
+    <img
+      src={src}
+      alt={alt || ""}
+      className="w-full rounded-xl my-6"
+      style={{ maxWidth: "100%" }}
+    />
+  ),
+  video: (props: React.ComponentProps<"video">) => (
+    <video
+      {...props}
+      controls
+      className="w-full rounded-xl my-6"
+      style={{ maxWidth: "100%" }}
+    />
+  ),
+  audio: (props: React.ComponentProps<"audio">) => (
+    <audio
+      {...props}
+      controls
+      className="w-full my-6"
+    />
+  ),
 }
