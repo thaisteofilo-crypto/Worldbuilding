@@ -1,4 +1,4 @@
-import { readMarkdown, bibliaParts } from "@/lib/content"
+import { readMarkdown, bibliaParts, getBibliaItems } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -6,7 +6,7 @@ import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
-import { BIBLIA_ITEMS, BANNER_CONFIG } from "@/lib/navigation"
+import { BANNER_CONFIG } from "@/lib/navigation"
 
 interface Props {
   params: Promise<{ parte: string }>
@@ -21,7 +21,8 @@ export default async function BibliaPage({ params }: Props) {
   const doc = readMarkdown(`biblia/${parte}.md`)
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 
-  const item = BIBLIA_ITEMS.find((i) => i.slug === parte)
+  const bibliaItems = getBibliaItems()
+  const item = bibliaItems.find((i) => i.slug === parte)
   const bannerCfg = BANNER_CONFIG[parte] ?? { fallbackHue: 65 }
 
   return (
@@ -36,7 +37,7 @@ export default async function BibliaPage({ params }: Props) {
       />
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
         <MDXRemote source={safeContent} components={mdxComponents} options={mdxOptions} />
-        <DocNav items={BIBLIA_ITEMS} current={parte} basePath="/biblia" />
+        <DocNav items={bibliaItems} current={parte} basePath="/biblia" />
       </article>
     </ScrollArea>
   )

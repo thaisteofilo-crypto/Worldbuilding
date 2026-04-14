@@ -99,28 +99,86 @@ function extractTitleFromContent(content: string): string | null {
   return match ? match[1].trim() : null
 }
 
-export function bibliaParts() {
-  return [
-    "00",
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-  ].map((n) => ({ parte: n }))
+// Known biblia titles for display (manual curation for existing parts)
+const KNOWN_BIBLIA_TITLES: Record<string, string> = {
+  "parte-00": "Introdução",
+  "parte-01": "Física e Cosmologia",
+  "parte-02": "Geografia",
+  "parte-03": "Ecossistema",
+  "parte-04": "Criaturas",
+  "parte-05": "Personagens",
+  "parte-06": "Regras",
+  "parte-07": "Cultura",
+  "parte-08": "Linha do Tempo",
 }
 
-export function livroChapters() {
-  return ["01", "02", "03", "04", "05", "06", "epilogo"].map((s) => ({
-    capitulo: s,
+export function bibliaParts(): { parte: string }[] {
+  const bibliaDir = path.join(REPO_ROOT, "biblia")
+  if (!fs.existsSync(bibliaDir)) return []
+  const files = fs.readdirSync(bibliaDir)
+  const parts = files
+    .filter((f) => /^parte-\d+/.test(f) && f.endsWith(".md"))
+    .map((f) => { const m = f.match(/^parte-(\d+)/); return m ? m[1] : null })
+    .filter((p): p is string => p !== null)
+    .sort((a, b) => parseInt(a) - parseInt(b))
+  return parts.map((n) => ({ parte: n }))
+}
+
+export function livroChapters(): { capitulo: string }[] {
+  const livroDir = path.join(REPO_ROOT, "livro")
+  if (!fs.existsSync(livroDir)) return []
+  const files = fs.readdirSync(livroDir)
+  const chapters = files
+    .filter((f) => /^capitulo-\d+/.test(f) && f.endsWith(".md"))
+    .map((f) => f.match(/^capitulo-(\d+)/)?.[1])
+    .filter((c): c is string => c !== undefined)
+    .sort((a, b) => parseInt(a) - parseInt(b))
+  const hasEpilogo = files.includes("epilogo.md")
+  const slugs = hasEpilogo ? [...chapters, "epilogo"] : chapters
+  return slugs.map((s) => ({ capitulo: s }))
+}
+
+export function contoSlugs(): { personagem: string }[] {
+  const contosDir = path.join(REPO_ROOT, "contos")
+  if (!fs.existsSync(contosDir)) return []
+  const files = fs.readdirSync(contosDir)
+  return files
+    .filter((f) => /^conto-/.test(f) && f.endsWith(".md"))
+    .map((f) => f.replace(/^conto-/, "").replace(/\.md$/, ""))
+    .sort()
+    .map((s) => ({ personagem: s }))
+}
+
+// Nav item helpers — used by server components (sidebar, doc nav, home page)
+export function getBibliaItems(): { slug: string; title: string }[] {
+  const bibliaDir = path.join(REPO_ROOT, "biblia")
+  const files = fs.existsSync(bibliaDir) ? fs.readdirSync(bibliaDir) : []
+  return bibliaParts().map(({ parte }) => {
+    const slug = `parte-${parte}`
+    if (KNOWN_BIBLIA_TITLES[slug]) return { slug, title: KNOWN_BIBLIA_TITLES[slug] }
+    // Extract title from filename suffix: "parte-09-nova-parte.md" → "Nova Parte"
+    const file = files.find((f) => f.startsWith(slug) && f.endsWith(".md"))
+    if (file) {
+      const suffix = file.slice(slug.length).replace(/^[-_]/, "").replace(".md", "")
+      if (suffix) {
+        const title = suffix.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+        return { slug, title }
+      }
+    }
+    return { slug, title: `Parte ${parseInt(parte)}` }
+  })
+}
+
+export function getLivroItems(): { slug: string; title: string }[] {
+  return livroChapters().map(({ capitulo }) => ({
+    slug: capitulo,
+    title: capitulo === "epilogo" ? "Epílogo" : `Capítulo ${parseInt(capitulo)}`,
   }))
 }
 
-export function contoSlugs() {
-  return ["temiku", "amara", "oruku", "beku", "obaru", "kemdi", "orike"].map(
-    (s) => ({ personagem: s })
-  )
+export function getContosItems(): { slug: string; title: string }[] {
+  return contoSlugs().map(({ personagem }) => ({
+    slug: personagem,
+    title: personagem.charAt(0).toUpperCase() + personagem.slice(1),
+  }))
 }

@@ -1,6 +1,6 @@
 import { createAdminClient } from "./supabase/admin"
 
-const BANNER_SLOTS = ["hero", "hero-video", "personagens", "biblia", "livro", "contos", "referencias"]
+const BANNER_SLOTS = ["hero", "hero-video", "personagens", "personagens-video", "biblia", "biblia-video", "livro", "livro-video", "contos", "contos-video", "footer", "footer-video"]
 
 export async function getBannerUrls(): Promise<Record<string, string>> {
   const admin = createAdminClient()

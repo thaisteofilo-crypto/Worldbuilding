@@ -36,7 +36,7 @@ function ViewImageSlot({
         style={{
           background: "var(--surface)",
           border: "1px solid var(--border)",
-          ...(!url ? { aspectRatio: "2/3" } : {}),
+          ...(!url ? { aspectRatio: "16/9" } : {}),
         }}
       >
         {url ? (
@@ -44,7 +44,7 @@ function ViewImageSlot({
             imageKey={`char-${character.slug}-${view.key}`}
             src={url}
             alt={`${character.name} — ${view.label}`}
-            aspectRatio="2/3"
+            aspectRatio="16/9"
           />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
@@ -293,6 +293,7 @@ export default function CharactersPage() {
   const [charImages, setCharImages] = useState<Record<string, Record<string, string>>>({})
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   const fetchCharacters = () => {
     Promise.all([
@@ -354,6 +355,47 @@ export default function CharactersPage() {
     setUploading(null)
   }
 
+  async function deleteCharacter(id: string, name: string) {
+    if (!confirm(`Remover ${name}? Esta ação não pode ser desfeita.`)) return
+    setDeleting(id)
+    const res = await fetch("/api/characters", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
+    if (res.ok) {
+      setCharacters((prev) => prev.filter((c) => c.id !== id))
+    } else {
+      const data = await res.json()
+      alert(data.error || "Erro ao remover personagem")
+    }
+    setDeleting(null)
+  }
+
+  async function moveCharacter(id: string, direction: "up" | "down") {
+    const index = characters.findIndex((c) => c.id === id)
+    if (direction === "up" && index === 0) return
+    if (direction === "down" && index === characters.length - 1) return
+
+    const swapIndex = direction === "up" ? index - 1 : index + 1
+    const newChars = [...characters]
+    ;[newChars[index], newChars[swapIndex]] = [newChars[swapIndex], newChars[index]]
+    setCharacters(newChars)
+
+    await Promise.all([
+      fetch("/api/characters", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: newChars[index].id, order_index: index }),
+      }),
+      fetch("/api/characters", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: newChars[swapIndex].id, order_index: swapIndex }),
+      }),
+    ])
+  }
+
   async function handleRemove(character: Character, view: ViewKey) {
     const uploadKey = `${character.slug}-${view}`
     setUploading(uploadKey)
@@ -394,7 +436,7 @@ export default function CharactersPage() {
         <div>
           <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
           <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-            {characters.length} personagens — 3 vistas por personagem (frente, perfil, costa) — clique nos campos para editar
+            {characters.length} personagens — use ↑↓ para reordenar — clique nos campos para editar
           </p>
         </div>
         <NewCharacterForm onCreated={handleCharacterCreated} />
@@ -417,8 +459,53 @@ export default function CharactersPage() {
                   background: char.gradient ?? `color-mix(in oklch, ${char.accent_color ?? "var(--accent)"} 30%, var(--surface))`,
                   border: `1px solid ${char.accent_color ?? "var(--border)"}`,
                 }} />
-                <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>{char.name}</h2>
+                {/* Reorder buttons */}
+                <div className="flex flex-col gap-0.5">
+                  <button
+                    onClick={() => moveCharacter(char.id, "up")}
+                    disabled={characters.indexOf(char) === 0}
+                    className="w-6 h-6 flex items-center justify-center rounded transition-opacity hover:opacity-100 disabled:opacity-20"
+                    style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                    title="Mover para cima"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 15l-6-6-6 6" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => moveCharacter(char.id, "down")}
+                    disabled={characters.indexOf(char) === characters.length - 1}
+                    className="w-6 h-6 flex items-center justify-center rounded transition-opacity hover:opacity-100 disabled:opacity-20"
+                    style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                    title="Mover para baixo"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                </div>
+                <h2 className="font-serif text-xl flex-1" style={{ color: "var(--foreground)" }}>{char.name}</h2>
                 <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>{char.slug}</span>
+                {/* Delete button */}
+                <button
+                  onClick={() => deleteCharacter(char.id, char.name)}
+                  disabled={deleting === char.id}
+                  className="group ml-2 w-7 h-7 flex items-center justify-center rounded-full transition-colors disabled:opacity-50"
+                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                  title="Remover personagem"
+                >
+                  {deleting === char.id ? (
+                    <span className="font-sans text-[10px]">...</span>
+                  ) : (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                      className="transition-colors group-hover:stroke-red-400">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6M14 11v6" />
+                      <path d="M9 6V4h6v2" />
+                    </svg>
+                  )}
+                </button>
               </div>
 
               {/* 3 image views */}
@@ -436,13 +523,39 @@ export default function CharactersPage() {
                 ))}
               </div>
 
-              {/* Character details */}
+              {/* Quote */}
+              {char.quote && (
+                <div className="mb-4 px-4 py-3 rounded-lg" style={{ background: "var(--surface)", borderLeft: "2px solid var(--muted-foreground)" }}>
+                  <p className="font-serif text-sm italic leading-relaxed" style={{ color: "var(--foreground)", opacity: 0.8 }}>
+                    &ldquo;{char.quote}&rdquo;
+                  </p>
+                </div>
+              )}
+
+              {/* Character details — identity */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
-                {char.role && <EditableField label="Papel" value={char.role} onSave={(v) => saveField(char.id, "role", v)} />}
-                {char.morphology && <EditableField label="Morfologia" value={char.morphology} onSave={(v) => saveField(char.id, "morphology", v)} multiline />}
-                {char.ability && <EditableField label="Habilidade" value={char.ability} onSave={(v) => saveField(char.id, "ability", v)} multiline />}
-                {char.status && <EditableField label="Status" value={char.status} onSave={(v) => saveField(char.id, "status", v)} />}
-                {char.origin && <EditableField label="Origem" value={char.origin} onSave={(v) => saveField(char.id, "origin", v)} />}
+                <EditableField label="Papel" value={char.role ?? ""} onSave={(v) => saveField(char.id, "role", v)} />
+                <EditableField label="Especie" value={char.species ?? ""} onSave={(v) => saveField(char.id, "species", v)} />
+                <EditableField label="Status" value={char.status ?? ""} onSave={(v) => saveField(char.id, "status", v)} />
+              </div>
+
+              {/* Character details — physical */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+                <EditableField label="Morfologia" value={char.morphology ?? ""} onSave={(v) => saveField(char.id, "morphology", v)} multiline />
+                <EditableField label="Habilidade" value={char.ability ?? ""} onSave={(v) => saveField(char.id, "ability", v)} multiline />
+                <EditableField label="Marca (Isilo-Ori)" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
+              </div>
+
+              {/* Character details — world */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+                <EditableField label="Origem" value={char.origin ?? ""} onSave={(v) => saveField(char.id, "origin", v)} />
+                <EditableField label="Localização" value={char.location ?? ""} onSave={(v) => saveField(char.id, "location", v)} />
+                <EditableField label="Citação" value={char.quote ?? ""} onSave={(v) => saveField(char.id, "quote", v)} />
+              </div>
+
+              {/* Description — full width */}
+              <div className="pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+                <EditableField label="Descrição" value={char.description ?? ""} onSave={(v) => saveField(char.id, "description", v)} multiline />
               </div>
             </div>
           ))

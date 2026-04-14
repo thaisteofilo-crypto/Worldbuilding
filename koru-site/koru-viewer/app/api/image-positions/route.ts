@@ -3,19 +3,21 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 // Ensure table exists (runs once)
 async function ensureTable(supabase: ReturnType<typeof createAdminClient>) {
-  await supabase.rpc("exec_sql", {
-    sql: `
-      CREATE TABLE IF NOT EXISTS image_positions (
-        key TEXT PRIMARY KEY,
-        x INTEGER NOT NULL DEFAULT 50,
-        y INTEGER NOT NULL DEFAULT 50,
-        scale REAL NOT NULL DEFAULT 1.0,
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-      );
-    `,
-  }).catch(() => {
-    // rpc may not exist, try raw query approach - table may already exist
-  })
+  try {
+    await supabase.rpc("exec_sql", {
+      sql: `
+        CREATE TABLE IF NOT EXISTS image_positions (
+          key TEXT PRIMARY KEY,
+          x INTEGER NOT NULL DEFAULT 50,
+          y INTEGER NOT NULL DEFAULT 50,
+          scale REAL NOT NULL DEFAULT 1.0,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `,
+    })
+  } catch {
+    // rpc may not exist - table may already exist
+  }
 }
 
 // GET - fetch all positions or one by key
@@ -68,17 +70,19 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     // Table might not exist yet - try to create it
-    await supabase.rpc("exec_sql", {
-      sql: `
-        CREATE TABLE IF NOT EXISTS image_positions (
-          key TEXT PRIMARY KEY,
-          x INTEGER NOT NULL DEFAULT 50,
-          y INTEGER NOT NULL DEFAULT 50,
-          scale REAL NOT NULL DEFAULT 1.0,
-          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-        );
-      `,
-    }).catch(() => {})
+    try {
+      await supabase.rpc("exec_sql", {
+        sql: `
+          CREATE TABLE IF NOT EXISTS image_positions (
+            key TEXT PRIMARY KEY,
+            x INTEGER NOT NULL DEFAULT 50,
+            y INTEGER NOT NULL DEFAULT 50,
+            scale REAL NOT NULL DEFAULT 1.0,
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+          );
+        `,
+      })
+    } catch { /* table may already exist */ }
 
     // Retry
     const { error: retryError } = await supabase

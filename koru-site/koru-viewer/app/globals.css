@@ -51,80 +51,80 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Light mode (black & white) ─── */
+/* ─── Light mode (Korú — alinhado com SKILL.md) ─── */
 :root {
-    --background: oklch(0.96 0 0);
-    --surface: oklch(0.92 0 0);
-    --foreground: oklch(0.05 0 0);
+    --background: oklch(0.93 0.006 280);
+    --surface: oklch(0.88 0.008 280);
+    --foreground: oklch(0.15 0.01 280);
     --card: oklch(1.00 0 0);
-    --card-foreground: oklch(0.05 0 0);
+    --card-foreground: oklch(0.15 0.01 280);
     --popover: oklch(1.00 0 0);
-    --popover-foreground: oklch(0.05 0 0);
-    --primary: oklch(0.15 0 0);
+    --popover-foreground: oklch(0.15 0.01 280);
+    --primary: oklch(0.40 0.12 290);
     --primary-foreground: oklch(0.97 0 0);
-    --secondary: oklch(0.92 0 0);
-    --secondary-foreground: oklch(0.05 0 0);
-    --muted: oklch(0.92 0 0);
-    --muted-foreground: oklch(0.40 0 0);
-    --accent: oklch(0.15 0 0);
+    --secondary: oklch(0.88 0.008 280);
+    --secondary-foreground: oklch(0.15 0.01 280);
+    --muted: oklch(0.88 0.008 280);
+    --muted-foreground: oklch(0.40 0.01 280);
+    --accent: oklch(0.40 0.12 290);
     --accent-foreground: oklch(0.97 0 0);
-    --destructive: oklch(0.45 0 0);
-    --border: oklch(0.80 0 0);
-    --input: oklch(0.80 0 0);
-    --ring: oklch(0.15 0 0);
-    --gold: oklch(0.15 0 0);
-    --blue-cold: oklch(0.15 0 0);
+    --destructive: oklch(0.52 0.22 25);
+    --border: oklch(0.75 0.01 280);
+    --input: oklch(0.75 0.01 280);
+    --ring: oklch(0.40 0.12 290);
+    --gold: oklch(0.48 0.12 65);
+    --blue-cold: oklch(0.42 0.10 230);
     --radius: 1rem;
-    --chart-1: oklch(0.15 0 0);
-    --chart-2: oklch(0.30 0 0);
-    --chart-3: oklch(0.45 0 0);
-    --chart-4: oklch(0.60 0 0);
-    --chart-5: oklch(0.75 0 0);
-    --sidebar: oklch(0.96 0 0);
-    --sidebar-foreground: oklch(0.05 0 0);
-    --sidebar-primary: oklch(0.15 0 0);
+    --chart-1: oklch(0.40 0.12 290);
+    --chart-2: oklch(0.48 0.12 65);
+    --chart-3: oklch(0.42 0.10 230);
+    --chart-4: oklch(0.52 0.22 25);
+    --chart-5: oklch(0.40 0.01 280);
+    --sidebar: oklch(0.91 0.007 280);
+    --sidebar-foreground: oklch(0.15 0.01 280);
+    --sidebar-primary: oklch(0.40 0.12 290);
     --sidebar-primary-foreground: oklch(0.97 0 0);
-    --sidebar-accent: oklch(0.94 0 0);
-    --sidebar-accent-foreground: oklch(0.05 0 0);
-    --sidebar-border: oklch(0.96 0 0);
-    --sidebar-ring: oklch(0.15 0 0);
+    --sidebar-accent: oklch(0.88 0.008 280);
+    --sidebar-accent-foreground: oklch(0.15 0.01 280);
+    --sidebar-border: oklch(0.80 0.008 280);
+    --sidebar-ring: oklch(0.40 0.12 290);
 }
 
-/* ─── Dark mode (original Korú — conforme design system) ─── */
+/* ─── Dark mode (Korú — hierarquia visual corrigida) ─── */
 .dark {
     --background: oklch(0.07 0.008 280);
-    --surface: oklch(0.10 0.006 280);
-    --foreground: oklch(0.92 0.012 85);
-    --card: oklch(0.10 0.006 280);
-    --card-foreground: oklch(0.92 0.012 85);
-    --popover: oklch(0.10 0.006 280);
-    --popover-foreground: oklch(0.92 0.012 85);
+    --surface: oklch(0.13 0.008 280);
+    --foreground: oklch(0.93 0.012 85);
+    --card: oklch(0.13 0.008 280);
+    --card-foreground: oklch(0.93 0.012 85);
+    --popover: oklch(0.13 0.008 280);
+    --popover-foreground: oklch(0.93 0.012 85);
     --primary: oklch(0.65 0.09 290);
     --primary-foreground: oklch(0.07 0.008 280);
-    --secondary: oklch(0.12 0.006 280);
-    --secondary-foreground: oklch(0.92 0.012 85);
-    --muted: oklch(0.12 0.006 280);
-    --muted-foreground: oklch(0.55 0.01 280);
+    --secondary: oklch(0.16 0.008 280);
+    --secondary-foreground: oklch(0.93 0.012 85);
+    --muted: oklch(0.16 0.008 280);
+    --muted-foreground: oklch(0.65 0.012 280);
     --accent: oklch(0.65 0.09 290);
     --accent-foreground: oklch(0.07 0.008 280);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.18 0.006 280);
-    --input: oklch(0.18 0.006 280);
+    --border: oklch(0.26 0.008 280);
+    --input: oklch(0.26 0.008 280);
     --ring: oklch(0.65 0.09 290);
     --gold: oklch(0.72 0.10 75);
     --blue-cold: oklch(0.62 0.09 220);
     --chart-1: oklch(0.65 0.09 290);
     --chart-2: oklch(0.72 0.10 75);
     --chart-3: oklch(0.62 0.09 220);
-    --chart-4: oklch(0.55 0.01 280);
-    --chart-5: oklch(0.18 0.006 280);
-    --sidebar: oklch(0.08 0.006 280);
-    --sidebar-foreground: oklch(0.92 0.012 85);
+    --chart-4: oklch(0.577 0.245 27.325);
+    --chart-5: oklch(0.65 0.012 280);
+    --sidebar: oklch(0.09 0.007 280);
+    --sidebar-foreground: oklch(0.93 0.012 85);
     --sidebar-primary: oklch(0.65 0.09 290);
     --sidebar-primary-foreground: oklch(0.07 0.008 280);
-    --sidebar-accent: oklch(0.12 0.006 280);
-    --sidebar-accent-foreground: oklch(0.92 0.012 85);
-    --sidebar-border: oklch(0.18 0.006 280);
+    --sidebar-accent: oklch(0.16 0.008 280);
+    --sidebar-accent-foreground: oklch(0.93 0.012 85);
+    --sidebar-border: oklch(0.20 0.007 280);
     --sidebar-ring: oklch(0.65 0.09 290);
 }
 
@@ -169,27 +169,27 @@
 .glass {
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  background: oklch(0.97 0.002 80 / 0.7);
-  border: 1px solid oklch(0.75 0.01 280 / 0.3);
+  background: oklch(0.95 0.005 280 / 0.8);
+  border: 1px solid oklch(0.75 0.01 280 / 0.4);
 }
 
 .dark .glass {
-  background: oklch(0.10 0.006 280 / 0.75);
-  border: 1px solid oklch(0.30 0.01 280 / 0.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: oklch(0.09 0.007 280 / 0.85);
+  border: 1px solid oklch(0.28 0.009 280 / 0.5);
 }
 
 .glass-card {
-  backdrop-filter: blur(16px) saturate(1.3);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
   background: oklch(1.00 0 0);
   border: 1px solid oklch(0.80 0.01 280);
-  box-shadow: 0 2px 8px oklch(0.30 0.02 280 / 0.15);
+  box-shadow: 0 2px 8px oklch(0.30 0.02 280 / 0.12);
 }
 
 .dark .glass-card {
-  background: oklch(0.14 0.008 280 / 0.75);
-  border: 1px solid oklch(0.30 0.01 280 / 0.5);
-  box-shadow: 0 2px 12px oklch(0 0 0 / 0.5), inset 0 1px 0 oklch(1 0 0 / 0.04);
+  background: oklch(0.16 0.009 280);
+  border: 1px solid oklch(0.28 0.009 280);
+  box-shadow: 0 4px 20px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.06);
 }
 
 /* Hide scrollbar for carousels */

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-const BANNER_SLOTS = ["hero", "hero-video", "personagens", "biblia", "livro", "contos", "referencias"]
+const BANNER_SLOTS = ["hero", "hero-video", "personagens", "personagens-video", "biblia", "biblia-video", "livro", "livro-video", "contos", "contos-video", "footer", "footer-video"]
 
 export async function GET() {
   const admin = createAdminClient()

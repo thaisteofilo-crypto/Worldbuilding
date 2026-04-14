@@ -53,14 +53,11 @@ const navItems = [
   },
   {
     href: '/admin/card-images',
-    label: 'Imagens dos Cards',
+    label: 'Cards',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
-        <line x1="15" y1="3" x2="15" y2="9" />
-        <line x1="12" y1="6" x2="18" y2="6" />
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <path d="M8 21h8M12 17v4"/>
       </svg>
     ),
   },
@@ -77,6 +74,16 @@ const navItems = [
         <line x1="2" y1="17" x2="7" y2="17" />
         <line x1="17" y1="7" x2="22" y2="7" />
         <line x1="17" y1="17" x2="22" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    href: '/admin/conteudo',
+    label: 'Conteúdo',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+        <path d="m15 5 4 4"/>
       </svg>
     ),
   },
@@ -112,29 +119,27 @@ export function AdminSidebar() {
         background: 'var(--background)',
       }}
     >
-      <div
-        className="flex h-12 items-center px-5"
-        style={{}}
-      >
+      {/* Logo */}
+      <div className="flex h-14 items-center px-5">
         <span
-          className="font-serif text-lg"
+          className="font-serif text-2xl tracking-tight"
           style={{ color: 'var(--foreground)' }}
         >
           Korú
         </span>
         <span
-          className="ml-2 rounded-full px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase"
+          className="ml-2.5 rounded-full px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase"
           style={{
-            color: 'var(--foreground)',
-            border: '1px solid color-mix(in oklch, var(--foreground) 30%, transparent)',
-            background: 'color-mix(in oklch, var(--foreground) 10%, transparent)',
+            color: 'var(--muted-foreground)',
+            border: '1px solid color-mix(in oklch, var(--foreground) 18%, transparent)',
           }}
         >
           Admin
         </span>
       </div>
 
-      <nav className="flex flex-col gap-1 p-3 pt-5">
+      {/* Nav */}
+      <nav className="flex flex-col gap-0.5 p-3 pt-4 flex-1">
         {navItems.map((item) => {
           const active = item.exact
             ? pathname === item.href
@@ -144,17 +149,26 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
+                'flex items-center gap-2.5 rounded-lg font-sans text-sm transition-all duration-150',
               )}
               style={
                 active
                   ? {
-                      background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
+                      background: 'color-mix(in oklch, var(--accent) 12%, transparent)',
                       color: 'var(--foreground)',
                       fontWeight: 500,
+                      borderLeft: '2px solid var(--accent)',
+                      paddingTop: '0.625rem',
+                      paddingBottom: '0.625rem',
+                      paddingLeft: 'calc(0.75rem - 2px)',
+                      paddingRight: '0.75rem',
                     }
                   : {
                       color: 'var(--muted-foreground)',
+                      paddingTop: '0.625rem',
+                      paddingBottom: '0.625rem',
+                      paddingLeft: '0.75rem',
+                      paddingRight: '0.75rem',
                     }
               }
               onMouseEnter={(e) => {
@@ -170,23 +184,19 @@ export function AdminSidebar() {
                 }
               }}
             >
-              <span style={{ opacity: active ? 1 : 0.5 }}>{item.icon}</span>
+              <span style={{ opacity: active ? 1 : 0.45 }}>{item.icon}</span>
               {item.label}
-              {active && (
-                <span
-                  className="ml-auto h-1.5 w-1.5 rounded-full"
-                  style={{ background: 'var(--foreground)' }}
-                />
-              )}
             </Link>
           )
         })}
       </nav>
 
-      <div
-        className="mt-auto p-3"
-        style={{}}
-      >
+      {/* Divider + Logout */}
+      <div className="p-3">
+        <hr
+          className="mb-3"
+          style={{ borderColor: 'var(--border)', borderTopWidth: '1px' }}
+        />
         <LogoutButton />
       </div>
     </aside>

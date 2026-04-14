@@ -2,10 +2,11 @@ import Image from "next/image"
 import fs from "fs"
 import path from "path"
 
-interface HeroBannerProps {
+export interface HeroBannerProps {
   title: string
   subtitle?: string
   accentColor?: string
+  fallbackHue?: number
   imageSrc?: string
   videoSrc?: string
 }

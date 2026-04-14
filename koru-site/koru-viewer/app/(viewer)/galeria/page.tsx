@@ -15,12 +15,10 @@ export default function GaleriaPage() {
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
   useEffect(() => {
-    fetch("/api/gallery")
-      .then((r) => r.json())
-      .then((data) => {
-        setImages(data.images ?? [])
-        setLoading(false)
-      })
+    fetch("/api/gallery").then((r) => r.json()).then((galleryData) => {
+      setImages(galleryData.images ?? [])
+      setLoading(false)
+    })
   }, [])
 
   const openLightbox = useCallback(

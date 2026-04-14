@@ -27,16 +27,14 @@ export default function AdminLoginPage() {
   return (
     <div
       className="flex min-h-screen items-center justify-center"
-      style={{
-        background: "linear-gradient(135deg, oklch(0.96 0.008 280), oklch(0.94 0.015 290), oklch(0.97 0.008 270))",
-      }}
+      style={{ background: "var(--background)" }}
     >
       <div className="w-full max-w-sm px-4">
         <div className="mb-10 text-center">
           <h1
             className="font-serif text-4xl"
             style={{
-              color: "oklch(0.20 0.02 280)",
+              color: "var(--foreground)",
               fontFamily: "var(--font-serif), Georgia, serif",
             }}
           >
@@ -44,7 +42,7 @@ export default function AdminLoginPage() {
           </h1>
           <p
             className="mt-2 font-sans text-xs tracking-[0.2em] uppercase"
-            style={{ color: "oklch(0.50 0.02 280)" }}
+            style={{ color: "var(--muted-foreground)" }}
           >
             Admin
           </p>
@@ -52,18 +50,13 @@ export default function AdminLoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 rounded-xl p-6"
-          style={{
-            background: "white",
-            border: "1px solid oklch(0.90 0.006 280)",
-            boxShadow: "0 4px 24px oklch(0 0 0 / 0.06)",
-          }}
+          className="flex flex-col gap-4 rounded-xl p-6 glass-card"
         >
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="password"
               className="font-sans text-xs tracking-[0.15em] uppercase"
-              style={{ color: "oklch(0.45 0.01 280)" }}
+              style={{ color: "var(--muted-foreground)" }}
             >
               Senha
             </label>
@@ -77,15 +70,15 @@ export default function AdminLoginPage() {
               autoComplete="current-password"
               className="rounded-lg px-3 py-2 font-sans text-sm outline-none transition-colors"
               style={{
-                backgroundColor: "oklch(0.97 0.004 280)",
-                color: "oklch(0.20 0.01 280)",
-                border: `1px solid ${error ? "oklch(0.60 0.2 27)" : "oklch(0.88 0.006 280)"}`,
+                backgroundColor: "var(--surface)",
+                color: "var(--foreground)",
+                border: `1px solid ${error ? "var(--destructive)" : "var(--border)"}`,
               }}
             />
           </div>
 
           {error && (
-            <p className="font-sans text-xs" style={{ color: "oklch(0.55 0.2 27)" }}>
+            <p className="font-sans text-xs" style={{ color: "var(--destructive)" }}>
               Senha incorreta
             </p>
           )}
@@ -95,8 +88,8 @@ export default function AdminLoginPage() {
             disabled={loading}
             className="mt-2 rounded-full py-2.5 font-sans text-sm font-medium transition-opacity disabled:opacity-60"
             style={{
-              background: "oklch(0.45 0.12 290)",
-              color: "white",
+              background: "var(--accent)",
+              color: "var(--accent-foreground)",
             }}
           >
             {loading ? "Entrando..." : "Entrar"}

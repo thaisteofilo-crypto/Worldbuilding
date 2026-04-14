@@ -1,217 +1,442 @@
-"use client"
+'use client'
 
-import { useEffect, useState, useRef } from "react"
-import { ImagePositioner } from "@/components/admin/image-positioner"
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
-const cardSlots = [
-  { section: "Bíblia do Mundo", items: [
-    { key: "biblia-parte-00", label: "Parte 00 — Introdução" },
-    { key: "biblia-parte-01", label: "Parte 01 — Física e Cosmologia" },
-    { key: "biblia-parte-02", label: "Parte 02 — Geografia" },
-    { key: "biblia-parte-03", label: "Parte 03 — Ecossistema" },
-    { key: "biblia-parte-04", label: "Parte 04 — Criaturas" },
-    { key: "biblia-parte-05", label: "Parte 05 — Personagens" },
-    { key: "biblia-parte-06", label: "Parte 06 — Regras" },
-    { key: "biblia-parte-07", label: "Parte 07 — Cultura" },
-    { key: "biblia-parte-08", label: "Parte 08 — Linha do Tempo" },
-  ]},
-  { section: "Livro", items: [
-    { key: "livro-01", label: "Capítulo 1" },
-    { key: "livro-02", label: "Capítulo 2" },
-    { key: "livro-03", label: "Capítulo 3" },
-    { key: "livro-04", label: "Capítulo 4" },
-    { key: "livro-05", label: "Capítulo 5" },
-    { key: "livro-06", label: "Capítulo 6" },
-    { key: "livro-epilogo", label: "Epílogo" },
-  ]},
-  { section: "Referências", items: [
-    { key: "ref-planeta-dos-abutres", label: "Planeta dos Abutres" },
-    { key: "ref-harry-potter", label: "Harry Potter" },
-    { key: "ref-a-mao-esquerda-da-escuridao", label: "A Mão Esquerda da Escuridão" },
-    { key: "ref-os-despossuidos", label: "Os Despossuídos" },
-    { key: "ref-as-cronicas-de-narnia", label: "As Crônicas de Nárnia" },
-  ]},
+interface DocEntry {
+  label: string
+  path: string
+}
+
+interface DocGroup {
+  section: string
+  color: string
+  docs: DocEntry[]
+}
+
+interface CardSlot {
+  key: string
+  label: string
+}
+
+const DEFAULT_CHAR_SLUGS = ['temiku', 'amara', 'oruku', 'beku', 'obaru', 'kemdi', 'orike']
+
+const DEFAULT_BIBLIA_DOCS: DocEntry[] = [
+  { label: 'Parte 00', path: 'biblia/parte-00.md' },
+  { label: 'Parte 01', path: 'biblia/parte-01.md' },
+  { label: 'Parte 02', path: 'biblia/parte-02.md' },
+  { label: 'Parte 03', path: 'biblia/parte-03.md' },
+  { label: 'Parte 04', path: 'biblia/parte-04.md' },
+  { label: 'Parte 05', path: 'biblia/parte-05.md' },
+  { label: 'Parte 06', path: 'biblia/parte-06.md' },
+  { label: 'Parte 07', path: 'biblia/parte-07.md' },
+  { label: 'Parte 08', path: 'biblia/parte-08.md' },
 ]
 
-export default function CardImagesPage() {
-  const [images, setImages] = useState<Record<string, string>>({})
-  const [loading, setLoading] = useState(true)
-  const [uploading, setUploading] = useState<string | null>(null)
+const DEFAULT_LIVRO_DOCS: DocEntry[] = [
+  { label: 'Capítulo 01', path: 'livro/capitulo-01.md' },
+  { label: 'Capítulo 02', path: 'livro/capitulo-02.md' },
+  { label: 'Capítulo 03', path: 'livro/capitulo-03.md' },
+  { label: 'Capítulo 04', path: 'livro/capitulo-04.md' },
+  { label: 'Capítulo 05', path: 'livro/capitulo-05.md' },
+  { label: 'Capítulo 06', path: 'livro/capitulo-06.md' },
+  { label: 'Epílogo', path: 'livro/epilogo.md' },
+]
 
-  function fetchImages() {
-    fetch("/api/card-images")
-      .then((r) => r.json())
-      .then((data) => {
-        setImages(data.images ?? {})
-        setLoading(false)
-      })
-  }
+function pathFilename(path: string): string {
+  return path.replace(/\.md$/, '').split('/').pop() ?? ''
+}
 
-  useEffect(() => {
-    fetchImages()
-  }, [])
+function livroUrlSlug(filename: string): string {
+  return filename.replace(/^capitulo-/, '')
+}
 
-  async function handleUpload(key: string, file: File) {
-    setUploading(key)
-    const formData = new FormData()
-    formData.append("file", file)
-    formData.append("key", key)
-
-    const res = await fetch("/api/card-images", { method: "POST", body: formData })
-    const data = await res.json()
-
-    if (data.error) {
-      alert(data.error)
-    } else {
-      fetchImages()
-    }
-    setUploading(null)
-  }
-
-  async function handleRemove(key: string) {
-    setUploading(key)
-    await fetch("/api/card-images", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key }),
-    })
-    fetchImages()
-    setUploading(null)
-  }
-
-  if (loading) {
-    return (
-      <div>
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Imagens dos Cards</h1>
-        <p className="mt-4 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Carregando...</p>
-      </div>
-    )
-  }
-
-  const filled = Object.keys(images).length
-  const total = cardSlots.reduce((sum, s) => sum + s.items.length, 0)
-
+function PlaceholderIcon() {
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Imagens dos Cards</h1>
-        <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
-          {filled} de {total} cards com imagem — tamanho ideal: 800×1200px
-        </p>
-      </div>
-
-      {cardSlots.map((section) => (
-        <div key={section.section} className="mb-8">
-          <h2
-            className="font-sans text-xs tracking-[0.12em] uppercase mb-4"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            {section.section}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-            {section.items.map((item) => (
-              <CardSlot
-                key={item.key}
-                itemKey={item.key}
-                label={item.label}
-                url={images[item.key]}
-                uploading={uploading === item.key}
-                onUpload={(file) => handleUpload(item.key, file)}
-                onRemove={() => handleRemove(item.key)}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" style={{ color: 'var(--muted-foreground)', opacity: 0.25 }}>
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <polyline points="21,15 16,10 5,21" />
+      </svg>
     </div>
   )
 }
 
-function CardSlot({
-  itemKey,
-  label,
-  url,
-  uploading,
-  onUpload,
-  onRemove,
-}: {
-  itemKey: string
-  label: string
-  url?: string
+interface CardTileProps {
+  slot: CardSlot
+  imageUrl?: string
+  onUpload: (key: string, file: File) => Promise<void>
+  onDelete: (key: string) => Promise<void>
   uploading: boolean
-  onUpload: (file: File) => void
-  onRemove: () => void
-}) {
+}
+
+function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTileProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleClick() {
+    inputRef.current?.click()
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (file) {
-      onUpload(file)
-    }
-    if (inputRef.current) inputRef.current.value = ""
+    if (!file) return
+    await onUpload(slot.key, file)
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   return (
-    <div
-      className="rounded-xl overflow-hidden glass-card"
-    >
+    <div className="flex flex-col items-center gap-1.5">
       <div
-        className="relative flex items-center justify-center"
-        style={{ background: "var(--surface)", ...(!url ? { aspectRatio: "2/3" } : {}) }}
+        className="group relative rounded-lg overflow-hidden cursor-pointer"
+        style={{
+          width: '120px',
+          height: '180px',
+          background: 'var(--card)',
+          border: '1px solid var(--border)',
+          flexShrink: 0,
+        }}
+        onClick={handleClick}
       >
-        {url ? (
-          <ImagePositioner
-            imageKey={`card-${itemKey}`}
-            src={url}
-            alt={label}
-            aspectRatio="2/3"
-          />
+        {/* Image or placeholder */}
+        {imageUrl ? (
+          <Image src={imageUrl} alt={slot.label} fill className="object-cover" />
         ) : (
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" style={{ color: "var(--muted-foreground)" }}>
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="M21 15l-5-5L5 21" />
-          </svg>
+          <PlaceholderIcon />
         )}
-        {uploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <span className="text-white text-xs font-sans">Enviando...</span>
-          </div>
-        )}
-      </div>
-      <div className="p-3">
-        <p className="font-sans text-sm mb-2 leading-tight" style={{ color: "var(--foreground)" }}>
-          {label}
-        </p>
+
+        {/* Hover overlay */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+          style={{ background: 'oklch(0 0 0 / 0.6)' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {uploading ? (
+            <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'white' }}>
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          ) : (
+            <>
+              <button
+                onClick={handleClick}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-sans font-medium transition-opacity hover:opacity-80"
+                style={{ background: 'white', color: 'oklch(0 0 0)' }}
+                title="Alterar imagem"
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload
+              </button>
+              {imageUrl && (
+                <button
+                  onClick={() => onDelete(slot.key)}
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-sans font-medium transition-opacity hover:opacity-80"
+                  style={{ background: 'oklch(0.55 0.18 25)', color: 'white' }}
+                  title="Remover imagem"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                  </svg>
+                  Remover
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
         <input
           ref={inputRef}
           type="file"
           accept="image/*"
-          onChange={handleChange}
-          className="absolute w-0 h-0 opacity-0 overflow-hidden"
+          className="hidden"
+          onChange={handleFileChange}
         />
-        <div className="flex gap-1">
-          <button
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="rounded px-2.5 py-1 font-sans text-[11px] transition-colors disabled:opacity-50"
-            style={{ background: "var(--foreground)", color: "var(--background)" }}
-          >
-            {url ? "Trocar" : "Enviar"}
-          </button>
-          {url && (
-            <button
-              onClick={onRemove}
-              disabled={uploading}
-              className="rounded px-2.5 py-1 font-sans text-[11px] transition-colors disabled:opacity-50"
-              style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
-            >
-              Remover
-            </button>
-          )}
-        </div>
       </div>
+
+      <p
+        className="text-center font-sans leading-tight"
+        style={{ color: 'var(--muted-foreground)', fontSize: '10px', maxWidth: '120px', wordBreak: 'break-all' }}
+      >
+        {slot.label}
+      </p>
+      <p
+        className="text-center font-mono leading-tight"
+        style={{ color: 'var(--muted-foreground)', fontSize: '9px', opacity: 0.5, maxWidth: '120px', wordBreak: 'break-all' }}
+      >
+        {slot.key}
+      </p>
+    </div>
+  )
+}
+
+interface SectionProps {
+  title: string
+  note?: string
+  slots: CardSlot[]
+  images: Record<string, string>
+  uploadingKeys: Set<string>
+  onUpload: (key: string, file: File) => Promise<void>
+  onDelete: (key: string) => Promise<void>
+}
+
+function CardSection({ title, note, slots, images, uploadingKeys, onUpload, onDelete }: SectionProps) {
+  return (
+    <div className="mb-10">
+      <div className="mb-4">
+        <h2
+          className="text-xl leading-none"
+          style={{ fontFamily: 'var(--font-serif), Georgia, serif', color: 'var(--foreground)' }}
+        >
+          {title}
+        </h2>
+        {note && (
+          <p className="mt-1 text-xs font-sans" style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}>
+            {note}
+          </p>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-5">
+        {slots.map((slot) => (
+          <CardTile
+            key={slot.key}
+            slot={slot}
+            imageUrl={images[slot.key]}
+            uploading={uploadingKeys.has(slot.key)}
+            onUpload={onUpload}
+            onDelete={onDelete}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function CardImagesPage() {
+  const [images, setImages] = useState<Record<string, string>>({})
+  const [charSlugs, setCharSlugs] = useState<string[]>(DEFAULT_CHAR_SLUGS)
+  const [bibliaDocs, setBibliaDocs] = useState<DocEntry[]>(DEFAULT_BIBLIA_DOCS)
+  const [livroDocs, setLivroDocs] = useState<DocEntry[]>(DEFAULT_LIVRO_DOCS)
+  const [loading, setLoading] = useState(true)
+  const [uploadingKeys, setUploadingKeys] = useState<Set<string>>(new Set())
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  function showToast(type: 'success' | 'error', text: string) {
+    setToast({ type, text })
+    setTimeout(() => setToast(null), 3500)
+  }
+
+  useEffect(() => {
+    async function loadAll() {
+      setLoading(true)
+      try {
+        const [imagesRes, siteRes, charsRes] = await Promise.all([
+          fetch('/api/card-images'),
+          fetch('/api/site-content'),
+          fetch('/api/characters'),
+        ])
+
+        if (imagesRes.ok) {
+          const data = await imagesRes.json()
+          setImages(data.images ?? {})
+        }
+
+        if (siteRes.ok) {
+          const data = await siteRes.json()
+          // API returns { content: [{key, value}] } array
+          const map: Record<string, string> = {}
+          for (const row of (data.content ?? []) as { key: string; value: string }[]) {
+            if (row.key) map[row.key] = row.value
+          }
+          const raw = map['editor.doc_groups']
+          if (raw) {
+            try {
+              const groups = JSON.parse(raw) as DocGroup[]
+              const bibliaGroup = groups.find((g) => g.section === 'Bíblia')
+              const livroGroup = groups.find((g) => g.section === 'Livro')
+              if (bibliaGroup?.docs.length) setBibliaDocs(bibliaGroup.docs)
+              if (livroGroup?.docs.length) setLivroDocs(livroGroup.docs)
+            } catch { /* ignore */ }
+          }
+        }
+
+        if (charsRes.ok) {
+          const data = await charsRes.json()
+          const slugs: string[] = (data.characters ?? []).map((c: { slug: string }) => c.slug).filter(Boolean)
+          if (slugs.length) setCharSlugs(slugs)
+        }
+      } catch { /* ignore */ }
+      finally { setLoading(false) }
+    }
+    loadAll()
+  }, [])
+
+  async function handleUpload(key: string, file: File) {
+    setUploadingKeys((prev) => new Set(prev).add(key))
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('key', key)
+      const res = await fetch('/api/card-images', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (res.ok && data.url) {
+        setImages((prev) => ({ ...prev, [key]: data.url }))
+        showToast('success', `Imagem "${key}" atualizada.`)
+      } else {
+        showToast('error', data.error || 'Erro ao fazer upload.')
+      }
+    } catch {
+      showToast('error', 'Erro de conexão.')
+    } finally {
+      setUploadingKeys((prev) => {
+        const next = new Set(prev)
+        next.delete(key)
+        return next
+      })
+    }
+  }
+
+  async function handleDelete(key: string) {
+    setUploadingKeys((prev) => new Set(prev).add(key))
+    try {
+      const res = await fetch('/api/card-images', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      })
+      if (res.ok) {
+        setImages((prev) => {
+          const next = { ...prev }
+          delete next[key]
+          return next
+        })
+        showToast('success', `Imagem "${key}" removida.`)
+      } else {
+        showToast('error', 'Erro ao remover imagem.')
+      }
+    } catch {
+      showToast('error', 'Erro de conexão.')
+    } finally {
+      setUploadingKeys((prev) => {
+        const next = new Set(prev)
+        next.delete(key)
+        return next
+      })
+    }
+  }
+
+  // Build slot arrays
+  const personagemSlots: CardSlot[] = charSlugs.map((slug) => ({
+    key: `char-${slug}`,
+    label: slug.charAt(0).toUpperCase() + slug.slice(1),
+  }))
+
+  const bibliaSlots: CardSlot[] = bibliaDocs.map((doc) => {
+    const filename = pathFilename(doc.path)
+    return { key: `biblia-${filename}`, label: doc.label }
+  })
+
+  const livroSlots: CardSlot[] = livroDocs.map((doc) => {
+    const filename = pathFilename(doc.path)
+    const urlSlug = livroUrlSlug(filename)
+    return { key: `livro-${urlSlug}`, label: doc.label }
+  })
+
+  const contosSlots: CardSlot[] = charSlugs.map((slug) => ({
+    key: `char-${slug}`,
+    label: slug.charAt(0).toUpperCase() + slug.slice(1),
+  }))
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center px-6 py-4">
+        <p className="text-sm font-sans" style={{ color: 'var(--muted-foreground)' }}>Carregando...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex-1 flex flex-col min-h-0 px-6 py-4 font-sans overflow-y-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1
+          className="text-3xl leading-none mb-1.5"
+          style={{ fontFamily: 'var(--font-serif), Georgia, serif', color: 'var(--foreground)' }}
+        >
+          Imagens de Cards
+        </h1>
+        <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
+          Clique em um card para alterar a imagem.
+        </p>
+      </div>
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className="fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg"
+          style={{
+            background: toast.type === 'success'
+              ? 'color-mix(in oklch, var(--accent) 15%, var(--card))'
+              : 'color-mix(in oklch, oklch(0.55 0.18 25) 15%, var(--card))',
+            border: `1px solid ${toast.type === 'success' ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'color-mix(in oklch, oklch(0.55 0.18 25) 35%, transparent)'}`,
+            color: 'var(--foreground)',
+          }}
+        >
+          {toast.type === 'success' ? (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent)', flexShrink: 0 }}>
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          ) : (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'oklch(0.65 0.2 25)', flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          )}
+          {toast.text}
+        </div>
+      )}
+
+      <CardSection
+        title="Personagens"
+        slots={personagemSlots}
+        images={images}
+        uploadingKeys={uploadingKeys}
+        onUpload={handleUpload}
+        onDelete={handleDelete}
+      />
+
+      <CardSection
+        title="Bíblia"
+        slots={bibliaSlots}
+        images={images}
+        uploadingKeys={uploadingKeys}
+        onUpload={handleUpload}
+        onDelete={handleDelete}
+      />
+
+      <CardSection
+        title="Livro"
+        slots={livroSlots}
+        images={images}
+        uploadingKeys={uploadingKeys}
+        onUpload={handleUpload}
+        onDelete={handleDelete}
+      />
+
+      <CardSection
+        title="Contos"
+        note="Compartilha imagem com Personagens — mesma chave char-{slug}"
+        slots={contosSlots}
+        images={images}
+        uploadingKeys={uploadingKeys}
+        onUpload={handleUpload}
+        onDelete={handleDelete}
+      />
     </div>
   )
 }

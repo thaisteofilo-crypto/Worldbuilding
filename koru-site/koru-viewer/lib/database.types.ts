@@ -20,6 +20,11 @@ export interface Character {
   ability: string | null
   status: string | null
   origin: string | null
+  species: string | null
+  location: string | null
+  mark: string | null
+  quote: string | null
+  description: string | null
   image_url: string | null
   created_at: string
   updated_at: string

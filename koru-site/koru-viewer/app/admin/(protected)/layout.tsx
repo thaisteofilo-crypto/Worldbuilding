@@ -35,7 +35,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: 'oklch(0.96 0.005 280)' }}>
+    <div className="flex min-h-screen" style={{ background: 'var(--background)' }}>
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
         <main className="flex-1 overflow-auto p-6">{children}</main>

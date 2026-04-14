@@ -1,4 +1,5 @@
 # KORÚ, Bíblia do Mundo
+
 ## PARTE 0, DEFINIÇÕES FUNDACIONAIS
 
 ---
@@ -7,7 +8,7 @@
 
 Korú é um mundo cuja física é baseada em memória. Memória tem peso, frequência e consequência material. Criaturas são constituídas por memória solidificada. O solo armazena e processa memória. Árvores arquivam memória. O que é esquecido não desaparece, muda de estado.
 
-Não é um planeta com ecologia. É uma câmara fechada, o Akwu, que sustenta seu próprio ciclo de energia sem fonte externa. Nada entra de fora. O sistema precisa circular o que tem.
+Não é um planeta com ecologia. É uma câmara fechada, o Akwu, que sustenta seu próprio ciclo de energia sem fonte externa. Nada entra de fora. O sistema precisa circular o que te,.
 
 ### O QUE KORÚ NÃO É
 
@@ -24,18 +25,6 @@ A tensão central não é entre bem e mal, mas entre acumular e processar. O que
 
 ### INFLUÊNCIAS LINGUÍSTICAS
 
-| Língua | Aplicação em Korú |
-|---|---|
-| Yoruba | Nomes de lugares, conceitos cosmológicos, governo |
-| Igbo | Nomes de criaturas, sistemas de acordos, cosmologia |
-| Swahili | Tecnologia, estados de ser, estados climáticos |
-| Zulu | Fenômenos climáticos, poder natural |
-| Amhárico | Nomes próprios específicos |
-| Bambara | Terra, raízes, ancestralidade |
-| Malaio | Geografia e ambiente |
-| Bengali | Conceitos filosóficos sutis |
-| Edo | Nomes de personagens específicos (Nigéria) |
-
 ### PALETA DE TOM GERAL
 
 - **Melancolia funcional**, a tristeza que não paralisa
@@ -46,14 +35,5 @@ A tensão central não é entre bem e mal, mas entre acumular e processar. O que
 ### REFERÊNCIA VISUAL FUNDACIONAL
 
 **Estilo geral:** pintura plana, formas geométricas limpas, perspectiva atmosférica por valor (escuro-claro), sem linha de contorno explícita.
-
-| Elemento | Descrição visual |
-|---|---|
-| Troncos de Ariku | Carvão escuro, quase roxo. Verticais, alongados. Interior vermelho-sangue visível nas rachaduras. |
-| Bomi Veh | Chão lilás-rosado, plano, textura suave. Fosforescência discreta, nunca ominosa, nunca de baixo para cima. |
-| Azuri | Figura pequena, luminosa, branco-amarelada. Halo de presença, não de claridade. |
-| Orunjó | Blocos geométricos angulares. Estrutura urbana recuada atrás da floresta. |
-| Atmosfera | Roxa-acinzentada. Luz difusa sem fonte visível no frame. |
-| Mood | Quietude. Solidão habitada. Beleza que não pede atenção, existe mesmo assim. |
 
 **Nota técnica para ilustradores:** A luz em Korú não tem fonte visível dentro do quadro. Ela está "no ar", como dia muito nublado onde a claridade vem de todo lugar. As Ariku não emitem raios; redistribuem a qualidade luminosa do teto do Akwu lateralmente. O Bomi Veh não irradia de baixo para cima, tem fosforescência horizontal e suave, como musgo bioluminescente.

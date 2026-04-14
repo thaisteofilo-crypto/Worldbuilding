@@ -4,23 +4,25 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
-import {
-  BIBLIA_ITEMS,
-  LIVRO_ITEMS,
-  CONTOS_ITEMS,
-  PERSONAGENS_ITEMS,
-} from "@/lib/navigation"
 
-function NavItem({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
+interface NavItem { slug: string; title: string }
+interface DocEntry { label: string; path: string }
+interface DocGroup { section: string; docs: DocEntry[] }
+
+function docToSlug(doc: DocEntry, section: string): NavItem {
+  const filename = doc.path.replace(/\.md$/, "").split("/").pop() ?? ""
+  if (section === "Bíblia") return { slug: filename, title: doc.label }
+  if (section === "Livro") {
+    const slug = filename === "epilogo" ? "epilogo" : filename.replace(/^capitulo-/, "")
+    return { slug, title: doc.label }
+  }
+  // Contos
+  return { slug: filename.replace(/^conto-/, ""), title: doc.label }
+}
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   const pathname = usePathname()
   const isActive = pathname === href
-
   return (
     <li>
       <Link
@@ -38,15 +40,7 @@ function NavItem({
   )
 }
 
-function CollapsibleSection({
-  title,
-  items,
-  basePath,
-}: {
-  title: string
-  items: { slug: string; title: string }[]
-  basePath: string
-}) {
+function CollapsibleSection({ title, items, basePath }: { title: string; items: NavItem[]; basePath: string }) {
   const pathname = usePathname()
   const isActiveSection = pathname.startsWith(basePath)
   const [open, setOpen] = React.useState(isActiveSection)
@@ -56,18 +50,16 @@ function CollapsibleSection({
       <button
         onClick={() => setOpen(!open)}
         className="w-full text-left py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
-        style={{
-          color: "var(--foreground)",
-        }}
+        style={{ color: "var(--foreground)" }}
       >
         {title}
       </button>
       {open && (
         <ul className="mt-1 mb-2">
           {items.map((item) => (
-            <NavItem key={item.slug} href={`${basePath}/${item.slug}`}>
+            <NavLink key={item.slug} href={`${basePath}/${item.slug}`}>
               {item.title}
-            </NavItem>
+            </NavLink>
           ))}
         </ul>
       )}
@@ -76,6 +68,27 @@ function CollapsibleSection({
 }
 
 export function NavSidebar() {
+  const [bibliaItems, setBibliaItems] = React.useState<NavItem[]>([])
+  const [livroItems, setLivroItems] = React.useState<NavItem[]>([])
+  const [contosItems, setContosItems] = React.useState<NavItem[]>([])
+  const [personagensItems, setPersonagensItems] = React.useState<NavItem[]>([])
+
+  React.useEffect(() => {
+    fetch("/api/docs")
+      .then((r) => r.json())
+      .then((data) => {
+        const groups: DocGroup[] = data.groups ?? []
+        const biblia = groups.find((g) => g.section === "Bíblia")?.docs ?? []
+        const livro = groups.find((g) => g.section === "Livro")?.docs ?? []
+        const contos = groups.find((g) => g.section === "Contos")?.docs ?? []
+        setBibliaItems(biblia.map((d) => docToSlug(d, "Bíblia")))
+        setLivroItems(livro.map((d) => docToSlug(d, "Livro")))
+        setContosItems(contos.map((d) => docToSlug(d, "Contos")))
+        setPersonagensItems(data.personagens ?? [])
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <Sidebar
       style={{ width: "260px" }}
@@ -87,25 +100,20 @@ export function NavSidebar() {
           <Link
             href="/"
             className="font-serif text-5xl leading-none transition-opacity hover:opacity-80 mb-6"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              color: "var(--foreground)",
-            }}
+            style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--foreground)" }}
           >
             Korú
           </Link>
 
-          <CollapsibleSection title="Bíblia" items={BIBLIA_ITEMS} basePath="/biblia" />
-          <CollapsibleSection title="Livro" items={LIVRO_ITEMS} basePath="/livro" />
-          <CollapsibleSection title="Contos" items={CONTOS_ITEMS} basePath="/contos" />
-          <CollapsibleSection title="Personagens" items={PERSONAGENS_ITEMS} basePath="/personagens" />
+          <CollapsibleSection title="Bíblia" items={bibliaItems} basePath="/biblia" />
+          <CollapsibleSection title="Livro" items={livroItems} basePath="/livro" />
+          <CollapsibleSection title="Contos" items={contosItems} basePath="/contos" />
+          <CollapsibleSection title="Personagens" items={personagensItems} basePath="/personagens" />
 
           <Link
             href="/galeria"
             className="py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
-            style={{
-              color: "var(--foreground)",
-            }}
+            style={{ color: "var(--foreground)" }}
           >
             Galeria
           </Link>

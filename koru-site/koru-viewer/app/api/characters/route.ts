@@ -7,6 +7,7 @@ export async function GET() {
   const { data: characters, error } = await admin
     .from("characters")
     .select("*")
+    .order("order_index", { ascending: true, nullsFirst: false })
     .order("name")
 
   if (error) {
@@ -60,7 +61,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 })
   }
 
-  const allowed = ["name", "role", "morphology", "ability", "status", "origin", "accent_color", "gradient"]
+  const allowed = ["name", "role", "morphology", "ability", "status", "origin", "species", "location", "mark", "quote", "description", "accent_color", "gradient", "order_index"]
   const updates: Record<string, string | null> = {}
   for (const key of allowed) {
     if (key in fields) {
@@ -79,5 +80,14 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  return NextResponse.json({ ok: true })
+}
+
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json()
+  if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 })
+  const admin = createAdminClient()
+  const { error } = await admin.from("characters").delete().eq("id", id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })
 }

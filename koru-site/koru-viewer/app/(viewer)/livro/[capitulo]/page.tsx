@@ -1,4 +1,4 @@
-import { readMarkdown, livroChapters } from "@/lib/content"
+import { readMarkdown, livroChapters, getLivroItems } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -6,7 +6,6 @@ import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
-import { LIVRO_ITEMS } from "@/lib/navigation"
 
 interface Props {
   params: Promise<{ capitulo: string }>
@@ -55,7 +54,8 @@ export default async function LivroPage({ params }: Props) {
   const doc = readMarkdown(filePath)
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 
-  const item = LIVRO_ITEMS.find((i) => i.slug === capitulo)
+  const livroItems = getLivroItems()
+  const item = livroItems.find((i) => i.slug === capitulo)
 
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
@@ -68,7 +68,7 @@ export default async function LivroPage({ params }: Props) {
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
         <MDXRemote source={safeContent} components={literaryComponents} options={mdxOptions} />
         {capitulo !== "epilogo" && (
-          <DocNav items={LIVRO_ITEMS} current={capitulo} basePath="/livro" />
+          <DocNav items={livroItems} current={capitulo} basePath="/livro" />
         )}
       </article>
     </ScrollArea>

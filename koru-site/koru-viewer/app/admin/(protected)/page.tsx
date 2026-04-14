@@ -79,6 +79,29 @@ function ProgressRing({ value, max, size = 48, color }: { value: number; max: nu
   )
 }
 
+/* ─── Emotion cache helpers ─── */
+
+const EMOTION_CACHE_KEY = "koru-emotion-cache"
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+
+function loadEmotionCache(): Record<string, { data: ChapterEmotion; ts: number }> {
+  try {
+    return JSON.parse(localStorage.getItem(EMOTION_CACHE_KEY) ?? "{}")
+  } catch {
+    return {}
+  }
+}
+
+function saveEmotionCache(cache: Record<string, { data: ChapterEmotion; ts: number }>) {
+  try {
+    localStorage.setItem(EMOTION_CACHE_KEY, JSON.stringify(cache))
+  } catch {}
+}
+
+function cacheToArray(cache: Record<string, ChapterEmotion>): ChapterEmotion[] {
+  return Object.values(cache)
+}
+
 /* ─── Main Dashboard ─── */
 
 export default function AdminDashboardPage() {
@@ -86,6 +109,8 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [emotionData, setEmotionData] = useState<ChapterEmotion[]>([])
   const [analyzingEmotions, setAnalyzingEmotions] = useState(false)
+  const [emotionProgress, setEmotionProgress] = useState<{ current: number; total: number } | null>(null)
+  const [emotionErrors, setEmotionErrors] = useState(0)
 
   useEffect(() => {
     fetch("/api/analytics")
@@ -94,27 +119,81 @@ export default function AdminDashboardPage() {
       .catch(() => setLoading(false))
   }, [])
 
+  const clearEmotionCache = useCallback(() => {
+    try { localStorage.removeItem(EMOTION_CACHE_KEY) } catch {}
+    setEmotionData([])
+  }, [])
+
   const analyzeEmotions = useCallback(async () => {
     if (!analytics || analytics.chapters.length === 0) return
     setAnalyzingEmotions(true)
-    const results: ChapterEmotion[] = []
-    for (const ch of analytics.chapters) {
-      try {
-        const res = await fetch("/api/analyze-emotion", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chapter: ch.slug }),
-        })
-        if (res.ok) {
-          const data = await res.json()
-          results.push(data)
-          setEmotionData([...results])
-        }
-      } catch {
-        // skip failed chapters
+    setEmotionErrors(0)
+
+    const chapters = analytics.chapters
+    const BATCH_SIZE = 3
+    const now = Date.now()
+
+    // Load cache and seed already-valid results immediately
+    const cache = loadEmotionCache()
+    const liveResults: Record<string, ChapterEmotion> = {}
+
+    chapters.forEach((ch) => {
+      const cached = cache[ch.slug]
+      if (cached && now - cached.ts <= CACHE_TTL_MS) {
+        liveResults[ch.slug] = cached.data
       }
+    })
+
+    if (Object.keys(liveResults).length > 0) {
+      setEmotionData(cacheToArray(liveResults))
     }
+
+    const chaptersToAnalyze = chapters.filter((ch) => {
+      const cached = cache[ch.slug]
+      return !cached || now - cached.ts > CACHE_TTL_MS
+    })
+
+    setEmotionProgress({ current: chapters.length - chaptersToAnalyze.length, total: chapters.length })
+
+    let errorCount = 0
+
+    for (let i = 0; i < chaptersToAnalyze.length; i += BATCH_SIZE) {
+      const batch = chaptersToAnalyze.slice(i, i + BATCH_SIZE)
+
+      const batchResults = await Promise.allSettled(
+        batch.map((ch) =>
+          fetch("/api/analyze-emotion", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chapter: ch.slug }),
+          })
+            .then((r) => r.json())
+            .then((data: ChapterEmotion) => ({ slug: ch.slug, data }))
+        )
+      )
+
+      const updatedCache = loadEmotionCache()
+
+      batchResults.forEach((result) => {
+        if (result.status === "fulfilled" && result.value.data?.emotions) {
+          const { slug, data } = result.value
+          liveResults[slug] = data
+          updatedCache[slug] = { data, ts: Date.now() }
+        } else {
+          errorCount++
+        }
+      })
+
+      saveEmotionCache(updatedCache)
+
+      const processed = chapters.length - chaptersToAnalyze.length + Math.min(i + BATCH_SIZE, chaptersToAnalyze.length)
+      setEmotionProgress({ current: processed, total: chapters.length })
+      setEmotionData(cacheToArray(liveResults))
+      setEmotionErrors(errorCount)
+    }
+
     setAnalyzingEmotions(false)
+    setEmotionProgress(null)
   }, [analytics])
 
   if (loading) {
@@ -162,81 +241,110 @@ export default function AdminDashboardPage() {
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Palavras" value={formatNumber(analytics.totalWords)} sub="no universo" icon={<WordsIcon />} color="oklch(0.45 0.12 290)" />
-        <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="oklch(0.48 0.12 65)" />
-        <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="oklch(0.42 0.10 230)" />
-        <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.45 0.12 150)" />
+        <StatCard label="Palavras" value={formatNumber(analytics.totalWords)} sub="no universo" icon={<WordsIcon />} color="var(--accent)" />
+        <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="var(--gold)" />
+        <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" />
+        <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" />
       </div>
 
-      {/* Two columns: Story Arc + AI Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Story Arc */}
-        <div className="lg:col-span-2 rounded-xl p-6 glass-card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div>
-                <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Arco da Historia</h2>
-                <p className="font-sans text-xs mt-0.5" style={{ color: "var(--muted-foreground)" }}>Tensao narrativa por capitulo</p>
+      {/* Diagnóstico — full width, 2-col grid */}
+      <div className="rounded-xl p-6 glass-card mb-6">
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "color-mix(in oklch, var(--muted-foreground) 12%, transparent)" }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+          <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Diagnostico</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {insights.map((insight, i) => (
+            <div key={i} className="rounded-lg p-4" style={{ background: "var(--surface)" }}>
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 shrink-0">
+                  <span
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-sans font-bold"
+                    style={{ background: insight.color + "22", color: insight.color }}
+                  >
+                    {insight.type === "fix" ? "!" : insight.type === "gap" ? "?" : insight.type === "rhythm" ? "~" : insight.type === "coverage" ? "○" : "✓"}
+                  </span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <p className="font-sans text-sm font-medium leading-snug" style={{ color: "var(--foreground)" }}>{insight.title}</p>
+                    {insight.category && (
+                      <span className="font-sans text-[9px] uppercase tracking-wider shrink-0" style={{ color: insight.color, opacity: 0.8 }}>{insight.category}</span>
+                    )}
+                  </div>
+                  <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{insight.body}</p>
+                  {insight.action && (
+                    <p className="font-sans text-[11px] mt-1.5 font-medium" style={{ color: insight.color }}>→ {insight.action}</p>
+                  )}
+                </div>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Story Arc — compact strip */}
+      <div className="rounded-xl p-5 glass-card mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-4">
+            <div>
+              <h2 className="font-serif text-base" style={{ color: "var(--foreground)" }}>Arco da Historia</h2>
+              <p className="font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>Tensao narrativa por capitulo</p>
+            </div>
+            <div className="flex items-center gap-2">
               <button
                 onClick={analyzeEmotions}
                 disabled={analyzingEmotions || !analytics || analytics.chapters.length === 0}
-                className="rounded-full px-4 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                className="rounded-full px-3 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-50 flex items-center gap-1.5"
                 style={{ background: "oklch(0.40 0.12 290)", color: "white" }}
               >
                 {analyzingEmotions ? (
                   <>
-                    <span className="w-3 h-3 rounded-full border border-white/40 border-t-white animate-spin" />
-                    Analisando...
+                    <svg className="animate-spin shrink-0" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                    {emotionProgress ? `${emotionProgress.current}/${emotionProgress.total}` : "..."}
                   </>
                 ) : (
                   <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                     </svg>
-                    Analisar com IA
+                    Analisar IA
                   </>
                 )}
               </button>
-            </div>
-            <div className="flex gap-3">
-              <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.45 0.12 290)" }} /> Tensao
-              </span>
-              <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.48 0.12 65)" }} /> Palavras
-              </span>
+              {emotionData.length > 0 && !analyzingEmotions && (
+                <button
+                  onClick={clearEmotionCache}
+                  className="rounded-full px-2.5 py-1.5 font-sans text-[10px] transition-opacity hover:opacity-70"
+                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                  title="Limpar cache"
+                >
+                  Limpar
+                </button>
+              )}
+              {emotionErrors > 0 && !analyzingEmotions && (
+                <span className="font-sans text-[10px]" style={{ color: "oklch(0.55 0.18 27)" }}>
+                  {emotionErrors} erro{emotionErrors > 1 ? "s" : ""}
+                </span>
+              )}
             </div>
           </div>
-          <StoryArcChart chapters={chapters} />
-        </div>
-
-        {/* AI Insights */}
-        <div className="rounded-xl p-6 glass-card">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "color-mix(in oklch, var(--muted-foreground) 12%, transparent)" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </div>
-            <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Analise IA</h2>
-          </div>
-          <div className="flex flex-col gap-3">
-            {insights.map((insight, i) => (
-              <div key={i} className="rounded-lg p-3" style={{ background: "var(--surface)" }}>
-                <div className="flex items-start gap-2">
-                  <span className="mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-sans font-bold" style={{ background: insight.color + "22", color: insight.color }}>
-                    {insight.type === "peak" ? "P" : insight.type === "warn" ? "!" : insight.type === "tip" ? "i" : "✓"}
-                  </span>
-                  <div>
-                    <p className="font-sans text-xs font-medium leading-snug" style={{ color: "var(--foreground)" }}>{insight.title}</p>
-                    <p className="font-sans text-[11px] mt-0.5 leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{insight.body}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="flex gap-3">
+            <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.45 0.12 290)" }} /> Tensao
+            </span>
+            <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.48 0.12 65)" }} /> Palavras
+            </span>
           </div>
         </div>
+        <StoryArcChart chapters={chapters} />
       </div>
 
       {/* Emotion Analysis */}
@@ -288,26 +396,26 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Progress bars */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <ProgressCard
           label="Biblia"
           value={analytics.bibliaComplete}
           max={9}
-          color="oklch(0.48 0.12 65)"
+          color="var(--gold)"
           words={analytics.sectionWords.biblia ?? 0}
         />
         <ProgressCard
           label="Livro"
           value={analytics.livroChapters}
           max={7}
-          color="oklch(0.42 0.10 230)"
+          color="var(--blue-cold)"
           words={analytics.sectionWords.livro ?? 0}
         />
         <ProgressCard
           label="Contos"
           value={analytics.contosWritten}
           max={analytics.totalContos}
-          color="oklch(0.45 0.12 290)"
+          color="var(--accent)"
           words={analytics.sectionWords.contos ?? 0}
         />
       </div>
@@ -322,12 +430,15 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Quick links grid */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
-        <QuickLink href="/admin/tasks" label="Tarefas" count={taskStats.todo} icon={<TasksIcon />} />
-        <QuickLink href="/admin/documents" label="Documentos" count={analytics.totalDocuments} icon={<DocsIcon />} />
-        <QuickLink href="/admin/characters" label="Personagens" count={analytics.totalCharacters} icon={<CharsIcon />} />
-        <QuickLink href="/admin/banners" label="Banners" count={analytics.totalBanners} icon={<BannersIcon />} />
-        <QuickLink href="/admin/gallery" label="Galeria" count={analytics.totalGallery} icon={<GalleryIcon />} />
+      <div className="mb-6">
+        <p className="font-sans text-[10px] uppercase tracking-[0.2em] mb-3" style={{ color: "var(--muted-foreground)" }}>Acesso rapido</p>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <QuickLink href="/admin/tasks" label="Tarefas" count={taskStats.todo} icon={<TasksIcon />} />
+          <QuickLink href="/admin/documents" label="Documentos" count={analytics.totalDocuments} icon={<DocsIcon />} />
+          <QuickLink href="/admin/characters" label="Personagens" count={analytics.totalCharacters} icon={<CharsIcon />} />
+          <QuickLink href="/admin/banners" label="Banners" count={analytics.totalBanners} icon={<BannersIcon />} />
+          <QuickLink href="/admin/gallery" label="Galeria" count={analytics.totalGallery} icon={<GalleryIcon />} />
+        </div>
       </div>
 
       {/* Recent tasks */}
@@ -350,73 +461,111 @@ function StoryArcChart({ chapters }: { chapters: ChapterData[] }) {
   }
 
   const maxTension = Math.max(...chapters.map((c) => c.tensionScore), 1)
-  const maxWords = Math.max(...chapters.map((c) => c.words), 1)
-  const W = 600
-  const H = 200
-  const padX = 40
-  const padY = 20
+  // Use log scale for words to avoid Cap01 crushing everything else
+  const wordValues = chapters.map((c) => Math.log(Math.max(c.words, 1)))
+  const maxWordLog = Math.max(...wordValues, 1)
+
+  const W = 640
+  const H = 120
+  const padX = 12
+  const padTop = 20
+  const padBottom = 20
   const chartW = W - padX * 2
-  const chartH = H - padY * 2
+  const chartH = H - padTop - padBottom
+
+  const getX = (i: number) => padX + (i / Math.max(chapters.length - 1, 1)) * chartW
 
   const tensionPoints = chapters.map((c, i) => {
-    const x = padX + (i / Math.max(chapters.length - 1, 1)) * chartW
-    const y = padY + chartH - (c.tensionScore / maxTension) * chartH
-    return `${x},${y}`
+    const x = getX(i)
+    const y = padTop + chartH - (c.tensionScore / maxTension) * chartH
+    return { x, y, str: `${x},${y}` }
   })
 
   const wordPoints = chapters.map((c, i) => {
-    const x = padX + (i / Math.max(chapters.length - 1, 1)) * chartW
-    const y = padY + chartH - (c.words / maxWords) * chartH
-    return `${x},${y}`
+    const x = getX(i)
+    const y = padTop + chartH - (wordValues[i] / maxWordLog) * chartH
+    return { x, y, str: `${x},${y}` }
   })
 
-  // Find peak tension chapter
+  // Smooth curve helper
+  const smoothPath = (pts: { x: number; y: number }[]) => {
+    if (pts.length < 2) return ""
+    let d = `M ${pts[0].x} ${pts[0].y}`
+    for (let i = 0; i < pts.length - 1; i++) {
+      const cx = (pts[i].x + pts[i + 1].x) / 2
+      d += ` C ${cx} ${pts[i].y}, ${cx} ${pts[i + 1].y}, ${pts[i + 1].x} ${pts[i + 1].y}`
+    }
+    return d
+  }
+
+  const tensionPath = smoothPath(tensionPoints)
+  const wordPath = smoothPath(wordPoints)
+  const wordAreaPath = wordPath + ` L ${wordPoints[wordPoints.length - 1].x},${padTop + chartH} L ${wordPoints[0].x},${padTop + chartH} Z`
+
   const peakIdx = chapters.reduce((best, c, i) => c.tensionScore > chapters[best].tensionScore ? i : best, 0)
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: "220px" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="wordsFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="oklch(0.48 0.12 65)" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="oklch(0.48 0.12 65)" stopOpacity="0.02" />
+        </linearGradient>
+        <linearGradient id="tensionStroke" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="oklch(0.45 0.12 290)" />
+          <stop offset="100%" stopColor="oklch(0.50 0.15 290)" />
+        </linearGradient>
+      </defs>
+
       {/* Grid lines */}
-      {[0, 0.25, 0.5, 0.75, 1].map((v) => {
-        const y = padY + chartH - v * chartH
-        return <line key={v} x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" />
+      {[0, 0.5, 1].map((v) => {
+        const y = padTop + chartH - v * chartH
+        return <line key={v} x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" strokeDasharray={v === 0 ? "none" : "3,4"} />
       })}
 
-      {/* Words area (filled) */}
-      <polygon
-        points={`${padX},${padY + chartH} ${wordPoints.join(" ")} ${padX + chartW},${padY + chartH}`}
-        fill="oklch(0.48 0.12 65 / 0.08)"
-      />
-      <polyline points={wordPoints.join(" ")} fill="none" stroke="oklch(0.48 0.12 65 / 0.4)" strokeWidth="1.5" />
+      {/* Words area (filled + line) */}
+      <path d={wordAreaPath} fill="url(#wordsFill)" />
+      <path d={wordPath} fill="none" stroke="oklch(0.48 0.12 65 / 0.5)" strokeWidth="1.5" />
 
-      {/* Tension line */}
-      <polyline points={tensionPoints.join(" ")} fill="none" stroke="oklch(0.45 0.12 290)" strokeWidth="2.5" strokeLinejoin="round" />
+      {/* Word dots */}
+      {chapters.map((c, i) => (
+        <g key={`w-${c.slug}`}>
+          <circle cx={wordPoints[i].x} cy={wordPoints[i].y} r="2" fill="oklch(0.48 0.12 65 / 0.6)" />
+          <text x={wordPoints[i].x} y={wordPoints[i].y - 6} textAnchor="middle" className="font-sans" fill="oklch(0.48 0.12 65 / 0.7)" fontSize="7">
+            {c.words >= 1000 ? (c.words / 1000).toFixed(1) + "k" : c.words}
+          </text>
+        </g>
+      ))}
 
-      {/* Tension dots */}
+      {/* Tension line (smooth curve) */}
+      <path d={tensionPath} fill="none" stroke="url(#tensionStroke)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* Tension dots + values */}
       {chapters.map((c, i) => {
-        const x = padX + (i / Math.max(chapters.length - 1, 1)) * chartW
-        const y = padY + chartH - (c.tensionScore / maxTension) * chartH
+        const { x, y } = tensionPoints[i]
         const isPeak = i === peakIdx
         return (
-          <g key={c.slug}>
-            <circle cx={x} cy={y} r={isPeak ? 5 : 3} fill={isPeak ? "oklch(0.55 0.18 27)" : "oklch(0.45 0.12 290)"} />
+          <g key={`t-${c.slug}`}>
+            {isPeak && <circle cx={x} cy={y} r="10" fill="oklch(0.55 0.18 27 / 0.1)" />}
+            <circle cx={x} cy={y} r={isPeak ? 4.5 : 3} fill={isPeak ? "oklch(0.55 0.18 27)" : "oklch(0.45 0.12 290)"} stroke={isPeak ? "oklch(0.55 0.18 27 / 0.3)" : "none"} strokeWidth="2" />
             {isPeak && (
-              <text x={x} y={y - 10} textAnchor="middle" className="font-sans" fill="oklch(0.55 0.18 27)" fontSize="9" fontWeight="600">
+              <text x={x} y={y - 14} textAnchor="middle" className="font-sans" fill="oklch(0.55 0.18 27)" fontSize="8" fontWeight="700" letterSpacing="0.5">
                 PICO
               </text>
             )}
+            <text x={x} y={y + (isPeak ? 16 : 13)} textAnchor="middle" className="font-sans" fill="oklch(0.45 0.12 290 / 0.8)" fontSize="7" fontWeight="500">
+              {c.tensionScore}
+            </text>
           </g>
         )
       })}
 
       {/* X axis labels */}
-      {chapters.map((c, i) => {
-        const x = padX + (i / Math.max(chapters.length - 1, 1)) * chartW
-        return (
-          <text key={c.slug} x={x} y={H - 2} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9">
-            {c.slug === "epilogo" ? "Epi" : `Cap ${c.slug}`}
-          </text>
-        )
-      })}
+      {chapters.map((c, i) => (
+        <text key={`lbl-${c.slug}`} x={getX(i)} y={H - 4} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9" fontWeight={i === peakIdx ? "600" : "400"}>
+          {c.slug === "epilogo" ? "Epi" : `Cap ${c.slug}`}
+        </text>
+      ))}
     </svg>
   )
 }
@@ -436,12 +585,13 @@ const EMOTION_COLORS: Record<string, string> = {
 function EmotionChart({ data }: { data: ChapterEmotion[] }) {
   if (data.length === 0) return null
 
-  const W = 600
-  const H = 220
-  const padX = 50
-  const padY = 20
+  const W = 640
+  const H = 180
+  const padX = 36
+  const padTop = 16
+  const padBottom = 22
   const chartW = W - padX * 2
-  const chartH = H - padY * 2
+  const chartH = H - padTop - padBottom
 
   const emotionNames = ["melancolia", "esperança", "medo", "ternura", "tensão"]
   const colors = [
@@ -452,40 +602,51 @@ function EmotionChart({ data }: { data: ChapterEmotion[] }) {
     "oklch(0.42 0.10 230)",
   ]
 
+  const getX = (i: number) => padX + (i / Math.max(data.length - 1, 1)) * chartW
+
+  // Smooth curve helper
+  const smoothPath = (pts: { x: number; y: number }[]) => {
+    if (pts.length < 2) return ""
+    let d = `M ${pts[0].x} ${pts[0].y}`
+    for (let i = 0; i < pts.length - 1; i++) {
+      const cx = (pts[i].x + pts[i + 1].x) / 2
+      d += ` C ${cx} ${pts[i].y}, ${cx} ${pts[i + 1].y}, ${pts[i + 1].x} ${pts[i + 1].y}`
+    }
+    return d
+  }
+
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: "240px" }}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet">
         {/* Grid lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((v) => {
-          const y = padY + chartH - v * chartH
+          const y = padTop + chartH - v * chartH
           return (
             <g key={v}>
-              <line x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" />
-              <text x={padX - 6} y={y + 3} textAnchor="end" className="font-sans" fill="var(--muted-foreground)" fontSize="8">
+              <line x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" strokeDasharray={v === 0 ? "none" : "3,4"} />
+              <text x={padX - 5} y={y + 3} textAnchor="end" className="font-sans" fill="var(--muted-foreground)" fontSize="7">
                 {Math.round(v * 100)}%
               </text>
             </g>
           )
         })}
 
-        {/* Emotion lines */}
+        {/* Emotion smooth curves */}
         {emotionNames.map((name, ei) => {
-          const points = data.map((ch, i) => {
+          const pts = data.map((ch, i) => {
             const emotion = ch.emotions.find((e) => e.name === name)
             const intensity = emotion?.intensity ?? 0
-            const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
-            const y = padY + chartH - intensity * chartH
-            return `${x},${y}`
+            return { x: getX(i), y: padTop + chartH - intensity * chartH }
           })
           return (
-            <polyline
+            <path
               key={name}
-              points={points.join(" ")}
+              d={smoothPath(pts)}
               fill="none"
               stroke={colors[ei]}
               strokeWidth="2"
-              strokeLinejoin="round"
               strokeLinecap="round"
+              strokeLinejoin="round"
             />
           )
         })}
@@ -495,8 +656,8 @@ function EmotionChart({ data }: { data: ChapterEmotion[] }) {
           data.map((ch, i) => {
             const emotion = ch.emotions.find((e) => e.name === name)
             const intensity = emotion?.intensity ?? 0
-            const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
-            const y = padY + chartH - intensity * chartH
+            const x = getX(i)
+            const y = padTop + chartH - intensity * chartH
             return (
               <circle key={`${name}-${ch.chapter}`} cx={x} cy={y} r={2.5} fill={colors[ei]} />
             )
@@ -504,18 +665,15 @@ function EmotionChart({ data }: { data: ChapterEmotion[] }) {
         )}
 
         {/* X axis labels */}
-        {data.map((ch, i) => {
-          const x = padX + (i / Math.max(data.length - 1, 1)) * chartW
-          return (
-            <text key={ch.chapter} x={x} y={H - 2} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9">
-              {ch.chapter === "epilogo" ? "Epi" : `Cap ${ch.chapter}`}
-            </text>
-          )
-        })}
+        {data.map((ch, i) => (
+          <text key={ch.chapter} x={getX(i)} y={H - 4} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9">
+            {ch.chapter === "epilogo" ? "Epi" : `Cap ${ch.chapter}`}
+          </text>
+        ))}
       </svg>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-3 mt-2 justify-center">
+      <div className="flex flex-wrap gap-4 mt-1 justify-center">
         {emotionNames.map((name, i) => (
           <span key={name} className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
             <span className="w-2 h-2 rounded-full" style={{ background: colors[i] }} />
@@ -613,15 +771,15 @@ function ProgressCard({ label, value, max, color, words }: { label: string; valu
 
 function StatCard({ label, value, sub, icon, color }: { label: string; value: string; sub: string; icon: React.ReactNode; color: string }) {
   return (
-    <div className="rounded-xl p-5 glass-card">
+    <div className="rounded-xl p-5 glass-card" style={{ borderTop: `2px solid color-mix(in oklch, ${color} 40%, transparent)` }}>
       <div className="flex items-center justify-between mb-3">
-        <span className="font-sans text-xs uppercase tracking-[0.1em]" style={{ color: "var(--muted-foreground)" }}>{label}</span>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "color-mix(in oklch, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)" }}>
+        <span className="font-sans text-xs uppercase tracking-[0.12em]" style={{ color: "var(--muted-foreground)" }}>{label}</span>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `color-mix(in oklch, ${color} 14%, transparent)`, color }}>
           {icon}
         </div>
       </div>
       <p className="font-serif text-3xl leading-none" style={{ color: "var(--foreground)" }}>{value}</p>
-      <p className="font-sans text-[11px] mt-1" style={{ color: "var(--muted-foreground)" }}>{sub}</p>
+      <p className="font-sans text-[11px] mt-1.5" style={{ color: "var(--muted-foreground)" }}>{sub}</p>
     </div>
   )
 }
@@ -632,9 +790,18 @@ function QuickLink({ href, label, count, icon }: { href: string; label: string; 
   return (
     <Link
       href={href}
-      className="rounded-xl p-4 flex items-center gap-3 transition-all duration-150 hover:scale-[1.02] glass-card"
+      className="group rounded-xl p-4 flex items-center gap-3 transition-all duration-150 hover:scale-[1.02] glass-card"
+      style={{ borderLeft: '2px solid transparent' }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderLeft = '2px solid var(--accent)'
+        e.currentTarget.style.paddingLeft = 'calc(1rem - 2px)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderLeft = '2px solid transparent'
+        e.currentTarget.style.paddingLeft = '1rem'
+      }}
     >
-      <div className="text-[var(--muted-foreground)]">{icon}</div>
+      <div style={{ color: "var(--accent)", opacity: 0.7 }}>{icon}</div>
       <div>
         <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>{label}</p>
         <p className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>{count}</p>
@@ -710,91 +877,191 @@ function TasksList() {
 
 /* ─── AI Insights Generator ─── */
 
-function generateInsights(analytics: Analytics): { type: "peak" | "warn" | "tip" | "ok"; title: string; body: string; color: string }[] {
-  const insights: { type: "peak" | "warn" | "tip" | "ok"; title: string; body: string; color: string }[] = []
+interface Insight {
+  type: "fix" | "gap" | "rhythm" | "coverage" | "ok"
+  category?: string
+  title: string
+  body: string
+  action?: string
+  color: string
+}
 
-  const { chapters, taskStats, contosWritten, totalContos, sectionWords } = analytics
+function generateInsights(analytics: Analytics): Insight[] {
+  const insights: Insight[] = []
+  const { chapters, charMentions, contosWritten, totalContos, sectionWords } = analytics
 
-  // Peak tension chapter
-  if (chapters.length > 0) {
-    const peak = chapters.reduce((best, c) => c.tensionScore > best.tensionScore ? c : best, chapters[0])
-    if (peak.tensionScore > 0) {
+  if (chapters.length === 0) return insights
+
+  const longest = chapters.reduce((best, c) => c.words > best.words ? c : best, chapters[0])
+
+  // ─── 1. STRUCTURAL BALANCE: chapters that are skeletons vs full ───
+  const skeletons = chapters.filter((c) => c.words < 500 && c.slug !== "epilogo")
+  if (skeletons.length > 0) {
+    const names = skeletons.map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`).join(", ")
+    const pct = Math.round((skeletons.length / chapters.length) * 100)
+    insights.push({
+      type: "fix",
+      category: "estrutura",
+      title: `${skeletons.length} capitulo${skeletons.length > 1 ? "s" : ""} ainda ${skeletons.length > 1 ? "sao" : "e"} esqueleto`,
+      body: `${names} — ${pct}% do livro tem menos de 500 palavras. Cap 01 tem ${formatNumber(longest.words)} palavras. Os esqueletos precisam de expansao para o arco funcionar.`,
+      action: `Usar /expand-chapter para expandir ${skeletons[0].slug === "epilogo" ? "Epilogo" : `capitulo ${skeletons[0].slug}`}`,
+      color: "oklch(0.55 0.18 27)",
+    })
+  }
+
+  // ─── 2. TENSION ARC: is there a proper narrative arc? ───
+  if (chapters.length >= 4) {
+    const tensionValues = chapters.map((c) => c.tensionScore)
+    const peakIdx = tensionValues.indexOf(Math.max(...tensionValues))
+    const expectedClimaxRange = [Math.floor(chapters.length * 0.5), Math.floor(chapters.length * 0.8)]
+
+    if (peakIdx < expectedClimaxRange[0]) {
       insights.push({
-        type: "peak",
-        title: `Pico de tensao: ${peak.title}`,
-        body: `Score ${peak.tensionScore} — ${peak.words} palavras, ${peak.dialogueLines} linhas de dialogo. Este e o capitulo mais intenso.`,
-        color: "oklch(0.55 0.18 27)",
+        type: "rhythm",
+        category: "ritmo",
+        title: "Climax acontece cedo demais",
+        body: `O pico de tensao esta no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}), mas deveria estar entre Cap ${chapters[expectedClimaxRange[0]].slug} e Cap ${chapters[expectedClimaxRange[1]].slug} para um arco classico. O leitor pode perder interesse na segunda metade.`,
+        action: "Aumentar a tensao nos capitulos 04-05 com conflito fisico ou revelacao",
+        color: "oklch(0.48 0.12 65)",
+      })
+    } else if (peakIdx >= expectedClimaxRange[0] && peakIdx <= expectedClimaxRange[1]) {
+      insights.push({
+        type: "ok",
+        category: "ritmo",
+        title: "Arco narrativo bem posicionado",
+        body: `Climax no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}). Posicao ideal para resolucao no final.`,
+        color: "oklch(0.45 0.12 150)",
       })
     }
 
-    // Shortest chapter warning
-    const shortest = chapters.reduce((best, c) => c.words < best.words ? c : best, chapters[0])
-    const longest = chapters.reduce((best, c) => c.words > best.words ? c : best, chapters[0])
-    if (longest.words > 0 && shortest.words < longest.words * 0.3) {
+    // Check if tension drops too sharply
+    const lastTwo = tensionValues.slice(-2)
+    const peak = Math.max(...tensionValues)
+    if (peak > 0 && lastTwo.every((v) => v < peak * 0.3)) {
       insights.push({
-        type: "warn",
-        title: `${shortest.title} precisa expandir`,
-        body: `Apenas ${shortest.words} palavras — ${Math.round((shortest.words / longest.words) * 100)}% do capitulo mais longo (${longest.title}: ${longest.words}).`,
-        color: "oklch(0.55 0.15 65)",
-      })
-    }
-
-    // Average sentence length analysis
-    const avgSentence = Math.round(chapters.reduce((s, c) => s + c.avgSentenceLen, 0) / chapters.length)
-    if (avgSentence > 25) {
-      insights.push({
-        type: "tip",
-        title: "Frases longas predominam",
-        body: `Media de ${avgSentence} palavras por frase. Considere variar com cortes mais curtos para ritmo.`,
+        type: "rhythm",
+        category: "ritmo",
+        title: "Queda abrupta de tensao no final",
+        body: `Os ultimos capitulos tem tensao muito baixa (${lastTwo.join(", ")}) comparado ao pico (${peak}). A resolucao pode parecer abrupta.`,
+        action: "Adicionar ecos de tensao ou consequencias nos capitulos finais",
         color: "oklch(0.42 0.10 230)",
       })
     }
   }
 
-  // Contos progress
-  if (contosWritten < totalContos) {
+  // ─── 3. CHARACTER COVERAGE: who is absent where they should be? ───
+  const allChars = new Set<string>()
+  for (const m of Object.values(charMentions)) {
+    for (const name of Object.keys(m)) allChars.add(name)
+  }
+
+  // Temiku should appear in every chapter
+  const temikuAbsent = chapters.filter((c) => !charMentions[c.slug]?.temiku).map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`)
+  if (temikuAbsent.length > 0 && temikuAbsent.length < chapters.length) {
     insights.push({
-      type: "tip",
-      title: `${totalContos - contosWritten} contos pendentes`,
-      body: `${contosWritten}/${totalContos} contos escritos. Proximo na fila: seguir ordem do workflow.`,
+      type: "coverage",
+      category: "personagens",
+      title: `Temiku ausente em ${temikuAbsent.join(", ")}`,
+      body: `Como protagonista, Temiku deveria aparecer ou ser referenciada em todos os capitulos. A ausencia cria descontinuidade no arco central.`,
+      action: "Verificar se a presenca de Temiku esta implicita ou se o capitulo precisa de reescrita",
       color: "oklch(0.45 0.12 290)",
     })
   }
 
-  // High priority tasks
-  if (taskStats.highPriority > 0) {
+  // Characters that appear only once
+  const charAppearances: Record<string, number> = {}
+  for (const m of Object.values(charMentions)) {
+    for (const [name, count] of Object.entries(m)) {
+      if (count > 0) charAppearances[name] = (charAppearances[name] ?? 0) + 1
+    }
+  }
+  const singleAppear = Object.entries(charAppearances).filter(([, count]) => count === 1).map(([name]) => name)
+  if (singleAppear.length > 0) {
     insights.push({
-      type: "warn",
-      title: `${taskStats.highPriority} tarefa${taskStats.highPriority > 1 ? "s" : ""} de alta prioridade`,
-      body: `Existem tarefas urgentes pendentes que podem bloquear progresso.`,
-      color: "oklch(0.55 0.18 27)",
+      type: "coverage",
+      category: "personagens",
+      title: `${singleAppear.join(", ")} — aparece${singleAppear.length > 1 ? "m" : ""} em 1 capitulo so`,
+      body: `Personagens com aparicao unica podem parecer artificiais. Se sao importantes para o arco, precisam de mais presenca. Se nao sao, avaliar se a mencao unica serve a narrativa.`,
+      action: "Considerar adicionar referencias a esses personagens em capitulos adjacentes",
+      color: "oklch(0.42 0.10 230)",
     })
   }
 
-  // Content balance
+  // ─── 4. DIALOGUE DENSITY: chapters with almost no dialogue ───
+  const lowDialogue = chapters.filter((c) => c.words > 500 && c.dialogueLines < 3)
+  if (lowDialogue.length > 0) {
+    const names = lowDialogue.map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`).join(", ")
+    insights.push({
+      type: "gap",
+      category: "voz",
+      title: `Quase sem dialogo: ${names}`,
+      body: `Capitulos longos sem dialogo podem ficar densos demais. Mesmo em narrativas introspectivas, breves trocas iluminam relacoes.`,
+      action: "Avaliar se a ausencia e intencional ou se falta interacao entre personagens",
+      color: "oklch(0.48 0.12 65)",
+    })
+  }
+
+  // ─── 5. CONTOS STATUS: specific next steps ───
+  if (contosWritten < totalContos) {
+    const contoOrder = ["amara", "oruku", "beku", "obaru", "kemdi", "temi", "orike"]
+    const contoWordCounts = analytics.wordCounts
+    const nextConto = contoOrder.find((name) => (contoWordCounts[name] ?? 0) < 200)
+    insights.push({
+      type: "gap",
+      category: "contos",
+      title: `${contosWritten}/${totalContos} contos escritos`,
+      body: `Os contos de origem (Amara, Oruku, Beku) devem vir antes dos contos de contexto (Obaru, Kemdi, Temi). O conto de Orike e o ultimo — perspectiva nao-animal.`,
+      action: nextConto ? `Proximo: /write-conto ${nextConto}` : undefined,
+      color: "oklch(0.45 0.12 290)",
+    })
+  }
+
+  // ─── 6. SENTENCE RHYTHM: variation analysis ───
+  if (chapters.length > 0) {
+    const avgSentences = chapters.filter((c) => c.words > 300).map((c) => c.avgSentenceLen)
+    if (avgSentences.length > 1) {
+      const variation = Math.max(...avgSentences) - Math.min(...avgSentences)
+      if (variation < 3) {
+        insights.push({
+          type: "rhythm",
+          category: "ritmo",
+          title: "Ritmo uniforme entre capitulos",
+          body: `Media de frase varia apenas ${variation} palavras entre capitulos (${Math.min(...avgSentences)}-${Math.max(...avgSentences)} palavras). Cada capitulo deveria ter um pulso proprio. Cap 01 (descoberta) pode ser mais lento; Cap 04-05 (conflito) mais cortado.`,
+          action: "Variar o comprimento medio de frase por capitulo conforme o tom",
+          color: "oklch(0.42 0.10 230)",
+        })
+      }
+    }
+  }
+
+  // ─── 7. CONTENT WEIGHT: bible vs narrative ratio ───
   const bibliaWords = sectionWords.biblia ?? 0
   const livroWords = sectionWords.livro ?? 0
-  if (bibliaWords > 0 && livroWords > 0) {
-    const ratio = (livroWords / bibliaWords * 100).toFixed(0)
-    insights.push({
-      type: "ok",
-      title: "Balanco biblia/livro",
-      body: `Livro tem ${ratio}% do volume da biblia (${formatNumber(livroWords)} vs ${formatNumber(bibliaWords)} palavras).`,
-      color: "oklch(0.45 0.12 150)",
-    })
+  const contosWords = sectionWords.contos ?? 0
+  const narrativeTotal = livroWords + contosWords
+  if (bibliaWords > 0 && narrativeTotal > 0) {
+    const ratio = Math.round((narrativeTotal / bibliaWords) * 100)
+    if (ratio < 60) {
+      insights.push({
+        type: "gap",
+        category: "balanco",
+        title: `Narrativa e ${ratio}% da biblia`,
+        body: `${formatNumber(narrativeTotal)} palavras narrativas vs ${formatNumber(bibliaWords)} de referencia. O mundo esta bem documentado, mas a narrativa precisa crescer para dar vida a ele.`,
+        action: "Expandir capitulos 02-06 e escrever contos pendentes",
+        color: "oklch(0.48 0.12 65)",
+      })
+    } else {
+      insights.push({
+        type: "ok",
+        category: "balanco",
+        title: "Equilibrio biblia/narrativa saudavel",
+        body: `Narrativa tem ${ratio}% do volume da biblia (${formatNumber(narrativeTotal)} vs ${formatNumber(bibliaWords)}).`,
+        color: "oklch(0.45 0.12 150)",
+      })
+    }
   }
 
-  // Task completion rate
-  if (taskStats.total > 5) {
-    insights.push({
-      type: taskStats.done > taskStats.total * 0.5 ? "ok" : "tip",
-      title: `Progresso: ${Math.round((taskStats.done / taskStats.total) * 100)}%`,
-      body: `${taskStats.done} concluidas, ${taskStats.inProgress} em andamento, ${taskStats.todo} a fazer.`,
-      color: taskStats.done > taskStats.total * 0.5 ? "oklch(0.45 0.12 150)" : "oklch(0.48 0.12 65)",
-    })
-  }
-
-  return insights.slice(0, 6)
+  return insights.slice(0, 8)
 }
 
 /* ─── Icons ─── */

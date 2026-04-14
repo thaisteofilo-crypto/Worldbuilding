@@ -1,48 +1,31 @@
+export const dynamic = "force-dynamic"
+
 import Link from "next/link"
 import Image from "next/image"
 import { characters, characterOrder } from "@/lib/characters"
 import { ThemeToggle } from "@/components/koru/theme-toggle"
 import { CardCarousel } from "@/components/koru/card-carousel"
-import { getBannerUrls, getCharacterImageUrls, getCardImages } from "@/lib/banners"
+import { getBannerUrls, getCardImages } from "@/lib/banners"
+import { getSiteContent, get } from "@/lib/site-content"
+import { getBibliaItems, getLivroItems } from "@/lib/content"
 
-const bibliaParts = [
-  { parte: "00", title: "Introdução" },
-  { parte: "01", title: "Física e Cosmologia" },
-  { parte: "02", title: "Geografia" },
-  { parte: "03", title: "Ecossistema" },
-  { parte: "04", title: "Criaturas" },
-  { parte: "05", title: "Personagens" },
-  { parte: "06", title: "Regras" },
-  { parte: "07", title: "Cultura" },
-  { parte: "08", title: "Linha do Tempo" },
-]
+interface DocEntry { label: string; path: string }
 
-const livroChapters = [
-  { slug: "01", title: "Capítulo 1" },
-  { slug: "02", title: "Capítulo 2" },
-  { slug: "03", title: "Capítulo 3" },
-  { slug: "04", title: "Capítulo 4" },
-  { slug: "05", title: "Capítulo 5" },
-  { slug: "06", title: "Capítulo 6" },
-  { slug: "epilogo", title: "Epílogo" },
-]
-
-const references = [
-  { title: "Planeta dos Abutres", author: "Joseph Bennett & Charles Huettner", year: "2023" },
-  { title: "Harry Potter", author: "J.K. Rowling", year: "1997–2007" },
-  { title: "A Mão Esquerda da Escuridão", author: "Ursula K. Le Guin", year: "1969" },
-  { title: "Os Despossuídos", author: "Ursula K. Le Guin", year: "1974" },
-  { title: "As Crônicas de Nárnia", author: "C.S. Lewis", year: "1950–1956" },
-]
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
+// Extract last filename without extension: "livro/capitulo-07.md" -> "capitulo-07"
+function pathFilename(path: string): string {
+  return path.replace(/\.md$/, '').split('/').pop() ?? ''
 }
+
+// URL slug for livro: "capitulo-01" -> "01", "epilogo" -> "epilogo"
+function livroUrlSlug(filename: string): string {
+  return filename.replace(/^capitulo-/, '')
+}
+
+// Card image key for livro entries
+function livroCardKey(filename: string): string {
+  return `livro-${livroUrlSlug(filename)}`
+}
+
 
 function ImagePlaceholder() {
   return (
@@ -86,18 +69,25 @@ function FullSection({
   label,
   title,
   bannerUrl,
+  videoUrl,
   children,
 }: {
   label: string
   title: string
   bannerUrl?: string
+  videoUrl?: string
   children: React.ReactNode
 }) {
-  const hasBanner = !!bannerUrl
+  const hasBanner = !!(videoUrl || bannerUrl)
   return (
     <section className="relative flex flex-col justify-center overflow-hidden py-10 md:py-16 px-4 md:px-16">
-      {hasBanner ? (
-        <SectionBanner url={bannerUrl} />
+      {videoUrl ? (
+        <>
+          <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 50%, oklch(0 0 0 / 0.15) 100%)" }} />
+        </>
+      ) : hasBanner ? (
+        <SectionBanner url={bannerUrl!} />
       ) : (
         <div className="absolute inset-0 bg-background" />
       )}
@@ -128,11 +118,55 @@ function FullSection({
 }
 
 export default async function HomePage() {
-  const [banners, characterImages, cardImages] = await Promise.all([
+  const [banners, cardImages, siteContent] = await Promise.all([
     getBannerUrls(),
-    getCharacterImageUrls(),
     getCardImages(),
+    getSiteContent(),
   ])
+
+  // Excluded paths — docs the user explicitly removed from the editor
+  let excluded = new Set<string>()
+  try {
+    const excludedRaw = siteContent['editor.excluded_paths']
+    if (excludedRaw) excluded = new Set<string>(JSON.parse(excludedRaw))
+  } catch { /* ignore */ }
+
+  // Primary: filesystem scan — auto-discovers files that exist on disk
+  const filesystemBiblia: DocEntry[] = getBibliaItems()
+    .map((item) => ({ label: item.title, path: `biblia/${item.slug}.md` }))
+    .filter((d) => !excluded.has(d.path))
+  const filesystemLivro: DocEntry[] = getLivroItems()
+    .map((item) => ({ label: item.title, path: item.slug === 'epilogo' ? 'livro/epilogo.md' : `livro/capitulo-${item.slug}.md` }))
+    .filter((d) => !excluded.has(d.path))
+
+  // Merge with editor.doc_groups — label overrides + docs added before file exists on disk
+  let finalBibliaDocs = filesystemBiblia
+  let finalLivroDocs = filesystemLivro
+
+  const docGroupsRaw = siteContent['editor.doc_groups']
+  if (docGroupsRaw) {
+    try {
+      const groups = JSON.parse(docGroupsRaw) as Array<{ section: string; docs: DocEntry[] }>
+
+      const editorBiblia = groups.find((g) => g.section === 'Bíblia')?.docs ?? []
+      const editorLivro = groups.find((g) => g.section === 'Livro')?.docs ?? []
+
+      const bibliaLabels = new Map(editorBiblia.map((d) => [d.path, d.label]))
+      const livroLabels = new Map(editorLivro.map((d) => [d.path, d.label]))
+
+      const fsBibliaPaths = new Set(filesystemBiblia.map((d) => d.path))
+      const fsLivroPaths = new Set(filesystemLivro.map((d) => d.path))
+
+      finalBibliaDocs = filesystemBiblia.map((d) => ({ ...d, label: bibliaLabels.get(d.path) ?? d.label }))
+      finalLivroDocs = filesystemLivro.map((d) => ({ ...d, label: livroLabels.get(d.path) ?? d.label }))
+
+      const extraBiblia = editorBiblia.filter((d) => !fsBibliaPaths.has(d.path) && !excluded.has(d.path))
+      const extraLivro = editorLivro.filter((d) => !fsLivroPaths.has(d.path) && !excluded.has(d.path))
+
+      if (extraBiblia.length) finalBibliaDocs = [...finalBibliaDocs, ...extraBiblia]
+      if (extraLivro.length) finalLivroDocs = [...finalLivroDocs, ...extraLivro]
+    } catch { /* ignore */ }
+  }
 
   const hasHero = !!(banners.hero || banners["hero-video"])
 
@@ -187,7 +221,7 @@ export default async function HomePage() {
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
             }}
           >
-            Um mundo cuja física é baseada em memória.
+            {get(siteContent, "hero.tagline")}
           </p>
           <div className="mt-12 flex flex-wrap gap-4">
             <Link
@@ -200,7 +234,7 @@ export default async function HomePage() {
                 backdropFilter: hasHero ? "blur(16px)" : undefined,
               }}
             >
-              Bíblia do Mundo
+              {get(siteContent, "hero.cta_primary_text")}
             </Link>
             <Link
               href="/livro/01"
@@ -212,22 +246,22 @@ export default async function HomePage() {
                 backdropFilter: hasHero ? "blur(16px)" : undefined,
               }}
             >
-              O Livro
+              {get(siteContent, "hero.cta_secondary_text")}
             </Link>
           </div>
         </div>
       </section>
 
       {/* Personagens */}
-      <FullSection label="Personagens" title="Os seres do Akwu" bannerUrl={banners.personagens}>
+      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
         <CardCarousel>
           {characterOrder.map((key) => {
             const char = characters[key]
             return (
               <Link key={key} href={`/personagens/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {characterImages[key] ? (
-                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {cardImages[`char-${key}`] ? (
+                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -244,59 +278,70 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Bíblia */}
-      <FullSection label="Bíblia do Mundo" title="O arquivo vivo" bannerUrl={banners.biblia}>
+      <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
         <CardCarousel>
-          {bibliaParts.map((part) => (
-            <Link key={part.parte} href={`/biblia/parte-${part.parte}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                {cardImages[`biblia-parte-${part.parte}`] ? (
-                  <Image src={cardImages[`biblia-parte-${part.parte}`]} alt={part.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                ) : (
-                  <ImagePlaceholder />
-                )}
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                  <p className="text-xs md:text-base font-sans text-white/60">Parte {part.parte}</p>
-                  <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{part.title}</p>
+          {finalBibliaDocs.map((doc) => {
+            const filename = pathFilename(doc.path)
+            const cardKey = `biblia-${filename}`
+            const title = get(siteContent, `biblia.${filename}.title`) || doc.label
+            return (
+              <Link key={doc.path} href={`/biblia/${filename}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                  {cardImages[cardKey] ? (
+                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  ) : (
+                    <ImagePlaceholder />
+                  )}
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
+                    <p className="text-xs md:text-base font-sans text-white/60">{doc.label}</p>
+                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </CardCarousel>
       </FullSection>
 
       {/* Livro */}
-      <FullSection label="Livro" title="O Peso da Luz" bannerUrl={banners.livro}>
+      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
         <CardCarousel>
-          {livroChapters.map((ch) => (
-            <Link key={ch.slug} href={`/livro/${ch.slug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                {cardImages[`livro-${ch.slug}`] ? (
-                  <Image src={cardImages[`livro-${ch.slug}`]} alt={ch.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                ) : (
-                  <ImagePlaceholder />
-                )}
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                  <p className="text-xs md:text-base font-sans text-white/60">{ch.slug === "epilogo" ? "Fim" : `Cap. ${ch.slug}`}</p>
-                  <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{ch.title}</p>
+          {finalLivroDocs.map((doc) => {
+            const filename = pathFilename(doc.path)
+            const urlSlug = livroUrlSlug(filename)
+            const cardKey = livroCardKey(filename)
+            const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
+            return (
+              <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                  {cardImages[cardKey] ? (
+                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  ) : (
+                    <ImagePlaceholder />
+                  )}
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
+                    <p className="text-xs md:text-base font-sans text-white/60">{urlSlug === 'epilogo' ? 'Fim' : `Cap. ${urlSlug}`}</p>
+                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </CardCarousel>
       </FullSection>
 
       {/* Contos */}
-      <FullSection label="Contos" title="Vozes do Akwu" bannerUrl={banners.contos}>
+      <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
         <CardCarousel>
-          {characterOrder.map((key) => {
+          {characterOrder.filter((key) => !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
             return (
               <Link key={key} href={`/contos/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {characterImages[key] ? (
-                    <Image src={characterImages[key]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {cardImages[`char-${key}`] ? (
+                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -312,27 +357,28 @@ export default async function HomePage() {
         </CardCarousel>
       </FullSection>
 
-      {/* Referências */}
-      <FullSection label="Referências" title="Mundos que alimentam Korú" bannerUrl={banners.referencias}>
-        <CardCarousel>
-          {references.map((ref) => (
-            <div key={ref.title} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                {cardImages[`ref-${slugify(ref.title)}`] ? (
-                  <Image src={cardImages[`ref-${slugify(ref.title)}`]} alt={ref.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                ) : (
-                  <ImagePlaceholder />
-                )}
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 40%, transparent 70%)" }} />
-                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                  <p className="font-serif text-xl font-medium leading-tight text-white mb-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{ref.title}</p>
-                  <p className="text-sm font-sans text-white/60">{ref.author} · {ref.year}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </CardCarousel>
-      </FullSection>
+      {/* Banner Final — Vídeo */}
+      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+        {banners["footer-video"] ? (
+          <>
+            <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={banners["footer-video"]} poster={banners.footer} />
+            <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.4)" }} />
+          </>
+        ) : banners.footer ? (
+          <>
+            <Image src={banners.footer} alt="" fill className="object-cover" />
+            <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.4)" }} />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-background" />
+        )}
+        <p
+          className="absolute bottom-6 left-0 right-0 text-center font-serif text-base z-10"
+          style={{ color: "oklch(1 0 0 / 0.3)", fontFamily: "var(--font-serif), Georgia, serif", letterSpacing: "0.08em" }}
+        >
+          {get(siteContent, "footer.copyright")}
+        </p>
+      </section>
     </div>
   )
 }

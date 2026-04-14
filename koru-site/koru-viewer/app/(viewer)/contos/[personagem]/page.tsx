@@ -1,4 +1,4 @@
-import { readMarkdown, contoSlugs } from "@/lib/content"
+import { readMarkdown, contoSlugs, getContosItems } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { characters } from "@/lib/characters"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
-import { CONTOS_ITEMS } from "@/lib/navigation"
 
 interface Props {
   params: Promise<{ personagem: string }>
@@ -51,7 +50,8 @@ export default async function ContoPage({ params }: Props) {
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
   const char = characters[personagem]
 
-  const item = CONTOS_ITEMS.find((i) => i.slug === personagem)
+  const contosItems = getContosItems()
+  const item = contosItems.find((i) => i.slug === personagem)
 
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
@@ -63,7 +63,7 @@ export default async function ContoPage({ params }: Props) {
       />
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
         <MDXRemote source={safeContent} components={literaryComponents} options={mdxOptions} />
-        <DocNav items={CONTOS_ITEMS} current={personagem} basePath="/contos" />
+        <DocNav items={contosItems} current={personagem} basePath="/contos" />
       </article>
     </ScrollArea>
   )

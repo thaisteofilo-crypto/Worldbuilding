@@ -1,4 +1,4 @@
-# I, O QUE ELA É
+I, O QUE ELA É
 *Korú, A História de Temiku*
 
 ---

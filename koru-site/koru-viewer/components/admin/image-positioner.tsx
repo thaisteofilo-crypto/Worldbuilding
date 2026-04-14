@@ -185,13 +185,13 @@ export function ImagePositioner({
         </div>
       )}
 
-      {/* Toggle edit button - visible on hover */}
+      {/* Toggle edit button - always visible */}
       <button
         onClick={() => setEditing(!editing)}
-        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-opacity opacity-0 group-hover/positioner:opacity-100"
+        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-opacity"
         style={{
           background: editing ? "var(--accent)" : "oklch(0 0 0 / 0.5)",
-          opacity: editing ? 1 : undefined,
+          opacity: editing ? 1 : 0.7,
         }}
         title={editing ? "Concluir posicionamento" : "Reposicionar imagem"}
       >
