@@ -6,6 +6,7 @@ import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
+import { notFound } from "next/navigation"
 
 interface Props {
   params: Promise<{ capitulo: string }>
@@ -46,12 +47,16 @@ export async function generateStaticParams() {
 export default async function LivroPage({ params }: Props) {
   const { capitulo } = await params
 
+  const validSlugs = livroChapters().map((c) => c.capitulo)
+  if (!validSlugs.includes(capitulo)) notFound()
+
   const filePath =
     capitulo === "epilogo"
       ? "livro/epilogo.md"
       : `livro/capitulo-${capitulo}.md`
 
   const doc = readMarkdown(filePath)
+  if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 
   const livroItems = getLivroItems()

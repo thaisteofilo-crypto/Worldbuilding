@@ -25,6 +25,8 @@ export default function GalleryPage() {
   const [savingPrompt, setSavingPrompt] = useState(false)
   const [search, setSearch] = useState("")
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [selectMode, setSelectMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const inputRef = useRef<HTMLInputElement>(null)
 
   function fetchImages() {
@@ -187,6 +189,49 @@ export default function GalleryPage() {
     return () => window.removeEventListener("keydown", handleKey)
   }, [selected, closeLightbox, goNext, goPrev])
 
+  function toggleSelectId(name: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(name)) next.delete(name)
+      else next.add(name)
+      return next
+    })
+  }
+
+  function enterSelectMode() {
+    setSelectMode(true)
+    setSelectedIds(new Set())
+  }
+
+  function exitSelectMode() {
+    setSelectMode(false)
+    setSelectedIds(new Set())
+  }
+
+  async function handleBulkDelete() {
+    const n = selectedIds.size
+    if (n === 0) return
+    if (!window.confirm(`Excluir ${n} ${n === 1 ? "imagem" : "imagens"}?`)) return
+    await Promise.all(
+      [...selectedIds].map((name) =>
+        Promise.all([
+          fetch("/api/gallery", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+          }),
+          fetch("/api/gallery/metadata", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+          }),
+        ])
+      )
+    )
+    exitSelectMode()
+    fetchImages()
+  }
+
   // Determine if save button should be enabled
   const promptChanged = editingPrompt !== (selected?.prompt ?? "")
   const tagsChanged =
@@ -207,10 +252,48 @@ export default function GalleryPage() {
               Cenas e artes do mundo de Koru
             </p>
           </div>
-          <span className="font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
-            {!loading &&
-              `${filtered.length}${filtered.length !== images.length ? ` de ${images.length}` : ""} ${images.length === 1 ? "imagem" : "imagens"}`}
-          </span>
+          <div className="flex items-center gap-3">
+            {!loading && !selectMode && (
+              <span className="font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
+                {`${filtered.length}${filtered.length !== images.length ? ` de ${images.length}` : ""} ${images.length === 1 ? "imagem" : "imagens"}`}
+              </span>
+            )}
+            {selectMode ? (
+              <>
+                <span className="font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
+                  {selectedIds.size} {selectedIds.size === 1 ? "selecionada" : "selecionadas"}
+                </span>
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={selectedIds.size === 0}
+                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity disabled:opacity-30"
+                  style={{
+                    border: "1px solid oklch(0.55 0.18 20)",
+                    color: "oklch(0.65 0.18 20)",
+                  }}
+                >
+                  Excluir selecionadas
+                </button>
+                <button
+                  onClick={exitSelectMode}
+                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-70"
+                  style={{ border: "1px solid var(--border)", color: "var(--muted-foreground)" }}
+                >
+                  Cancelar
+                </button>
+              </>
+            ) : (
+              images.length > 0 && (
+                <button
+                  onClick={enterSelectMode}
+                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-70"
+                  style={{ border: "1px solid var(--border)", color: "var(--muted-foreground)" }}
+                >
+                  Selecionar
+                </button>
+              )
+            )}
+          </div>
         </div>
 
         <div className="rounded-xl p-4 glass-card">
@@ -371,68 +454,119 @@ export default function GalleryPage() {
         </div>
       ) : (
         <div style={{ columns: "400px", columnGap: "8px" }}>
-          {filtered.map((img, i) => (
-            <div
-              key={img.name}
-              className="group relative mb-2 break-inside-avoid cursor-pointer overflow-hidden rounded-xl"
-              style={{ breakInside: "avoid" }}
-              onClick={() => openLightbox(img, images.indexOf(img))}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={img.url}
-                alt={img.name.replace(/\.[^.]+$/, "")}
-                className="w-full block transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-              {/* Hover overlay */}
+          {filtered.map((img) => {
+            const isChecked = selectedIds.has(img.name)
+            return (
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                key={img.name}
+                className="group relative mb-2 break-inside-avoid cursor-pointer overflow-hidden rounded-xl"
                 style={{
-                  background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, oklch(0 0 0 / 0) 50%)",
+                  breakInside: "avoid",
+                  outline: selectMode && isChecked ? "2px solid var(--accent)" : "none",
+                  outlineOffset: "-2px",
                 }}
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <div className="flex-1 mr-2 min-w-0">
-                  <p className="font-sans text-xs text-white truncate">
-                    {img.name.replace(/\.[^.]+$/, "").replace(/-/g, " ")}
-                  </p>
-                  {(img.tags ?? []).length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {(img.tags ?? []).slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-sans text-xs rounded-full px-1.5 py-0"
-                          style={{ background: "oklch(1 0 0 / 0.15)", color: "oklch(1 0 0 / 0.8)" }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {(img.tags ?? []).length > 3 && (
-                        <span className="font-sans text-xs" style={{ color: "oklch(1 0 0 / 0.5)" }}>
-                          +{(img.tags ?? []).length - 3}
-                        </span>
-                      )}
+                onClick={() => {
+                  if (selectMode) {
+                    toggleSelectId(img.name)
+                  } else {
+                    openLightbox(img, images.indexOf(img))
+                  }
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt={img.name.replace(/\.[^.]+$/, "")}
+                  className="w-full block transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+
+                {/* Checkbox (select mode) */}
+                {selectMode && (
+                  <div
+                    className="absolute top-2 left-2 w-4 h-4 rounded flex items-center justify-center pointer-events-none"
+                    style={{
+                      background: isChecked ? "var(--accent)" : "oklch(0 0 0 / 0.5)",
+                      border: `1.5px solid ${isChecked ? "var(--accent)" : "oklch(1 0 0 / 0.5)"}`,
+                    }}
+                  >
+                    {isChecked && (
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                )}
+
+                {/* AI prompt indicator */}
+                {img.prompt && (
+                  <div
+                    className="absolute top-2 right-2 font-mono leading-none rounded pointer-events-none"
+                    style={{
+                      fontSize: "9px",
+                      padding: "2px 4px",
+                      background: "color-mix(in oklch, var(--accent) 15%, transparent)",
+                      border: "1px solid var(--accent)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    AI
+                  </div>
+                )}
+
+                {/* Hover overlay (only outside select mode) */}
+                {!selectMode && (
+                  <>
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      style={{
+                        background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, oklch(0 0 0 / 0) 50%)",
+                      }}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="flex-1 mr-2 min-w-0">
+                        <p className="font-sans text-xs text-white truncate">
+                          {img.name.replace(/\.[^.]+$/, "").replace(/-/g, " ")}
+                        </p>
+                        {(img.tags ?? []).length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {(img.tags ?? []).slice(0, 3).map((tag) => (
+                              <span
+                                key={tag}
+                                className="font-sans text-xs rounded-full px-1.5 py-0"
+                                style={{ background: "oklch(1 0 0 / 0.15)", color: "oklch(1 0 0 / 0.8)" }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {(img.tags ?? []).length > 3 && (
+                              <span className="font-sans text-xs" style={{ color: "oklch(1 0 0 / 0.5)" }}>
+                                +{(img.tags ?? []).length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDelete(img.name)
+                        }}
+                        className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                        style={{ background: "oklch(0 0 0 / 0.4)" }}
+                        title="Excluir"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        </svg>
+                      </button>
                     </div>
-                  )}
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDelete(img.name)
-                  }}
-                  className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
-                  style={{ background: "oklch(0 0 0 / 0.4)" }}
-                  title="Excluir"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  </svg>
-                </button>
+                  </>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

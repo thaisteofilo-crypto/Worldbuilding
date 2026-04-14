@@ -8,6 +8,8 @@ export default function ConfiguracoesPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [savedPreview, setSavedPreview] = useState('')
+  const [testing, setTesting] = useState(false)
+  const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -64,6 +66,20 @@ export default function ConfiguracoesPage() {
       setMessage({ type: 'error', text: 'Erro de conexao com o servidor.' })
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleTest() {
+    setTesting(true)
+    setTestResult(null)
+    try {
+      const res = await fetch('/api/settings/test', { method: 'POST' })
+      const data = await res.json()
+      setTestResult(data)
+    } catch {
+      setTestResult({ ok: false, error: 'Erro de conexao com o servidor.' })
+    } finally {
+      setTesting(false)
     }
   }
 
@@ -215,7 +231,7 @@ export default function ConfiguracoesPage() {
             </p>
           </div>
 
-          <div>
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               type="submit"
               disabled={saving}
@@ -227,6 +243,46 @@ export default function ConfiguracoesPage() {
             >
               {saving ? 'Salvando...' : configured ? 'Substituir chave' : 'Salvar chave'}
             </button>
+
+            {configured && (
+              <button
+                type="button"
+                onClick={handleTest}
+                disabled={testing}
+                className="rounded-full px-6 py-2.5 font-sans text-sm font-medium transition-opacity hover:opacity-85 disabled:opacity-40"
+                style={{
+                  background: 'color-mix(in oklch, var(--foreground) 10%, transparent)',
+                  color: 'var(--foreground)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                {testing ? 'Testando...' : 'Testar conexao'}
+              </button>
+            )}
+
+            {testResult !== null && (
+              <span
+                className="flex items-center gap-1.5 font-sans text-sm"
+                style={{ color: testResult.ok ? 'oklch(0.65 0.15 150)' : 'oklch(0.70 0.16 27)' }}
+              >
+                {testResult.ok ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="2 7 6 11 12 3" />
+                    </svg>
+                    Conexao OK
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="2" y1="2" x2="12" y2="12" />
+                      <line x1="12" y1="2" x2="2" y2="12" />
+                    </svg>
+                    {testResult.error ?? 'Erro desconhecido'}
+                  </>
+                )}
+              </span>
+            )}
           </div>
         </form>
 

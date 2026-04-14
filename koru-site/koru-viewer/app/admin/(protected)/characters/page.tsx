@@ -28,6 +28,50 @@ function ViewImageSlot({
   onRemove: () => void
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [sizeWarning, setSizeWarning] = useState<string | null>(null)
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Revoke previous preview URL if any
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+
+    const objectUrl = URL.createObjectURL(file)
+    setPreviewUrl(objectUrl)
+    setSizeWarning(null)
+
+    // Validate dimensions
+    const img = new window.Image()
+    img.onload = () => {
+      if (img.naturalWidth < 400 || img.naturalHeight < 400) {
+        setSizeWarning(
+          `Imagem pequena (${img.naturalWidth}x${img.naturalHeight}px). Recomendado: minimo 400x400px.`
+        )
+      }
+      URL.revokeObjectURL(objectUrl)
+    }
+    img.src = objectUrl
+
+    onUpload(file)
+    if (inputRef.current) inputRef.current.value = ""
+  }
+
+  // Revoke preview URL when upload completes (url prop updated) or on unmount
+  useEffect(() => {
+    if (!uploading && previewUrl) {
+      setPreviewUrl(null)
+    }
+  }, [uploading]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
+
+  const displayUrl = url || previewUrl || null
 
   return (
     <div className="flex flex-col">
@@ -36,16 +80,28 @@ function ViewImageSlot({
         style={{
           background: "var(--surface)",
           border: "1px solid var(--border)",
-          ...(!url ? { aspectRatio: "16/9" } : {}),
+          ...(!displayUrl ? { aspectRatio: "16/9" } : {}),
         }}
       >
-        {url ? (
-          <ImagePositioner
-            imageKey={`char-${character.slug}-${view.key}`}
-            src={url}
-            alt={`${character.name} — ${view.label}`}
-            aspectRatio="16/9"
-          />
+        {displayUrl ? (
+          url ? (
+            <ImagePositioner
+              imageKey={`char-${character.slug}-${view.key}`}
+              src={url}
+              alt={`${character.name} — ${view.label}`}
+              aspectRatio="16/9"
+            />
+          ) : (
+            // Local preview before upload completes
+            <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={previewUrl!}
+                alt={`preview — ${view.label}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          )
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" style={{ color: "var(--muted-foreground)" }}>
@@ -65,16 +121,22 @@ function ViewImageSlot({
         )}
       </div>
 
+      {/* Dimension warning */}
+      {sizeWarning && (
+        <p
+          className="mt-1 font-sans text-xs leading-snug"
+          style={{ color: "oklch(0.72 0.13 75)" }}
+        >
+          {sizeWarning}
+        </p>
+      )}
+
       <div className="mt-2 flex items-center justify-between">
         <span className="font-sans text-xs tracking-[0.08em] uppercase" style={{ color: "var(--muted-foreground)" }}>
           {view.label}
         </span>
         <div className="flex gap-1">
-          <input ref={inputRef} type="file" accept="image/*" onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) onUpload(file)
-            if (inputRef.current) inputRef.current.value = ""
-          }} className="absolute w-0 h-0 opacity-0 overflow-hidden" />
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleFileChange} className="absolute w-0 h-0 opacity-0 overflow-hidden" />
           <button
             onClick={() => inputRef.current?.click()}
             disabled={uploading}

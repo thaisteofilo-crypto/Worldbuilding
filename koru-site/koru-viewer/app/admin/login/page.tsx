@@ -9,16 +9,25 @@ export default function AdminLoginPage() {
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(false)
 
-    if (password === "koru2026") {
-      document.cookie = "koru-admin=true; path=/; max-age=86400"
-      window.location.href = "/admin"
-      return
-    } else {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+
+      if (res.ok) {
+        router.push('/admin')
+      } else {
+        setError(true)
+        setLoading(false)
+      }
+    } catch {
       setError(true)
       setLoading(false)
     }

@@ -9,19 +9,25 @@ interface DocNavProps {
   items: NavItem[]
   current: string
   basePath: string
+  position?: number
+  total?: number
 }
 
-export function DocNav({ items, current, basePath }: DocNavProps) {
+export function DocNav({ items, current, basePath, position, total }: DocNavProps) {
   const idx = items.findIndex((i) => i.slug === current)
   const prev = idx > 0 ? items[idx - 1] : null
   const next = idx < items.length - 1 ? items[idx + 1] : null
+
+  // Derivar posição a partir dos items se não fornecida explicitamente
+  const derivedPosition = position ?? (idx >= 0 ? idx + 1 : undefined)
+  const derivedTotal = total ?? items.length
 
   if (!prev && !next) return null
 
   return (
     <nav
       aria-label="Navegação entre documentos"
-      className="flex items-start justify-between pt-8 mt-8 border-t"
+      className="flex items-center justify-between pt-8 mt-8 border-t"
       style={{ borderColor: "var(--border)" }}
     >
       {prev ? (
@@ -46,6 +52,18 @@ export function DocNav({ items, current, basePath }: DocNavProps) {
             {prev.title}
           </span>
         </Link>
+      ) : (
+        <div />
+      )}
+
+      {derivedPosition && derivedTotal ? (
+        <span
+          className="font-mono text-xs shrink-0 px-2"
+          style={{ color: "var(--muted-foreground)", opacity: 0.5 }}
+          aria-label={`Documento ${derivedPosition} de ${derivedTotal}`}
+        >
+          {derivedPosition} · {derivedTotal}
+        </span>
       ) : (
         <div />
       )}

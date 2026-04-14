@@ -4,6 +4,12 @@ import { createAdminClient } from "@/lib/supabase/admin"
 // Views: front, profile, back
 const VALID_VIEWS = ["front", "profile", "back"]
 
+// Build Supabase Storage public URL statically — avoids N+1 getPublicUrl() calls in loops.
+function storagePublicUrl(bucket: string, filename: string): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+  return `${base}/storage/v1/object/public/${bucket}/${filename}`
+}
+
 export async function POST(req: NextRequest) {
   const formData = await req.formData()
   const file = formData.get("file") as File | null
@@ -39,17 +45,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 })
   }
 
-  const { data: urlData } = admin.storage.from("characters").getPublicUrl(fileName)
+  const publicUrl = storagePublicUrl("characters", fileName)
 
   // Update character record with front image URL (for backwards compat)
   if (viewName === "front") {
     await admin
       .from("characters")
-      .update({ image_url: urlData.publicUrl })
+      .update({ image_url: publicUrl })
       .eq("id", characterId)
   }
 
-  return NextResponse.json({ url: urlData.publicUrl, view: viewName })
+  return NextResponse.json({ url: publicUrl, view: viewName })
 }
 
 export async function DELETE(req: NextRequest) {
@@ -106,9 +112,8 @@ export async function GET() {
 
     if (!VALID_VIEWS.includes(view)) continue
 
-    const { data } = admin.storage.from("characters").getPublicUrl(file.name)
     if (!images[slug]) images[slug] = {}
-    images[slug][view] = data.publicUrl
+    images[slug][view] = storagePublicUrl("characters", file.name)
   }
 
   return NextResponse.json({ images })

@@ -4,9 +4,10 @@ import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
 import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { characters } from "@/lib/characters"
+import { getCharactersForViewer } from "@/lib/characters-db"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
+import { notFound } from "next/navigation"
 
 interface Props {
   params: Promise<{ personagem: string }>
@@ -46,9 +47,15 @@ export async function generateStaticParams() {
 
 export default async function ContoPage({ params }: Props) {
   const { personagem } = await params
+
+  const validSlugs = contoSlugs().map((s) => s.personagem)
+  if (!validSlugs.includes(personagem)) notFound()
+
   const doc = readMarkdown(`contos/conto-${personagem}.md`)
+  if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
-  const char = characters[personagem]
+  const { chars } = await getCharactersForViewer()
+  const char = chars[personagem]
 
   const contosItems = getContosItems()
   const item = contosItems.find((i) => i.slug === personagem)

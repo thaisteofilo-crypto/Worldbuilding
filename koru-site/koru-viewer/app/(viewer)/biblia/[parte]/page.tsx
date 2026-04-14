@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
 import { BANNER_CONFIG } from "@/lib/navigation"
+import { notFound } from "next/navigation"
 
 interface Props {
   params: Promise<{ parte: string }>
@@ -18,7 +19,12 @@ export async function generateStaticParams() {
 
 export default async function BibliaPage({ params }: Props) {
   const { parte } = await params
+
+  const validSlugs = getBibliaItems().map((i) => i.slug)
+  if (!validSlugs.includes(parte)) notFound()
+
   const doc = readMarkdown(`biblia/${parte}.md`)
+  if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 
   const bibliaItems = getBibliaItems()

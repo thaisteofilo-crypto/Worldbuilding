@@ -1,122 +1,203 @@
-import { characters, characterOrder } from "@/lib/characters"
+import { getCharactersForViewer } from "@/lib/characters-db"
+import { contoSlugs } from "@/lib/content"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from "next/image"
 import fs from "fs"
 import path from "path"
+import { CharacterGallery } from "@/components/koru/character-gallery"
 
 interface Props {
   params: Promise<{ nome: string }>
 }
 
-export async function generateStaticParams() {
-  return characterOrder.map((nome) => ({ nome }))
-}
+export const dynamic = "force-dynamic"
 
 function findImage(nome: string, view: string): string | null {
   const extensions = ["jpg", "jpeg", "png", "webp"]
   for (const ext of extensions) {
-    const filePath = path.join(process.cwd(), "public", "images", "personagens", `${nome}-${view}.${ext}`)
+    const filePath = path.join(
+      process.cwd(),
+      "public",
+      "images",
+      "personagens",
+      `${nome}-${view}.${ext}`
+    )
     if (fs.existsSync(filePath)) return `/images/personagens/${nome}-${view}.${ext}`
   }
   return null
 }
 
+// ── Status badge helpers ─────────────────────────────────────────────────────
+
+type StatusTone = "ativo" | "dissolvido" | "preso" | "outro"
+
+function resolveStatusTone(status: string): StatusTone {
+  const s = status.toLowerCase()
+  if (s.includes("dissolvid") || s.includes("dissolved")) return "dissolvido"
+  if (
+    s.includes("pres") ||
+    s.includes("anomalia") ||
+    s.includes("preso") ||
+    s.includes("presa")
+  )
+    return "preso"
+  if (
+    s.includes("ativo") ||
+    s.includes("existindo") ||
+    s.includes("presente") ||
+    s.includes("vivo")
+  )
+    return "ativo"
+  return "outro"
+}
+
+const STATUS_STYLES: Record<
+  StatusTone,
+  { bg: string; color: string; border: string }
+> = {
+  ativo: {
+    bg: "oklch(0.25 0.08 145 / 0.25)",
+    color: "oklch(0.72 0.14 145)",
+    border: "oklch(0.72 0.14 145 / 0.35)",
+  },
+  dissolvido: {
+    bg: "oklch(0.22 0.07 220 / 0.25)",
+    color: "var(--blue-cold)",
+    border: "oklch(0.62 0.09 220 / 0.35)",
+  },
+  preso: {
+    bg: "oklch(0.30 0.10 75 / 0.25)",
+    color: "var(--gold)",
+    border: "oklch(0.72 0.10 75 / 0.35)",
+  },
+  outro: {
+    bg: "oklch(0 0 0 / 0.12)",
+    color: "var(--muted-foreground)",
+    border: "oklch(0 0 0 / 0.18)",
+  },
+}
+
+// ── Relation badge helpers ───────────────────────────────────────────────────
+
+function resolveRelationStyle(type: string): { color: string; bg: string } {
+  const t = type.toLowerCase()
+  if (
+    t.includes("origem") ||
+    t.includes("gerou") ||
+    t.includes("dissolução")
+  ) {
+    return {
+      color: "var(--blue-cold)",
+      bg: "oklch(0.22 0.07 220 / 0.20)",
+    }
+  }
+  if (
+    t.includes("frequência") ||
+    t.includes("frequencia") ||
+    t.includes("limiar")
+  ) {
+    return {
+      color: "var(--accent)",
+      bg: "oklch(0.25 0.06 290 / 0.20)",
+    }
+  }
+  if (t.includes("vínculo") || t.includes("vinculo")) {
+    return {
+      color: "var(--gold)",
+      bg: "oklch(0.30 0.08 75 / 0.20)",
+    }
+  }
+  return {
+    color: "var(--muted-foreground)",
+    bg: "oklch(0 0 0 / 0.10)",
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default async function PersonagemPage({ params }: Props) {
   const { nome } = await params
-  const char = characters[nome]
+  const { chars } = await getCharactersForViewer()
+  const char = chars[nome]
 
   if (!char) notFound()
 
-  const views = [
-    { key: "frente", label: "Frente" },
-    { key: "perfil", label: "Perfil" },
-    { key: "costas", label: "Costas" },
+  const hasConto = contoSlugs().some((s) => s.personagem === nome)
+
+  const galleryViews = [
+    { key: "frente", label: "Frente", src: findImage(nome, "frente") },
+    { key: "perfil", label: "Perfil", src: findImage(nome, "perfil") },
+    { key: "costas", label: "Costas", src: findImage(nome, "costas") },
   ]
 
   const infoCards = [
     { label: "Especie", value: char.species },
     { label: "Morfologia", value: char.morphology },
     { label: "Capacidade", value: char.ability },
-    { label: "Estado atual", value: char.status },
     { label: "Origem", value: char.origin },
     { label: "Marca (Isilo-Ori)", value: char.mark },
-  ]
+  ].filter(({ value }) => value && value.trim() !== "" && value !== "A definir")
+
+  const statusTone = char.status ? resolveStatusTone(char.status) : null
+  const statusStyle = statusTone ? STATUS_STYLES[statusTone] : null
 
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
       <article className="pb-20" role="article" aria-label={`Perfil de ${char.name}`}>
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="max-w-5xl mx-auto px-8 md:px-16 pt-10">
+          <p
+            className="font-sans text-xs uppercase tracking-[0.2em] mb-2"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {char.role}
+          </p>
           <h1
             className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              color: "var(--foreground)",
-            }}
+            style={{ color: "var(--foreground)" }}
           >
             {char.name}
           </h1>
+
+          {/* ── Estado atual badge ── */}
+          {char.status && statusStyle && (
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className="font-sans text-xs uppercase tracking-[0.18em] inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
+                style={{
+                  backgroundColor: statusStyle.bg,
+                  color: statusStyle.color,
+                  border: `1px solid ${statusStyle.border}`,
+                }}
+              >
+                <span
+                  className="inline-block rounded-full"
+                  style={{
+                    width: 5,
+                    height: 5,
+                    backgroundColor: statusStyle.color,
+                    flexShrink: 0,
+                  }}
+                  aria-hidden="true"
+                />
+                {char.status}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Images — 3 columns, first */}
+        {/* ── Gallery ── */}
         <div className="max-w-5xl mx-auto px-8 md:px-16 mt-10">
-          <div className="grid grid-cols-3 gap-4">
-            {views.map(({ key, label }) => {
-              const imageSrc = findImage(nome, key)
-              return (
-                <div
-                  key={key}
-                  className="relative overflow-hidden rounded-xl"
-                  style={{
-                    aspectRatio: "2/3",
-                    backgroundColor: "var(--surface)",
-                  }}
-                >
-                  {imageSrc ? (
-                    <Image
-                      src={imageSrc}
-                      alt={`${char.name} — ${label}`}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                      <svg
-                        width="48"
-                        height="48"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="0.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="opacity-15"
-                        style={{ color: "var(--foreground)" }}
-                        aria-hidden="true"
-                      >
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                        <circle cx="8.5" cy="8.5" r="1.5" />
-                        <polyline points="21,15 16,10 5,21" />
-                      </svg>
-                      <p
-                        className="text-sm font-sans"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
-                        {label}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+          <div className="max-w-sm">
+            <CharacterGallery name={char.name} views={galleryViews} />
           </div>
         </div>
 
-        {/* Character sheet */}
+        {/* ── Character sheet ── */}
         <div className="max-w-5xl mx-auto px-8 md:px-16 mt-12">
-          {/* About */}
+          {/* Description */}
           <section className="mb-10" aria-label="Sobre">
             <p
               className="font-sans text-base leading-[1.8] max-w-3xl"
@@ -124,71 +205,151 @@ export default async function PersonagemPage({ params }: Props) {
             >
               {char.description}
             </p>
+            {hasConto && (
+              <Link
+                href={`/contos/${nome}`}
+                className="inline-flex items-center gap-1 mt-4 font-sans text-xs transition-opacity duration-150 hover:opacity-70"
+                style={{ color: "var(--accent)" }}
+              >
+                Ler o conto de {char.name} →
+              </Link>
+            )}
           </section>
 
           {/* Info grid */}
-          <section className="mb-10" aria-label="Detalhes">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {infoCards.map(({ label, value }) => (
-                <div key={label} className="glass-card p-5 rounded-xl">
-                  <p
-                    className="text-xs uppercase tracking-[0.15em] font-sans mb-2"
-                    style={{ color: "var(--muted-foreground)" }}
-                  >
-                    {label}
-                  </p>
-                  <p
-                    className="font-sans text-sm leading-[1.7]"
-                    style={{ color: "var(--foreground)" }}
-                  >
-                    {value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Relations */}
-          {char.relations.length > 0 && (
-            <section className="mb-10" aria-label="Conexoes">
-              <div className="flex flex-wrap gap-4">
-                {char.relations.map((rel) => (
-                  <Link
-                    key={rel.slug}
-                    href={`/personagens/${rel.slug}`}
-                    className="glass-card rounded-xl p-5 transition-all duration-200 hover:scale-[1.02] block min-w-[220px]"
-                    aria-label={`Ver perfil de ${rel.name}`}
-                  >
+          {infoCards.length > 0 && (
+            <section className="mb-10" aria-label="Detalhes">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {infoCards.map(({ label, value }) => (
+                  <div key={label} className="glass-card p-5 rounded-xl">
                     <p
-                      className="font-serif text-lg mb-1"
-                      style={{ color: "var(--foreground)" }}
-                    >
-                      {rel.name}
-                    </p>
-                    <p
-                      className="font-sans text-xs leading-relaxed"
+                      className="text-xs uppercase tracking-[0.15em] font-sans mb-2"
                       style={{ color: "var(--muted-foreground)" }}
                     >
-                      {rel.type}
+                      {label}
                     </p>
-                  </Link>
+                    <p
+                      className="font-sans text-sm leading-[1.7]"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {value}
+                    </p>
+                  </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {/* ── Conexoes ── */}
+          {char.relations.length > 0 && (
+            <section className="mb-10" aria-label="Conexoes">
+              <div className="mb-5">
+                <p
+                  className="font-sans text-xs uppercase tracking-[0.2em] mb-1"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  Mundo
+                </p>
+                <h2
+                  className="font-serif text-2xl"
+                  style={{ color: "var(--foreground)" }}
+                >
+                  Conexoes
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {char.relations.map((rel) => {
+                  const relStyle = resolveRelationStyle(rel.type)
+                  const initial = rel.name.charAt(0).toUpperCase()
+                  const relImageSrc = findImage(rel.slug, "frente")
+
+                  return (
+                    <Link
+                      key={rel.slug}
+                      href={`/personagens/${rel.slug}`}
+                      className="group flex items-center gap-4 glass-card rounded-xl p-4 transition-all duration-200 hover:scale-[1.01]"
+                      style={{
+                        borderLeft: "2px solid var(--accent)",
+                      }}
+                      aria-label={`Ver perfil de ${rel.name}`}
+                    >
+                      {/* Avatar */}
+                      <div
+                        className="relative overflow-hidden rounded-full flex-shrink-0 flex items-center justify-center"
+                        style={{
+                          width: 48,
+                          height: 48,
+                          backgroundColor: "var(--surface)",
+                          border: "1px solid var(--border)",
+                        }}
+                      >
+                        {relImageSrc ? (
+                          <Image
+                            src={relImageSrc}
+                            alt={rel.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span
+                            className="font-serif text-lg leading-none select-none"
+                            style={{ color: "var(--accent)" }}
+                            aria-hidden="true"
+                          >
+                            {initial}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Text */}
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className="font-serif text-base leading-tight mb-1 group-hover:opacity-80 transition-opacity"
+                          style={{ color: "var(--foreground)" }}
+                        >
+                          {rel.name}
+                        </p>
+                        <span
+                          className="font-sans text-xs inline-block px-2 py-0.5 rounded-full"
+                          style={{
+                            color: relStyle.color,
+                            backgroundColor: relStyle.bg,
+                          }}
+                        >
+                          {rel.type.split(" — ")[0]}
+                        </span>
+                      </div>
+
+                      {/* Arrow */}
+                      <span
+                        className="font-sans text-sm opacity-30 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0"
+                        style={{ color: "var(--accent)" }}
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    </Link>
+                  )
+                })}
               </div>
             </section>
           )}
 
           {/* Navigation buttons */}
           <div className="flex flex-wrap gap-4 pt-8">
-            <Link
-              href={`/contos/${nome}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-90"
-              style={{
-                backgroundColor: "var(--foreground)",
-                color: "var(--background)",
-              }}
-            >
-              Ler o conto
-            </Link>
+            {hasConto && (
+              <Link
+                href={`/contos/${nome}`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-90"
+                style={{
+                  backgroundColor: "var(--foreground)",
+                  color: "var(--background)",
+                }}
+              >
+                Ler o conto
+              </Link>
+            )}
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-80 glass-card"

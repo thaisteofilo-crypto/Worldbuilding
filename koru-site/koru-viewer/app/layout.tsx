@@ -15,8 +15,20 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: "Korú — Brand System Viewer",
-  description: "Um mundo cuja física é baseada em memória",
+  title: { default: "Korú", template: "%s · Korú" },
+  description: "Um mundo cuja física é baseada em memória.",
+  openGraph: {
+    title: "Korú",
+    description: "Um mundo cuja física é baseada em memória.",
+    type: "website",
+    locale: "pt_BR",
+    siteName: "Korú",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Korú",
+    description: "Um mundo cuja física é baseada em memória.",
+  },
 }
 
 export default function RootLayout({
@@ -27,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn("dark antialiased", inter.variable, instrumentSerif.variable)}
+      className={cn("antialiased", inter.variable, instrumentSerif.variable)}
       suppressHydrationWarning
     >
       <body className="bg-background text-foreground min-h-screen">

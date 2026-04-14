@@ -27,10 +27,13 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     <li>
       <Link
         href={href}
-        className="block py-1 font-sans text-sm transition-opacity hover:opacity-70"
+        className="block py-1 px-2 -mx-2 rounded font-sans text-sm transition-colors"
         style={{
-          color: isActive ? "var(--foreground)" : "var(--muted-foreground)",
+          color: isActive ? "var(--accent)" : "var(--muted-foreground)",
           fontWeight: isActive ? 600 : 400,
+          background: isActive
+            ? "color-mix(in oklch, var(--accent) 10%, transparent)"
+            : "transparent",
         }}
         aria-current={isActive ? "page" : undefined}
       >
@@ -72,10 +75,14 @@ export function NavSidebar() {
   const [livroItems, setLivroItems] = React.useState<NavItem[]>([])
   const [contosItems, setContosItems] = React.useState<NavItem[]>([])
   const [personagensItems, setPersonagensItems] = React.useState<NavItem[]>([])
+  const [loadError, setLoadError] = React.useState(false)
 
   React.useEffect(() => {
     fetch("/api/docs")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
       .then((data) => {
         const groups: DocGroup[] = data.groups ?? []
         const biblia = groups.find((g) => g.section === "Bíblia")?.docs ?? []
@@ -86,7 +93,7 @@ export function NavSidebar() {
         setContosItems(contos.map((d) => docToSlug(d, "Contos")))
         setPersonagensItems(data.personagens ?? [])
       })
-      .catch(() => {})
+      .catch(() => setLoadError(true))
   }, [])
 
   return (
@@ -104,6 +111,15 @@ export function NavSidebar() {
           >
             Korú
           </Link>
+
+          {loadError && (
+            <p
+              className="font-sans text-xs italic mb-2"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Documentos indisponíveis
+            </p>
+          )}
 
           <CollapsibleSection title="Bíblia" items={bibliaItems} basePath="/biblia" />
           <CollapsibleSection title="Livro" items={livroItems} basePath="/livro" />

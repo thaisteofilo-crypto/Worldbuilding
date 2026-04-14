@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     slug,
     role: role || null,
     morphology: morphology || null,
-    status: species || null,
+    species: species || null,
   }
 
   const { data: character, error } = await admin

@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
 
   if (isAdminRoute && !isLoginPage) {
     const adminCookie = request.cookies.get('koru-admin')
-    if (adminCookie?.value !== 'true') {
+    if (adminCookie?.value !== (process.env.ADMIN_TOKEN ?? 'koru-token-2026')) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
   }

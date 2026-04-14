@@ -200,6 +200,8 @@
 /* Responsive carousel cards */
 .carousel-card {
   width: calc((100% - 8px) / 2);    /* mobile: 2 cards */
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
 @media (min-width: 640px) {
   .carousel-card {
@@ -215,4 +217,61 @@
   .carousel-card {
     width: calc((100% - 40px) / 6);  /* xl: 6 cards */
   }
+}
+
+/* Telas muito pequenas (≤320px): forçar card único por vez */
+@media (max-width: 320px) {
+  .carousel-card {
+    width: calc(100% - 16px);
+  }
+}
+
+/* Drop cap para contos e capítulos */
+.drop-cap::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.8;
+  padding-right: 0.12em;
+  font-family: var(--font-serif, Georgia, serif);
+  color: var(--gold);
+}
+
+/* Page transitions via View Transitions API */
+@keyframes koru-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes koru-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-6px); }
+}
+
+::view-transition-old(root) {
+  animation: 180ms ease-in koru-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 220ms ease-out koru-fade-in;
+}
+
+/* Hero entrance */
+@keyframes koru-hero-enter {
+  from { opacity: 0; letter-spacing: 0.3em; }
+  to   { opacity: 1; letter-spacing: inherit; }
+}
+
+@keyframes koru-content-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.koru-hero-text {
+  animation: koru-hero-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.koru-content-enter {
+  animation: koru-content-enter 0.5s ease-out forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
 }

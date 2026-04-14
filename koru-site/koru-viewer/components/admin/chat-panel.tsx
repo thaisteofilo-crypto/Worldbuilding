@@ -35,43 +35,220 @@ function saveHistory(path: string, messages: Message[]) {
   } catch {}
 }
 
-// --- Markdown renderer ---
+// --- Safe Markdown renderer (no dangerouslySetInnerHTML) ---
 
-function renderMarkdown(text: string): string {
-  return text
-    // Code blocks first (before inline code)
-    .replace(
-      /```[\w]*\n?([\s\S]*?)```/g,
-      '<pre style="background:color-mix(in oklch,var(--foreground) 6%,transparent);padding:0.75rem;border-radius:0.5rem;font-size:0.75rem;overflow-x:auto;margin:0.5rem 0"><code>$1</code></pre>'
-    )
-    // Inline code
-    .replace(
-      /`([^`]+)`/g,
-      '<code style="background:color-mix(in oklch,var(--foreground) 8%,transparent);padding:0.1em 0.35em;border-radius:0.25rem;font-size:0.85em">$1</code>'
-    )
-    // Headers (### before ##)
-    .replace(
-      /^### (.+)$/gm,
-      '<p style="font-family:var(--font-serif),Georgia,serif;font-size:0.95rem;font-weight:600;margin:0.75rem 0 0.25rem">$1</p>'
-    )
-    .replace(
-      /^## (.+)$/gm,
-      '<p style="font-family:var(--font-serif),Georgia,serif;font-size:1.05rem;font-weight:600;margin:1rem 0 0.25rem">$1</p>'
-    )
-    // Bold + italic (bold-italic first)
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Lists
-    .replace(
-      /^- (.+)$/gm,
-      '<li style="margin-left:1rem;list-style:disc;margin-bottom:0.15rem">$1</li>'
-    )
-    .replace(/(<li[^>]*>.*<\/li>\n?)+/g, '<ul style="margin:0.5rem 0">$&</ul>')
-    // Paragraphs
-    .replace(/\n\n/g, '</p><p style="margin:0.4rem 0">')
-    .replace(/^/, '<p style="margin:0">')
-    .replace(/$/, '</p>')
+type ReactNode = React.ReactNode
+
+function renderInline(text: string): ReactNode[] {
+  // Splits text into segments: bold-italic, bold, italic, inline code, plain
+  const parts: ReactNode[] = []
+  // Pattern order matters: bold-italic before bold before italic
+  const pattern = /(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|_(.+?)_|`([^`]+)`)/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(text)) !== null) {
+    // Push plain text before this match
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index))
+    }
+
+    const [full, , boldItalic, bold, italicStar, italicUnderscore, code] = match
+
+    if (boldItalic) {
+      parts.push(<strong key={match.index}><em>{boldItalic}</em></strong>)
+    } else if (bold) {
+      parts.push(<strong key={match.index}>{bold}</strong>)
+    } else if (italicStar || italicUnderscore) {
+      parts.push(<em key={match.index}>{italicStar ?? italicUnderscore}</em>)
+    } else if (code) {
+      parts.push(
+        <code
+          key={match.index}
+          style={{
+            background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
+            padding: '0.1em 0.35em',
+            borderRadius: '0.25rem',
+            fontSize: '0.85em',
+          }}
+        >
+          {code}
+        </code>
+      )
+    } else {
+      parts.push(full)
+    }
+
+    lastIndex = match.index + full.length
+  }
+
+  // Push remaining plain text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex))
+  }
+
+  return parts
+}
+
+function renderMarkdownSafe(text: string): ReactNode {
+  const elements: ReactNode[] = []
+  let key = 0
+
+  // Split into blocks on double newline, but first extract fenced code blocks
+  // We process line by line to handle code fences, lists, headers, paragraphs
+
+  const lines = text.split('\n')
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+
+    // --- Fenced code block ---
+    const codeFenceMatch = line.match(/^```(\w*)$/)
+    if (codeFenceMatch) {
+      const codeLines: string[] = []
+      i++
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        codeLines.push(lines[i])
+        i++
+      }
+      i++ // skip closing ```
+      elements.push(
+        <pre
+          key={key++}
+          style={{
+            background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
+            padding: '0.75rem',
+            borderRadius: '0.5rem',
+            fontSize: '0.75rem',
+            overflowX: 'auto',
+            margin: '0.5rem 0',
+          }}
+        >
+          <code>{codeLines.join('\n')}</code>
+        </pre>
+      )
+      continue
+    }
+
+    // --- H1 ---
+    const h1Match = line.match(/^# (.+)$/)
+    if (h1Match) {
+      elements.push(
+        <p
+          key={key++}
+          style={{
+            fontFamily: 'var(--font-serif), Georgia, serif',
+            fontSize: '1.15rem',
+            fontWeight: 600,
+            margin: '1rem 0 0.25rem',
+          }}
+        >
+          {renderInline(h1Match[1])}
+        </p>
+      )
+      i++
+      continue
+    }
+
+    // --- H2 ---
+    const h2Match = line.match(/^## (.+)$/)
+    if (h2Match) {
+      elements.push(
+        <p
+          key={key++}
+          style={{
+            fontFamily: 'var(--font-serif), Georgia, serif',
+            fontSize: '1.05rem',
+            fontWeight: 600,
+            margin: '1rem 0 0.25rem',
+          }}
+        >
+          {renderInline(h2Match[1])}
+        </p>
+      )
+      i++
+      continue
+    }
+
+    // --- H3 ---
+    const h3Match = line.match(/^### (.+)$/)
+    if (h3Match) {
+      elements.push(
+        <p
+          key={key++}
+          style={{
+            fontFamily: 'var(--font-serif), Georgia, serif',
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            margin: '0.75rem 0 0.25rem',
+          }}
+        >
+          {renderInline(h3Match[1])}
+        </p>
+      )
+      i++
+      continue
+    }
+
+    // --- List block: collect consecutive list items ---
+    if (line.match(/^- .+/)) {
+      const listItems: ReactNode[] = []
+      while (i < lines.length && lines[i].match(/^- .+/)) {
+        const itemText = lines[i].slice(2)
+        listItems.push(
+          <li
+            key={i}
+            style={{ marginLeft: '1rem', listStyle: 'disc', marginBottom: '0.15rem' }}
+          >
+            {renderInline(itemText)}
+          </li>
+        )
+        i++
+      }
+      elements.push(
+        <ul key={key++} style={{ margin: '0.5rem 0' }}>
+          {listItems}
+        </ul>
+      )
+      continue
+    }
+
+    // --- Blank line: paragraph break (skip) ---
+    if (line.trim() === '') {
+      i++
+      continue
+    }
+
+    // --- Regular paragraph: collect until blank line or special block ---
+    const paraLines: string[] = []
+    while (
+      i < lines.length &&
+      lines[i].trim() !== '' &&
+      !lines[i].match(/^```/) &&
+      !lines[i].match(/^#{1,3} /) &&
+      !lines[i].match(/^- /)
+    ) {
+      paraLines.push(lines[i])
+      i++
+    }
+
+    if (paraLines.length > 0) {
+      // Render lines within a paragraph, joining with <br /> on single newlines
+      const paraContent: ReactNode[] = []
+      paraLines.forEach((pLine, idx) => {
+        if (idx > 0) paraContent.push(<br key={`br-${idx}`} />)
+        paraContent.push(...renderInline(pLine))
+      })
+      elements.push(
+        <p key={key++} style={{ margin: '0.4rem 0' }}>
+          {paraContent}
+        </p>
+      )
+    }
+  }
+
+  return <>{elements}</>
 }
 
 // --- Copy icon SVG ---
@@ -94,6 +271,27 @@ function CopyIcon() {
   )
 }
 
+// --- Export icon SVG ---
+
+function ExportIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  )
+}
+
 // --- Quick action definitions ---
 
 const QUICK_ACTIONS = [
@@ -110,6 +308,19 @@ const MODE_PROMPTS: Record<string, string> = {
   report: 'Gere um relatório completo de escrita sobre este documento.',
 }
 
+// --- Error message mapping by HTTP status ---
+
+function getErrorMessage(status: number | null, isNetworkError: boolean): string {
+  if (isNetworkError) return 'Sem conexão com o servidor.'
+  if (status === 429) return 'Muitas requisições. Aguarde alguns instantes.'
+  if (status === 401) return 'Chave de API inválida. Verifique nas configurações.'
+  return 'Erro ao processar resposta. Tente novamente.'
+}
+
+// --- Streaming timeout (ms) ---
+
+const STREAM_TIMEOUT_MS = 90_000
+
 // --- Main component ---
 
 export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
@@ -123,12 +334,15 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
   const streamBufferRef = useRef('')
   const streamTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  // AbortController ref for fetch cancellation
+  const abortControllerRef = useRef<AbortController | null>(null)
+
   // Memoised render per-message so it doesn't re-run on unrelated state changes
   const renderedMessages = useMemo(
     () =>
       messages.map((msg) => ({
         ...msg,
-        html: msg.role === 'assistant' ? renderMarkdown(msg.content) : null,
+        rendered: msg.role === 'assistant' ? renderMarkdownSafe(msg.content) : null,
       })),
     [messages]
   )
@@ -150,12 +364,47 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
     }
   }, [documentPath])
 
-  // Cleanup interval on unmount
+  // Cleanup interval and abort on unmount
   useEffect(() => {
     return () => {
       if (streamTimerRef.current) clearInterval(streamTimerRef.current)
+      abortControllerRef.current?.abort()
     }
   }, [])
+
+  // --- Export conversation as Markdown file ---
+
+  function handleExport() {
+    if (messages.length === 0) return
+
+    const date = new Date().toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
+
+    const lines: string[] = [`# Conversa — ${date}`, '']
+
+    for (const msg of messages) {
+      const label = msg.role === 'user' ? '**Você:**' : '**Claude:**'
+      lines.push(label)
+      lines.push('')
+      lines.push(msg.content)
+      lines.push('')
+    }
+
+    const content = lines.join('\n')
+    const blob = new Blob([content], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `koru-conversa-${date.replace(/\//g, '-')}.md`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
   // --- Shared streaming logic ---
 
@@ -171,6 +420,15 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
 
     // Reset stream buffer
     streamBufferRef.current = ''
+
+    // Create a new AbortController for this request
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    // Timeout: abort after 90 seconds without completion
+    const timeoutId = setTimeout(() => {
+      controller.abort('timeout')
+    }, STREAM_TIMEOUT_MS)
 
     // Start throttled UI update interval (4x/sec max)
     streamTimerRef.current = setInterval(() => {
@@ -197,16 +455,18 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
           documentContent,
           mode,
         }),
+        signal: controller.signal,
       })
 
       if (!res.ok) {
-        const data = await res.json()
+        clearTimeout(timeoutId)
         if (streamTimerRef.current) clearInterval(streamTimerRef.current)
+        const errorMessage = getErrorMessage(res.status, false)
         setMessages((prev) => {
           const updated = [...prev]
           updated[updated.length - 1] = {
             role: 'assistant',
-            content: `Erro: ${data.error || 'Falha na requisicao.'}`,
+            content: errorMessage,
           }
           return updated
         })
@@ -218,6 +478,7 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
       const decoder = new TextDecoder()
 
       if (!reader) {
+        clearTimeout(timeoutId)
         if (streamTimerRef.current) clearInterval(streamTimerRef.current)
         setIsStreaming(false)
         return
@@ -255,6 +516,8 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
         }
       }
 
+      clearTimeout(timeoutId)
+
       // Streaming done: clear interval, do final state update
       if (streamTimerRef.current) clearInterval(streamTimerRef.current)
       setMessages((prev) => {
@@ -267,13 +530,23 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
         if (documentPath) saveHistory(documentPath, updated)
         return updated
       })
-    } catch {
+    } catch (err) {
+      clearTimeout(timeoutId)
       if (streamTimerRef.current) clearInterval(streamTimerRef.current)
+
+      const isTimeout =
+        err instanceof Error && (err.name === 'AbortError' || err.message === 'timeout')
+      const isNetwork = err instanceof TypeError && err.message.toLowerCase().includes('fetch')
+
+      const errorContent = isTimeout
+        ? 'A resposta demorou demais. Tente novamente.'
+        : getErrorMessage(null, isNetwork)
+
       setMessages((prev) => {
         const updated = [...prev]
         updated[updated.length - 1] = {
           role: 'assistant',
-          content: 'Erro de conexao. Verifique se o servidor esta rodando.',
+          content: errorContent,
         }
         return updated
       })
@@ -347,17 +620,32 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
         >
           Assistente Koru
         </span>
-        {messages.length > 0 && (
-          <button
-            onClick={handleClear}
-            className="text-[10px] transition-colors"
-            style={{ color: 'var(--muted-foreground)' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
-          >
-            Limpar
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {messages.length > 0 && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-1 text-[10px] transition-colors"
+              style={{ color: 'var(--muted-foreground)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+              title="Exportar conversa como Markdown"
+            >
+              <ExportIcon />
+              Exportar
+            </button>
+          )}
+          {messages.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="text-[10px] transition-colors"
+              style={{ color: 'var(--muted-foreground)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+            >
+              Limpar
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Context indicator */}
@@ -423,11 +711,7 @@ export function ChatPanel({ documentPath, documentContent }: ChatPanelProps) {
                 {msg.role === 'assistant' ? (
                   <>
                     <div className="group relative">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: msg.html ?? '',
-                        }}
-                      />
+                      {msg.rendered}
                       {/* Streaming cursor */}
                       {isThisStreaming && (
                         <span

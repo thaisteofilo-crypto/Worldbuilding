@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
+// Build Supabase Storage public URL statically — avoids N+1 getPublicUrl() calls in loops.
+function storagePublicUrl(bucket: string, filename: string): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL
+  return `${base}/storage/v1/object/public/${bucket}/${filename}`
+}
+
 export async function GET() {
   const admin = createAdminClient()
 
@@ -14,14 +20,11 @@ export async function GET() {
 
   const images = (files ?? [])
     .filter((f) => !f.name.startsWith("."))
-    .map((f) => {
-      const { data } = admin.storage.from("gallery").getPublicUrl(f.name)
-      return {
-        name: f.name,
-        url: data.publicUrl,
-        created_at: f.created_at,
-      }
-    })
+    .map((f) => ({
+      name: f.name,
+      url: storagePublicUrl("gallery", f.name),
+      created_at: f.created_at,
+    }))
 
   return NextResponse.json({ images })
 }
@@ -53,9 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const { data: urlData } = admin.storage.from("gallery").getPublicUrl(fileName)
-
-  return NextResponse.json({ url: urlData.publicUrl, name: fileName })
+  return NextResponse.json({ url: storagePublicUrl("gallery", fileName), name: fileName })
 }
 
 export async function DELETE(req: NextRequest) {

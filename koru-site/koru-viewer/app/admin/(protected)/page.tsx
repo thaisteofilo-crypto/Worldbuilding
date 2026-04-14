@@ -62,6 +62,8 @@ function formatNumber(n: number) {
   return n.toString()
 }
 
+const CONTO_ORDER = ["amara", "oruku", "beku", "obaru", "kemdi", "temi", "orike"] as const
+
 function ProgressRing({ value, max, size = 48, color }: { value: number; max: number; size?: number; color: string }) {
   const r = (size - 6) / 2
   const circumference = 2 * Math.PI * r
@@ -111,6 +113,17 @@ export default function AdminDashboardPage() {
   const [analyzingEmotions, setAnalyzingEmotions] = useState(false)
   const [emotionProgress, setEmotionProgress] = useState<{ current: number; total: number } | null>(null)
   const [emotionErrors, setEmotionErrors] = useState(0)
+
+  const [universeAnalysis, setUniverseAnalysis] = useState("")
+  const [analyzingUniverse, setAnalyzingUniverse] = useState(false)
+  const [analysisType, setAnalysisType] = useState<"all" | "inconsistencies" | "feedback" | "report">("all")
+  const [activeTab, setActiveTab] = useState<"diagnostico" | "narrativa" | "analise" | "proximos">("diagnostico")
+
+  const [suggestedTasks, setSuggestedTasks] = useState<Array<{_id: number; title: string; description: string; category: string; priority: string}>>([])
+  const [suggestingTasks, setSuggestingTasks] = useState(false)
+  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set()) // keyed by _id
+  const [savingTasks, setSavingTasks] = useState(false)
+  const [dragSuggestId, setDragSuggestId] = useState<number | null>(null)
 
   useEffect(() => {
     fetch("/api/analytics")
@@ -196,6 +209,93 @@ export default function AdminDashboardPage() {
     setEmotionProgress(null)
   }, [analytics])
 
+  const analyzeUniverse = useCallback(async () => {
+    setAnalyzingUniverse(true)
+    setUniverseAnalysis("")
+    try {
+      const res = await fetch("/api/analyze-universe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: analysisType }),
+      })
+      if (!res.ok || !res.body) {
+        const err = await res.json().catch(() => ({ error: "Erro desconhecido" }))
+        setUniverseAnalysis(`Erro: ${err.error}`)
+        return
+      }
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split("\n")
+        buffer = lines.pop() ?? ""
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue
+          const data = line.slice(6).trim()
+          if (data === "[DONE]") break
+          try {
+            const parsed = JSON.parse(data)
+            if (parsed.text) setUniverseAnalysis((prev) => prev + parsed.text)
+            if (parsed.error) setUniverseAnalysis((prev) => prev + `\nErro: ${parsed.error}`)
+          } catch { /* ignore */ }
+        }
+      }
+    } catch (err) {
+      setUniverseAnalysis(`Erro: ${err instanceof Error ? err.message : "Falha na analise"}`)
+    } finally {
+      setAnalyzingUniverse(false)
+    }
+  }, [analysisType])
+
+  const suggestTasks = useCallback(async () => {
+    if (!universeAnalysis) return
+    setSuggestingTasks(true)
+    setSuggestedTasks([])
+    setSelectedTaskIds(new Set())
+    try {
+      const res = await fetch("/api/suggest-tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ analysis: universeAnalysis }),
+      })
+      const data = await res.json()
+      if (data.tasks) {
+        const stamped = data.tasks.map((t: {title: string; description: string; category: string; priority: string}, i: number) => ({ ...t, _id: i }))
+        setSuggestedTasks(stamped)
+        setSelectedTaskIds(new Set(stamped.map((t: {_id: number}) => t._id)))
+      }
+    } catch {
+      // ignore
+    } finally {
+      setSuggestingTasks(false)
+    }
+  }, [universeAnalysis])
+
+  const addSelectedTasks = useCallback(async () => {
+    const toAdd = suggestedTasks.filter((_, i) => selectedTaskIds.has(i))
+    if (toAdd.length === 0) return
+    setSavingTasks(true)
+    try {
+      await Promise.all(
+        toAdd.map((t) =>
+          fetch("/api/tasks", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: t.title, description: t.description, category: t.category, priority: t.priority, status: "todo" }),
+          })
+        )
+      )
+      setSuggestedTasks([])
+      setSelectedTaskIds(new Set())
+      window.location.href = "/admin/tasks"
+    } finally {
+      setSavingTasks(false)
+    }
+  }, [suggestedTasks, selectedTaskIds])
+
   if (loading) {
     return (
       <div className="w-full flex items-center justify-center py-32">
@@ -217,7 +317,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Dashboard</h1>
           <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
@@ -227,10 +327,10 @@ export default function AdminDashboardPage() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-2 rounded-full px-5 py-2.5 font-sans text-sm transition-opacity hover:opacity-80"
+          className="flex items-center gap-2 rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-80"
           style={{ color: "var(--foreground)", border: "1px solid var(--border)", background: "var(--surface)" }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
             <line x1="10" y1="14" x2="21" y2="3" />
@@ -239,212 +339,504 @@ export default function AdminDashboardPage() {
         </Link>
       </div>
 
-      {/* Stats cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         <StatCard label="Palavras" value={formatNumber(analytics.totalWords)} sub="no universo" icon={<WordsIcon />} color="var(--accent)" />
         <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="var(--gold)" />
         <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" />
         <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" />
       </div>
 
-      {/* Diagnóstico — full width, 2-col grid */}
-      <div className="rounded-xl p-6 glass-card mb-6">
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "color-mix(in oklch, var(--muted-foreground) 12%, transparent)" }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-          </div>
-          <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Diagnostico</h2>
+      {/* Painel IA integrado */}
+      <div className="rounded-xl glass-card overflow-hidden mb-4">
+        {/* Abas */}
+        <div className="flex" style={{ borderBottom: "1px solid var(--border)" }}>
+          {(["diagnostico", "narrativa", "analise", "proximos"] as const).map((tab) => {
+            const labels: Record<string, string> = {
+              diagnostico: "Diagnóstico",
+              narrativa: "Narrativa",
+              analise: "Análise da IA",
+              proximos: "Próximos Passos",
+            }
+            const active = activeTab === tab
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="px-4 py-3 font-sans text-xs transition-colors"
+                style={{
+                  color: active ? "var(--foreground)" : "var(--muted-foreground)",
+                  borderBottom: active ? "2px solid var(--foreground)" : "2px solid transparent",
+                  background: "transparent",
+                  marginBottom: "-1px",
+                }}
+              >
+                {labels[tab]}
+              </button>
+            )
+          })}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {insights.map((insight, i) => (
-            <div key={i} className="rounded-lg p-4" style={{ background: "var(--surface)" }}>
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 shrink-0">
-                  <span
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-sans font-bold"
-                    style={{ background: insight.color + "22", color: insight.color }}
-                  >
-                    {insight.type === "fix" ? "!" : insight.type === "gap" ? "?" : insight.type === "rhythm" ? "~" : insight.type === "coverage" ? "○" : "✓"}
-                  </span>
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <p className="font-sans text-sm font-medium leading-snug" style={{ color: "var(--foreground)" }}>{insight.title}</p>
-                    {insight.category && (
-                      <span className="font-sans text-[9px] uppercase tracking-wider shrink-0" style={{ color: insight.color, opacity: 0.8 }}>{insight.category}</span>
-                    )}
+
+        {/* Aba: Diagnostico */}
+        {activeTab === "diagnostico" && (
+          <div className="p-4 flex flex-col gap-4">
+            {/* Progress rings */}
+            <div className="grid grid-cols-3 gap-3">
+              <ProgressCard label="Bíblia" value={analytics.bibliaComplete} max={9} color="var(--gold)" words={analytics.sectionWords.biblia ?? 0} />
+              <ProgressCard label="Livro" value={analytics.livroChapters} max={7} color="var(--blue-cold)" words={analytics.sectionWords.livro ?? 0} />
+              <ProgressCard label="Contos" value={analytics.contosWritten} max={analytics.totalContos || 7} color="var(--accent)" words={analytics.sectionWords.contos ?? 0} />
+            </div>
+
+            {/* Insights */}
+            {insights.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {insights.map((insight, i) => (
+                  <div key={i} className="rounded-lg p-3" style={{ background: "var(--surface)" }}>
+                    <div className="flex items-start gap-2.5">
+                      <span
+                        className="mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-sans font-bold"
+                        style={{ background: "var(--surface)", color: "var(--muted-foreground)" }}
+                      >
+                        {insight.type === "fix" ? "!" : insight.type === "gap" ? "?" : insight.type === "rhythm" ? "~" : insight.type === "coverage" ? "○" : "✓"}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                          <p className="font-sans text-[13px] font-medium leading-snug" style={{ color: "var(--foreground)" }}>{insight.title}</p>
+                          {insight.category && (
+                            <span className="font-sans text-[9px] uppercase tracking-wider" style={{ color: "var(--muted-foreground)", opacity: 0.8 }}>{insight.category}</span>
+                          )}
+                        </div>
+                        <p className="font-sans text-[11px] leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{insight.body}</p>
+                        {insight.action && (
+                          <p className="font-sans text-[10px] mt-1 font-medium" style={{ color: "var(--foreground)" }}>→ {insight.action}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{insight.body}</p>
-                  {insight.action && (
-                    <p className="font-sans text-[11px] mt-1.5 font-medium" style={{ color: insight.color }}>→ {insight.action}</p>
+                ))}
+              </div>
+            )}
+
+            {/* Story arc */}
+            <div>
+              <p className="font-sans text-[11px] uppercase tracking-[0.12em] mb-2" style={{ color: "var(--muted-foreground)" }}>Arco da História</p>
+              <StoryArcChart chapters={chapters} />
+            </div>
+
+            {/* Heatmap */}
+            {chapters.length > 0 && Object.keys(analytics.charMentions).length > 0 && (
+              <div>
+                <p className="font-sans text-[11px] uppercase tracking-[0.12em] mb-2" style={{ color: "var(--muted-foreground)" }}>Presença por Capítulo</p>
+                <CharacterHeatmap chapters={chapters} mentions={analytics.charMentions} />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Aba: Narrativa */}
+        {activeTab === "narrativa" && (
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>Mapa Emocional</p>
+                <p className="font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>Intensidade emocional por capítulo — análise IA</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {emotionData.length > 0 && !analyzingEmotions && (
+                  <button
+                    onClick={clearEmotionCache}
+                    className="rounded-full px-3 py-1.5 font-sans text-[10px] transition-opacity hover:opacity-70"
+                    style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                  >
+                    Limpar
+                  </button>
+                )}
+                {emotionErrors > 0 && !analyzingEmotions && (
+                  <span className="font-sans text-[10px]" style={{ color: "oklch(0.55 0.18 27)" }}>
+                    {emotionErrors} erro{emotionErrors > 1 ? "s" : ""}
+                  </span>
+                )}
+                <button
+                  onClick={analyzeEmotions}
+                  disabled={analyzingEmotions || analytics.chapters.length === 0}
+                  className="rounded-full px-4 py-1.5 font-sans text-xs transition-opacity disabled:opacity-50 flex items-center gap-1.5"
+                  style={{ background: "var(--foreground)", color: "var(--background)" }}
+                >
+                  {analyzingEmotions ? (
+                    <>
+                      <svg className="animate-spin shrink-0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                      {emotionProgress ? `${emotionProgress.current}/${emotionProgress.total}` : "..."}
+                    </>
+                  ) : (
+                    <>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                      Analisar IA
+                    </>
                   )}
-                </div>
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Story Arc — compact strip */}
-      <div className="rounded-xl p-5 glass-card mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-4">
-            <div>
-              <h2 className="font-serif text-base" style={{ color: "var(--foreground)" }}>Arco da Historia</h2>
-              <p className="font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>Tensao narrativa por capitulo</p>
-            </div>
-            <div className="flex items-center gap-2">
+            {emotionData.length > 0 ? (
+              <>
+                <EmotionChart data={emotionData} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+                  {emotionData.map((ch) => {
+                    const dominant = ch.emotions.reduce((best, e) => e.intensity > best.intensity ? e : best, ch.emotions[0])
+                    const arcLabels: Record<string, string> = { rising: "Ascensão", falling: "Queda", climax: "Clímax", resolution: "Resolução" }
+                    return (
+                      <div key={ch.chapter} className="rounded-xl p-4 glass-card">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-serif text-sm" style={{ color: "var(--foreground)" }}>
+                            {ch.chapter === "epilogo" ? "Epílogo" : `Cap. ${ch.chapter}`}
+                          </span>
+                          <span
+                            className="rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-wide"
+                            style={{
+                              color: EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)",
+                              background: `color-mix(in oklch, ${EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)"} 12%, transparent)`,
+                            }}
+                          >
+                            {dominant.name} ({Math.round(dominant.intensity * 100)}%)
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-sans text-[10px] uppercase tracking-wide" style={{ color: "var(--muted-foreground)" }}>
+                            {arcLabels[ch.narrative_arc] ?? ch.narrative_arc}
+                          </span>
+                          <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+                            Tensao: {Math.round(ch.overall_tension * 100)}%
+                          </span>
+                        </div>
+                        <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{ch.summary}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)", opacity: 0.25 }}>
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Nenhuma análise gerada ainda.</p>
+                <p className="font-sans text-[11px] text-center max-w-xs" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>Clique em "Analisar IA" para gerar o mapa emocional capítulo por capítulo.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Aba: Analise da IA */}
+        {activeTab === "analise" && (
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              {(["all", "inconsistencies", "feedback", "report"] as const).map((t) => {
+                const labels: Record<string, string> = {
+                  all: "Análise completa",
+                  inconsistencies: "Inconsistências",
+                  feedback: "Feedback narrativo",
+                  report: "Relatório",
+                }
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setAnalysisType(t)}
+                    className="rounded-full px-3 py-1.5 font-sans text-xs transition-all"
+                    style={{
+                      background: analysisType === t ? "var(--foreground)" : "var(--surface)",
+                      color: analysisType === t ? "var(--background)" : "var(--muted-foreground)",
+                      border: analysisType === t ? "none" : "1px solid var(--border)",
+                    }}
+                  >
+                    {labels[t]}
+                  </button>
+                )
+              })}
               <button
-                onClick={analyzeEmotions}
-                disabled={analyzingEmotions || !analytics || analytics.chapters.length === 0}
-                className="rounded-full px-3 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-50 flex items-center gap-1.5"
-                style={{ background: "oklch(0.40 0.12 290)", color: "white" }}
+                onClick={analyzeUniverse}
+                disabled={analyzingUniverse}
+                className="ml-auto flex items-center gap-1.5 rounded-full px-4 py-1.5 font-sans text-xs font-medium transition-opacity disabled:opacity-50"
+                style={{ background: "var(--foreground)", color: "var(--background)" }}
               >
-                {analyzingEmotions ? (
+                {analyzingUniverse ? (
                   <>
-                    <svg className="animate-spin shrink-0" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg className="animate-spin shrink-0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                     </svg>
-                    {emotionProgress ? `${emotionProgress.current}/${emotionProgress.total}` : "..."}
+                    Analisando...
                   </>
                 ) : (
                   <>
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
                     </svg>
-                    Analisar IA
+                    Gerar análise
                   </>
                 )}
               </button>
-              {emotionData.length > 0 && !analyzingEmotions && (
-                <button
-                  onClick={clearEmotionCache}
-                  className="rounded-full px-2.5 py-1.5 font-sans text-[10px] transition-opacity hover:opacity-70"
-                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
-                  title="Limpar cache"
-                >
-                  Limpar
-                </button>
-              )}
-              {emotionErrors > 0 && !analyzingEmotions && (
-                <span className="font-sans text-[10px]" style={{ color: "oklch(0.55 0.18 27)" }}>
-                  {emotionErrors} erro{emotionErrors > 1 ? "s" : ""}
-                </span>
-              )}
             </div>
-          </div>
-          <div className="flex gap-3">
-            <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.45 0.12 290)" }} /> Tensao
-            </span>
-            <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: "oklch(0.48 0.12 65)" }} /> Palavras
-            </span>
-          </div>
-        </div>
-        <StoryArcChart chapters={chapters} />
-      </div>
 
-      {/* Emotion Analysis */}
-      {emotionData.length > 0 && (
-        <div className="mb-8">
-          <div className="rounded-xl p-6 glass-card mb-4">
-            <h2 className="font-serif text-xl mb-1" style={{ color: "var(--foreground)" }}>Mapa Emocional</h2>
-            <p className="font-sans text-xs mb-4" style={{ color: "var(--muted-foreground)" }}>
-              Intensidade emocional por capitulo (analise IA)
-            </p>
-            <EmotionChart data={emotionData} />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {emotionData.map((ch) => {
-              const dominant = ch.emotions.reduce((best, e) => e.intensity > best.intensity ? e : best, ch.emotions[0])
-              const arcLabels: Record<string, string> = { rising: "Ascensao", falling: "Queda", climax: "Climax", resolution: "Resolucao" }
-              return (
-                <div key={ch.chapter} className="rounded-xl p-4 glass-card">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-serif text-sm" style={{ color: "var(--foreground)" }}>
-                      {ch.chapter === "epilogo" ? "Epilogo" : `Cap. ${ch.chapter}`}
-                    </span>
-                    <span
-                      className="rounded-full px-2.5 py-0.5 font-sans text-[10px] uppercase tracking-wide"
-                      style={{
-                        color: EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)",
-                        background: `color-mix(in oklch, ${EMOTION_COLORS[dominant.name] ?? "var(--muted-foreground)"} 12%, transparent)`,
-                      }}
-                    >
-                      {dominant.name} ({Math.round(dominant.intensity * 100)}%)
-                    </span>
+            {universeAnalysis || analyzingUniverse ? (
+              <div className="rounded-xl p-4 min-h-[200px] max-h-[600px] overflow-y-auto" style={{ background: "var(--surface)" }}>
+                {universeAnalysis ? (
+                  <MarkdownView text={universeAnalysis} />
+                ) : (
+                  <div className="flex items-center gap-2" style={{ color: "var(--muted-foreground)" }}>
+                    <svg className="animate-spin shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                    <span className="font-sans text-sm">Lendo documentos e gerando análise...</span>
                   </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-sans text-[10px] uppercase tracking-wide" style={{ color: "var(--muted-foreground)" }}>
-                      {arcLabels[ch.narrative_arc] ?? ch.narrative_arc}
-                    </span>
-                    <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-                      Tensao: {Math.round(ch.overall_tension * 100)}%
-                    </span>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)", opacity: 0.25 }}>
+                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                </svg>
+                <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Nenhuma análise gerada ainda.</p>
+                <p className="font-sans text-[11px]" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>Selecione um tipo e clique em "Gerar análise".</p>
+              </div>
+            )}
+
+            {/* Sugerir tarefas — only when analysis is done */}
+            {universeAnalysis && !analyzingUniverse && (
+              <div className="mt-3">
+                {suggestedTasks.length === 0 ? (
+                  <button
+                    onClick={suggestTasks}
+                    disabled={suggestingTasks}
+                    className="flex items-center gap-1.5 rounded-full px-4 py-1.5 font-sans text-xs transition-opacity disabled:opacity-50"
+                    style={{ background: "var(--surface)", color: "var(--foreground)", border: "1px solid var(--border)" }}
+                  >
+                    {suggestingTasks ? (
+                      <>
+                        <svg className="animate-spin shrink-0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+                        Extraindo tarefas...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Sugerir tarefas a partir da análise
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div className="rounded-xl p-4" style={{ background: "var(--surface)" }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>
+                        {suggestedTasks.length} tarefas sugeridas
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setSelectedTaskIds(selectedTaskIds.size === suggestedTasks.length ? new Set() : new Set(suggestedTasks.map((t) => t._id)))}
+                          className="font-sans text-[11px]"
+                          style={{ color: "var(--muted-foreground)" }}
+                        >
+                          {selectedTaskIds.size === suggestedTasks.length ? "Desmarcar todas" : "Selecionar todas"}
+                        </button>
+                        <button
+                          onClick={addSelectedTasks}
+                          disabled={savingTasks || selectedTaskIds.size === 0}
+                          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 font-sans text-xs font-medium transition-opacity disabled:opacity-50"
+                          style={{ background: "var(--foreground)", color: "var(--background)" }}
+                        >
+                          {savingTasks ? "Salvando..." : `Adicionar ${selectedTaskIds.size} à lista de tarefas →`}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {suggestedTasks.map((task, i) => {
+                        const selected = selectedTaskIds.has(task._id)
+                        const isDragging = dragSuggestId === task._id
+                        const priorityColors: Record<string, string> = { high: "oklch(0.62 0.16 27)", normal: "var(--muted-foreground)", low: "var(--muted-foreground)" }
+                        const priorityLabel: Record<string, string> = { high: "↑ alta", normal: "normal", low: "↓ baixa" }
+                        return (
+                          <div
+                            key={task._id}
+                            draggable
+                            onDragStart={(e) => {
+                              e.dataTransfer.effectAllowed = "move"
+                              setDragSuggestId(task._id)
+                            }}
+                            onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
+                            onDrop={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              if (dragSuggestId === null || dragSuggestId === task._id) return
+                              const fromIdx = suggestedTasks.findIndex((t) => t._id === dragSuggestId)
+                              const toIdx = i
+                              const next = [...suggestedTasks]
+                              const [moved] = next.splice(fromIdx, 1)
+                              next.splice(toIdx, 0, moved)
+                              setSuggestedTasks(next)
+                              setDragSuggestId(null)
+                            }}
+                            onDragEnd={() => setDragSuggestId(null)}
+                            onClick={() => {
+                              const next = new Set(selectedTaskIds)
+                              if (selected) next.delete(task._id)
+                              else next.add(task._id)
+                              setSelectedTaskIds(next)
+                            }}
+                            className="relative flex flex-col gap-2 rounded-xl p-3.5 cursor-grab active:cursor-grabbing transition-all glass-card"
+                            style={{
+                              outline: selected ? "1.5px solid var(--foreground)" : "1.5px solid transparent",
+                              opacity: isDragging ? 0.35 : selected ? 1 : 0.55,
+                            }}
+                          >
+                            {/* Checkbox top-right */}
+                            <div
+                              className="absolute top-3 right-3 w-4 h-4 rounded flex items-center justify-center shrink-0"
+                              style={{ background: selected ? "var(--foreground)" : "transparent", border: selected ? "none" : "1px solid var(--border)" }}
+                            >
+                              {selected && (
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--background)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              )}
+                            </div>
+
+                            {/* Badges */}
+                            <div className="flex items-center gap-1.5 pr-6">
+                              <span className="font-sans text-[10px] uppercase tracking-wide" style={{ color: "var(--muted-foreground)" }}>{task.category}</span>
+                              <span className="font-sans text-[10px]" style={{ color: priorityColors[task.priority] ?? "var(--muted-foreground)" }}>
+                                · {priorityLabel[task.priority] ?? task.priority}
+                              </span>
+                            </div>
+
+                            {/* Title */}
+                            <p className="font-sans text-sm font-medium leading-snug" style={{ color: "var(--foreground)" }}>{task.title}</p>
+
+                            {/* Description */}
+                            {task.description && (
+                              <p className="font-sans text-[11px] leading-relaxed" style={{ color: "var(--muted-foreground)" }}>{task.description}</p>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
-                  <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
-                    {ch.summary}
-                  </p>
-                </div>
-              )
-            })}
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Progress bars */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <ProgressCard
-          label="Biblia"
-          value={analytics.bibliaComplete}
-          max={9}
-          color="var(--gold)"
-          words={analytics.sectionWords.biblia ?? 0}
-        />
-        <ProgressCard
-          label="Livro"
-          value={analytics.livroChapters}
-          max={7}
-          color="var(--blue-cold)"
-          words={analytics.sectionWords.livro ?? 0}
-        />
-        <ProgressCard
-          label="Contos"
-          value={analytics.contosWritten}
-          max={analytics.totalContos}
-          color="var(--accent)"
-          words={analytics.sectionWords.contos ?? 0}
-        />
+        {/* Aba: Proximos Passos */}
+        {activeTab === "proximos" && (
+          <div className="p-4 flex flex-col gap-3">
+            {/* Personagens */}
+            <NextBlock title="Personagens" done={analytics.totalCharacters} total={analytics.totalCharacters} note={`${analytics.totalCharacters} no banco`}>
+              <Link
+                href="/admin/characters"
+                className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 font-sans text-xs transition-colors"
+                style={{ background: "var(--surface)", color: "var(--foreground)" }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Adicionar personagem
+              </Link>
+            </NextBlock>
+
+            {/* Biblia */}
+            <NextBlock title="Bíblia" done={analytics.bibliaComplete} total={9} note={`${analytics.bibliaComplete}/9 partes`}>
+              <Link
+                href="/admin/editor"
+                className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 font-sans text-xs transition-colors"
+                style={{ background: "var(--surface)", color: "var(--foreground)" }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                Abrir editor
+              </Link>
+            </NextBlock>
+
+            {/* Contos */}
+            <NextBlock
+              title="Contos"
+              done={analytics.contosWritten}
+              total={CONTO_ORDER.length}
+              note={`${analytics.contosWritten}/${CONTO_ORDER.length} escritos`}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 w-full">
+                {CONTO_ORDER.map((name) => {
+                  const words = analytics.wordCounts[name] ?? 0
+                  const done = words > 200
+                  return (
+                    <div key={name} className="flex items-center gap-2 rounded-lg px-2.5 py-2" style={{ background: "var(--surface)" }}>
+                      <span
+                        className="shrink-0 w-2.5 h-2.5 rounded-full"
+                        style={{ background: done ? "var(--foreground)" : "var(--border)" }}
+                      />
+                      <span className="font-sans text-xs capitalize flex-1 truncate" style={{ color: "var(--foreground)" }}>{name}</span>
+                      {done ? (
+                        <span className="font-sans text-[10px] tabular-nums shrink-0" style={{ color: "var(--muted-foreground)" }}>{formatNumber(words)}</span>
+                      ) : (
+                        <span
+                          className="font-mono text-[9px] rounded px-1 shrink-0"
+                          style={{ color: "var(--muted-foreground)", background: "var(--surface)" }}
+                        >
+                          /write
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </NextBlock>
+
+            {/* Livro */}
+            <NextBlock
+              title="Livro"
+              done={chapters.filter((c) => c.words >= 1000).length}
+              total={chapters.length}
+              note={`${chapters.length} capitulos`}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 w-full">
+                {chapters.map((ch) => {
+                  const done = ch.words >= 1000
+                  return (
+                    <div key={ch.slug} className="flex items-center gap-2 rounded-lg px-2.5 py-2" style={{ background: "var(--surface)" }}>
+                      <span
+                        className="shrink-0 w-2.5 h-2.5 rounded-full"
+                        style={{ background: done ? "var(--foreground)" : "var(--border)" }}
+                      />
+                      <span className="font-sans text-xs flex-1" style={{ color: "var(--foreground)" }}>
+                        {ch.slug === "epilogo" ? "Epílogo" : `Cap ${ch.slug}`}
+                      </span>
+                      {done ? (
+                        <span className="font-sans text-[10px] tabular-nums shrink-0" style={{ color: "var(--muted-foreground)" }}>{formatNumber(ch.words)}</span>
+                      ) : (
+                        <span
+                          className="font-mono text-[9px] rounded px-1 shrink-0"
+                          style={{ color: "var(--muted-foreground)", background: "var(--surface)" }}
+                        >
+                          /expand
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </NextBlock>
+          </div>
+        )}
       </div>
 
-      {/* Character mentions heatmap */}
-      {chapters.length > 0 && Object.keys(analytics.charMentions).length > 0 && (
-        <div className="rounded-xl p-6 mb-8 glass-card">
-          <h2 className="font-serif text-xl mb-1" style={{ color: "var(--foreground)" }}>Presenca por Capitulo</h2>
-          <p className="font-sans text-xs mb-4" style={{ color: "var(--muted-foreground)" }}>Mencoes de personagens no livro</p>
-          <CharacterHeatmap chapters={chapters} mentions={analytics.charMentions} />
-        </div>
-      )}
-
-      {/* Quick links grid */}
-      <div className="mb-6">
-        <p className="font-sans text-[10px] uppercase tracking-[0.2em] mb-3" style={{ color: "var(--muted-foreground)" }}>Acesso rapido</p>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <QuickLink href="/admin/tasks" label="Tarefas" count={taskStats.todo} icon={<TasksIcon />} />
-          <QuickLink href="/admin/documents" label="Documentos" count={analytics.totalDocuments} icon={<DocsIcon />} />
-          <QuickLink href="/admin/characters" label="Personagens" count={analytics.totalCharacters} icon={<CharsIcon />} />
-          <QuickLink href="/admin/banners" label="Banners" count={analytics.totalBanners} icon={<BannersIcon />} />
-          <QuickLink href="/admin/gallery" label="Galeria" count={analytics.totalGallery} icon={<GalleryIcon />} />
-        </div>
-      </div>
-
-      {/* Recent tasks */}
-      <div className="rounded-xl p-6 glass-card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>Tarefas Pendentes</h2>
+      {/* Tarefas */}
+      <div className="rounded-xl p-4 glass-card">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-serif text-base" style={{ color: "var(--foreground)" }}>Tarefas Pendentes</h2>
           <Link href="/admin/tasks" className="font-sans text-xs" style={{ color: "var(--foreground)" }}>Ver tudo →</Link>
         </div>
         <TasksList />
@@ -453,120 +845,87 @@ export default function AdminDashboardPage() {
   )
 }
 
-/* ─── Story Arc Chart (SVG) ─── */
+/* ─── Story Arc Chart ─── */
 
 function StoryArcChart({ chapters }: { chapters: ChapterData[] }) {
   if (chapters.length === 0) {
-    return <p className="font-sans text-sm py-8 text-center" style={{ color: "var(--muted-foreground)" }}>Nenhum capitulo com conteudo.</p>
+    return <p className="font-sans text-sm py-8 text-center" style={{ color: "var(--muted-foreground)" }}>Nenhum capítulo com conteúdo.</p>
   }
 
+  const maxWords = Math.max(...chapters.map((c) => c.words), 1)
   const maxTension = Math.max(...chapters.map((c) => c.tensionScore), 1)
-  // Use log scale for words to avoid Cap01 crushing everything else
-  const wordValues = chapters.map((c) => Math.log(Math.max(c.words, 1)))
-  const maxWordLog = Math.max(...wordValues, 1)
-
-  const W = 640
-  const H = 120
-  const padX = 12
-  const padTop = 20
-  const padBottom = 20
-  const chartW = W - padX * 2
-  const chartH = H - padTop - padBottom
-
-  const getX = (i: number) => padX + (i / Math.max(chapters.length - 1, 1)) * chartW
-
-  const tensionPoints = chapters.map((c, i) => {
-    const x = getX(i)
-    const y = padTop + chartH - (c.tensionScore / maxTension) * chartH
-    return { x, y, str: `${x},${y}` }
-  })
-
-  const wordPoints = chapters.map((c, i) => {
-    const x = getX(i)
-    const y = padTop + chartH - (wordValues[i] / maxWordLog) * chartH
-    return { x, y, str: `${x},${y}` }
-  })
-
-  // Smooth curve helper
-  const smoothPath = (pts: { x: number; y: number }[]) => {
-    if (pts.length < 2) return ""
-    let d = `M ${pts[0].x} ${pts[0].y}`
-    for (let i = 0; i < pts.length - 1; i++) {
-      const cx = (pts[i].x + pts[i + 1].x) / 2
-      d += ` C ${cx} ${pts[i].y}, ${cx} ${pts[i + 1].y}, ${pts[i + 1].x} ${pts[i + 1].y}`
-    }
-    return d
-  }
-
-  const tensionPath = smoothPath(tensionPoints)
-  const wordPath = smoothPath(wordPoints)
-  const wordAreaPath = wordPath + ` L ${wordPoints[wordPoints.length - 1].x},${padTop + chartH} L ${wordPoints[0].x},${padTop + chartH} Z`
-
   const peakIdx = chapters.reduce((best, c, i) => c.tensionScore > chapters[best].tensionScore ? i : best, 0)
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id="wordsFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.48 0.12 65)" stopOpacity="0.15" />
-          <stop offset="100%" stopColor="oklch(0.48 0.12 65)" stopOpacity="0.02" />
-        </linearGradient>
-        <linearGradient id="tensionStroke" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="oklch(0.45 0.12 290)" />
-          <stop offset="100%" stopColor="oklch(0.50 0.15 290)" />
-        </linearGradient>
-      </defs>
-
-      {/* Grid lines */}
-      {[0, 0.5, 1].map((v) => {
-        const y = padTop + chartH - v * chartH
-        return <line key={v} x1={padX} y1={y} x2={W - padX} y2={y} stroke="var(--border)" strokeWidth="0.5" strokeDasharray={v === 0 ? "none" : "3,4"} />
-      })}
-
-      {/* Words area (filled + line) */}
-      <path d={wordAreaPath} fill="url(#wordsFill)" />
-      <path d={wordPath} fill="none" stroke="oklch(0.48 0.12 65 / 0.5)" strokeWidth="1.5" />
-
-      {/* Word dots */}
-      {chapters.map((c, i) => (
-        <g key={`w-${c.slug}`}>
-          <circle cx={wordPoints[i].x} cy={wordPoints[i].y} r="2" fill="oklch(0.48 0.12 65 / 0.6)" />
-          <text x={wordPoints[i].x} y={wordPoints[i].y - 6} textAnchor="middle" className="font-sans" fill="oklch(0.48 0.12 65 / 0.7)" fontSize="7">
-            {c.words >= 1000 ? (c.words / 1000).toFixed(1) + "k" : c.words}
-          </text>
-        </g>
-      ))}
-
-      {/* Tension line (smooth curve) */}
-      <path d={tensionPath} fill="none" stroke="url(#tensionStroke)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* Tension dots + values */}
-      {chapters.map((c, i) => {
-        const { x, y } = tensionPoints[i]
+    <div className="flex flex-col gap-2.5">
+      {chapters.map((ch, i) => {
+        const wordPct = (ch.words / maxWords) * 100
+        const tensionPct = (ch.tensionScore / maxTension) * 100
         const isPeak = i === peakIdx
+        const label = ch.slug === "epilogo" ? "Epílogo" : `Cap. ${ch.slug}`
+
         return (
-          <g key={`t-${c.slug}`}>
-            {isPeak && <circle cx={x} cy={y} r="10" fill="oklch(0.55 0.18 27 / 0.1)" />}
-            <circle cx={x} cy={y} r={isPeak ? 4.5 : 3} fill={isPeak ? "oklch(0.55 0.18 27)" : "oklch(0.45 0.12 290)"} stroke={isPeak ? "oklch(0.55 0.18 27 / 0.3)" : "none"} strokeWidth="2" />
-            {isPeak && (
-              <text x={x} y={y - 14} textAnchor="middle" className="font-sans" fill="oklch(0.55 0.18 27)" fontSize="8" fontWeight="700" letterSpacing="0.5">
-                PICO
-              </text>
-            )}
-            <text x={x} y={y + (isPeak ? 16 : 13)} textAnchor="middle" className="font-sans" fill="oklch(0.45 0.12 290 / 0.8)" fontSize="7" fontWeight="500">
-              {c.tensionScore}
-            </text>
-          </g>
+          <div key={ch.slug} className="flex items-center gap-3">
+            {/* Label */}
+            <span
+              className="font-sans text-xs shrink-0 w-16 text-right"
+              style={{ color: isPeak ? "var(--foreground)" : "var(--muted-foreground)", fontWeight: isPeak ? 600 : 400 }}
+            >
+              {label}
+            </span>
+
+            {/* Bars */}
+            <div className="flex-1 flex flex-col gap-1">
+              {/* Palavras */}
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--surface)" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{ width: `${Math.max(wordPct, 2)}%`, background: "oklch(0.60 0.09 65 / 0.55)" }}
+                />
+              </div>
+              {/* Tensão */}
+              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--surface)" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{
+                    width: `${Math.max(tensionPct, 2)}%`,
+                    background: isPeak ? "oklch(0.62 0.16 27 / 0.85)" : "oklch(0.52 0.10 270 / 0.5)",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Valores */}
+            <div className="shrink-0 flex flex-col items-end w-20">
+              <span className="font-sans text-[10px] tabular-nums leading-snug" style={{ color: "var(--foreground)" }}>
+                {ch.words >= 1000 ? (ch.words / 1000).toFixed(1) + "k" : ch.words} pal.
+              </span>
+              <span
+                className="font-sans text-[10px] leading-snug"
+                style={{ color: isPeak ? "oklch(0.62 0.16 27)" : "var(--muted-foreground)" }}
+              >
+                {tensionPct >= 80 ? "↑ pico" : tensionPct >= 50 ? "alta" : tensionPct >= 25 ? "média" : "baixa"}
+              </span>
+            </div>
+          </div>
         )
       })}
 
-      {/* X axis labels */}
-      {chapters.map((c, i) => (
-        <text key={`lbl-${c.slug}`} x={getX(i)} y={H - 4} textAnchor="middle" className="font-sans" fill="var(--muted-foreground)" fontSize="9" fontWeight={i === peakIdx ? "600" : "400"}>
-          {c.slug === "epilogo" ? "Epi" : `Cap ${c.slug}`}
-        </text>
-      ))}
-    </svg>
+      {/* Legenda */}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 mt-0.5" style={{ borderTop: "1px solid var(--border)" }}>
+        <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+          <span className="w-3 h-2 rounded-sm inline-block" style={{ background: "oklch(0.60 0.09 65 / 0.55)" }} />
+          Palavras
+        </span>
+        <span className="flex items-center gap-1.5 font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+          <span className="w-3 h-1.5 rounded-sm inline-block" style={{ background: "oklch(0.52 0.10 270 / 0.5)" }} />
+          Tensão (relativa entre capítulos)
+        </span>
+        <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>
+          baixa · média · alta · ↑ pico
+        </span>
+      </div>
+    </div>
   )
 }
 
@@ -728,7 +1087,7 @@ function CharacterHeatmap({ chapters, mentions }: { chapters: ChapterData[]; men
                   style={{
                     background: count > 0 ? `oklch(0.45 0.12 290 / ${0.08 + intensity * 0.5})` : "var(--surface)",
                   }}
-                  title={`${name} em ${ch.title}: ${count} mencoes`}
+                  title={`${name} em ${ch.title}: ${count} menções`}
                 >
                   {count > 0 && (
                     <span className="font-sans text-[10px] font-medium" style={{ color: intensity > 0.5 ? "white" : "oklch(0.45 0.12 290)" }}>
@@ -750,18 +1109,14 @@ function CharacterHeatmap({ chapters, mentions }: { chapters: ChapterData[]; men
 function ProgressCard({ label, value, max, color, words }: { label: string; value: number; max: number; color: string; words: number }) {
   const percent = max > 0 ? Math.round((value / max) * 100) : 0
   return (
-    <div className="rounded-xl p-5 flex items-center gap-4 glass-card">
-      <div className="relative">
-        <ProgressRing value={value} max={max} color={color} />
-        <span className="absolute inset-0 flex items-center justify-center font-sans text-xs font-bold" style={{ color }}>
-          {percent}%
-        </span>
+    <div className="rounded-xl p-4 flex items-center gap-3 glass-card">
+      <div className="relative shrink-0">
+        <ProgressRing value={value} max={max} size={40} color={color} />
+        <span className="absolute inset-0 flex items-center justify-center font-sans text-[10px] font-bold" style={{ color }}>{percent}%</span>
       </div>
       <div>
         <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>{label}</p>
-        <p className="font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-          {value}/{max} partes · {formatNumber(words)} palavras
-        </p>
+        <p className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>{value}/{max} · {formatNumber(words)} palavras</p>
       </div>
     </div>
   )
@@ -771,42 +1126,14 @@ function ProgressCard({ label, value, max, color, words }: { label: string; valu
 
 function StatCard({ label, value, sub, icon, color }: { label: string; value: string; sub: string; icon: React.ReactNode; color: string }) {
   return (
-    <div className="rounded-xl p-5 glass-card" style={{ borderTop: `2px solid color-mix(in oklch, ${color} 40%, transparent)` }}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="font-sans text-xs uppercase tracking-[0.12em]" style={{ color: "var(--muted-foreground)" }}>{label}</span>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `color-mix(in oklch, ${color} 14%, transparent)`, color }}>
-          {icon}
-        </div>
+    <div className="rounded-xl p-4 glass-card flex items-center gap-3">
+      <div className="shrink-0" style={{ color: "var(--muted-foreground)" }}>{icon}</div>
+      <div className="min-w-0">
+        <p className="font-sans text-[10px] uppercase tracking-[0.15em] mb-0.5" style={{ color: "var(--muted-foreground)" }}>{label}</p>
+        <p className="font-serif text-2xl leading-none" style={{ color: "var(--foreground)" }}>{value}</p>
+        <p className="font-sans text-[10px] mt-0.5 truncate" style={{ color: "var(--muted-foreground)" }}>{sub}</p>
       </div>
-      <p className="font-serif text-3xl leading-none" style={{ color: "var(--foreground)" }}>{value}</p>
-      <p className="font-sans text-[11px] mt-1.5" style={{ color: "var(--muted-foreground)" }}>{sub}</p>
     </div>
-  )
-}
-
-/* ─── Quick Link ─── */
-
-function QuickLink({ href, label, count, icon }: { href: string; label: string; count: number; icon: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="group rounded-xl p-4 flex items-center gap-3 transition-all duration-150 hover:scale-[1.02] glass-card"
-      style={{ borderLeft: '2px solid transparent' }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderLeft = '2px solid var(--accent)'
-        e.currentTarget.style.paddingLeft = 'calc(1rem - 2px)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderLeft = '2px solid transparent'
-        e.currentTarget.style.paddingLeft = '1rem'
-      }}
-    >
-      <div style={{ color: "var(--accent)", opacity: 0.7 }}>{icon}</div>
-      <div>
-        <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>{label}</p>
-        <p className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>{count}</p>
-      </div>
-    </Link>
   )
 }
 
@@ -846,11 +1173,11 @@ function TasksList() {
   return (
     <div className="flex flex-col gap-2">
       {tasks.map((task) => (
-        <div key={task.id} className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: "var(--surface)" }}>
+        <div key={task.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background: "var(--surface)" }}>
           <span className="font-sans text-xs" style={{ color: task.priority === "high" ? "oklch(0.55 0.18 27)" : "var(--muted-foreground)" }}>
             {PRIORITY_ICONS[task.priority] ?? "–"}
           </span>
-          <p className="font-sans text-sm flex-1 truncate" style={{ color: "var(--foreground)" }}>{task.title}</p>
+          <p className="font-sans text-[13px] flex-1 truncate" style={{ color: "var(--foreground)" }}>{task.title}</p>
           <span
             className="rounded px-2 py-0.5 font-sans text-[10px] uppercase tracking-wide shrink-0"
             style={{
@@ -897,14 +1224,14 @@ function generateInsights(analytics: Analytics): Insight[] {
   // ─── 1. STRUCTURAL BALANCE: chapters that are skeletons vs full ───
   const skeletons = chapters.filter((c) => c.words < 500 && c.slug !== "epilogo")
   if (skeletons.length > 0) {
-    const names = skeletons.map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`).join(", ")
+    const names = skeletons.map((c) => c.slug === "epilogo" ? "Epílogo" : `Cap ${c.slug}`).join(", ")
     const pct = Math.round((skeletons.length / chapters.length) * 100)
     insights.push({
       type: "fix",
       category: "estrutura",
-      title: `${skeletons.length} capitulo${skeletons.length > 1 ? "s" : ""} ainda ${skeletons.length > 1 ? "sao" : "e"} esqueleto`,
-      body: `${names} — ${pct}% do livro tem menos de 500 palavras. Cap 01 tem ${formatNumber(longest.words)} palavras. Os esqueletos precisam de expansao para o arco funcionar.`,
-      action: `Usar /expand-chapter para expandir ${skeletons[0].slug === "epilogo" ? "Epilogo" : `capitulo ${skeletons[0].slug}`}`,
+      title: `${skeletons.length} capítulo${skeletons.length > 1 ? "s" : ""} ainda ${skeletons.length > 1 ? "são" : "é"} esqueleto`,
+      body: `${names}: ${pct}% do livro tem menos de 500 palavras. Cap 01 tem ${formatNumber(longest.words)} palavras. Os esqueletos precisam de expansão para o arco funcionar.`,
+      action: `Usar /expand-chapter para expandir ${skeletons[0].slug === "epilogo" ? "Epílogo" : `capítulo ${skeletons[0].slug}`}`,
       color: "oklch(0.55 0.18 27)",
     })
   }
@@ -919,9 +1246,9 @@ function generateInsights(analytics: Analytics): Insight[] {
       insights.push({
         type: "rhythm",
         category: "ritmo",
-        title: "Climax acontece cedo demais",
-        body: `O pico de tensao esta no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}), mas deveria estar entre Cap ${chapters[expectedClimaxRange[0]].slug} e Cap ${chapters[expectedClimaxRange[1]].slug} para um arco classico. O leitor pode perder interesse na segunda metade.`,
-        action: "Aumentar a tensao nos capitulos 04-05 com conflito fisico ou revelacao",
+        title: "Clímax acontece cedo demais",
+        body: `O pico de tensão está no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}), mas deveria estar entre Cap ${chapters[expectedClimaxRange[0]].slug} e Cap ${chapters[expectedClimaxRange[1]].slug} para um arco clássico. O leitor pode perder interesse na segunda metade.`,
+        action: "Aumentar a tensão nos capítulos 04-05 com conflito físico ou revelação",
         color: "oklch(0.48 0.12 65)",
       })
     } else if (peakIdx >= expectedClimaxRange[0] && peakIdx <= expectedClimaxRange[1]) {
@@ -929,7 +1256,7 @@ function generateInsights(analytics: Analytics): Insight[] {
         type: "ok",
         category: "ritmo",
         title: "Arco narrativo bem posicionado",
-        body: `Climax no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}). Posicao ideal para resolucao no final.`,
+        body: `Clímax no Cap ${chapters[peakIdx].slug} (score ${tensionValues[peakIdx]}). Posição ideal para resolução no final.`,
         color: "oklch(0.45 0.12 150)",
       })
     }
@@ -941,9 +1268,9 @@ function generateInsights(analytics: Analytics): Insight[] {
       insights.push({
         type: "rhythm",
         category: "ritmo",
-        title: "Queda abrupta de tensao no final",
-        body: `Os ultimos capitulos tem tensao muito baixa (${lastTwo.join(", ")}) comparado ao pico (${peak}). A resolucao pode parecer abrupta.`,
-        action: "Adicionar ecos de tensao ou consequencias nos capitulos finais",
+        title: "Queda abrupta de tensão no final",
+        body: `Os últimos capítulos têm tensão muito baixa (${lastTwo.join(", ")}) comparado ao pico (${peak}). A resolução pode parecer abrupta.`,
+        action: "Adicionar ecos de tensão ou consequências nos capítulos finais",
         color: "oklch(0.42 0.10 230)",
       })
     }
@@ -956,14 +1283,14 @@ function generateInsights(analytics: Analytics): Insight[] {
   }
 
   // Temiku should appear in every chapter
-  const temikuAbsent = chapters.filter((c) => !charMentions[c.slug]?.temiku).map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`)
+  const temikuAbsent = chapters.filter((c) => !charMentions[c.slug]?.temiku).map((c) => c.slug === "epilogo" ? "Epílogo" : `Cap ${c.slug}`)
   if (temikuAbsent.length > 0 && temikuAbsent.length < chapters.length) {
     insights.push({
       type: "coverage",
       category: "personagens",
       title: `Temiku ausente em ${temikuAbsent.join(", ")}`,
-      body: `Como protagonista, Temiku deveria aparecer ou ser referenciada em todos os capitulos. A ausencia cria descontinuidade no arco central.`,
-      action: "Verificar se a presenca de Temiku esta implicita ou se o capitulo precisa de reescrita",
+      body: `Como protagonista, Temiku deveria aparecer ou ser referenciada em todos os capítulos. A ausência cria descontinuidade no arco central.`,
+      action: "Verificar se a presença de Temiku está implícita ou se o capítulo precisa de reescrita",
       color: "oklch(0.45 0.12 290)",
     })
   }
@@ -980,9 +1307,9 @@ function generateInsights(analytics: Analytics): Insight[] {
     insights.push({
       type: "coverage",
       category: "personagens",
-      title: `${singleAppear.join(", ")} — aparece${singleAppear.length > 1 ? "m" : ""} em 1 capitulo so`,
-      body: `Personagens com aparicao unica podem parecer artificiais. Se sao importantes para o arco, precisam de mais presenca. Se nao sao, avaliar se a mencao unica serve a narrativa.`,
-      action: "Considerar adicionar referencias a esses personagens em capitulos adjacentes",
+      title: `${singleAppear.join(", ")}, aparece${singleAppear.length > 1 ? "m" : ""} em 1 capítulo só`,
+      body: `Personagens com aparição única podem parecer artificiais. Se são importantes para o arco, precisam de mais presença. Se não são, avaliar se a menção única serve a narrativa.`,
+      action: "Considerar adicionar referências a esses personagens em capítulos adjacentes",
       color: "oklch(0.42 0.10 230)",
     })
   }
@@ -990,13 +1317,13 @@ function generateInsights(analytics: Analytics): Insight[] {
   // ─── 4. DIALOGUE DENSITY: chapters with almost no dialogue ───
   const lowDialogue = chapters.filter((c) => c.words > 500 && c.dialogueLines < 3)
   if (lowDialogue.length > 0) {
-    const names = lowDialogue.map((c) => c.slug === "epilogo" ? "Epilogo" : `Cap ${c.slug}`).join(", ")
+    const names = lowDialogue.map((c) => c.slug === "epilogo" ? "Epílogo" : `Cap ${c.slug}`).join(", ")
     insights.push({
       type: "gap",
       category: "voz",
-      title: `Quase sem dialogo: ${names}`,
-      body: `Capitulos longos sem dialogo podem ficar densos demais. Mesmo em narrativas introspectivas, breves trocas iluminam relacoes.`,
-      action: "Avaliar se a ausencia e intencional ou se falta interacao entre personagens",
+      title: `Quase sem diálogo: ${names}`,
+      body: `Capítulos longos sem diálogo podem ficar densos demais. Mesmo em narrativas introspectivas, breves trocas iluminam relações.`,
+      action: "Avaliar se a ausência é intencional ou se falta interação entre personagens",
       color: "oklch(0.48 0.12 65)",
     })
   }
@@ -1010,7 +1337,7 @@ function generateInsights(analytics: Analytics): Insight[] {
       type: "gap",
       category: "contos",
       title: `${contosWritten}/${totalContos} contos escritos`,
-      body: `Os contos de origem (Amara, Oruku, Beku) devem vir antes dos contos de contexto (Obaru, Kemdi, Temi). O conto de Orike e o ultimo — perspectiva nao-animal.`,
+      body: `Os contos de origem (Amara, Oruku, Beku) devem vir antes dos contos de contexto (Obaru, Kemdi, Temi). O conto de Orike é o último, perspectiva não-animal.`,
       action: nextConto ? `Proximo: /write-conto ${nextConto}` : undefined,
       color: "oklch(0.45 0.12 290)",
     })
@@ -1025,9 +1352,9 @@ function generateInsights(analytics: Analytics): Insight[] {
         insights.push({
           type: "rhythm",
           category: "ritmo",
-          title: "Ritmo uniforme entre capitulos",
-          body: `Media de frase varia apenas ${variation} palavras entre capitulos (${Math.min(...avgSentences)}-${Math.max(...avgSentences)} palavras). Cada capitulo deveria ter um pulso proprio. Cap 01 (descoberta) pode ser mais lento; Cap 04-05 (conflito) mais cortado.`,
-          action: "Variar o comprimento medio de frase por capitulo conforme o tom",
+          title: "Ritmo uniforme entre capítulos",
+          body: `Média de frase varia apenas ${variation} palavras entre capítulos (${Math.min(...avgSentences)}-${Math.max(...avgSentences)} palavras). Cada capítulo deveria ter um pulso próprio. Cap 01 (descoberta) pode ser mais lento; Cap 04-05 (conflito) mais cortado.`,
+          action: "Variar o comprimento médio de frase por capítulo conforme o tom",
           color: "oklch(0.42 0.10 230)",
         })
       }
@@ -1045,23 +1372,126 @@ function generateInsights(analytics: Analytics): Insight[] {
       insights.push({
         type: "gap",
         category: "balanco",
-        title: `Narrativa e ${ratio}% da biblia`,
-        body: `${formatNumber(narrativeTotal)} palavras narrativas vs ${formatNumber(bibliaWords)} de referencia. O mundo esta bem documentado, mas a narrativa precisa crescer para dar vida a ele.`,
-        action: "Expandir capitulos 02-06 e escrever contos pendentes",
+        title: `Narrativa é ${ratio}% da bíblia`,
+        body: `${formatNumber(narrativeTotal)} palavras narrativas vs ${formatNumber(bibliaWords)} de referência. O mundo está bem documentado, mas a narrativa precisa crescer para dar vida a ele.`,
+        action: "Expandir capítulos 02-06 e escrever contos pendentes",
         color: "oklch(0.48 0.12 65)",
       })
     } else {
       insights.push({
         type: "ok",
         category: "balanco",
-        title: "Equilibrio biblia/narrativa saudavel",
-        body: `Narrativa tem ${ratio}% do volume da biblia (${formatNumber(narrativeTotal)} vs ${formatNumber(bibliaWords)}).`,
+        title: "Equilíbrio bíblia/narrativa saudável",
+        body: `Narrativa tem ${ratio}% do volume da bíblia (${formatNumber(narrativeTotal)} vs ${formatNumber(bibliaWords)}).`,
         color: "oklch(0.45 0.12 150)",
       })
     }
   }
 
   return insights.slice(0, 8)
+}
+
+/* ─── Markdown Renderer ─── */
+
+function MarkdownView({ text }: { text: string }) {
+  const lines = text.split("\n")
+  const elements: React.ReactNode[] = []
+
+  function parseBold(str: string): React.ReactNode {
+    const parts = str.split(/\*\*(.+?)\*\*/g)
+    return parts.map((part, i) =>
+      i % 2 === 1 ? (
+        <strong key={i} style={{ color: "var(--foreground)", fontWeight: 600 }}>{part}</strong>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    )
+  }
+
+  let i = 0
+  while (i < lines.length) {
+    const line = lines[i]
+
+    if (line.startsWith("## ")) {
+      elements.push(
+        <h2 key={i} className="font-serif text-xl mt-6 mb-2 first:mt-0" style={{ color: "var(--foreground)" }}>
+          {line.slice(3)}
+        </h2>
+      )
+    } else if (line.startsWith("### ")) {
+      elements.push(
+        <h3 key={i} className="font-sans font-semibold text-base mt-4 mb-1.5" style={{ color: "var(--foreground)" }}>
+          {line.slice(4)}
+        </h3>
+      )
+    } else if (line.startsWith("#### ")) {
+      elements.push(
+        <h4 key={i} className="font-sans font-medium text-sm mt-3 mb-1" style={{ color: "var(--muted-foreground)" }}>
+          {line.slice(5)}
+        </h4>
+      )
+    } else if (line.startsWith("- ") || line.startsWith("* ")) {
+      elements.push(
+        <div key={i} className="flex gap-2 mb-1">
+          <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full" style={{ background: "var(--muted-foreground)", opacity: 0.5 }} />
+          <p className="font-sans text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>
+            {parseBold(line.slice(2))}
+          </p>
+        </div>
+      )
+    } else if (line.startsWith("---")) {
+      elements.push(<hr key={i} className="my-4" style={{ borderColor: "var(--border)" }} />)
+    } else if (line.trim() === "") {
+      elements.push(<div key={i} className="h-2" />)
+    } else {
+      elements.push(
+        <p key={i} className="font-sans text-sm leading-relaxed mb-1" style={{ color: "var(--foreground)" }}>
+          {parseBold(line)}
+        </p>
+      )
+    }
+    i++
+  }
+
+  return <div>{elements}</div>
+}
+
+/* ─── Next Block ─── */
+
+function NextBlock({
+  title,
+  done,
+  total,
+  note,
+  children,
+}: {
+  title: string
+  done: number
+  total: number
+  note: string
+  children: React.ReactNode
+}) {
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0
+  return (
+    <div className="rounded-xl p-4 glass-card">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>{title}</p>
+          <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>{note}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-1 w-20 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${pct}%`, background: "var(--foreground)" }}
+            />
+          </div>
+          <span className="font-sans text-[10px] tabular-nums w-7 text-right" style={{ color: "var(--muted-foreground)" }}>{pct}%</span>
+        </div>
+      </div>
+      {children}
+    </div>
+  )
 }
 
 /* ─── Icons ─── */

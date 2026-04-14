@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic"
 
 import Link from "next/link"
 import Image from "next/image"
-import { characters, characterOrder } from "@/lib/characters"
+import { getCharactersForViewer } from "@/lib/characters-db"
 import { ThemeToggle } from "@/components/koru/theme-toggle"
 import { CardCarousel } from "@/components/koru/card-carousel"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
@@ -118,10 +118,11 @@ function FullSection({
 }
 
 export default async function HomePage() {
-  const [banners, cardImages, siteContent] = await Promise.all([
+  const [banners, cardImages, siteContent, { chars: characters, order: characterOrder }] = await Promise.all([
     getBannerUrls(),
     getCardImages(),
     getSiteContent(),
+    getCharactersForViewer(),
   ])
 
   // Excluded paths — docs the user explicitly removed from the editor
@@ -204,7 +205,7 @@ export default async function HomePage() {
         )}
         <div className="relative z-10 px-8 md:px-16">
           <h1
-            className="font-serif leading-[0.85] mb-8"
+            className="koru-hero-text font-serif leading-[0.85] mb-8"
             style={{
               fontSize: "clamp(6rem, 18vw, 14rem)",
               color: hasHero ? "white" : "var(--foreground)",
@@ -215,67 +216,17 @@ export default async function HomePage() {
             Korú
           </h1>
           <p
-            className="text-lg md:text-2xl leading-relaxed max-w-xl font-sans"
+            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans"
             style={{
               color: hasHero ? "oklch(1 0 0 / 0.9)" : "var(--muted-foreground)",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
+              animationDelay: "0.55s",
             }}
           >
             {get(siteContent, "hero.tagline")}
           </p>
-          <div className="mt-12 flex flex-wrap gap-4">
-            <Link
-              href="/biblia/parte-00"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-90"
-              style={{
-                backgroundColor: hasHero ? "oklch(1 0 0 / 0.15)" : "var(--foreground)",
-                color: hasHero ? "white" : "var(--background)",
-                border: hasHero ? "1px solid oklch(1 0 0 / 0.3)" : "none",
-                backdropFilter: hasHero ? "blur(16px)" : undefined,
-              }}
-            >
-              {get(siteContent, "hero.cta_primary_text")}
-            </Link>
-            <Link
-              href="/livro/01"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-90"
-              style={{
-                backgroundColor: hasHero ? "oklch(1 0 0 / 0.15)" : "transparent",
-                color: hasHero ? "white" : "var(--foreground)",
-                border: hasHero ? "1px solid oklch(1 0 0 / 0.3)" : "1px solid var(--border)",
-                backdropFilter: hasHero ? "blur(16px)" : undefined,
-              }}
-            >
-              {get(siteContent, "hero.cta_secondary_text")}
-            </Link>
-          </div>
         </div>
       </section>
-
-      {/* Personagens */}
-      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
-        <CardCarousel>
-          {characterOrder.map((key) => {
-            const char = characters[key]
-            return (
-              <Link key={key} href={`/personagens/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
-                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[`char-${key}`] ? (
-                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                  ) : (
-                    <ImagePlaceholder />
-                  )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="font-serif text-lg md:text-2xl leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
-                    <p className="text-sm md:text-base font-sans text-white/70 mt-1">{char.role.split(",")[0].trim()}</p>
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
-        </CardCarousel>
-      </FullSection>
 
       {/* Bíblia */}
       <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
@@ -304,26 +255,23 @@ export default async function HomePage() {
         </CardCarousel>
       </FullSection>
 
-      {/* Livro */}
-      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
+      {/* Personagens */}
+      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
         <CardCarousel>
-          {finalLivroDocs.map((doc) => {
-            const filename = pathFilename(doc.path)
-            const urlSlug = livroUrlSlug(filename)
-            const cardKey = livroCardKey(filename)
-            const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
+          {characterOrder.map((key) => {
+            const char = characters[key]
             return (
-              <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+              <Link key={key} href={`/personagens/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[cardKey] ? (
-                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {cardImages[`char-${key}`] ? (
+                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                   <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="text-xs md:text-base font-sans text-white/60">{urlSlug === 'epilogo' ? 'Fim' : `Cap. ${urlSlug}`}</p>
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                    <p className="font-serif text-lg md:text-2xl leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
+                    <p className="text-sm md:text-base font-sans text-white/70 mt-1">{char.role.split(",")[0].trim()}</p>
                   </div>
                 </div>
               </Link>
@@ -349,6 +297,34 @@ export default async function HomePage() {
                   <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
                     <p className="text-xs md:text-base font-sans text-white/60">Conto</p>
                     <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+        </CardCarousel>
+      </FullSection>
+
+      {/* Livro */}
+      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
+        <CardCarousel>
+          {finalLivroDocs.map((doc) => {
+            const filename = pathFilename(doc.path)
+            const urlSlug = livroUrlSlug(filename)
+            const cardKey = livroCardKey(filename)
+            const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
+            return (
+              <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                  {cardImages[cardKey] ? (
+                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  ) : (
+                    <ImagePlaceholder />
+                  )}
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
+                    <p className="text-xs md:text-base font-sans text-white/60">{urlSlug === 'epilogo' ? 'Fim' : `Cap. ${urlSlug}`}</p>
+                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
                   </div>
                 </div>
               </Link>

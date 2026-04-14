@@ -1,6 +1,15 @@
 "use client"
 
-import { useRef, useState, useEffect, useCallback } from "react"
+import React, { useRef, useState, useEffect, useCallback } from "react"
+
+/**
+ * Recommended `sizes` value for Image components inside carousel cards.
+ * Pass this to every <Image> inside a .carousel-card to generate optimal srcsets.
+ *
+ * Usage: <Image sizes={CAROUSEL_IMAGE_SIZES} ... />
+ */
+export const CAROUSEL_IMAGE_SIZES =
+  "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
 
 export function CardCarousel({ children }: { children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -36,22 +45,35 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
     })
   }
 
+  // Inject data-carousel-index on each direct child so downstream consumers
+  // can determine whether an image should use priority (index < 3) or lazy loading.
+  const indexedChildren = React.Children.map(children, (child, index) => {
+    if (!React.isValidElement(child)) return child
+    return React.cloneElement(child as React.ReactElement<{ "data-carousel-index"?: number }>, {
+      "data-carousel-index": index,
+    })
+  })
+
   return (
     <div className="relative group/carousel">
-      {/* Scroll container */}
+      {/* Scroll container — scroll-smooth ensures smooth programmatic scrolling */}
       <div
         ref={scrollRef}
         className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-3 -my-3"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          scrollSnapType: "x mandatory",
+        }}
       >
-        {children}
+        {indexedChildren}
       </div>
 
       {/* Left arrow */}
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover/carousel:opacity-100 hover:scale-105 z-10"
+          className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover/carousel:opacity-100 hover:scale-105 z-10"
           style={{
             background: "oklch(1 0 0 / 0.2)",
             backdropFilter: "blur(16px)",
@@ -70,7 +92,7 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover/carousel:opacity-100 hover:scale-105 z-10"
+          className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover/carousel:opacity-100 hover:scale-105 z-10"
           style={{
             background: "oklch(1 0 0 / 0.2)",
             backdropFilter: "blur(16px)",

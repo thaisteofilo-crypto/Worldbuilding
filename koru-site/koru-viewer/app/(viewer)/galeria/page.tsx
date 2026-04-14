@@ -10,16 +10,33 @@ interface GalleryImage {
 
 export default function GaleriaPage() {
   const [images, setImages] = useState<GalleryImage[]>([])
+  const [filtered, setFiltered] = useState<GalleryImage[]>([])
+  const [activeTag, setActiveTag] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [selected, setSelected] = useState<GalleryImage | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
-  useEffect(() => {
-    fetch("/api/gallery").then((r) => r.json()).then((galleryData) => {
-      setImages(galleryData.images ?? [])
-      setLoading(false)
-    })
+  const displayImages = activeTag !== null ? filtered : images
+
+  const loadImages = useCallback(() => {
+    setLoading(true)
+    setError(false)
+    fetch("/api/gallery")
+      .then((r) => r.json())
+      .then((galleryData) => {
+        setImages(galleryData.images ?? [])
+        setLoading(false)
+      })
+      .catch(() => {
+        setError(true)
+        setLoading(false)
+      })
   }, [])
+
+  useEffect(() => {
+    loadImages()
+  }, [loadImages])
 
   const openLightbox = useCallback(
     (img: GalleryImage, index: number) => {
@@ -35,18 +52,18 @@ export default function GaleriaPage() {
   }, [])
 
   const goNext = useCallback(() => {
-    if (images.length === 0) return
-    const next = (selectedIndex + 1) % images.length
-    setSelected(images[next])
+    if (displayImages.length === 0) return
+    const next = (selectedIndex + 1) % displayImages.length
+    setSelected(displayImages[next])
     setSelectedIndex(next)
-  }, [images, selectedIndex])
+  }, [displayImages, selectedIndex])
 
   const goPrev = useCallback(() => {
-    if (images.length === 0) return
-    const prev = (selectedIndex - 1 + images.length) % images.length
-    setSelected(images[prev])
+    if (displayImages.length === 0) return
+    const prev = (selectedIndex - 1 + displayImages.length) % displayImages.length
+    setSelected(displayImages[prev])
     setSelectedIndex(prev)
-  }, [images, selectedIndex])
+  }, [displayImages, selectedIndex])
 
   useEffect(() => {
     if (!selected) return
@@ -74,7 +91,7 @@ export default function GaleriaPage() {
             Cenas do Akwu
           </p>
           <div className="ml-auto font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
-            {!loading && `${images.length} ${images.length === 1 ? "imagem" : "imagens"}`}
+            {!loading && !error && `${displayImages.length} ${displayImages.length === 1 ? "imagem" : "imagens"}`}
           </div>
         </div>
         <div className="mt-3 h-px" style={{ background: "var(--border)" }} />
@@ -89,7 +106,24 @@ export default function GaleriaPage() {
               style={{ borderColor: "var(--border)", borderTopColor: "var(--accent)" }}
             />
           </div>
-        ) : images.length === 0 ? (
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-32 gap-5">
+            <p className="font-serif text-xl" style={{ color: "var(--foreground)" }}>
+              Nao foi possivel carregar as cenas.
+            </p>
+            <button
+              onClick={loadImages}
+              className="font-sans text-sm rounded-full px-5 py-2 transition-colors"
+              style={{
+                background: "var(--surface)",
+                color: "var(--muted-foreground)",
+                border: "1px solid var(--border)",
+              }}
+            >
+              Tentar novamente
+            </button>
+          </div>
+        ) : displayImages.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <svg
               width="56"
@@ -115,11 +149,19 @@ export default function GaleriaPage() {
               columnGap: "8px",
             }}
           >
-            {images.map((img, i) => (
+            {displayImages.map((img, i) => (
               <div
                 key={img.name}
+                role="button"
+                tabIndex={0}
                 className="group relative mb-2 break-inside-avoid cursor-pointer overflow-hidden rounded-xl"
                 onClick={() => openLightbox(img, i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    openLightbox(img, i)
+                  }
+                }}
                 style={{ breakInside: "avoid" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -150,6 +192,9 @@ export default function GaleriaPage() {
       {/* Lightbox */}
       {selected && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Visualizador de imagem"
           className="fixed inset-0 z-50 flex items-center justify-center"
           style={{ background: "oklch(0 0 0 / 0.92)" }}
           onClick={closeLightbox}
@@ -190,7 +235,7 @@ export default function GaleriaPage() {
                 {selected.name.replace(/\.[^.]+$/, "").replace(/-/g, " ")}
               </p>
               <span className="font-sans text-xs tabular-nums" style={{ color: "oklch(1 0 0 / 0.35)" }}>
-                {selectedIndex + 1} / {images.length}
+                {selectedIndex + 1} / {displayImages.length}
               </span>
               <button
                 onClick={closeLightbox}
