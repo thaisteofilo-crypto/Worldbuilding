@@ -113,27 +113,13 @@ export function AdminSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside
-      className="flex w-56 flex-col"
-      style={{
-        background: 'var(--background)',
-      }}
-    >
+    <aside className="flex w-56 flex-col bg-background">
       {/* Logo */}
       <div className="flex h-14 items-center px-5">
-        <span
-          className="font-serif text-2xl tracking-tight"
-          style={{ color: 'var(--foreground)' }}
-        >
+        <span className="font-serif text-2xl tracking-tight text-foreground">
           Korú
         </span>
-        <span
-          className="ml-2.5 rounded-full px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase"
-          style={{
-            color: 'var(--muted-foreground)',
-            border: '1px solid color-mix(in oklch, var(--foreground) 18%, transparent)',
-          }}
-        >
+        <span className="ml-2.5 rounded-full border border-admin-badge-border px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase text-muted-foreground">
           Admin
         </span>
       </div>
@@ -149,42 +135,13 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-2.5 rounded-lg font-sans text-sm transition-all duration-150',
-              )}
-              style={
+                'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
                 active
-                  ? {
-                      background: 'color-mix(in oklch, var(--accent) 12%, transparent)',
-                      color: 'var(--foreground)',
-                      fontWeight: 500,
-                      borderLeft: '2px solid var(--accent)',
-                      paddingTop: '0.625rem',
-                      paddingBottom: '0.625rem',
-                      paddingLeft: 'calc(0.75rem - 2px)',
-                      paddingRight: '0.75rem',
-                    }
-                  : {
-                      color: 'var(--muted-foreground)',
-                      paddingTop: '0.625rem',
-                      paddingBottom: '0.625rem',
-                      paddingLeft: '0.75rem',
-                      paddingRight: '0.75rem',
-                    }
-              }
-              onMouseEnter={(e) => {
-                if (!active) {
-                  e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)'
-                  e.currentTarget.style.color = 'var(--foreground)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!active) {
-                  e.currentTarget.style.background = 'transparent'
-                  e.currentTarget.style.color = 'var(--muted-foreground)'
-                }
-              }}
+                  ? 'bg-admin-active text-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-admin-hover hover:text-foreground',
+              )}
             >
-              <span style={{ opacity: active ? 1 : 0.45 }}>{item.icon}</span>
+              <span className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
               {item.label}
             </Link>
           )
@@ -193,10 +150,7 @@ export function AdminSidebar() {
 
       {/* Divider + Logout */}
       <div className="p-3">
-        <hr
-          className="mb-3"
-          style={{ borderColor: 'var(--border)', borderTopWidth: '1px' }}
-        />
+        <hr className="mb-3 border-t border-border" />
         <LogoutButton />
       </div>
     </aside>
@@ -204,24 +158,15 @@ export function AdminSidebar() {
 }
 
 function LogoutButton() {
-  function handleLogout() {
-    document.cookie = 'koru-admin=; path=/; max-age=0'
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' })
     window.location.href = '/admin/login'
   }
 
   return (
     <button
       onClick={handleLogout}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-xs transition-all duration-150"
-      style={{ color: 'var(--muted-foreground)' }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)'
-        e.currentTarget.style.color = 'var(--foreground)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'transparent'
-        e.currentTarget.style.color = 'var(--muted-foreground)'
-      }}
+      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-xs text-muted-foreground transition-all duration-150 hover:bg-admin-hover hover:text-foreground"
     >
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

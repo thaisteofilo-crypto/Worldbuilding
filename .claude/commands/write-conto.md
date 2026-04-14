@@ -21,7 +21,7 @@ Escreve um conto literário para um personagem de Korú.
 2. Lê `koru-workflow.md` para o perfil específico do personagem
 3. Verifica se existe material do personagem no livro para não contradizer
 4. Escreve o conto seguindo as especificações de tom e física de Korú
-5. Salva em `contos/koru-conto-[personagem].md`
+5. Salva em `contos/conto-[personagem].md`
 
 ## Especificações
 

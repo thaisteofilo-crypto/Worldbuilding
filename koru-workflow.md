@@ -8,16 +8,16 @@
 | Entregável | Arquivo | Status | Tipo |
 |---|---|---|---|
 | Bíblia do Mundo | `koru-ecosystem-briefing.md` | ✅ Concluída | Referência técnica |
-| Livro, Temiku | `koru-livro.md` | 🔲 A expandir | Narrativa literária |
-| Conto, Amara | `contos/koru-conto-amara.md` | 🔲 A criar | Conto literário |
-| Conto, Oruku | `contos/koru-conto-oruku.md` | 🔲 A criar | Conto literário |
-| Conto, Obaru | `contos/koru-conto-obaru.md` | 🔲 A criar | Conto literário |
-| Conto, Kemdi | `contos/koru-conto-kemdi.md` | 🔲 A criar | Conto literário |
-| Conto, Beku | `contos/koru-conto-beku.md` | 🔲 A criar | Conto literário |
-| Conto, Temi | `contos/koru-conto-temi.md` | 🔲 A criar | Conto literário |
-| Conto, Orike | `contos/koru-conto-orike.md` | 🔲 A criar | Conto literário |
+| Livro, Temiku | `koru-livro.md` | Cap. 1 ✅ Expandido, restante 🔲 | Narrativa literária |
+| Conto, Amara | `contos/conto-amara.md` | ✅ Completo | Conto literário |
+| Conto, Oruku | `contos/conto-oruku.md` | 🔲 A criar | Conto literário |
+| Conto, Obaru | `contos/conto-obaru.md` | 🔲 A criar | Conto literário |
+| Conto, Kemdi | `contos/conto-kemdi.md` | 🔲 A criar | Conto literário |
+| Conto, Beku | `contos/conto-beku.md` | 🔲 A criar | Conto literário |
+| Conto, Temi | `contos/conto-temi.md` | ✅ Completo | Conto literário |
+| Conto, Orike | `contos/conto-orike.md` | 🔲 A criar | Conto literário |
 
-**Total de entregáveis:** 9 documentos (1 concluído, 8 a criar)
+**Total de entregáveis:** 9 documentos (1 concluído, 2 contos completos, 1 capítulo expandido, 5 a criar)
 
 ---
 

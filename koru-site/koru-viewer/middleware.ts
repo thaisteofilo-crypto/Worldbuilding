@@ -1,19 +1,17 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = request.nextUrl.pathname.startsWith('/admin/login')
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('koru-admin')?.value
+  const expected = process.env.ADMIN_TOKEN
 
-  if (isAdminRoute && !isLoginPage) {
-    const adminCookie = request.cookies.get('koru-admin')
-    if (adminCookie?.value !== (process.env.ADMIN_TOKEN ?? 'koru-token-2026')) {
-      return NextResponse.redirect(new URL('/admin/login', request.url))
-    }
+  if (!expected || !token || token !== expected) {
+    const loginUrl = new URL('/admin/login', request.url)
+    return NextResponse.redirect(loginUrl)
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/((?!login).*)'],
 }

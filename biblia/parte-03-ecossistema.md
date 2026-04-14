@@ -33,7 +33,7 @@ CICLO RECOMEÇA
 
 ---
 
-### BOMI VEH, DOIS ESTADOS
+### BOMI VEH, 5 ESTADOS DOCUMENTADOS
 
 | Estado | Aparência | O que é |
 |---|---|---|

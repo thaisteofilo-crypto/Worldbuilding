@@ -42,6 +42,9 @@
     --color-gold: var(--gold);
     --color-blue-cold: var(--blue-cold);
     --color-surface: var(--surface);
+    --color-admin-hover: var(--admin-hover);
+    --color-admin-active: var(--admin-active);
+    --color-admin-badge-border: var(--admin-badge-border);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -126,6 +129,18 @@
     --sidebar-accent-foreground: oklch(0.93 0.012 85);
     --sidebar-border: oklch(0.20 0.007 280);
     --sidebar-ring: oklch(0.65 0.09 290);
+}
+
+/* ─── Admin sidebar tokens (foreground at low opacity) ─── */
+:root {
+    --admin-hover: color-mix(in oklch, var(--foreground) 6%, transparent);
+    --admin-active: color-mix(in oklch, var(--foreground) 8%, transparent);
+    --admin-badge-border: color-mix(in oklch, var(--foreground) 18%, transparent);
+}
+.dark {
+    --admin-hover: color-mix(in oklch, var(--foreground) 6%, transparent);
+    --admin-active: color-mix(in oklch, var(--foreground) 8%, transparent);
+    --admin-badge-border: color-mix(in oklch, var(--foreground) 18%, transparent);
 }
 
 @layer base {

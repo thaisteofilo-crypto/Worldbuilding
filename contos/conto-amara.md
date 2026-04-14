@@ -131,7 +131,7 @@ O que o solo não conseguiu arquivar, as duas frequências chegando ao mesmo tem
 
 Os Nkosi-ha foram embora.
 
-O Bomi Veh processou o que conseguiu processar. O círculo ficou. E do processamento do que havia ficado, do excesso de frequência que o solo havia tentado coagular e não havia conseguido arquivar e havia coagulado de outra forma, do mesmo evento, tomando forma diferente —
+O Bomi Veh processou o que conseguiu processar. O círculo ficou. E do processamento do que havia ficado, do excesso de frequência que o solo havia tentado coagular e não havia conseguido arquivar e havia coagulado de outra forma, do mesmo evento, tomando forma diferente.
 
 emergiu Temiku.
 

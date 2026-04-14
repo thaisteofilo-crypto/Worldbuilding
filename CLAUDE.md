@@ -39,7 +39,7 @@ contos/                     , contos por personagem (placeholders) + briefings/
 
 **Ordem recomendada para contos:** amara → oruku → beku → obaru → kemdi → temi → orike
 
-**Sobre o epílogo:** nunca modificar. Está perfeito como está.
+**Sobre o epílogo:** o conteúdo original não está neste repositório. O arquivo atual é placeholder. Quando o conteúdo for adicionado, não modificar.
 
 ---
 

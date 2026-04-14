@@ -275,9 +275,9 @@ Denominação local: *memórias em pé*. Não são chamadas de ruínas.
 | Asa normal | Apenas Isilo-Ori |
 | Asa Temu | Ninguém sem missão declarada ao Oa-Chi |
 | Missão formal | Isilo-Ori com protocolo declarado |
-| Caso de Temiku (Cap. V–VI) | Entrou como ser de limiar, habita o limiar em vez de atravessá-lo. Caso sem precedente. |
+| Caso de Temiku (Cap. V-VI) | Entrou como ser de limiar, habita o limiar em vez de atravessá-lo. Caso sem precedente. |
 
-**Jobi-Koro da narrativa principal (Caps. V–VI):** o conjunto mais próximo de Orunjó. Tem um espaço central de dimensões amplas. As Ariku internas são as mais escuras da floresta, arquivo de gerações desde a Era IV, sem rota de saída para o ciclo. O Bomi Veh cinza aqui é o mais denso documentado.
+**Jobi-Koro da narrativa principal (Caps. V-VI):** o conjunto mais próximo de Orunjó. Tem um espaço central de dimensões amplas. As Ariku internas são as mais escuras da floresta, arquivo de gerações desde a Era IV, sem rota de saída para o ciclo. O Bomi Veh cinza aqui é o mais denso documentado.
 
 → *Regra de acesso:* [Parte 6, As 13 Regras, Regra 06](parte-06-regras.md) | *Consequência histórica:* [Parte 8, Linha do Tempo, Era IV](parte-08-linha-do-tempo.md)
 
@@ -366,7 +366,7 @@ Os Chi-Oa são a unidade básica de habitação em Korú. Orunjó é o maior e m
 | Estrutura | Mandala arquitetônica, espiral ao redor de núcleo comunitário |
 | Separação interna | Feita por vegetação e frequência, não por paredes físicas |
 | Jobi-Ariku | Presentes em todos os Chi-Oa permanentes |
-| Escala | Varia: pequenos (20–30 criaturas) a grandes (Orunjó, sem número documentado) |
+| Escala | Varia: pequenos (20-30 criaturas) a grandes (Orunjó, sem número documentado) |
 | Pontos de ressonância | Todo Chi-Oa tem pontos de Zoeji mais denso, conhecidos oralmente, nunca marcados fisicamente |
 
 **Chi-Oa documentados além de Orunjó:**

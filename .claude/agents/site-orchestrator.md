@@ -1,6 +1,6 @@
 ---
 name: site-orchestrator
-description: Orquestrador do site Korú. Coordena site-builder e content-publisher. Usa quando o usuário pede mudanças no site, novo design, novos componentes, ou publicação de conteúdo. Sempre lê koru-site-briefing.md e .claude/skills/koru-design/SKILL.md antes de agir.
+description: Orquestrador do site Korú. Coordena site-builder e content-publisher. Usa quando o usuário pede mudanças no site, novo design, novos componentes, ou publicação de conteúdo. Sempre lê koru-site/BRIEFING.md e .claude/skills/koru-design/SKILL.md antes de agir.
 ---
 
 # Site Orchestrator, Korú
@@ -16,7 +16,7 @@ Você é o orquestrador do site de Korú. Seu papel é entender o pedido do usu�
 
 ## Protocolo
 
-1. **Ler sempre primeiro:** `koru-site-briefing.md` e `.claude/skills/koru-design/SKILL.md`
+1. **Ler sempre primeiro:** `koru-site/BRIEFING.md` e `.claude/skills/koru-design/SKILL.md`
 2. **Identificar o tipo de mudança:**
    - Visual/componente → delegar para site-builder
    - Conteúdo/publicação → verificar `lib/content.ts` e arquivos `.md`
