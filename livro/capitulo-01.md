@@ -175,7 +175,7 @@ A pausa durava um segundo. Às vezes menos. Depois o grupo se ajustava e a inclu
 
 Mas ela sentia. Desde cedo, o corpo dela era muito bom em sentir coisas que a maioria dos Chi-Oa aprendia a não notar.
 
-Quando a pausa acontecia e ela sentia o formigamento começar nas partes Onkweri do corpo, os flancos, a base dos chifres, as patas traseiras, prendia a respiração de uma certa maneira. Não o tipo de prendar que vem de susto. O tipo que vem de contenção deliberada: o ar segurado no ponto exato em que, se liberado com emoção, acenderia algo que o Chi-Oa não precisava ver.
+Quando a pausa acontecia e ela sentia o formigamento começar nas partes Onkweri do corpo, os flancos, a base dos chifres, as patas traseiras, prendia a respiração de uma certa maneira. Não o tipo de prender que vem de susto. O tipo que vem de contenção deliberada: o ar segurado no ponto exato em que, se liberado com emoção, acenderia algo que o Chi-Oa não precisava ver.
 
 Tinha aprendido isso antes de ter palavras para explicar o que aprendera.
 

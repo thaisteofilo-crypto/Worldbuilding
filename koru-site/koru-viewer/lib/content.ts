@@ -1,6 +1,7 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
+import { CONTOS_ITEMS } from "./navigation"
 
 // Root of the worldbuilding project (two levels up from koru-site/koru-viewer)
 const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
@@ -101,15 +102,15 @@ function extractTitleFromContent(content: string): string | null {
 
 // Known biblia titles for display (manual curation for existing parts)
 const KNOWN_BIBLIA_TITLES: Record<string, string> = {
-  "parte-00": "Introdução",
-  "parte-01": "Física e Cosmologia",
-  "parte-02": "Geografia",
-  "parte-03": "Ecossistema",
-  "parte-04": "Criaturas",
-  "parte-05": "Personagens",
-  "parte-06": "Regras",
-  "parte-07": "Cultura",
-  "parte-08": "Linha do Tempo",
+  "parte-00": "Introdução · A Língua de Korú",
+  "parte-01": "Física · A Natureza do Akwu",
+  "parte-02": "Geografia · Ikwe e seus Lugares",
+  "parte-03": "Ecossistema · O Ciclo da Memória",
+  "parte-04": "Criaturas · Os Seres de Korú",
+  "parte-05": "Personagens · Quem Habita",
+  "parte-06": "Regras · Os 13 Acordos",
+  "parte-07": "Cultura · Como se Vive",
+  "parte-08": "Linha do Tempo · As Cinco Eras",
 }
 
 export function bibliaParts(): { parte: string }[] {
@@ -153,7 +154,13 @@ export function contoSlugs(): { personagem: string }[] {
 export function getBibliaItems(): { slug: string; title: string }[] {
   const bibliaDir = path.join(REPO_ROOT, "biblia")
   const files = fs.existsSync(bibliaDir) ? fs.readdirSync(bibliaDir) : []
-  return bibliaParts().map(({ parte }) => {
+  // Manifesto comes first (standalone doc, not a parte-XX)
+  const items: { slug: string; title: string }[] = []
+  if (files.includes("manifesto.md")) {
+    items.push({ slug: "manifesto", title: "Propósito · Manifesto" })
+  }
+
+  const parts = bibliaParts().map(({ parte }) => {
     const slug = `parte-${parte}`
     if (KNOWN_BIBLIA_TITLES[slug]) return { slug, title: KNOWN_BIBLIA_TITLES[slug] }
     // Extract title from filename suffix: "parte-09-nova-parte.md" → "Nova Parte"
@@ -167,18 +174,44 @@ export function getBibliaItems(): { slug: string; title: string }[] {
     }
     return { slug, title: `Parte ${parseInt(parte)}` }
   })
+
+  // Combine: manifesto first, then parts, then reference docs
+  items.push(...parts)
+  if (files.includes("glossario-de-koru.md")) {
+    items.push({ slug: "glossario-de-koru", title: "Glossário de Korú" })
+  }
+  if (files.includes("glossario-de-lugares.md")) {
+    items.push({ slug: "glossario-de-lugares", title: "Glossário de Lugares" })
+  }
+  if (files.includes("MAPA-DE-AUTORIDADE.md")) {
+    items.push({ slug: "MAPA-DE-AUTORIDADE", title: "Mapa de Autoridade" })
+  }
+
+  return items
 }
 
 export function getLivroItems(): { slug: string; title: string }[] {
-  return livroChapters().map(({ capitulo }) => ({
-    slug: capitulo,
-    title: capitulo === "epilogo" ? "Epílogo" : `Capítulo ${parseInt(capitulo)}`,
-  }))
+  return livroChapters().map(({ capitulo }) => {
+    if (capitulo === "epilogo") return { slug: capitulo, title: "Epílogo" }
+    const filename = `capitulo-${capitulo}.md`
+    const filePath = path.join(REPO_ROOT, "livro", filename)
+    try {
+      const raw = fs.readFileSync(filePath, "utf-8")
+      // Match "# TITLE" or bare first line like "I, O QUE ELA É"
+      const titleMatch = raw.match(/^#\s+(.+)$/m) || raw.match(/^([IVX]+,.+)$/m)
+      if (titleMatch) {
+        const rawTitle = titleMatch[1].trim()
+        const title = rawTitle.replace(/^([IVX]+,?\s*)(.+)$/, (_, prefix, rest) =>
+          prefix + rest.charAt(0).toUpperCase() + rest.slice(1).toLowerCase()
+        )
+        return { slug: capitulo, title }
+      }
+    } catch {}
+    return { slug: capitulo, title: `Capítulo ${parseInt(capitulo)}` }
+  })
 }
 
 export function getContosItems(): { slug: string; title: string }[] {
-  return contoSlugs().map(({ personagem }) => ({
-    slug: personagem,
-    title: personagem.charAt(0).toUpperCase() + personagem.slice(1),
-  }))
+  const available = contoSlugs().map(s => s.personagem)
+  return CONTOS_ITEMS.filter(item => available.includes(item.slug))
 }

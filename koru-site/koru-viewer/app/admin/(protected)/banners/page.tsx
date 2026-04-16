@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { ImagePositioner } from "@/components/admin/image-positioner"
+import { BIBLIA_ITEMS } from "@/lib/navigation"
 
 const SLOT_COLORS: Record<string, string> = {
   hero: "var(--gold)",
@@ -35,6 +36,23 @@ const VIDEO_SLOTS = [
   { key: "contos-video", label: "Contos", description: "Video de fundo da secao Contos", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
   { key: "footer-video", label: "Footer", description: "Video de fundo do banner final", accept: "video/*", dims: "1920×600 · MP4 ou WebM" },
 ]
+
+// Banners for internal Bíblia pages — each doc has its own hero banner
+const BIBLIA_DOC_IMAGE_SLOTS = BIBLIA_ITEMS.map((item) => ({
+  key: `doc-${item.slug}`,
+  label: item.title,
+  description: `Hero da página · ${item.title}`,
+  accept: "image/*",
+  dims: "2000×500 recomendado",
+}))
+
+const BIBLIA_DOC_VIDEO_SLOTS = BIBLIA_ITEMS.map((item) => ({
+  key: `doc-${item.slug}-video`,
+  label: item.title,
+  description: `Vídeo hero · ${item.title}`,
+  accept: "video/*",
+  dims: "2000×500 · MP4 ou WebM",
+}))
 
 export default function BannersPage() {
   const [banners, setBanners] = useState<Record<string, string>>({})
@@ -150,7 +168,7 @@ export default function BannersPage() {
       </div>
 
       {/* Video banners section */}
-      <div>
+      <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
           <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
             Videos
@@ -177,6 +195,71 @@ export default function BannersPage() {
               onUpload={(file) => handleUpload(slot.key, file)}
               onDelete={() => handleDelete(slot.key)}
               accentColor={SLOT_COLORS[slot.key]}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Bíblia page banners — hero of each internal page */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+            Bíblia · Páginas Internas (Imagens)
+          </p>
+          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
+          <span
+            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
+            style={{
+              color: "var(--gold)",
+              background: "color-mix(in oklch, var(--gold) 12%, transparent)",
+            }}
+          >
+            {BIBLIA_DOC_IMAGE_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_IMAGE_SLOTS.length} configurados
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {BIBLIA_DOC_IMAGE_SLOTS.map((slot) => (
+            <BannerSlot
+              key={slot.key}
+              slot={slot}
+              imageUrl={banners[slot.key]}
+              uploading={uploading === slot.key}
+              onUpload={(file) => handleUpload(slot.key, file)}
+              onDelete={() => handleDelete(slot.key)}
+              accentColor="var(--gold)"
+            />
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+            Bíblia · Páginas Internas (Vídeos)
+          </p>
+          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
+          <span
+            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
+            style={{
+              color: "var(--blue-cold)",
+              background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)",
+            }}
+          >
+            {BIBLIA_DOC_VIDEO_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_VIDEO_SLOTS.length} configurados
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {BIBLIA_DOC_VIDEO_SLOTS.map((slot) => (
+            <BannerSlot
+              key={slot.key}
+              slot={slot}
+              imageUrl={banners[slot.key]}
+              uploading={uploading === slot.key}
+              onUpload={(file) => handleUpload(slot.key, file)}
+              onDelete={() => handleDelete(slot.key)}
+              accentColor="var(--blue-cold)"
             />
           ))}
         </div>

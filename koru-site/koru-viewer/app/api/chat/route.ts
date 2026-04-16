@@ -40,7 +40,8 @@ function buildSystemPrompt(
   documentPath: string | null,
   documentContent: string | null,
   bible: string,
-  mode: string | null
+  mode: string | null,
+  responseMode: 'concise' | 'detailed' | null
 ): string {
   const tone = detectTone(documentPath)
 
@@ -172,6 +173,40 @@ Gere um relatorio estruturado sobre o documento. Inclua:
 
 ## Nota geral
 - Uma frase resumindo o estado do documento`,
+
+    expand: `TAREFA: Expandir texto.
+Expanda o trecho fornecido mantendo a voz da autora. Adicione detalhe sensorial: texturas, luz, som, peso corporal.
+REGRAS:
+- Mantenha o tom e ritmo do original
+- Nao explique a fisica do mundo
+- Nao adicione emocoes explicitas
+- Retorne APENAS o texto expandido em um bloco \`\`\`suggestion
+- Sem explicacoes, sem prefacios`,
+
+    describe: `TAREFA: Reescrever com foco sensorial.
+Reescreva o trecho fornecido focando em descricao sensorial: o que se ve, ouve, sente no corpo, a textura do ar.
+REGRAS:
+- Mantenha a voz da autora (aberturas abruptas, cortes curtos, metaforas fisicas)
+- Nao explique emocoes diretamente
+- Retorne APENAS o texto reescrito em um bloco \`\`\`suggestion
+- Sem explicacoes, sem comparacoes com o original`,
+
+    continue: `TAREFA: Continuar escrevendo.
+Continue o texto com as proximas 200 palavras, no tom e ritmo do documento atual.
+REGRAS:
+- Siga o mesmo ritmo (frases longas + cortes curtos)
+- Mantenha a voz da autora
+- Fisica como dado, nunca exposicao
+- Retorne APENAS o texto novo em um bloco \`\`\`suggestion
+- Nao repita o que ja esta escrito`,
+
+    rewrite: `TAREFA: Reescrever trecho.
+Reescreva o trecho fornecido pela autora, mantendo o significado mas melhorando a voz e o ritmo.
+REGRAS:
+- Mantenha a voz da autora (abertura abrupta, cortes, metaforas fisicas)
+- Nao adicione conteudo novo, apenas reescreva
+- Retorne APENAS o texto reescrito em um bloco \`\`\`suggestion
+- Sem explicacoes`,
   }
 
   const modeKey = mode && mode in modeInstructions ? mode : null
@@ -179,12 +214,18 @@ Gere um relatorio estruturado sobre o documento. Inclua:
     prompt += `\n\n${modeInstructions[modeKey]}`
   }
 
+  if (responseMode === 'concise') {
+    prompt += `\n\nIMPORTANTE: Responda de forma CONCISA. Maximo 2-3 frases curtas. Sem introducoes, sem resumos, sem repeticoes. Va direto ao ponto. Se sugerir texto criativo, use blocos \`\`\`suggestion para o texto e uma frase curta de contexto.`
+  } else if (responseMode === 'detailed') {
+    prompt += `\n\nVoce pode dar respostas detalhadas e aprofundadas quando necessario.`
+  }
+
   return prompt
 }
 
 export async function POST(req: Request) {
   try {
-    const { messages, documentPath, documentContent, mode } = await req.json()
+    const { messages, documentPath, documentContent, mode, responseMode } = await req.json()
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "messages required" }), {
@@ -209,7 +250,8 @@ export async function POST(req: Request) {
       documentPath || null,
       documentContent || null,
       bible,
-      mode || null
+      mode || null,
+      responseMode || null
     )
 
     const apiMessages = messages.map(
@@ -219,9 +261,13 @@ export async function POST(req: Request) {
       })
     )
 
+    const writingModes = ['expand', 'describe', 'continue', 'rewrite']
+    const maxTokens = writingModes.includes(mode || '') ? 2048 :
+      (mode && mode !== 'chat') ? 8192 : 4096
+
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
-      max_tokens: mode && mode !== "chat" ? 8192 : 4096,
+      max_tokens: maxTokens,
       system: systemPrompt,
       messages: apiMessages,
     })

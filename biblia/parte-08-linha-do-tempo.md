@@ -9,6 +9,8 @@
 
 **O que esta Era revela:** o mundo começa neutro. A afetividade, a capacidade de ter estados que mudam, veio com a primeira memória.
 
+*Ver: [Parte 1, Akwu/Ngurui/luz](parte-01-fisica-cosmologia.md) · [Parte 2, Ikwe](parte-02-geografia.md) · [Parte 3, Bomi Veh](parte-03-ecossistema.md).*
+
 ---
 
 ### ERA II, ORIGEM: AS PRIMEIRAS CRIATURAS
@@ -16,6 +18,8 @@
 **O que acontece:** O Bomi Veh acumula o suficiente para "intenção de forma". Primeiros Onkweri surgem. Com eles, a primeira morte e a primeira memória que precisa de tradução. O limiar gera o primeiro Azuri. O acordo fundador é estabelecido: os Azuri traduzem. Os Onkweri escutam. As Ariku, que existiam desde a Era I sem consciência relacional, começam a registrar.
 
 **O que esta Era revela:** o acordo não foi negociado, foi reconhecido. As criaturas encontraram o que o mundo precisava delas e nomearam isso acordo.
+
+*Ver: [Parte 4, Azuri/Onkweri/Ariku](parte-04-criaturas.md) · [Parte 3, ciclo memória-energia](parte-03-ecossistema.md) · [Parte 6, Regras 01 e 10](parte-06-regras.md).*
 
 ---
 
@@ -25,6 +29,8 @@
 
 **O que esta Era revela:** criação não exige ausência de tensão. Exige acordo sobre como tensão é processada.
 
+*Ver: [Parte 2, Orunjó/Ima-ri/Njia-Kwe](parte-02-geografia.md) · [Parte 7, Nyame-jo](parte-07-cultura.md).*
+
 ---
 
 ### ERA IV, O GRANDE SILÊNCIO: RUPTURA DO ACORDO
@@ -32,6 +38,8 @@
 **O que acontece:** Um grupo de Onkweri tenta forçar comunicação direta com ancestrais sem intermediação Azuri. O Bomi Veh de regiões inteiras fica cinza-permanente. Os Azuri se retiram. O limiar se fecha. O teto do Akwu permanece em Temu por período incalculável, não voltou ao Oru enquanto o acordo permaneceu violado.
 
 **O que esta Era revela:** tentativa de acesso sem mediação destrói exatamente o que se tenta acessar. Os ancestrais que queriam ouvir sem filtro ficaram presos no cinza, sem destinatário.
+
+*Ver: [Parte 2, Jobi-Koro](parte-02-geografia.md) · [Parte 3, Bomi Veh cinza permanente](parte-03-ecossistema.md) · [Parte 6, Regra 06](parte-06-regras.md).*
 
 ---
 
@@ -42,3 +50,5 @@
 Nesta Era, Temiku existe. A única criatura de Korú que é simultaneamente a prova de que o acordo tem buracos e a prova de que os buracos não destroem o acordo, apenas o complicam.
 
 **O que esta Era revela:** o mundo atual de Korú é um mundo que sobreviveu à sua própria ruptura. Não está curado, está processando. Como o Bomi Veh depois de uma morte.
+
+*Ver: [Parte 5, Temiku/Amara/Oruku e demais personagens](parte-05-personagens.md) · [Parte 7, Oa-Chi](parte-07-cultura.md) · [Parte 2, Jobi-Koro](parte-02-geografia.md).*

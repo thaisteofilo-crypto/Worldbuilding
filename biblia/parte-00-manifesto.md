@@ -1,40 +1,44 @@
-# KORÚ, Bíblia do Mundo
+### POR QUE SE CHAMA KORÚ
 
-## PARTE 0, DEFINIÇÕES FUNDACIONAIS
+Korú carrega em seu som duas raízes. *Ko*, fragmento presente em várias das línguas-base do mundo, significando aquilo que recolhe, aquilo que leva consigo. *Rú*, em Yoruba, significa levantar-se, brotar, carregar sobre a cabeça. Korú é então aquilo que carrega o que levanta, um mundo nomeado pela função que o define: lugar onde a memória sobe, lugar que leva consigo o vivido. Antes de ter história, o mundo tem esse nome. É a primeira declaração que Korú faz sobre si mesmo: não somos feitos do que esquecemos, somos feitos do que carregamos.
 
----
+### AS LÍNGUAS DE KORÚ
 
-### O QUE KORÚ É
+Os nomes deste mundo vêm de nove línguas. Não foi escolha decorativa, foi recusa deliberada de nomear um mundo novo com as ferramentas do mundo velho. Aposta nas línguas de culturas que pensaram profundamente, por milênios, sobre exatamente o que Korú precisa que a linguagem carregue: memória como herança física, ciclo como lei moral, comunidade como categoria ontológica. Um mundo cuja física é feita de memória merecia ser nomeado por quem nunca separou as duas coisas.
 
-Korú é um mundo cuja física é baseada em memória. Memória tem peso, frequência e consequência material. Criaturas são constituídas por memória solidificada. O solo armazena e processa memória. Árvores arquivam memória. O que é esquecido não desaparece, muda de estado.
+- **Yoruba** (África Ocidental), cosmologia de memória ancestral e tempo espiral.
+- **Igbo** (Nigéria), filosofia de comunidade e ciclo de pertencimento.
+- **Swahili** (África Oriental), língua franca de trânsito, ritmo e coletividade.
+- **Zulu** (África do Sul), *ubuntu*, o ser-com como categoria ontológica.
+- **Amhárico** (Etiópia), tradição escrita e vertical, memória arquivada em forma.
+- **Bambara** (Mali), oralidade griot, narrativa como ferramenta de sobrevivência.
+- **Malaio** (Sudeste Asiático), ritmo suave, língua de trânsito oceânico.
+- **Bengali** (Bengala), lirismo e densidade metafórica.
+- **Edo** (Benin, Nigéria), herança ritual e artesanal, preservação em forma.
 
-Não é um planeta com ecologia. É uma câmara fechada, o Akwu, que sustenta seu próprio ciclo de energia sem fonte externa. Nada entra de fora. O sistema precisa circular o que te,.
+### BOAS VINDAS A KORÚ
+
+Korú é um mundo onde a memória pesa. Não como metáfora. Como física.
+
+O que é lembrado ocupa espaço. O que é esquecido não desaparece, muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
+
+Não tem sol. Não tem céu aberto. Korú acontece dentro do Akwu, a câmara fechada que sustenta o próprio ciclo sem nada vindo de fora. Tudo que existe aqui precisa circular, se transformar, voltar. Quando alguma coisa para de circular, o sistema inteiro sente.
+
+É um mundo que precisa aprender, a cada ciclo, a deixar ir.
+
+→ Ver [Parte 01, A Natureza do Akwu](parte-01-fisica-cosmologia.md) para a mecânica da câmara.
 
 ### O QUE KORÚ NÃO É
 
-- Não é pós-apocalíptico. As ruínas (Jobi-Koro) são consequência de uma ruptura do ciclo na Era IV, não de uma civilização destruída de fora.
+- Não é pós-apocalíptico. As ruínas (Jobi-Koro) existem, mas não são o fim de uma civilização destruída de fora. São consequência de uma ruptura do ciclo na Era IV, memória que ficou presa quando deveria ter circulado.
 - Não tem humanos. Não nessa primeira fase.
-- Não tem vilões no sentido convencional. Os antagonistas agem por lógica interna coerente, não por maldade.
-- Não tem salvação. Tem com um custo, a partir de qualquer escolha.
+- Não tem vilões no sentido convencional. Os antagonistas agem por uma lógica interna coerente. Querem conter, acumular, proteger do custo. Não querem o mal, querem não perder.
+- Não tem salvação gratuita. Toda escolha tem preço. Mesmo a escolha certa.
 
-### INTENÇÃO NARRATIVA CENTRAL
+### A TENSÃO CENTRAL
 
-**Um mundo feito de memória que aprende a deixar ir.**
+Acumular contra processar. O que não é processado sufoca. O que não é traduzido congela. O que não é habitado espera.
 
-A tensão central não é entre bem e mal, mas entre acumular e processar. O que não é processado sufoca. O que não é traduzido congela. O que não é habitado espera.
+As histórias de Korú são sobre criaturas tentando descobrir o que fazer com o que carregam e qual o custo de continuar carregando.
 
-### INFLUÊNCIAS LINGUÍSTICAS
-
-### PALETA DE TOM GERAL
-
-- **Melancolia funcional**, a tristeza que não paralisa
-- **Beleza que tem custo**, nada é bonito sem consequência em Korú
-- **Pertencimento granular**, acumulação de pequenos encaixes, nenhum perfeito
-- **Silêncio como linguagem**, o silêncio de Korú nunca é vazio
-
-### REFERÊNCIA VISUAL FUNDACIONAL
-
-**Estilo geral:** pintura plana, formas geométricas limpas, perspectiva atmosférica por valor (escuro-claro), sem linha de contorno explícita.
-
-**Nota técnica para ilustradores:** A luz em Korú não tem fonte visível dentro do quadro. Ela está "no ar", como dia muito nublado onde a claridade vem de todo lugar. As Ariku não emitem raios; redistribuem a qualidade luminosa do teto do Akwu lateralmente. O Bomi Veh não irradia de baixo para cima, tem fosforescência horizontal e suave, como musgo bioluminescente.
-
+Korú revela um pouco de cada vez. Cada coisa que você aprende muda o significado do que veio antes.

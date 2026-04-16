@@ -26,12 +26,12 @@ const DEFAULTS: Record<string, string> = {
   "biblia.parte-06.title": "Regras",
   "biblia.parte-07.title": "Cultura",
   "biblia.parte-08.title": "Linha do Tempo",
-  "livro.01.title": "Capítulo 1",
-  "livro.02.title": "Capítulo 2",
-  "livro.03.title": "Capítulo 3",
-  "livro.04.title": "Capítulo 4",
-  "livro.05.title": "Capítulo 5",
-  "livro.06.title": "Capítulo 6",
+  "livro.01.title": "O que ela é",
+  "livro.02.title": "A mentira silenciosa",
+  "livro.03.title": "O que a floresta guarda",
+  "livro.04.title": "O projeto do fim do luto",
+  "livro.05.title": "O limiar como morada",
+  "livro.06.title": "O que ela paga",
   "livro.epilogo.title": "Epílogo",
 }
 

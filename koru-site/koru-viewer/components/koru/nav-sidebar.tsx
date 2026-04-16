@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 interface NavItem { slug: string; title: string }
 interface DocEntry { label: string; path: string }
@@ -11,62 +12,158 @@ interface DocGroup { section: string; docs: DocEntry[] }
 
 function docToSlug(doc: DocEntry, section: string): NavItem {
   const filename = doc.path.replace(/\.md$/, "").split("/").pop() ?? ""
-  if (section === "Bíblia") return { slug: filename, title: doc.label }
+  // Sidebar shows short name only (before " · ")
+  const shortTitle = doc.label.includes(" · ") ? doc.label.split(" · ")[0] : doc.label
+  if (section === "Bíblia") return { slug: filename, title: shortTitle }
   if (section === "Livro") {
     const slug = filename === "epilogo" ? "epilogo" : filename.replace(/^capitulo-/, "")
-    return { slug, title: doc.label }
+    return { slug, title: shortTitle }
   }
-  // Contos
-  return { slug: filename.replace(/^conto-/, ""), title: doc.label }
+  // Contos: show character name only (before " · ")
+  return { slug: filename.replace(/^conto-/, ""), title: shortTitle }
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+const ICONS = {
+  biblia: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  ),
+  livro: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  ),
+  contos: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  ),
+  personagens: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  ),
+  galeria: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="M21 15l-5-5L5 21" />
+    </svg>
+  ),
+  chevron: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+}
+
+function SubLink({ href, children }: { href: string; children: React.ReactNode }) {
   const pathname = usePathname()
   const isActive = pathname === href
   return (
-    <li>
-      <Link
-        href={href}
-        className="block py-1 px-2 -mx-2 rounded font-sans text-sm transition-colors"
-        style={{
-          color: isActive ? "var(--accent)" : "var(--muted-foreground)",
-          fontWeight: isActive ? 600 : 400,
-          background: isActive
-            ? "color-mix(in oklch, var(--accent) 10%, transparent)"
-            : "transparent",
-        }}
-        aria-current={isActive ? "page" : undefined}
-      >
-        {children}
-      </Link>
-    </li>
+    <Link
+      href={href}
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "block py-1.5 pl-10 pr-3 rounded-lg font-sans text-[13px] transition-all duration-150",
+        isActive
+          ? "bg-admin-active text-foreground font-medium"
+          : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
+      )}
+    >
+      {children}
+    </Link>
   )
 }
 
-function CollapsibleSection({ title, items, basePath }: { title: string; items: NavItem[]; basePath: string }) {
+function Section({
+  title,
+  icon,
+  items,
+  basePath,
+}: {
+  title: string
+  icon: React.ReactNode
+  items: NavItem[]
+  basePath: string
+}) {
   const pathname = usePathname()
   const isActiveSection = pathname.startsWith(basePath)
   const [open, setOpen] = React.useState(isActiveSection)
 
+  React.useEffect(() => {
+    if (isActiveSection) setOpen(true)
+  }, [isActiveSection])
+
+  const hasItems = items.length > 0
+
   return (
     <div>
       <button
-        onClick={() => setOpen(!open)}
-        className="w-full text-left py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
-        style={{ color: "var(--foreground)" }}
+        onClick={() => hasItems && setOpen(!open)}
+        className={cn(
+          "flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150",
+          isActiveSection
+            ? "bg-admin-active text-foreground font-medium"
+            : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
+        )}
       >
-        {title}
+        <span className={isActiveSection ? "opacity-100" : "opacity-45"}>{icon}</span>
+        <span className="flex-1 text-left">{title}</span>
+        {hasItems && (
+          <span
+            className="opacity-45 transition-transform duration-150"
+            style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+          >
+            {ICONS.chevron}
+          </span>
+        )}
       </button>
-      {open && (
-        <ul className="mt-1 mb-2">
+      {open && hasItems && (
+        <div className="mt-0.5 mb-0.5 flex flex-col gap-0.5">
           {items.map((item) => (
-            <NavLink key={item.slug} href={`${basePath}/${item.slug}`}>
+            <SubLink key={item.slug} href={`${basePath}/${item.slug}`}>
               {item.title}
-            </NavLink>
+            </SubLink>
           ))}
-        </ul>
+        </div>
       )}
     </div>
+  )
+}
+
+function FlatLink({
+  href,
+  icon,
+  label,
+}: {
+  href: string
+  icon: React.ReactNode
+  label: string
+}) {
+  const pathname = usePathname()
+  const isActive = pathname === href || pathname.startsWith(href + "/")
+  return (
+    <Link
+      href={href}
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150",
+        isActive
+          ? "bg-admin-active text-foreground font-medium"
+          : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
+      )}
+    >
+      <span className={isActive ? "opacity-100" : "opacity-45"}>{icon}</span>
+      {label}
+    </Link>
   )
 }
 
@@ -98,41 +195,54 @@ export function NavSidebar() {
 
   return (
     <Sidebar
-      style={{ width: "260px" }}
-      className="border-none border-0 shadow-none"
+      style={{ width: "240px" }}
+      className="border-none border-0 shadow-none bg-background"
       aria-label="Navegação principal"
     >
-      <SidebarContent>
-        <nav className="px-8 pt-6 flex flex-col gap-1">
+      <SidebarContent className="bg-background">
+        {/* Logo */}
+        <div className="flex h-14 items-center px-5 pt-3">
           <Link
             href="/"
-            className="font-serif text-5xl leading-none transition-opacity hover:opacity-80 mb-6"
-            style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--foreground)" }}
+            className="font-serif text-2xl tracking-tight text-foreground transition-all duration-300 hover:tracking-wide"
+            style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "none", filter: "none", fontWeight: 400 }}
           >
             Korú
           </Link>
+        </div>
 
+        {/* Search */}
+        <div className="px-3 pt-2">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("koru:open-search"))}
+            aria-label="Buscar (Ctrl+K)"
+            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground transition-all duration-150 hover:bg-admin-hover hover:text-foreground"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="opacity-45">
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <span className="flex-1 text-left">Buscar</span>
+            <kbd className="text-[10px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid var(--border)" }}>
+              ⌘K
+            </kbd>
+          </button>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex flex-col gap-0.5 p-3 pt-2 flex-1">
           {loadError && (
-            <p
-              className="font-sans text-xs italic mb-2"
-              style={{ color: "var(--muted-foreground)" }}
-            >
+            <p className="font-sans text-xs italic px-3 py-2 text-muted-foreground">
               Documentos indisponíveis
             </p>
           )}
 
-          <CollapsibleSection title="Bíblia" items={bibliaItems} basePath="/biblia" />
-          <CollapsibleSection title="Livro" items={livroItems} basePath="/livro" />
-          <CollapsibleSection title="Contos" items={contosItems} basePath="/contos" />
-          <CollapsibleSection title="Personagens" items={personagensItems} basePath="/personagens" />
-
-          <Link
-            href="/galeria"
-            className="py-1.5 font-sans text-lg font-medium transition-opacity hover:opacity-70"
-            style={{ color: "var(--foreground)" }}
-          >
-            Galeria
-          </Link>
+          <Section title="Bíblia" icon={ICONS.biblia} items={bibliaItems} basePath="/biblia" />
+          <Section title="Personagens" icon={ICONS.personagens} items={personagensItems} basePath="/personagens" />
+          <Section title="Contos" icon={ICONS.contos} items={contosItems} basePath="/contos" />
+          <Section title="Livro" icon={ICONS.livro} items={livroItems} basePath="/livro" />
+          <FlatLink href="/galeria" icon={ICONS.galeria} label="Galeria" />
         </nav>
       </SidebarContent>
     </Sidebar>

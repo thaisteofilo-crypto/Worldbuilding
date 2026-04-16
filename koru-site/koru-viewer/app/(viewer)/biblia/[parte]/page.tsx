@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
 import { BANNER_CONFIG } from "@/lib/navigation"
+import { getBannerUrls } from "@/lib/banners"
 import { notFound } from "next/navigation"
 
 interface Props {
@@ -14,7 +15,14 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return bibliaParts().map((p) => ({ parte: `parte-${p.parte}` }))
+  const parts = bibliaParts().map((p) => ({ parte: `parte-${p.parte}` }))
+  return [
+    ...parts,
+    { parte: "manifesto" },
+    { parte: "glossario-de-koru" },
+    { parte: "glossario-de-lugares" },
+    { parte: "MAPA-DE-AUTORIDADE" },
+  ]
 }
 
 export default async function BibliaPage({ params }: Props) {
@@ -30,6 +38,9 @@ export default async function BibliaPage({ params }: Props) {
   const bibliaItems = getBibliaItems()
   const item = bibliaItems.find((i) => i.slug === parte)
   const bannerCfg = BANNER_CONFIG[parte] ?? { fallbackHue: 65 }
+  const banners = await getBannerUrls()
+  const uploadedImage = banners[`doc-${parte}`]
+  const uploadedVideo = banners[`doc-${parte}-video`]
 
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
@@ -38,8 +49,8 @@ export default async function BibliaPage({ params }: Props) {
         subtitle="Bíblia do Mundo"
         accentColor="var(--gold)"
         fallbackHue={bannerCfg.fallbackHue}
-        videoSrc={bannerCfg.videoSrc}
-        imageSrc={bannerCfg.imageSrc}
+        videoSrc={uploadedVideo ?? bannerCfg.videoSrc}
+        imageSrc={uploadedImage ?? bannerCfg.imageSrc}
       />
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
         <MDXRemote source={safeContent} components={mdxComponents} options={mdxOptions} />

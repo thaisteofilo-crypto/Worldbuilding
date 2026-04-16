@@ -455,7 +455,7 @@ function TaskCard({
 
   if (editing) {
     return (
-      <div className="rounded-lg border p-3 glass-card" style={{ borderColor: 'var(--accent)' }}>
+      <div className="rounded-lg border p-3 glass-card" style={{ borderColor: 'var(--border)' }}>
         <input
           autoFocus
           type="text"

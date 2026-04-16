@@ -53,7 +53,7 @@ export default function ViewerLayout({
 }) {
   const [searchOpen, setSearchOpen] = useState(false)
 
-  // Global Cmd+K / Ctrl+K listener
+  // Global Cmd+K / Ctrl+K listener + custom event from sidebar
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -61,8 +61,13 @@ export default function ViewerLayout({
         setSearchOpen((prev) => !prev)
       }
     }
+    function handleOpenSearch() { setSearchOpen(true) }
     window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
+    window.addEventListener("koru:open-search", handleOpenSearch)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+      window.removeEventListener("koru:open-search", handleOpenSearch)
+    }
   }, [])
 
   return (
@@ -80,41 +85,6 @@ export default function ViewerLayout({
         <header className="sticky top-0 z-10 flex items-center gap-3 px-4 h-10" style={{ background: "var(--background)" }}>
           <SidebarTrigger className="text-muted-foreground hover:text-foreground shrink-0" />
           <Breadcrumb />
-
-          {/* Search button */}
-          <button
-            onClick={() => setSearchOpen(true)}
-            aria-label="Abrir busca global (Ctrl+K)"
-            className="ml-auto flex items-center gap-1.5 font-sans text-xs rounded-md px-2.5 py-1 transition-colors"
-            style={{
-              color: "var(--muted-foreground)",
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--foreground)"
-              e.currentTarget.style.borderColor = "var(--accent)"
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--muted-foreground)"
-              e.currentTarget.style.borderColor = "var(--border)"
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <span className="hidden sm:inline">Buscar</span>
-            <kbd
-              className="hidden sm:inline-block text-[10px] px-1 py-px rounded"
-              style={{
-                background: "var(--background)",
-                border: "1px solid var(--border)",
-              }}
-            >
-              ⌘K
-            </kbd>
-          </button>
         </header>
         <main id="main-content" className="flex-1">{children}</main>
       </SidebarInset>

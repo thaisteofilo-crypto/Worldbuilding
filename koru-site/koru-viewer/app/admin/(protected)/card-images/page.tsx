@@ -22,6 +22,7 @@ interface CardSlot {
 const DEFAULT_CHAR_SLUGS = ['temiku', 'amara', 'oruku', 'beku', 'obaru', 'kemdi', 'orike']
 
 const DEFAULT_BIBLIA_DOCS: DocEntry[] = [
+  { label: 'Manifesto', path: 'biblia/manifesto.md' },
   { label: 'Parte 00', path: 'biblia/parte-00.md' },
   { label: 'Parte 01', path: 'biblia/parte-01.md' },
   { label: 'Parte 02', path: 'biblia/parte-02.md' },
@@ -86,12 +87,11 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
   }
 
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className="flex flex-col items-center gap-1.5 w-full">
       <div
-        className="group relative rounded-lg overflow-hidden cursor-pointer"
+        className="group relative rounded-xl overflow-hidden cursor-pointer w-full"
         style={{
-          width: '120px',
-          height: '180px',
+          aspectRatio: '2/3',
           background: 'var(--card)',
           border: '1px solid var(--border)',
           flexShrink: 0,
@@ -160,13 +160,13 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
 
       <p
         className="text-center font-sans leading-tight"
-        style={{ color: 'var(--muted-foreground)', fontSize: '10px', maxWidth: '120px', wordBreak: 'break-all' }}
+        style={{ color: 'var(--muted-foreground)', fontSize: '10px', width: '100%', wordBreak: 'break-all' }}
       >
         {slot.label}
       </p>
       <p
         className="text-center font-mono leading-tight"
-        style={{ color: 'var(--muted-foreground)', fontSize: '9px', opacity: 0.5, maxWidth: '120px', wordBreak: 'break-all' }}
+        style={{ color: 'var(--muted-foreground)', fontSize: '9px', opacity: 0.5, width: '100%', wordBreak: 'break-all' }}
       >
         {slot.key}
       </p>
@@ -200,7 +200,7 @@ function CardSection({ title, note, slots, images, uploadingKeys, onUpload, onDe
           </p>
         )}
       </div>
-      <div className="flex flex-wrap gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {slots.map((slot) => (
           <CardTile
             key={slot.key}
@@ -347,7 +347,7 @@ export default function CardImagesPage() {
   })
 
   const contosSlots: CardSlot[] = charSlugs.map((slug) => ({
-    key: `char-${slug}`,
+    key: `conto-${slug}`,
     label: slug.charAt(0).toUpperCase() + slug.slice(1),
   }))
 
@@ -402,15 +402,6 @@ export default function CardImagesPage() {
       )}
 
       <CardSection
-        title="Personagens"
-        slots={personagemSlots}
-        images={images}
-        uploadingKeys={uploadingKeys}
-        onUpload={handleUpload}
-        onDelete={handleDelete}
-      />
-
-      <CardSection
         title="Bíblia"
         slots={bibliaSlots}
         images={images}
@@ -420,8 +411,8 @@ export default function CardImagesPage() {
       />
 
       <CardSection
-        title="Livro"
-        slots={livroSlots}
+        title="Personagens"
+        slots={personagemSlots}
         images={images}
         uploadingKeys={uploadingKeys}
         onUpload={handleUpload}
@@ -432,6 +423,15 @@ export default function CardImagesPage() {
         title="Contos"
         note="Compartilha imagem com Personagens — mesma chave char-{slug}"
         slots={contosSlots}
+        images={images}
+        uploadingKeys={uploadingKeys}
+        onUpload={handleUpload}
+        onDelete={handleDelete}
+      />
+
+      <CardSection
+        title="Livro"
+        slots={livroSlots}
         images={images}
         uploadingKeys={uploadingKeys}
         onUpload={handleUpload}

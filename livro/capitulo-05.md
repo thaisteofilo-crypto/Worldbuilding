@@ -3,7 +3,7 @@
 
 ---
 
-A conversa com Beku durou mais do que Temiku esperava — não porque ele cedesse, mas porque ele argumentava com o tipo de coerência que só é possível quando alguém está completamente certo das premissas erradas.
+A conversa com Beku durou mais do que Temiku esperava, não porque ele cedesse, mas porque ele argumentava com o tipo de coerência que só é possível quando alguém está completamente certo das premissas erradas.
 
 Eles estavam na câmara de trabalho dele, a mais alta de Orunjó, construída nas décadas que se seguiram ao retorno de Kemi. As paredes tinham Ubomi-chi cultivados em padrões que nenhuma outra estrutura da cidade apresentava: dispostos em linhas regulares, disciplinados, a fosforescência lilás pulsando com ritmo que parecia imposto em vez de orgânico. Beku havia passado ciclos reorganizando as colônias naquelas paredes até que pulsassem da forma que ele julgava correta. A mesma atenção que dedicara a cuidar de Kemi por quinze ciclos. O mesmo princípio: se o mundo é cruel no design, redesenha-se o mundo.
 
@@ -67,7 +67,7 @@ A ave não se movia. Nem o ar ao redor dela parecia se mover.
 
 Temiku parou. A distância entre ela e o Nkosi-ha era de poucos passos, e naqueles poucos passos o Bomi Veh já era completamente cinza, sem qualquer variação de tom, sem os padrões que os Ima-Kwe haviam descrito como atividade anômala. Aqui, na entrada, apenas cinza. Permanente. O solo sob as patas do pássaro não registrava presença, da mesma forma que o Bomi preto não havia registrado a testa de Temiku. Mas o cinza não era preto. Era cheio demais, não vazio.
 
-(O peito respondeu. A pressão que não tinha nome, a mesma que carregava desde os sete ciclos, desde o galho onde dois Nkosi-ha haviam assistido a dissolução de Amara sem se moverem por horas. Toda vez que a ave aparecia no campo periférico, o corpo repetia. Não era memória consciente. Era o corpo lembrando o que a mente não havia nomeado. Transição eminente. Não necessariamente fim. O espaço entre o que algo é e o que vai ser.)
+(O peito respondeu. A pressão que não tinha nome, a mesma que carregava desde os sete ciclos, desde o galho onde dois Nkosi-ha haviam assistido a dissolução de Amara sem se moverem por horas. Toda vez que a ave aparecia no campo periférico, o corpo repetia. Não era memória consciente. Era o corpo lembrando o que a mente não havia nomeado. Transição iminente. Não necessariamente fim. O espaço entre o que algo é e o que vai ser.)
 
 O Nkosi-ha virou a cabeça. O movimento foi lento, com a precisão de criatura que não desperdiça gesto. Os olhos, se é que podiam ser chamados assim, as aberturas translúcidas onde a frequência entrava, ficaram voltados para as Jobi-Koro por um instante. Depois para Temiku.
 
@@ -149,7 +149,7 @@ O limiar não é uma porta.
 
 Temiku sempre soube disso e nunca havia entendido o que significava de verdade. Uma porta você atravessa. Um limiar você habita. Ela havia passado vinte e dois ciclos tentando chegar a um dos lados. Azuri o suficiente para pertencer ao lado da tradução. Onkweri o suficiente para pertencer ao lado da substância. Vinte e dois ciclos de tentativa de ser o bastante de uma coisa ou o bastante da outra, e a resposta era sempre a mesma: insuficiente para ambos, excessiva para ambos.
 
-O que aconteceu quando ela parou de tentar foi que o limiar reconheceu alguém que pertencia ali — não de passagem, mas de natureza.
+O que aconteceu quando ela parou de tentar foi que o limiar reconheceu alguém que pertencia ali, não de passagem, mas de natureza.
 
 A membrana que não havia cedido à tentativa Isilo-Ori, que não havia respondido à tentativa Azuri, reagiu à ausência de tentativa. Não como abertura. Como ajuste de frequência. O espaço ao redor de Temiku mudou de qualidade da mesma forma que o espaço ao redor de um Azuri muda quando ele está presente: não mais iluminado, mais nítido. O cinza do Bomi Veh continuou cinza. A pressão do Zoeji continuou uniforme. Mas algo na membrana entre presente e passado relaxou. Não cedeu, não rompeu, não abriu. Reconheceu.
 
@@ -235,7 +235,7 @@ O galho de uma Ariku alta, no limite do campo de visão, estava vazio. Nenhum Nk
 
 Não precisava haver. A transição já havia acontecido.
 
-Ela caminhou atrás de Obaru com o peso redistributo no corpo de forma que ninguém de fora perceberia como diferente. Os flancos tinham a mesma inclinação. Os cascos deixavam as mesmas marcas. A contenção nas veias era a mesma de sempre.
+Ela caminhou atrás de Obaru com o peso redistribuído no corpo de forma que ninguém de fora perceberia como diferente. Os flancos tinham a mesma inclinação. Os cascos deixavam as mesmas marcas. A contenção nas veias era a mesma de sempre.
 
 Mas a pedra contra o peito estava morna. Ainda. Por mais um pouco.
 

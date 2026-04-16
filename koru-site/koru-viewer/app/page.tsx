@@ -158,8 +158,7 @@ export default async function HomePage() {
       const fsBibliaPaths = new Set(filesystemBiblia.map((d) => d.path))
       const fsLivroPaths = new Set(filesystemLivro.map((d) => d.path))
 
-      finalBibliaDocs = filesystemBiblia.map((d) => ({ ...d, label: bibliaLabels.get(d.path) ?? d.label }))
-      finalLivroDocs = filesystemLivro.map((d) => ({ ...d, label: livroLabels.get(d.path) ?? d.label }))
+      // Filesystem titles always win — editor labels only for extras not on disk
 
       const extraBiblia = editorBiblia.filter((d) => !fsBibliaPaths.has(d.path) && !excluded.has(d.path))
       const extraLivro = editorLivro.filter((d) => !fsLivroPaths.has(d.path) && !excluded.has(d.path))
@@ -210,7 +209,7 @@ export default async function HomePage() {
               fontSize: "clamp(6rem, 18vw, 14rem)",
               color: hasHero ? "white" : "var(--foreground)",
               fontFamily: "var(--font-serif), Georgia, serif",
-              textShadow: hasHero ? "0 2px 16px oklch(0 0 0 / 0.4)" : undefined,
+              textShadow: "none",
             }}
           >
             Korú
@@ -245,8 +244,14 @@ export default async function HomePage() {
                   )}
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                   <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="text-xs md:text-base font-sans text-white/60">{doc.label}</p>
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                    {doc.label.includes(" · ") ? (
+                      <>
+                        <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
+                        <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
+                      </>
+                    ) : (
+                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                    )}
                   </div>
                 </div>
               </Link>
@@ -288,8 +293,8 @@ export default async function HomePage() {
             return (
               <Link key={key} href={`/contos/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[`char-${key}`] ? (
-                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  {cardImages[`conto-${key}`] ? (
+                    <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   ) : (
                     <ImagePlaceholder />
                   )}

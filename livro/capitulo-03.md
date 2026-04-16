@@ -13,7 +13,7 @@ Ela não o interrompeu. O que os cascos dela estavam registrando podia ser apena
 
 Mas havia algo no silêncio do solo que não era escassez. Era esforço.
 
-O tipo de frequência que ela sentia era o que havia sentido naquele ponto além das bordas de Orunjó onde o Bomi Veh estava ficando uniforme. Pulsação mecânica. O solo processando por obrigação, não por ciclo. Como respiração que se mantém por que o corpo insiste, depois que o motivo de respirar se retirou.
+O tipo de frequência que ela sentia era o que havia sentido naquele ponto além das bordas de Orunjó onde o Bomi Veh estava ficando uniforme. Pulsação mecânica. O solo processando por obrigação, não por ciclo. Como respiração que se mantém porque o corpo insiste, depois que o motivo de respirar se retirou.
 
 No terceiro dia, a primeira mancha apareceu.
 
@@ -197,7 +197,7 @@ O dossel se moveu com brisa mínima. Uma sombra cruzou o chão entre as raízes.
 
 Temiku levantou a cabeça. No galho mais alto de uma Ariku vizinha, no limite do dossel de Orike, um Nkosi-ha estava pousado. Imóvel. Os ossos translúcidos deixando a luz lilás-fria do Temu passar por ele como por vidro fosco. Ela não olhou diretamente. Não precisava. O corpo já sabia o que significava. O peito já carregava a pressão que não tinha nome.
 
-Transição eminente. Não necessariamente morte. Qualquer mudança de estado.
+Transição iminente. Não necessariamente morte. Qualquer mudança de estado.
 
 Ela desviou o olhar para o Bomi Veh sob os cascos. O lilás profundo ao redor de Orike pulsava com a frequência de solo que existe há mais tempo do que qualquer criatura consegue contar.
 

@@ -9,7 +9,7 @@
 
 | Nome | Tipo | Linha de memorização |
 |---|---|---|
-| [Akwu](#akwu) | Cosmológico | *A câmara que é o universo, sem fora, sem exterior* |
+| [Akwu](#akwu) | Cosmológico | *A câmara que contém Korú, sem fora, sem exterior* |
 | [Base de Orike](#base-de-orike) | Ponto único | *O arquivo mais profundo que existe, pressão sem palavras* |
 | [Bomi-Weh](#bomi-weh) | Regional | *As planícies abertas onde o teto do Akwu não tem filtro* |
 | [Chi-Oa](#chi-oa) | Conceito | *Qualquer assentamento permanente, espiral ao redor de núcleo* |
@@ -36,9 +36,8 @@
 
 **Tipo:** câmara cosmológica
 **Etimologia:** Igbo, aquilo que sustenta, a palma aberta que carrega
-**Tradução funcional:** o universo de Korú
 
-> *A câmara fechada que é o universo, sem exterior, sem fora acessível.*
+> *A câmara fechada que contém Korú. Korú é o mundo; Akwu é o que o contém.*
 
 | Atributo | Valor |
 |---|---|
@@ -47,7 +46,7 @@
 | Luz | Emitida pelo teto em dois estados: Oru (dourado) e Temu (lilás-frio) |
 | Acesso | Não se acessa, é o container de tudo |
 
-**Para memorizar:** o Akwu não está no mapa, *é* o mapa. Tudo que existe em Korú está dentro dele. O teto do Akwu é a única fonte de luz do mundo.
+**Para memorizar:** Korú é o mundo; Akwu é a câmara que o contém. O Akwu não está no mapa, *é* o mapa. Tudo que existe em Korú está dentro dele. O teto do Akwu é a única fonte de luz do mundo.
 
 **Ver também:**
 - [Rimba Ngozi](#rimba-ngozi), onde a luz do Akwu chega filtrada pelas Ariku

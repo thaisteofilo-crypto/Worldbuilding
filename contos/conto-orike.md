@@ -153,7 +153,7 @@ O que os filamentos nas raízes contêm, se pudessem ser lidos de uma vez, é a 
 
 O que Orike sabe, se a palavra se aplica a algo que não pensa em linguagem, é o que qualquer Ariku sabe multiplicado pela profundidade de eras que nenhuma outra Ariku tem. A diferença entre Orike e uma Ariku jovem não é de tipo. É de acumulação. E a acumulação é tão vasta que a diferença de grau se torna diferença de natureza, como a diferença entre um lago e um oceano: ambos água, um deles contém o que o outro não consegue imaginar que existe.
 
-A permanência de Orike não tem a qualidade de ato heróico nem de resistência. Tem a qualidade de raiz. De coisa que está onde está porque é onde está, e que enquanto estiver ali o que está ao redor tem onde se ancorar.
+A permanência de Orike não tem a qualidade de ato heroico nem de resistência. Tem a qualidade de raiz. De coisa que está onde está porque é onde está, e que enquanto estiver ali o que está ao redor tem onde se ancorar.
 
 O Bomi Veh pulsa. Os Ubomi-chi registram. Orike permanece.
 

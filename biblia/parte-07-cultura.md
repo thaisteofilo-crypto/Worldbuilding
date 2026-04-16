@@ -3,19 +3,21 @@
 
 ---
 
-### OS QUATRO ASA
+### PRÁTICAS CULTURAIS POR ASA
 
-**Asa** (Yoruba: o jeito que o mundo tem de ser), estados afetivos do mundo, não estações climáticas convencionais.
+*A mecânica ecológica dos Asa está documentada na Parte 03. A cultura de Korú responde aos ciclos do Akwu com práticas específicas para cada estado.*
 
-| Asa | Teto do Akwu | Estado afetivo | Práticas culturais |
-|---|---|---|---|
-| **Mwanga** (Swahili: luz, claridade) | Dourado intenso | Expansão, criação, encontros | Nyame-jo, construção de Chi-Oa, acordos novos |
-| **Rimbi** (Malaio: dentro da floresta) | Cinza úmido, chuva densa | Interioridade, histórias, luto cotidiano | Contação nas Ima-ri, cozinha longa |
-| **Temu** (Egípcio Antigo: crepúsculo) | Lilás frio profundo | Luto ritual, memória dos mortos, proteção | Silêncio dos 3 dias, oferendas ao Bomi Veh |
-| **Nkosi** (Zulu: soberano, o vento que governa) | Dinâmico, variável | Mudança, dispersão, caos gentil | Sementes de Ariku, reuniões entre Chi-Oa |
+| Asa | Estado afetivo | Práticas culturais |
+|---|---|---|
+| **Mwanga** | Expansão, criação, encontros | Nyame-jo, construção de Chi-Oa, acordos novos |
+| **Rimbi** | Interioridade, histórias, luto cotidiano | Contação nas Ima-ri, cozinha longa |
+| **Temu** | Luto ritual, memória dos mortos, proteção | Silêncio dos 3 dias, oferendas ao Bomi Veh |
+| **Nkosi** | Mudança, dispersão, caos gentil | Sementes de Ariku, reuniões entre Chi-Oa |
 
-**O Asa Temu em detalhe:**
-Período simultaneamente mais rico (contato com ancestrais no pico) e mais perigoso (maior concentração de Azuri nos limiares). O silêncio dos três primeiros dias não é apenas ritual, é organização espacial. Os Onkweri permanecem nos Chi-Oa. Os Azuri, nos limiares. Sobreposição não-intencional dissolve.
+**O Asa Temu em detalhe (cultural):**
+Período simultaneamente mais rico (contato com ancestrais no pico) e mais perigoso (maior concentração de Azuri nos limiares, conforme Parte 03). O silêncio dos três primeiros dias não é apenas ritual, é organização espacial. Os Onkweri permanecem nos Chi-Oa. Os Azuri, nos limiares. Sobreposição não-intencional dissolve.
+
+**Nyame-jo** (Akan Nyame = o divino presente + Yoruba Jo = dançar): celebração coletiva do Asa Mwanga, quando o teto do Akwu estabiliza em Oru pleno. Criaturas de múltiplos Chi-Oa convergem no Bomi-Weh para acordos novos, trocas entre comunidades e apresentação de Onkweri jovens ao mundo ampliado. Existe desde a Era III. A prática marca o momento em que o mundo "aceita receber", a contraface ritual do Asa Temu (que é aceitar despedir).
 
 ---
 
@@ -23,9 +25,9 @@ Período simultaneamente mais rico (contato com ancestrais no pico) e mais perig
 
 **Chi-Oa** (Igbo: espírito da comunidade)
 
-Habitações em mandala arquitetônica, espiral ao redor de núcleo comunitário. Separação entre privado e coletivo feita por vegetação, não por paredes. Cada Chi-Oa tem pontos de ressonância de Zoeji, conhecidos oralmente, não marcados fisicamente.
+Chi-Oa é a unidade de vida comunitária. A **arquitetura** (mandala em espiral, Jobi-Ariku com paredes vivas, pontos de Zoeji) está documentada na [Parte 2, Geografia](parte-02-geografia.md). Aqui, o foco é a vida cultural dentro dela.
 
-**Jobi-Ariku:** construções parcialmente compostas por Ubomi-chi que crescem e se ajustam conforme os habitantes mudam. Uma parede que para de pulsar é alerta, os Ubomi-chi dentro estão morrendo.
+**Vida cultural:** decisões no núcleo, memória nas bordas. Pontos de ressonância de Zoeji são transmitidos oralmente, quem vive ali aprende onde o mundo lembra com mais peso. A espiral arquitetônica não é ornamento, é a mesma lógica do Zoeji (espiral) aplicada ao habitar: o coletivo no centro, o privado nas bordas.
 
 ---
 
@@ -54,6 +56,10 @@ Cozinhar é prática de autorregulação, criatura que cozinha com raiva produz 
 | **Orime** | Eleito por cada Chi-Oa. Carrega o destino de todos. Porta-voz, não governante. |
 | **Isilo-Ori** | Portadores da marca de eleição. Não governam, aconselham. Papel específico: mediação Azuri/Onkweri no Asa Temu. |
 | **Ima-Kwe** | Guardiões do conhecimento. Poder buscado, não imposto. Únicos autorizados nas Jobi-Koro com preparação formal. |
+
+*A mecânica da marca Isilo-Ori (toque de eleição, localização na testa, permanência) está documentada em [Parte 6, Regra 10](parte-06-regras.md). O cargo aqui refere-se à função política; a marca é o pré-requisito físico.*
+
+*Jobi-Koro como lugar: ver [Parte 2, Geografia](parte-02-geografia.md). Regra de acesso: [Parte 6, Regra 06](parte-06-regras.md).*
 
 ---
 

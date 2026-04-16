@@ -63,9 +63,8 @@ export async function GET() {
       const fsLivroPaths = new Set(finalLivro.map((d) => d.path))
       const fsContosPaths = new Set(finalContos.map((d) => d.path))
 
-      finalBiblia = finalBiblia.map((d) => ({ ...d, label: bibliaLabels.get(d.path) ?? d.label }))
-      finalLivro = finalLivro.map((d) => ({ ...d, label: livroLabels.get(d.path) ?? d.label }))
-      finalContos = finalContos.map((d) => ({ ...d, label: contosLabels.get(d.path) ?? d.label }))
+      // Filesystem titles always win — editor labels only apply to entries that don't exist on disk
+      // (label overrides from editor are legacy and may be stale)
 
       // Append editor-only extras (not yet on disk, not excluded)
       const extraBiblia = editorBiblia.filter((d) => !fsBibliaPaths.has(d.path) && !excluded.has(d.path))

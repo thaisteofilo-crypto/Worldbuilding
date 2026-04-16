@@ -8,7 +8,7 @@
 **Azuri e Onkweri são quadrúpedes com chifres. Sem mãos, sem palmas.**
 
 - Contato intencional: pela **testa** (fronte) ou pelo **focinho**
-- Marca do Isilo-Ori: aparece na **testa e nas bordas dos olhos**, não nas palmas
+- Marca do Isilo-Ori: aparece na **testa e nas bordas dos olhos**, não nas palmas (mecânica completa na [Regra 10, Parte 6](parte-06-regras.md))
 - Gesto padrão de contato com Ariku: "encostou a testa no tronco"
 - Toda menção a "palma" ou "mão" em versões anteriores do documento é inconsistência corrigida nesta versão
 
@@ -31,12 +31,14 @@
 
 **Movimento:** flutuante. Não porque levitam, porque não pressionam. O Bomi Veh não registra o peso deles.
 
-**Luz:** constante, não emocional. Os Azuri não têm "interior" que produz emoção, têm função. A Luz Limiar que emitem é um terceiro tipo, não Oru, não Temu.
+**Luz:** constante, não emocional. Os Azuris não têm "interior" que produz emoção, têm função. A Luz Limiar que emitem é um terceiro tipo, não Oru, não Temu.
 
-**Física do toque:**
+**Física do toque (resumo visual):**
 - Toque não-intencional com Onkweri → dissolução. É física, não lei.
-- Toque de eleição (criação de Isilo-Ori): filtragem intencional concentrada na testa. Calibrado para impressão, não dissolução. Limite: 3 respirações. Além disso, mesmo com intenção, começa a dissolver.
-- Exige declaração mútua (Regra 10).
+- Toque de eleição (Isilo-Ori): marca impressa na testa e nas bordas dos olhos.
+
+→ Mecânica completa do toque de eleição e do Isilo-Ori: [Regra 10, Parte 6](parte-06-regras.md)
+→ Reprodução e surgimento de Azuri (limiar sem tradutor): [Parte 3, Reprodução por espécie](parte-03-ecossistema.md)
 
 **PROMPTS DE CHARACTER DESIGN, AZURI GENÉRICO:**
 
@@ -74,10 +76,12 @@ Dorso plano, espinha não marcada. Chifres dominam a silhueta de costas, ramific
 
 **Movimento:** pesado, deliberado. Os pés deixam marca no Bomi Veh. Onkweri mais velhos deixam impressões mais fundas, peso literal aumenta com camadas de memória.
 
-**Física da memória:**
+**Física da memória (resumo visual):**
 - Memória não é algo que possuem, é aquilo do que são feitos
 - Onkweri que esquece algo perde densidade na região corporal onde a memória habitava
 - Onkweri muito velho: peso e estratificação na pele visíveis
+
+→ Surgimento de Onkweri a partir de Bomi Veh, ciclo memória-energia e caso híbrido: [Parte 3, Ecossistema](parte-03-ecossistema.md)
 
 **PROMPTS DE CHARACTER DESIGN, ONKWERI GENÉRICO:**
 
@@ -120,6 +124,9 @@ Dorso largo e plano. Estratificação visível como listras horizontais de textu
 - Galhos superiores: retorcidos em ângulos geométricos, sem organicidade
 - Base: raízes emergindo como estrutura arquitetônica, não apenas como ancoragem
 
+→ Germinação a partir de sementes dispersadas pelos Nkosi-ha, sustento por Oru/Temu, morte: [Parte 3, Ecossistema](parte-03-ecossistema.md)
+→ Orike como personagem específica (a Ariku mais antiga) e base arquitetônica associada: [Parte 5, Personagens](parte-05-personagens.md) · [Parte 2, Geografia](parte-02-geografia.md)
+
 ---
 
 ### UBOMI-CHI
@@ -132,9 +139,11 @@ Dorso largo e plano. Estratificação visível como listras horizontais de textu
 
 **Para ilustrações:** representados como redes de luz tênue nas raízes, filamentos lilás em fundo carvão. Em paredes de Jobi-Ariku: lilás pulsante nas rachaduras.
 
-*Sinal de saúde:* frequência de bioluminescência variável (pulsação irregular, responsiva)
-*Sinal de estresse:* frequência uniforme (pulsação regular, mecânica)
-*Morte:* apagamento total. Bomi Veh ao redor fica preto.
+*Sinal visual de saúde:* frequência de bioluminescência variável (pulsação irregular, responsiva)
+*Sinal visual de estresse:* frequência uniforme (pulsação regular, mecânica)
+*Morte (aparência):* apagamento total dos filamentos lilás.
+
+→ Mecânica de extração (Nguvu-Chi vs. Mwanga-ji), morte de colônia e Bomi Veh preto: [Parte 3, Ecossistema](parte-03-ecossistema.md)
 
 ---
 
@@ -159,5 +168,6 @@ Dorso largo e plano. Estratificação visível como listras horizontais de textu
 
 **Características únicas:**
 - Não entram em Jobi-Koro. Param sempre na entrada, instinto, não escolha consciente.
-- Presença = transição eminente (não necessariamente morte, qualquer mudança de estado)
-- Após morte: corpo translúcido vira nutriente para Ubomi-chi próximos
+- Presença = transição iminente (não necessariamente morte, qualquer mudança de estado)
+
+→ Reprodução (nidificação no Asa Nkosi), sustento e destino do corpo após morte: [Parte 3, Ecossistema](parte-03-ecossistema.md)

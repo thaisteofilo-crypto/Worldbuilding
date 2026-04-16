@@ -21,7 +21,9 @@ export async function GET() {
     if (file.name.startsWith(".")) continue
     const key = file.name.replace(/\.[^.]+$/, "")
     const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
-    images[key] = data.publicUrl
+    const v = file.updated_at || file.created_at || ""
+    const bust = v ? `?v=${new Date(v).getTime()}` : `?v=${Date.now()}`
+    images[key] = data.publicUrl + bust
   }
 
   return NextResponse.json({ images })
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { data: urlData } = admin.storage.from("card-images").getPublicUrl(fileName)
-  return NextResponse.json({ url: urlData.publicUrl, key })
+  return NextResponse.json({ url: `${urlData.publicUrl}?v=${Date.now()}`, key })
 }
 
 export async function DELETE(req: NextRequest) {

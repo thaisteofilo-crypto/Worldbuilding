@@ -75,7 +75,7 @@ A tensão central não é entre bem e mal, mas entre acumular e processar. O que
 | Atmosfera | Roxa-acinzentada. Luz difusa sem fonte visível no frame. |
 | Mood | Quietude. Solidão habitada. Beleza que não pede atenção, existe mesmo assim. |
 
-**Nota técnica para ilustradores:** A luz em Korú não tem fonte visível dentro do quadro. Ela está "no ar", como dia muito nublado onde a claridade vem de todo lugar. As Ariku não emitem raios; redistribuem a qualidade luminosa do teto do Akwu lateralmente. O Bomi Veh não irradia de baixo para cima, tem fosforescência horizontal e suave, como musgo bioluminescente.
+**Nota técnica para ilustradores:** A luz em Korú não tem fonte visível dentro do quadro. Ela está "no ar", como dia muito nublado onde a claridade vem de todo lugar. As Arikus não emitem raios; redistribuem a qualidade luminosa do teto do Akwu lateralmente. O Bomi Veh não irradia de baixo para cima, tem fosforescência horizontal e suave, como musgo bioluminescente.
 
 ---
 
@@ -97,14 +97,14 @@ Não há espaço além do Akwu acessível às criaturas de Korú. A questão de 
 
 ### SISTEMA DE LUZ, VERSÃO REVISADA
 
-**Princípio:** Em Korú, a luz não atravessa o espaço de cima para baixo diretamente. Ela é traduzida: recebida pelo teto interno do Akwu, filtrada e redistribuída lateralmente pelas Ariku, depositada onde as coisas vivem. O Bomi Veh ecoa a luz, não a gera.
+**Princípio:** Em Korú, a luz não atravessa o espaço de cima para baixo diretamente. Ela é traduzida: recebida pelo teto interno do Akwu, filtrada e redistribuída lateralmente pelas Arikus, depositada onde as coisas vivem. O Bomi Veh ecoa a luz, não a gera.
 
 **Os três tipos de luz:**
 
 #### LUZ ORU
 - **Origem:** teto do Akwu em estado Oru
 - **Cor:** âmbar-dourado, amarelo-suave, quente
-- **Mediação pelas Ariku:** amplificam e suavizam → luz dappled no chão da floresta
+- **Mediação pelas Arikus:** amplificam e suavizam → luz dappled no chão da floresta
 - **Efeito no Bomi Veh:** reflexo em lilás aquecido, fosforescência mais viva
 - **Sensação:** tarde de verão em floresta densa. O ar parece mais espesso
 - **Asa correspondente:** Asa Mwanga (parcialmente Asa Rimbi)
@@ -112,13 +112,13 @@ Não há espaço além do Akwu acessível às criaturas de Korú. A questão de 
 #### LUZ TEMU
 - **Origem:** teto do Akwu em estado Temu
 - **Cor:** lilás frio e profundo, cinza-azulado
-- **Mediação pelas Ariku:** filtragem reduzida → luz mais dura, direcional, sombras marcadas
+- **Mediação pelas Arikus:** filtragem reduzida → luz mais dura, direcional, sombras marcadas
 - **Efeito no Bomi Veh:** fosforescência azul-fria, mais tênue
 - **Sensação:** clareza estranha. Tudo visível, nada aquecido
 - **Asa correspondente:** Asa Temu e bordas do Asa Nkosi
 
 #### LUZ LIMIAR
-- **Origem:** emitida pelos Azuri
+- **Origem:** emitida pelos Azuris
 - **Natureza:** diferente em categoria dos dois estados do Akwu. Não é Oru nem Temu
 - **Efeito visual:** não ilumina o ambiente fisicamente. Não aquece. Não muda a cor do que está ao redor
 - **Efeito de presença:** altera a frequência do que está ao redor. Criaturas próximas a um Azuri ficam mais *nítidas*, não mais iluminadas, como se o ruído do ar diminuísse
@@ -134,7 +134,7 @@ Não há espaço além do Akwu acessível às criaturas de Korú. A questão de 
 | Nkosi | Dinâmico, variável | Galhos em movimento | Luz pulsante, oscilante, instável. |
 
 **Consequência do Mwanga-ji no sistema de luz:**
-O projeto de Beku tenta forçar o teto do Akwu ao estado Oru permanente. O resultado: os Ubomi-chi morrem → as Ariku enfraquecem → sem filtro, a luz do teto chega crua ao chão. Não é Oru genuíno. É exposição, mais brilhante que qualquer Oru natural, mas fria de um jeito diferente. O sistema de luz de Korú não distingue bem e mal. Distingue processado e bruto.
+O projeto de Beku tenta forçar o teto do Akwu ao estado Oru permanente. O resultado: os Ubomi-chis morrem → as Arikus enfraquecem → sem filtro, a luz do teto chega crua ao chão. Não é Oru genuíno. É exposição, mais brilhante que qualquer Oru natural, mas fria de um jeito diferente. O sistema de luz de Korú não distingue bem e mal. Distingue processado e bruto.
 
 ---
 
@@ -188,7 +188,7 @@ O continente habitado de Korú. A nomenclatura é relacional, não geopolítica,
 | Atributo | Descrição |
 |---|---|
 | Troncos | Carvão escuro, quase roxo. Verticais e alongados. |
-| Interior das Ariku | Vermelho-sangue visível quando a casca racha com a idade. É luz interna, não ferida. |
+| Interior das Arikus | Vermelho-sangue visível quando a casca racha com a idade. É luz interna, não ferida. |
 | Chão | Bomi Veh lilás-rosado com fosforescência horizontal suave. |
 | Atmosfera | Roxa-cinza filtrada. Durante Oru: dourado dappled entre os troncos. |
 | Pontos especiais | Círculo de Bomi Veh azul-frio (onde Amara se dissolveu). Base de Orike. |
@@ -207,7 +207,7 @@ O continente habitado de Korú. A nomenclatura é relacional, não geopolítica,
 | Arquitetura | Blocos geométricos que crescem como cristal. Não planejada centralmente, acordada entre Chi-Oa ao longo de gerações |
 | Material | Pedra escura com Ubomi-chi nas paredes (luz lilás pulsante nas rachaduras) |
 | Sinal de saúde | Paredes que pulsam = Ubomi-chi vivos. Parede que para de pulsar = alerta |
-| Iluminação | Durante Oru: reflexo dourado das Ariku ao redor. Durante Temu: lilás frio das rachaduras |
+| Iluminação | Durante Oru: reflexo dourado das Arikus ao redor. Durante Temu: lilás frio das rachaduras |
 
 **Nota de governo:** Orunjó não é capital de um estado, é o Chi-Oa maior. Sem hierarquia sobre outros Chi-Oa. A influência do seu Oa-Chi vem de ser o maior ponto de confluência de Ima-Kwe.
 
@@ -258,14 +258,14 @@ Memória deposita no solo
          ↓
 BOMI VEH VIVO (lilás, processando, fosforescência ativa)
          ↓
-Ubomi-chi nas raízes das Ariku processam o Bomi Veh
+Ubomi-chis nas raízes das Arikus processam o Bomi Veh
          ↓
-Informação sobe pelas Ariku → ARQUIVO PERMANENTE
+Informação sobe pelas Arikus → ARQUIVO PERMANENTE
          ↓
-Ariku redistribuem luz do teto do Akwu pelo dossel
+Arikus redistribuem luz do teto do Akwu pelo dossel
          ↙                         ↘
-Onkweri absorvem frequência     Azuri traduzem memória
-(ganham densidade)              (entre vivos e Ariku)
+Onkweris absorvem frequência     Azuris traduzem memória
+(ganham densidade)              (entre vivos e Arikus)
          ↓
 Criaturas vivas acumulam → eventualmente morrem
          ↓
@@ -295,13 +295,13 @@ CICLO RECOMEÇA
 
 | | Extração Sustentável | Extração Mwanga-ji |
 |---|---|---|
-| **O que extrai** | Frequências de superfície dos Ubomi-chi | Memória-núcleo (registro central da colônia) |
+| **O que extrai** | Frequências de superfície dos Ubomi-chis | Memória-núcleo (registro central da colônia) |
 | **Analogia** | Colher o calor de um corpo sem tirar o sangue | Arrancar o sistema nervoso central |
 | **Resultado imediato** | Ubomi-chi continuam funcionando | Colônia perde capacidade de reconhecer a si mesma |
 | **Reversível?** | Sim, com tempo de recuperação | Não, reimplante de colônia vizinha + Bomi Veh ativo necessários |
 | **Sinal de alerta** | Frequência da colônia variável (normal) → uniforme (estressada) | Frequência uniforme → silêncio |
 
-**Protocolo do Ima-Kwe:** todo sistema de Nguvu-Chi tem um "limite de escuta", um Ima-Kwe responsável por monitorar se os Ubomi-chi estão respondendo (frequência variável) ou sendo drenados (frequência uniforme antes do silêncio).
+**Protocolo do Ima-Kwe:** todo sistema de Nguvu-Chi tem um "limite de escuta", um Ima-Kwe responsável por monitorar se os Ubomi-chis estão respondendo (frequência variável) ou sendo drenados (frequência uniforme antes do silêncio).
 
 ---
 
@@ -315,11 +315,11 @@ CICLO RECOMEÇA
 
 **Caso especial, Origem híbrida (Temiku):**
 
-Onkweri surgem do solo por acumulação de memória. Azuri surgem do limiar por necessidade de tradução. Esses dois processos nunca ocorreram simultaneamente no mesmo ponto, até uma vez.
+Onkweris surgem do solo por acumulação de memória. Azuris surgem do limiar por necessidade de tradução. Esses dois processos nunca ocorreram simultaneamente no mesmo ponto, até uma vez.
 
 Quando Amara (Onkweri) se dissolveu no Rimba Ngozi, sua memória desceu ao Bomi Veh pelo processo padrão. Oruku (Azuri) permaneceu presente durante ciclos, sua Luz Limiar saturou aquele ponto do solo repetidamente, antes e durante a dissolução. O Bomi Veh processou memória Onkweri e frequência Azuri ao mesmo tempo, no mesmo local. O solo nunca havia recebido essa combinação.
 
-O resultado: em vez de arquivar a memória de Amara nas Ariku próximas, o Bomi Veh coagulou, com a frequência Azuri já embutida. Temiku emergiu após a dissolução completa de Amara, no momento em que o limiar expulsou Oruku.
+O resultado: em vez de arquivar a memória de Amara nas Arikus próximas, o Bomi Veh coagulou, com a frequência Azuri já embutida. Temiku emergiu após a dissolução completa de Amara, no momento em que o limiar expulsou Oruku.
 
 O excesso de material que não coagulou em Temiku permaneceu como Bomi Veh azul-frio. O solo não sabia onde arquivar a frequência, ficou esperando.
 
@@ -332,19 +332,19 @@ Temiku não tem origem de lugar da forma que Onkweri têm. Tem origem de evento.
 - "Morte": quando não há mais memórias para traduzir, o Azuri passa para outra região ou cessa, sem corpo, sem marca
 
 **Ariku:**
-- Crescem de sementes dispersadas pelos Nkosi-ha durante o Asa Nkosi
+- Crescem de sementes dispersadas pelos Nkosi-has durante o Asa Nkosi
 - Germinam apenas em Bomi Veh rico (alta concentração de memória)
 - Crescimento extremamente lento. Ariku jovem: 50+ ciclos. Orike: incalculável
 - Não morrem de velhice. Causas: fogo, Mwanga-ji extremo, ausência total de Ubomi-chi nas raízes
 
 **Ubomi-chi:**
-- Propagação fúngica guiada por frequência das Ariku (crescem em direção a raízes de frequência mais rica)
+- Propagação fúngica guiada por frequência das Arikus (crescem em direção a raízes de frequência mais rica)
 - Morrem quando: Ariku morta, extração além do limite, solo sem Bomi Veh ativo
 - Colônia morta não se regenera sozinha
 
 **Nkosi-ha:**
 - Reprodução biológica convencional, nidificam durante o Asa Nkosi
-- Escolha de local de incubação: instintiva, baseada em onde há transições eminentes
+- Escolha de local de incubação: instintiva, baseada em onde há transições iminentes
 - Após morte: corpo vira nutriente limiar para Ubomi-chi próximos (alta concentração de frequência limiar)
 
 ---
@@ -353,7 +353,7 @@ Temiku não tem origem de lugar da forma que Onkweri têm. Tem origem de evento.
 
 | Espécie | Sustento | Observação |
 |---|---|---|
-| Onkweri | Frequências do Bomi Veh e das Ariku (absorção passiva) | O Kanda amplifica a absorção, comer é prática energética |
+| Onkweri | Frequências do Bomi Veh e das Arikus (absorção passiva) | O Kanda amplifica a absorção, comer é prática energética |
 | Azuri | Sem necessidade energética | Existem pela função, não pelo sustento. Sem memórias para traduzir → cessam de ter razão de existir |
 | Ariku | Absorvem Oru e Temu do teto do Akwu | Únicas que prosperam em ambos os estados. Não distinguem Oru e Temu como opostos, são variações do mesmo processo |
 | Ubomi-chi | Bomi Veh em decomposição + memórias emocionais que "vazam" das criaturas próximas | Crianças em Ima-ri alimentam as colônias ao redor com emoção intensa |
@@ -399,7 +399,7 @@ Nenhuma espécie existe fora desta cadeia. Efeitos de ruptura são silenciosos, 
 
 ### NOTA MORFOLÓGICA FUNDAMENTAL
 
-**Azuri e Onkweri são quadrúpedes com chifres. Sem mãos, sem palmas.**
+**Azuris e Onkweris são quadrúpedes com chifres. Sem mãos, sem palmas.**
 
 - Contato intencional: pela **testa** (fronte) ou pelo **focinho**
 - Marca do Isilo-Ori: aparece na **testa e nas bordas dos olhos**, não nas palmas
@@ -425,7 +425,7 @@ Nenhuma espécie existe fora desta cadeia. Efeitos de ruptura são silenciosos, 
 
 **Movimento:** flutuante. Não porque levitam, porque não pressionam. O Bomi Veh não registra o peso deles.
 
-**Luz:** constante, não emocional. Os Azuri não têm "interior" que produz emoção, têm função. A Luz Limiar que emitem é um terceiro tipo, não Oru, não Temu.
+**Luz:** constante, não emocional. Os Azuris não têm "interior" que produz emoção, têm função. A Luz Limiar que emitem é um terceiro tipo, não Oru, não Temu.
 
 **Física do toque:**
 - Toque não-intencional com Onkweri → dissolução. É física, não lei.
@@ -504,13 +504,13 @@ Dorso largo e plano. Estratificação visível como listras horizontais de textu
 
 **Paleta:** carvão quase-preto, vermelho-escuro, verde-musgo nas raízes.
 
-**Linguagem:** transmitem pressão, peso que aumenta no ar conforme a informação que carregam. Não falam. Não se movem. Cada Ariku é um arquivo: os Ubomi-chi em suas raízes registram tudo.
+**Linguagem:** transmitem pressão, peso que aumenta no ar conforme a informação que carregam. Não falam. Não se movem. Cada Ariku é um arquivo: os Ubomi-chis em suas raízes registram tudo.
 
-**Para ilustrações:** As Ariku não são ilustradas como personagens, são ilustradas como *lugares habitados*. Entrar no raio de uma Ariku velha é entrar num arquivo físico.
+**Para ilustrações:** As Arikus não são ilustradas como personagens, são ilustradas como *lugares habitados*. Entrar no raio de uma Ariku velha é entrar num arquivo físico.
 
 *Características de design:*
 - Casca: textura de camadas verticais, como madeira petrificada
-- Rachaduras: revelam vermelho-sangue interno, estas rachaduras são mais densas nas Ariku mais velhas
+- Rachaduras: revelam vermelho-sangue interno, estas rachaduras são mais densas nas Arikus mais velhas
 - Galhos superiores: retorcidos em ângulos geométricos, sem organicidade
 - Base: raízes emergindo como estrutura arquitetônica, não apenas como ancoragem
 
@@ -553,14 +553,14 @@ Dorso largo e plano. Estratificação visível como listras horizontais de textu
 
 **Características únicas:**
 - Não entram em Jobi-Koro. Param sempre na entrada, instinto, não escolha consciente.
-- Presença = transição eminente (não necessariamente morte, qualquer mudança de estado)
+- Presença = transição iminente (não necessariamente morte, qualquer mudança de estado)
 - Após morte: corpo translúcido vira nutriente para Ubomi-chi próximos
 
 ---
 
 ## PARTE 5, OS PERSONAGENS {#parte-5}
 
-*Todos os personagens Azuri e Onkweri são quadrúpedes com chifres. Sem mãos, sem palmas. Paleta da referência visual fundacional.*
+*Todos os personagens Azuris e Onkweris são quadrúpedes com chifres. Sem mãos, sem palmas. Paleta da referência visual fundacional.*
 
 ---
 
@@ -624,7 +624,7 @@ Temiku é metade Onkweri. A Luz Limiar que a constitui como Azuri dissolve lenta
 
 **Implicação de comportamento:** o que o mundo lê como frieza é sobrevivência. Ela aprendeu a manter a intensidade da luz no mínimo viável. Desde pequena sente formigamento nas partes Onkweri do corpo quando a luz acende involuntariamente.
 
-**Evento do Capítulo VI:** ao oferecer memórias emocionais intensas para os Ubomi-chi, Temiku deliberadamente acendeu a luz ao máximo, acelerando a auto-dissolução para liberar memória-energia. A perda não é apenas emocional: ela perdeu fragmento físico da parte Onkweri de si mesma.
+**Evento do Capítulo VI:** ao oferecer memórias emocionais intensas para os Ubomi-chis, Temiku deliberadamente acendeu a luz ao máximo, acelerando a auto-dissolução para liberar memória-energia. A perda não é apenas emocional: ela perdeu fragmento físico da parte Onkweri de si mesma.
 
 ---
 
@@ -677,7 +677,7 @@ Dorso mais amplo que Azuri, menos que Onkweri padrão. Estratificação horizont
 **PROMPTS DE CHARACTER DESIGN, AMARA:**
 
 *Frente:*
-Onkweri padrão com postura distintiva: cabeça levemente inclinada para baixo e à frente, escuta ativa, não submissão. Chifres médios e densos, simétricos, com leve alargamento na base. Textura: marrom-terra rico com veins de verde-musgo nas bordas do corpo (resultado de contato frequente com Ariku). Olhos: abertos, escuros, sem luz, expressão de atenção genuína. Corpo: sem tensão aparente. A postura de escuta não é ansiosa, é natural.
+Onkweri padrão com postura distintiva: cabeça levemente inclinada para baixo e à frente, escuta ativa, não submissão. Chifres médios e densos, simétricos, com leve alargamento na base. Textura: marrom-terra rico com veias de verde-musgo nas bordas do corpo (resultado de contato frequente com Ariku). Olhos: abertos, escuros, sem luz, expressão de atenção genuína. Corpo: sem tensão aparente. A postura de escuta não é ansiosa, é natural.
 
 *Perfil:*
 A inclinação da cabeça é o elemento mais marcante de perfil, o pescoço desce em curva suave para a frente. Dorso levemente inclinado no mesmo sentido, como se o corpo todo estivesse voltado para algo à frente. Verde-musgo visível nos flancos e nas patas.
@@ -708,7 +708,7 @@ Oruku não é um Azuri funcional. É uma frequência sem receptor, expulso do li
 
 **Para ilustrações:** Oruku nunca aparece. O que aparece é o rastro, a cor azul-fria que persiste onde ele esteve. O Bomi Veh do círculo onde Amara se dissolveu. A frequência nas veias de Temiku.
 
-*Nota de design:* se Oruku for representado visualmente em material de referência (não na narrativa), a proposta é um Azuri cujos contornos são indefinidos, como se o halo que define os Azuri estivesse se fragmentando, perdendo coesão. Paleta: azul-frio ao invés do branco-amarelado dos Azuri funcionais.
+*Nota de design:* se Oruku for representado visualmente em material de referência (não na narrativa), a proposta é um Azuri cujos contornos são indefinidos, como se o halo que define os Azuris estivesse se fragmentando, perdendo coesão. Paleta: azul-frio ao invés do branco-amarelado dos Azuris funcionais.
 
 ---
 
@@ -743,10 +743,10 @@ Onkweri de meia vida com peso visual dominante. Cabeça grande, pescoço curto e
 Corpo de perfil parece um bloco, pouco arqueamento, dorso quase reto. A estratificação de textura é mais visível de perfil, camadas horizontais que cruzam o corpo inteiro. Barriga baixa, perto do chão. Chifres: curvatura descendente muito clara de perfil.
 
 *Costa:*
-Dorso amplo e plano. Estratificação horizontal dominante, o corpo mais camadas visíveis de todos os personagens Onkweri. Ombros levemente contraídos, postura de alguém que carrega sem abrir.
+Dorso amplo e plano. Estratificação horizontal dominante, o corpo com mais camadas visíveis de todos os personagens Onkweri. Ombros levemente contraídos, postura de alguém que carrega sem abrir.
 
 *Características únicas:*
-1. **A estratificação** é o mais densa e mais regular de todos os personagens, décadas de memória acumulada com ordem.
+1. **A estratificação** é a mais densa e a mais regular de todos os personagens, décadas de memória acumulada com ordem.
 2. **Os chifres pesam para baixo**, não crescem para cima como em Onkweri jovens. O peso da memória física.
 3. **Zero luz** em qualquer estado, absorção pura, sem emissão.
 4. **Rastro:** os mais fundos dentre os personagens ativos da narrativa.
@@ -894,7 +894,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 | Atributo | Descrição |
 |---|---|
-| Tamanho | A maior coluna do Rimba Ngozi, proporcões que não correspondem a nenhuma medida disponível |
+| Tamanho | A maior coluna do Rimba Ngozi, proporções que não correspondem a nenhuma medida disponível |
 | Tronco | Carvão-denso, quase negro. Casca com camadas de séculos acumuladas, rachaduras profundas |
 | Interior | Vermelho-sangue visível nos galhos mais velhos que racham com o peso dos ciclos |
 | Raízes | Emergem como estrutura arquitetônica, raízes superficiais com extensão de metros |
@@ -905,7 +905,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 **Para ilustrações:** Orike é o fundo de cena, não o sujeito. A câmera olha para Orike a partir das criaturas que se aproximam. Ela nunca cabe inteira no frame, há sempre mais dela fora do quadro.
 
 *Características de design:*
-1. **As rachaduras são mais profundas que em outras Ariku**, o vermelho interno é mais visível e mais intenso.
+1. **As rachaduras são mais profundas que em outras Arikus**, o vermelho interno é mais visível e mais intenso.
 2. **As raízes superficiais** criam um labirinto no nível do chão, Temiku encosta a testa numa dessas raízes, não no tronco principal.
 3. **O Bomi Veh ao redor** é o mais rico da floresta, Ubomi-chi de Orike têm memória da Era I.
 4. **O Zoeji é mais denso aqui**, vazamentos acontecem sem contato físico no raio de Orike.
@@ -954,7 +954,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 **Fundamento:** a morte de uma colônia representa perda de registro coletivo. A testemunha não é ritual, é função. Quem testemunha carrega a frequência do que foi perdido.
 
-**Consequência:** morte sem testemunhas cria lacuna no arquivo das Ariku próximas, buraco de memória que afeta toda a rede regional.
+**Consequência:** morte sem testemunhas cria lacuna no arquivo das Arikus próximas, buraco de memória que afeta toda a rede regional.
 
 ---
 
@@ -968,7 +968,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 ### REGRA 07, Silêncio coletivo nos três primeiros dias do Asa Temu.
 
-**Fundamento:** função dupla, ritual e proteção física. Durante o Temu, os Azuri aparecem em maior número e se concentram nos limiares (Jobi-Koro). Os Onkweri permanecem nos Chi-Oa. O silêncio organiza o espaço de um período de risco físico real.
+**Fundamento:** função dupla, ritual e proteção física. Durante o Temu, os Azuris aparecem em maior número e se concentram nos limiares (Jobi-Koro). Os Onkweris permanecem nos Chi-Oa. O silêncio organiza o espaço de um período de risco físico real.
 
 **Consequência:** Onkweri que circulam durante os três primeiros dias podem encontrar concentrações de Azuri nos limiares. Contato não-intencional dissolve. Apenas Isilo-Ori podem interagir com Azuri durante o Temu.
 
@@ -982,7 +982,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 ---
 
-### REGRA 09, Onkweri não invocam ancestrais diretamente. Recebem o que os Azuri traduzem, nunca o original.
+### REGRA 09, Onkweri não invocam ancestrais diretamente. Recebem o que os Azuris traduzem, nunca o original.
 
 **Fundamento:** o "original" de um ancestral é frequência que o sistema nervoso de um Onkweri não está equipado para receber sem filtro. Era IV e as Jobi-Koro são o resultado de tentativa de acesso direto.
 
@@ -1010,9 +1010,9 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 ### REGRA 12, Um Azuri que cessa de traduzir, por escolha ou por exílio, é considerado morto pelo acordo fundador, mesmo que ainda exista em outra forma.
 
-**Fundamento:** o acordo fundador define os Azuri por função, não por existência. Oruku é o caso de estudo, existe como anomalia no Akwu, mas é ausente do ciclo.
+**Fundamento:** o acordo fundador define os Azuris por função, não por existência. Oruku é o caso de estudo, existe como anomalia no Akwu, mas é ausente do ciclo.
 
-**Consequência:** a frequência de um Azuri em estado de "passagem presa" não pode ser invocada nem mapeada pelas Ariku. Existe fora do ciclo. Sem endereço no sistema.
+**Consequência:** a frequência de um Azuri em estado de "passagem presa" não pode ser invocada nem mapeada pelas Arikus. Existe fora do ciclo. Sem endereço no sistema.
 
 ---
 
@@ -1020,7 +1020,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 **Fundamento:** extensão da Regra 12. Protege o ciclo de perturbações causadas por frequências "presas".
 
-**Consequência:** tentativas de localizar ou invocar um Azuri exilado criam frequência incoerente nas Ariku próximas. Os Ubomi-chi daquelas raízes ficam desorientados por dias. O sistema rejeita entrada inválida.
+**Consequência:** tentativas de localizar ou invocar um Azuri exilado criam frequência incoerente nas Arikus próximas. Os Ubomi-chis daquelas raízes ficam desorientados por dias. O sistema rejeita entrada inválida.
 
 ---
 
@@ -1038,7 +1038,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 | **Nkosi** (Zulu: soberano, o vento que governa) | Dinâmico, variável | Mudança, dispersão, caos gentil | Sementes de Ariku, reuniões entre Chi-Oa |
 
 **O Asa Temu em detalhe:**
-Período simultaneamente mais rico (contato com ancestrais no pico) e mais perigoso (maior concentração de Azuri nos limiares). O silêncio dos três primeiros dias não é apenas ritual, é organização espacial. Os Onkweri permanecem nos Chi-Oa. Os Azuri, nos limiares. Sobreposição não-intencional dissolve.
+Período simultaneamente mais rico (contato com ancestrais no pico) e mais perigoso (maior concentração de Azuris nos limiares). O silêncio dos três primeiros dias não é apenas ritual, é organização espacial. Os Onkweris permanecem nos Chi-Oa. Os Azuris, nos limiares. Sobreposição não-intencional dissolve.
 
 ---
 
@@ -1048,7 +1048,7 @@ Período simultaneamente mais rico (contato com ancestrais no pico) e mais perig
 
 Habitações em mandala arquitetônica, espiral ao redor de núcleo comunitário. Separação entre privado e coletivo feita por vegetação, não por paredes. Cada Chi-Oa tem pontos de ressonância de Zoeji, conhecidos oralmente, não marcados fisicamente.
 
-**Jobi-Ariku:** construções parcialmente compostas por Ubomi-chi que crescem e se ajustam conforme os habitantes mudam. Uma parede que para de pulsar é alerta, os Ubomi-chi dentro estão morrendo.
+**Jobi-Ariku:** construções parcialmente compostas por Ubomi-chis que crescem e se ajustam conforme os habitantes mudam. Uma parede que para de pulsar é alerta, os Ubomi-chis dentro estão morrendo.
 
 ---
 
@@ -1056,7 +1056,7 @@ Habitações em mandala arquitetônica, espiral ao redor de núcleo comunitário
 
 **Ima-ri** (Yoruba: lugar do conhecimento), clareiras próximas a Ariku com grandes colônias de Ubomi-chi.
 
-O conhecimento é transmitido por contato com as Ariku, encostar a testa na casca transmite impressões, não palavras. Crianças em Ima-ri emitem memória emocional intensa, alimentando os Ubomi-chi ao redor. O feedback cria ambiente de aprendizado amplificado.
+O conhecimento é transmitido por contato com as Arikus, encostar a testa na casca transmite impressões, não palavras. Crianças em Ima-ri emitem memória emocional intensa, alimentando os Ubomi-chis ao redor. O feedback cria ambiente de aprendizado amplificado.
 
 ---
 

@@ -15,7 +15,7 @@ A cabeça ficava mais alta do que ficaria em qualquer momento posterior da vida 
 
 Ele acreditava em criaturas de limiar.
 
-Não como crença abstrata, como dado de interesse. Os Azuri que passavam pelo Rimba Ngozi durante o Asa Temu, o silêncio que ficava mais nítido nos pontos onde haviam estado, a alteração de frequência que as Ariku registravam sem conseguir localizar a fonte. Obaru lia sobre isso nas Ima-ri com a atenção de quem está calibrando algo, não apenas aprendendo. Os professores mais velhos notavam o modo como ele encostava a testa nas Ariku que tinham registro de contato com Azuri, o tempo que ficava, a frequência com que voltava aos mesmos troncos. Havia precisão no interesse, não obsessão. Ele queria entender como duas naturezas incompatíveis — luz que dissolve e memória que solidifica — existiam no mesmo sistema sem que o sistema colapsasse.
+Não como crença abstrata, como dado de interesse. Os Azuri que passavam pelo Rimba Ngozi durante o Asa Temu, o silêncio que ficava mais nítido nos pontos onde haviam estado, a alteração de frequência que as Ariku registravam sem conseguir localizar a fonte. Obaru lia sobre isso nas Ima-ri com a atenção de quem está calibrando algo, não apenas aprendendo. Os professores mais velhos notavam o modo como ele encostava a testa nas Ariku que tinham registro de contato com Azuri, o tempo que ficava, a frequência com que voltava aos mesmos troncos. Havia precisão no interesse, não obsessão. Ele queria entender como duas naturezas incompatíveis, luz que dissolve e memória que solidifica, existiam no mesmo sistema sem que o sistema colapsasse.
 
 A resposta que os professores davam era a resposta que o protocolo das Ima-ri continha: os Azuri traduzem, os Onkweri recebem, o limiar mantém a separação que permite a função. Obaru ouvia. Voltava ao tronco. Havia algo na resposta que não preenchia o espaço que a pergunta ocupava.
 
@@ -23,15 +23,15 @@ A resposta que os professores davam era a resposta que o protocolo das Ima-ri co
 
 Havia um Ima-Kwe mais velho em Orunjó que Obaru visitava com regularidade.
 
-Não era professor formal. Era um Onkweri de muitos ciclos cuja estratificação havia ultrapassado a regularidade e chegado a algo diferente, camadas tão densas que pareciam ter sido comprimidas até fundirem umas nas outras, a textura do corpo mais próxima de rocha do que de pele. Os chifres haviam parado de crescer há tanto tempo que a curvatura descendente tinha se tornado parte da silhueta — não ornamento, estrutura. Ele vivia perto de uma Ariku antiga na borda sudoeste de Orunjó, numa área onde o Bomi Veh tinha a fosforescência densa de solo que havia processado muitos ciclos sem interrupção.
+Não era professor formal. Era um Onkweri de muitos ciclos cuja estratificação havia ultrapassado a regularidade e chegado a algo diferente, camadas tão densas que pareciam ter sido comprimidas até fundirem umas nas outras, a textura do corpo mais próxima de rocha do que de pele. Os chifres haviam parado de crescer há tanto tempo que a curvatura descendente tinha se tornado parte da silhueta, não ornamento, estrutura. Ele vivia perto de uma Ariku antiga na borda sudoeste de Orunjó, numa área onde o Bomi Veh tinha a fosforescência densa de solo que havia processado muitos ciclos sem interrupção.
 
 O Ima-Kwe velho não ensinava pelo protocolo. Falava pouco. Quando Obaru encostava a testa no tronco da Ariku próxima e depois ia até ele com a frequência do que havia recebido ainda pesando no corpo, o velho ficava quieto. Deixava Obaru falar. Depois dizia algo curto que mudava o ângulo de tudo que Obaru havia dito, não por contradição, por precisão. Como lente que corrige o foco sem mudar o que está sendo visto.
 
 (Era o mais perto que Obaru chegou de confiar em alguém sem filtro. A distância entre eles não era distância de cautela. Era o espaço que duas criaturas que se respeitam mantêm por reconhecimento mútuo de que nem tudo precisa ser dito para ser entendido.)
 
-Obaru levava perguntas sobre criaturas de limiar. O velho respondia com histórias do Asa Temu — Isilo-Ori que ele havia conhecido, acordos que haviam sido feitos entre Azuri e Onkweri no tempo dele, o peso físico que esses acordos haviam deixado no Bomi Veh ao redor. O solo ainda guardava a frequência de acordos de gerações atrás, e o velho sabia ler os pontos onde a fosforescência tinha textura diferente, mais densa, com a qualidade de coisa que havia sido declarada e registrada.
+Obaru levava perguntas sobre criaturas de limiar. O velho respondia com histórias do Asa Temu, Isilo-Ori que ele havia conhecido, acordos que haviam sido feitos entre Azuri e Onkweri no tempo dele, o peso físico que esses acordos haviam deixado no Bomi Veh ao redor. O solo ainda guardava a frequência de acordos de gerações atrás, e o velho sabia ler os pontos onde a fosforescência tinha textura diferente, mais densa, com a qualidade de coisa que havia sido declarada e registrada.
 
-Obaru aprendia a ler isso também. Os cascos no Bomi Veh captavam a diferença de densidade onde um acordo havia sido feito — o solo mais firme naquele ponto, como cicatriz que endurece em vez de afinar. Ele ia aos pontos. Voltava. Ia de novo. A precisão com que mapeava os registros de acordo no solo do Chi-Oa era a mesma precisão que depois definiria sua postura como Ima-Kwe. A habilidade não era nova. Era apenas mais jovem.
+Obaru aprendia a ler isso também. Os cascos no Bomi Veh captavam a diferença de densidade onde um acordo havia sido feito, o solo mais firme naquele ponto, como cicatriz que endurece em vez de afinar. Ele ia aos pontos. Voltava. Ia de novo. A precisão com que mapeava os registros de acordo no solo do Chi-Oa era a mesma precisão que depois definiria sua postura como Ima-Kwe. A habilidade não era nova. Era apenas mais jovem.
 
 ---
 
@@ -41,19 +41,19 @@ A luz do teto do Akwu descia em dourado pelo dossel das Ariku de Orunjó, faixas
 
 Obaru estava com o Ima-Kwe velho quando a mensageira chegou.
 
-Não era mensageira formal do Oa-Chi. Era uma Onkweri jovem que morava na área próxima, e a informação que trazia não era convocação, era dado. O Ima-Kwe velho não estava no Chi-Oa na noite anterior. Havia ido a uma Ariku distante, fora de Orunjó, numa área de floresta onde o Bomi Veh tinha frequência de acordo antigo — Eras atrás, registro que ele queria verificar. A mensageira disse o que havia para dizer: ele havia ido. Não havia voltado. O Bomi Veh na área onde havia ido tinha mudado de estado.
+Não era mensageira formal do Oa-Chi. Era uma Onkweri jovem que morava na área próxima, e a informação que trazia não era convocação, era dado. O Ima-Kwe velho não estava no Chi-Oa na noite anterior. Havia ido a uma Ariku distante, fora de Orunjó, numa área de floresta onde o Bomi Veh tinha frequência de acordo antigo, Eras atrás, registro que ele queria verificar. A mensageira disse o que havia para dizer: ele havia ido. Não havia voltado. O Bomi Veh na área onde havia ido tinha mudado de estado.
 
 A mensageira não disse mais. Não havia mais para dizer.
 
 Obaru ficou parado.
 
-O corpo não fez o que os corpos fazem quando recebem informação de peso — não houve a reorganização de postura que o Ngurui costuma provocar quando a frequência emocional sobe além do patamar habitual. Obaru ficou exatamente na posição em que estava quando a mensageira havia começado a falar. As patas no mesmo ponto do Bomi Veh. Os chifres no mesmo ângulo. Os olhos na mesma direção.
+O corpo não fez o que os corpos fazem quando recebem informação de peso, não houve a reorganização de postura que o Ngurui costuma provocar quando a frequência emocional sobe além do patamar habitual. Obaru ficou exatamente na posição em que estava quando a mensageira havia começado a falar. As patas no mesmo ponto do Bomi Veh. Os chifres no mesmo ângulo. Os olhos na mesma direção.
 
 A mensageira foi embora. Obaru ficou.
 
-O Bomi Veh abaixo dos cascos processava em frequência normal. A luz do Asa Mwanga descia pelo dossel sem alteração. As Ariku ao redor não haviam mudado de estado. O mundo inteiro em volta dele estava exatamente como estava antes da mensageira chegar, e era esse o dado que o corpo estava tentando processar — que o mundo não muda de estado quando uma criatura desaparece, que a fosforescência continua no mesmo tom, que a luz do teto do Akwu desce no mesmo ângulo, que as Ariku transmitem na mesma frequência.
+O Bomi Veh abaixo dos cascos processava em frequência normal. A luz do Asa Mwanga descia pelo dossel sem alteração. As Ariku ao redor não haviam mudado de estado. O mundo inteiro em volta dele estava exatamente como estava antes da mensageira chegar, e era esse o dado que o corpo estava tentando processar: que o mundo não muda de estado quando uma criatura desaparece, que a fosforescência continua no mesmo tom, que a luz do teto do Akwu desce no mesmo ângulo, que as Ariku transmitem na mesma frequência.
 
-(O que mudou foi o espaço onde ele guardava o que recebia do velho. Não o espaço físico. O espaço interno — o lugar no corpo onde as frequências que chegavam das conversas se depositavam e se organizavam em camadas que depois se tornavam parte da estratificação. Esse espaço ficou quieto de um jeito diferente. Não vazio. Suspenso. Como Bomi Veh que recebeu algo e não sabe ainda se processa ou se espera.)
+(O que mudou foi o espaço onde ele guardava o que recebia do velho. Não o espaço físico. O espaço interno, o lugar no corpo onde as frequências que chegavam das conversas se depositavam e se organizavam em camadas que depois se tornavam parte da estratificação. Esse espaço ficou quieto de um jeito diferente. Não vazio. Suspenso. Como Bomi Veh que recebeu algo e não sabe ainda se processa ou se espera.)
 
 Ele foi até a Ariku próxima e encostou a testa no tronco.
 
@@ -71,7 +71,7 @@ O Bomi Veh tinha mudado de estado.
 
 Não era preto. Não era cinza. Era uma variação que Obaru não havia visto em nenhum registro das Ima-ri, nem nas descrições dos professores mais velhos, nem nos pontos de frequência de acordo antigo que ele e o velho haviam mapeado juntos ao longo de ciclos. A fosforescência lilás havia ficado incoerente naquela faixa, como se o solo estivesse tentando processar frequências contraditórias ao mesmo tempo e não conseguisse resolver em nenhuma direção. O resultado era uma oscilação visível, o lilás mudando de intensidade sem ritmo, sem padrão, como Ubomi-chi que perderam a capacidade de sincronizar.
 
-O chão ao redor da Ariku ficava instável sob os cascos. Obaru sentiu a incoerência pela pressão que subia pelas patas — frequência errada, não a frequência de solo que processa e integra mas a frequência de solo que tenta e não consegue.
+O chão ao redor da Ariku ficava instável sob os cascos. Obaru sentiu a incoerência pela pressão que subia pelas patas, frequência errada, não a frequência de solo que processa e integra mas a frequência de solo que tenta e não consegue.
 
 Havia um ponto específico, a dois metros da base do tronco, onde a incoerência era mais densa. O Bomi Veh ali tinha a qualidade de coisa que havia recebido algo que a violou. Não destruiu. Violou. A diferença era visível na textura da fosforescência: destruição apaga, violação desorganiza. O solo ali não estava morto. Estava confuso de um jeito que parecia permanente.
 
@@ -81,11 +81,11 @@ O que veio foi fragmentado. Não a transmissão limpa que as Ariku em estado nor
 
 Ele ficou até receber tudo que a Ariku conseguia oferecer naquele estado.
 
-Depois se afastou. Ficou parado perto do ponto de incoerência no Bomi Veh, sem encostar, sentindo pelos cascos o que o solo estava tentando fazer. O que o solo estava tentando fazer era processar um acordo quebrado. A frequência de acordo antigo que o velho havia ido verificar estava ali, registrada no Bomi Veh como sempre esteve, mas havia algo mais — frequência de tentativa de desfazer o que havia sido feito, e a resposta do solo a essa tentativa. O Bomi Veh recusava. O solo ao redor recusava processar novas memórias do ponto afetado até que o acordo fosse honrado ou até que a criatura morresse.
+Depois se afastou. Ficou parado perto do ponto de incoerência no Bomi Veh, sem encostar, sentindo pelos cascos o que o solo estava tentando fazer. O que o solo estava tentando fazer era processar um acordo quebrado. A frequência de acordo antigo que o velho havia ido verificar estava ali, registrada no Bomi Veh como sempre esteve, mas havia algo mais, frequência de tentativa de desfazer o que havia sido feito, e a resposta do solo a essa tentativa. O Bomi Veh recusava. O solo ao redor recusava processar novas memórias do ponto afetado até que o acordo fosse honrado ou até que a criatura morresse.
 
 A criatura havia morrido.
 
-Obaru entendeu pelos cascos o que os cascos estavam lhe dizendo. Não de uma vez. Por acumulação de dados que o corpo ia organizando enquanto ele ficava parado — a frequência subindo pelas patas, passando pelo tórax, chegando à base dos chifres onde as coisas se depositavam e se tornavam entendimento. O que havia acontecido ali não era acidente. Era consequência. O velho havia ido verificar o registro do acordo e havia encontrado mais do que registro. Havia encontrado o acordo em si, ainda ativo, ainda exigindo, e o que havia acontecido entre o acordo e o velho havia custado o que havia custado.
+Obaru entendeu pelos cascos o que os cascos estavam lhe dizendo. Não de uma vez. Por acumulação de dados que o corpo ia organizando enquanto ele ficava parado, a frequência subindo pelas patas, passando pelo tórax, chegando à base dos chifres onde as coisas se depositavam e se tornavam entendimento. O que havia acontecido ali não era acidente. Era consequência. O velho havia ido verificar o registro do acordo e havia encontrado mais do que registro. Havia encontrado o acordo em si, ainda ativo, ainda exigindo, e o que havia acontecido entre o acordo e o velho havia custado o que havia custado.
 
 (O que exatamente havia custado, Obaru não soube dizer. O Bomi Veh guardava a frequência do evento sem narrar o evento. Havia morte. Havia acordo violado. Havia incoerência no solo que ia demorar ciclos para se resolver, se se resolvesse. Havia a ausência de uma criatura que ontem estava ali. O durante ficou fora do quadro. O antes e o depois eram o que havia para ter.)
 
@@ -103,9 +103,9 @@ Não foi no dia seguinte. Não foi na semana seguinte. Não foi no ciclo seguint
 
 Não era fuga. Era o primeiro gesto do que viria depois.
 
-A decisão não chegou como decisão. Chegou como observação. Obaru observava, nos dias que se seguiram, o modo como o corpo havia respondido à informação — o modo como a ausência do velho ocupava o espaço onde as conversas haviam ficado, o modo como o Bomi Veh ao redor dos pontos que haviam visitado juntos ainda carregava a frequência de presença dupla, as marcas de dois Onkweri que haviam ficado parados no mesmo lugar por tempo suficiente para que o solo aprendesse o peso combinado dos cascos.
+A decisão não chegou como decisão. Chegou como observação. Obaru observava, nos dias que se seguiram, o modo como o corpo havia respondido à informação, o modo como a ausência do velho ocupava o espaço onde as conversas haviam ficado, o modo como o Bomi Veh ao redor dos pontos que haviam visitado juntos ainda carregava a frequência de presença dupla, as marcas de dois Onkweri que haviam ficado parados no mesmo lugar por tempo suficiente para que o solo aprendesse o peso combinado dos cascos.
 
-Observava com precisão. Era a única forma que conhecia de estar no mundo, mesmo antes do que havia acontecido. A diferença era o que fazia com a observação. Antes, observar era o primeiro passo de um processo que terminava em abertura — ele via, entendia, se aproximava. Agora, observar era o processo inteiro. Ele via. Entendia. Ficava onde estava.
+Observava com precisão. Era a única forma que conhecia de estar no mundo, mesmo antes do que havia acontecido. A diferença era o que fazia com a observação. Antes, observar era o primeiro passo de um processo que terminava em abertura: ele via, entendia, se aproximava. Agora, observar era o processo inteiro. Ele via. Entendia. Ficava onde estava.
 
 ---
 
@@ -125,7 +125,7 @@ Mas Obaru sabia que não era maturação.
 
 Era decisão.
 
-A crença em criaturas de limiar — a possibilidade de contato entre naturezas incompatíveis, o interesse pelo espaço onde luz e memória coexistem sem que o sistema colapse — tudo isso estava intacto em algum lugar do corpo. Não havia sido apagado. Apagar seria perder densidade na região corporal onde a memória habitava, e Obaru não havia perdido densidade em nenhum ponto. Havia colocado algo por cima. Camada nova, deliberada, com a regularidade de coisa que foi construída para cobrir sem remover.
+A crença em criaturas de limiar, a possibilidade de contato entre naturezas incompatíveis, o interesse pelo espaço onde luz e memória coexistem sem que o sistema colapse, tudo isso estava intacto em algum lugar do corpo. Não havia sido apagado. Apagar seria perder densidade na região corporal onde a memória habitava, e Obaru não havia perdido densidade em nenhum ponto. Havia colocado algo por cima. Camada nova, deliberada, com a regularidade de coisa que foi construída para cobrir sem remover.
 
 A primeira camada de muitas.
 
@@ -135,7 +135,7 @@ A primeira camada de muitas.
 
 Aos vinte ciclos, a estratificação de Obaru havia começado a encontrar a regularidade.
 
-As camadas no tórax estavam mais organizadas, horizontais, densas, cada uma com a textura de memória processada e integrada com a deliberação de quem escolhe o que vai para onde. Os chifres haviam ganhado peso. A curvatura descendente que depois seria a marca mais reconhecível de Obaru entre os Onkweri de Orunjó estava começando — os chifres cedendo ao peso da base, não crescendo mais para cima, se tornando estrutura que desce.
+As camadas no tórax estavam mais organizadas, horizontais, densas, cada uma com a textura de memória processada e integrada com a deliberação de quem escolhe o que vai para onde. Os chifres haviam ganhado peso. A curvatura descendente que depois seria a marca mais reconhecível de Obaru entre os Onkweri de Orunjó estava começando: os chifres cedendo ao peso da base, não crescendo mais para cima, se tornando estrutura que desce.
 
 O rastro no Bomi Veh era mais fundo do que o de qualquer Onkweri da mesma idade no Chi-Oa. Não pela idade. Pelo peso do que carregava. A diferença entre peso de experiência e peso de idade era visível para quem sabia ler rastros, e os Ima-Kwe mais velhos sabiam. Obaru carregava mais do que os ciclos justificavam. O excesso era o que havia acontecido, mais o que havia construído por cima, mais o espaço entre os dois que ele mantinha fechado com a mesma precisão com que mantinha tudo o mais.
 
@@ -147,13 +147,13 @@ A distância que mantinha das outras criaturas não era grande. Era exata. Três
 
 ---
 
-Os ciclos se acumularam da forma como os ciclos se acumulam em Orunjó — por retornos, por frequência repetida, pelo Bomi Veh que aprende o peso de quem passa e processa com mais atenção o que já reconhece. Obaru passava pelos mesmos pontos. Encostava a testa nas mesmas Ariku. Recebia o que havia para receber. Depositava o que havia para depositar.
+Os ciclos se acumularam da forma como os ciclos se acumulam em Orunjó, por retornos, por frequência repetida, pelo Bomi Veh que aprende o peso de quem passa e processa com mais atenção o que já reconhece. Obaru passava pelos mesmos pontos. Encostava a testa nas mesmas Ariku. Recebia o que havia para receber. Depositava o que havia para depositar.
 
 Nunca voltou à Ariku perto da borda sudoeste.
 
 O Bomi Veh naquela área havia se estabilizado ao longo dos ciclos, a incoerência que ele havia encontrado no dia depois da morte do velho havia se resolvido parcialmente, os Ubomi-chi fazendo o trabalho lento de reprocessar frequência de acordo violado até que o solo pudesse voltar a funcionar. Obaru sabia disso porque lia o Bomi Veh ao redor de Orunjó com a regularidade de quem monitora um sistema. Sabia o estado de cada faixa de solo. Sabia onde a fosforescência era mais intensa e onde havia diminuído. Sabia, pela pressão nos cascos, onde a frequência era limpa e onde ainda havia resíduo de algo que o sistema não havia terminado de processar.
 
-Sabia o estado da área perto da Ariku sem ir até lá. A frequência chegava pelo solo conectado, diluída, distante, mas presente. Como ouvir uma conversa de longe — os tons gerais sem os detalhes. O suficiente para saber que o solo estava se curando. Não o suficiente para reabrir o que havia fechado.
+Sabia o estado da área perto da Ariku sem ir até lá. A frequência chegava pelo solo conectado, diluída, distante, mas presente. Como ouvir uma conversa de longe, os tons gerais sem os detalhes. O suficiente para saber que o solo estava se curando. Não o suficiente para reabrir o que havia fechado.
 
 A estratificação ficou mais densa. Os chifres ficaram mais pesados. A postura ficou mais fechada. Cada ciclo adicionava uma camada ao projeto que havia começado aos dezessete, quando o corpo havia ficado parado depois de receber a informação que não sabia onde guardar e havia decidido guardar construindo algo por cima. Camada sobre camada. Projeto sobre projeto. Até que o Obaru de antes, o dos ombros abertos e da cabeça alta, ficou tão profundo sob a estratificação que só era acessível por escavação.
 
@@ -169,7 +169,7 @@ O focinho perto das raízes, captando o que o solo ao redor transmitia. A fosfor
 
 Ele se afastou. Ficou parado.
 
-A luz do teto do Akwu descia pelo dossel em faixas dinâmicas, a variabilidade do Asa Nkosi fazendo o dourado e o cinza alternarem sem padrão fixo. O ar tinha a qualidade de mudança que o Asa Nkosi trazia — dispersão gentil, o mundo se reorganizando depois do recolhimento do Asa Rimbi. Sementes de Ariku caíam das copas mais altas e os Nkosi-ha passavam em silêncio absoluto, ossos translúcidos filtrando a luz variável.
+A luz do teto do Akwu descia pelo dossel em faixas dinâmicas, a variabilidade do Asa Nkosi fazendo o dourado e o cinza alternarem sem padrão fixo. O ar tinha a qualidade de mudança que o Asa Nkosi trazia: dispersão gentil, o mundo se reorganizando depois do recolhimento do Asa Rimbi. Sementes de Ariku caíam das copas mais altas e os Nkosi-ha passavam em silêncio absoluto, ossos translúcidos filtrando a luz variável.
 
 O Bomi Veh ao redor dos cascos processava. Obaru ficou com o peso todo no solo, as quatro patas firmes, sentindo o que o solo dizia. A variação que os Ubomi-chi estavam tentando categorizar era frequência de limiar. Algo havia passado por ali que não era Onkweri nem Ariku. O solo não sabia onde colocar.
 
@@ -181,9 +181,9 @@ Obaru registrou.
 
 Ficou parado por mais um momento. A brisa moveu as copas e a luz mudou de ângulo. Na borda da clareira, o Bomi Veh lilás-rosado processava o peso dos cascos dele com a familiaridade de solo que havia aprendido aquele peso específico ao longo de ciclos de retornos. O rastro era fundo. Mais fundo do que o de qualquer Ima-Kwe ativo no Chi-Oa. Décadas de acumulação com ordem.
 
-A cabeça baixou no ângulo exato de avaliação. Os olhos ficaram na posição que os outros Onkweri de Orunjó conheciam — a posição de quem está processando algo e não vai abrir até que o processamento esteja completo. Os ombros mantiveram a contração que haviam mantido por mais tempo do que haviam ficado abertos.
+A cabeça baixou no ângulo exato de avaliação. Os olhos ficaram na posição que os outros Onkweri de Orunjó conheciam, a posição de quem está processando algo e não vai abrir até que o processamento esteja completo. Os ombros mantiveram a contração que haviam mantido por mais tempo do que haviam ficado abertos.
 
-Depois ele saiu da clareira com passo deliberado. Pesado. As patas deixando marca no Bomi Veh com a profundidade de quem carrega mais do que o corpo mostra. A fosforescência ao redor dos rastros ficou levemente mais intensa por um momento — o solo processando o que havia sido depositado pelo peso de uma criatura que havia aprendido, há muito tempo, que o que se guarda por baixo das camadas não precisa ser removido para existir.
+Depois ele saiu da clareira com passo deliberado. Pesado. As patas deixando marca no Bomi Veh com a profundidade de quem carrega mais do que o corpo mostra. A fosforescência ao redor dos rastros ficou levemente mais intensa por um momento, o solo processando o que havia sido depositado pelo peso de uma criatura que havia aprendido, há muito tempo, que o que se guarda por baixo das camadas não precisa ser removido para existir.
 
 O Bomi Veh registrou. Em silêncio. Como sempre registrava.
 

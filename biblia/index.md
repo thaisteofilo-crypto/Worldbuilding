@@ -3,6 +3,8 @@
 **Versão:** 2.0, Sistema de luz revisado, morfologia corrigida, 13 regras, ecossistema completo
 **Línguas de base:** Yoruba | Igbo | Swahili | Zulu | Amhárico | Bambara | Malaio | Bengali | Edo
 
+> **Antes de editar qualquer parte, consulte o [Mapa de Autoridade](MAPA-DE-AUTORIDADE.md).** Ele define qual parte é fonte canônica para cada conceito. Redefinições em partes secundárias geram inconsistência, use menção + link.
+
 ---
 
 ## Tabela de Conteúdos
@@ -12,13 +14,14 @@
 | [Parte 0, Definições Fundacionais](parte-00-manifesto.md) | `parte-00-manifesto.md` | O que Korú é e não é: um mundo cuja física é baseada em memória, câmara fechada sem humanos nem vilões convencionais, com intenção narrativa centrada na tensão entre acumular e processar. |
 | [Parte 1, Física & Cosmologia](parte-01-fisica-cosmologia.md) | `parte-01-fisica-cosmologia.md` | O Akwu como câmara fechada autossustentada, o sistema de três tipos de luz (Oru, Temu, Limiar), o pulso gravitacional do Ngurui e o tempo espiral do Zoeji. |
 | [Parte 2, Geografia & Ambiência](parte-02-geografia.md) | `parte-02-geografia.md` | Mapa de relações espaciais, todos os territórios de Ikwe (Bomi-Weh, Rimba Ngozi, Orunjó, Jobi-Koro), sub-locais do Rimba Ngozi, microgeografia de Orunjó, Njia-Kwe, Chi-Oa além de Orunjó e tabela resumo de todos os lugares. |
-| [Glossário de Lugares](glossario-de-lugares.md) | `glossario-de-lugares.md` | Referência rápida de todos os lugares de Korú em ordem alfabética, definição em uma linha, atributos essenciais, cross-links para a bíblia e o livro. |
-| [Parte 3, Ecossistema Completo](parte-03-ecossistema.md) | `parte-03-ecossistema.md` | O ciclo de memória-energia, os cinco estados do Bomi Veh, a diferença entre extração sustentável e Mwanga-ji, reprodução/sustento/morte por espécie e a cadeia de dependências. |
+| [Glossário de Korú](glossario-de-koru.md) | `glossario-de-koru.md` | Glossário completo de todos os nomes, conceitos, lugares, criaturas, personagens, regras, ciclos e eras do mundo. Abre com o paragrafo sobre por que o mundo se chama Korú. |
+| [Glossário de Lugares](glossario-de-lugares.md) | `glossario-de-lugares.md` | Referência rápida focada só em lugares, ordem alfabética, atributos essenciais e cross-links para a bíblia e o livro. |
+| [Parte 3, Ecossistema Completo](parte-03-ecossistema.md) | `parte-03-ecossistema.md` | Fonte canônica dos quatro Asa (ciclos do Akwu, mecânica ecológica), ciclo de memória-energia, cinco estados do Bomi Veh, Mwanga-ji vs Nguvu-Chi (extração), reprodução/sustento/morte por espécie e cadeia de dependências. |
 | [Parte 4, As Criaturas](parte-04-criaturas.md) | `parte-04-criaturas.md` | Morfologia, paleta, movimento e física de cada espécie: Azuri, Onkweri, Ariku, Ubomi-chi e Nkosi-ha, com prompts completos de character design. |
 | [Parte 5, Os Personagens](parte-05-personagens.md) | `parte-05-personagens.md` | Fichas individuais de Temiku, Amara, Oruku, Obaru, Kemdi, Beku, Temi e Orike, morfologia, paleta, física específica e prompts de design. |
 | [Parte 6, As 13 Regras](parte-06-regras.md) | `parte-06-regras.md` | Os treze acordos com o mundo: fundamento físico e consequência de cada um, do princípio da declaração de intenção às leis do toque de eleição e do exílio Azuri. |
-| [Parte 7, Cultura & Cotidiano](parte-07-cultura.md) | `parte-07-cultura.md` | Os quatro Asa, habitação em Chi-Oa, educação nas Ima-ri, alimentação com Kanda, governo por Oa-Chi e os valores centrais de Korú. |
-| [Parte 8, Linha do Tempo](parte-08-linha-do-tempo.md) | `parte-08-linha-do-tempo.md` | As cinco eras de Korú: da formação do Akwu (Era I) ao mundo atual pós-ruptura onde Temiku existe (Era V). |
+| [Parte 7, Cultura & Cotidiano](parte-07-cultura.md) | `parte-07-cultura.md` | Práticas culturais por Asa (mecânica em Parte 3), Nyame-jo, vida social dentro do Chi-Oa (arquitetura em Parte 2), Ima-ri como sistema pedagógico, Kanda, governo Oa-Chi (Orime/Isilo-Ori como cargo/Ima-Kwe) e valores centrais. |
+| [Parte 8, Linha do Tempo](parte-08-linha-do-tempo.md) | `parte-08-linha-do-tempo.md` | As cinco eras de Korú (Akwu primeiro → Origem → Florescimento → Grande Silêncio → Agora): o que acontece em cada Era e o que ela revela, com referências cruzadas para conceitos em suas fontes canônicas. |
 
 ---
 

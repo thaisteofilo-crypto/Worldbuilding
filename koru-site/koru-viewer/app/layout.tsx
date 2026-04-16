@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn("antialiased", inter.variable, instrumentSerif.variable)}
+      className={cn("dark antialiased", inter.variable, instrumentSerif.variable)}
       suppressHydrationWarning
     >
       <body className="bg-background text-foreground min-h-screen">

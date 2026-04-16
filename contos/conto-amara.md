@@ -43,7 +43,7 @@ Era o modo que ela sabia existir entre os outros: disponível, presente, sem exi
 
 ---
 
-Havia uma Ariku no limite sudoeste do Rimba Ngozi que ela havia encontrado por acaso, um pedido de verificação que a havia levado mais longe do caminho habitual do que costumava ir. A Ariku era velha com a oldness específica de árvore que cresceu sem ninguém prestando atenção: mais larga na base do que em qualquer ponto acima, as raízes superficiais emergindo do solo como estrutura arquitetônica que já não se preocupava em esconder o que sustentava. As rachaduras no tronco eram fundas, o vermelho interno visível em veias longas e espessas, a casca carregando acumulação de séculos que havia ultrapassado a capacidade de contenção.
+Havia uma Ariku no limite sudoeste do Rimba Ngozi que ela havia encontrado por acaso, um pedido de verificação que a havia levado mais longe do caminho habitual do que costumava ir. A Ariku era velha com a antiguidade específica de árvore que cresceu sem ninguém prestando atenção: mais larga na base do que em qualquer ponto acima, as raízes superficiais emergindo do solo como estrutura arquitetônica que já não se preocupava em esconder o que sustentava. As rachaduras no tronco eram fundas, o vermelho interno visível em veias longas e espessas, a casca carregando acumulação de séculos que havia ultrapassado a capacidade de contenção.
 
 Amara havia encostado a testa sem que ninguém tivesse pedido.
 

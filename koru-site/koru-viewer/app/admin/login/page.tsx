@@ -1,28 +1,36 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 
 export default function AdminLoginPage() {
-  const router = useRouter()
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [heroImage, setHeroImage] = useState<string | null>(null)
+  const [heroVideo, setHeroVideo] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/banners")
+      .then((r) => r.json())
+      .then(({ banners }) => {
+        if (banners?.["hero-video"]) setHeroVideo(banners["hero-video"])
+        else if (banners?.["hero"]) setHeroImage(banners["hero"])
+      })
+      .catch(() => {})
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(false)
-
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       })
-
       if (res.ok) {
-        router.push('/admin')
+        window.location.href = '/admin'
       } else {
         setError(true)
         setLoading(false)
@@ -35,10 +43,33 @@ export default function AdminLoginPage() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      <div className="w-full max-w-sm px-4">
+      {/* Background — video ou imagem com desfoque */}
+      {heroVideo ? (
+        <video
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "blur(4px) brightness(0.35)", transform: "scale(1.08)" }}
+        />
+      ) : heroImage ? (
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "blur(4px) brightness(0.35)", transform: "scale(1.08)" }}
+        />
+      ) : null}
+
+      {/* Overlay escuro suave */}
+      <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.45)" }} />
+      <div className="relative z-10 w-full max-w-sm px-4">
         <div className="mb-10 text-center">
           <h1
             className="font-serif text-4xl"
@@ -59,7 +90,12 @@ export default function AdminLoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 rounded-xl p-6 glass-card"
+          className="flex flex-col gap-4 rounded-xl p-6"
+          style={{
+            background: "oklch(0.16 0.009 280)",
+            border: "1px solid oklch(0.28 0.009 280)",
+            boxShadow: "0 4px 20px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.06)",
+          }}
         >
           <div className="flex flex-col gap-1.5">
             <label
@@ -71,17 +107,18 @@ export default function AdminLoginPage() {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required
               autoFocus
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="rounded-lg px-3 py-2 font-sans text-sm outline-none transition-colors"
               style={{
-                backgroundColor: "var(--surface)",
-                color: "var(--foreground)",
-                border: `1px solid ${error ? "var(--destructive)" : "var(--border)"}`,
+                backgroundColor: "oklch(0.12 0.007 280)",
+                color: "oklch(0.93 0.01 280)",
+                border: `1px solid ${error ? "oklch(0.55 0.18 27)" : "oklch(0.28 0.009 280)"}`,
               }}
             />
           </div>
@@ -97,8 +134,8 @@ export default function AdminLoginPage() {
             disabled={loading}
             className="mt-2 rounded-full py-2.5 font-sans text-sm font-medium transition-opacity disabled:opacity-60"
             style={{
-              background: "var(--accent)",
-              color: "var(--accent-foreground)",
+              background: "oklch(0.93 0.01 280)",
+              color: "oklch(0.10 0.01 280)",
             }}
           >
             {loading ? "Entrando..." : "Entrar"}

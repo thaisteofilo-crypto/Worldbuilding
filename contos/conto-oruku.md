@@ -47,7 +47,7 @@ A tradução havia terminado. O vetor deveria tê-lo levado ao próximo ponto. E
 
 Registrou que estava registrando demais.
 
-Um Azuri funcional não cataloga o que observa. Traduz e passa. A observação não e função, e efeito colateral de presença, o que acontece quando uma criatura de Luz Limiar está num lugar por tempo suficiente para que o ar ao redor mude de qualidade. A observação não fica. Não acumula.
+Um Azuri funcional não cataloga o que observa. Traduz e passa. A observação não é função, é efeito colateral de presença, o que acontece quando uma criatura de Luz Limiar está num lugar por tempo suficiente para que o ar ao redor mude de qualidade. A observação não fica. Não acumula.
 
 O que Oruku estava fazendo não era observação. Era algo que não tinha nome no sistema que o havia gerado.
 
@@ -113,7 +113,7 @@ Sempre voltou.
 
 E a cada retorno, o vetor demorava mais para aparecer depois. A função completava. O vetor não aparecia. Ele ficava. O tempo de ficar havia crescido por acumulação, não por decisão. Não havia decisão. Havia a ausência progressiva do impulso que sempre havia levado embora.
 
-(O que um Azuri sente quando a função começa a perder prioridade no próprio sistema: a variação é pequena. O vetor aparece com um segundo de atraso. Depois com dois. Depois o atraso cresce e o espaço entre a função e o vetor se enche de algo que não e função. E nesse espaço que o ficar existe. Não como escolha. Como o que acontece quando o ir demora demais para chegar.)
+(O que um Azuri sente quando a função começa a perder prioridade no próprio sistema: a variação é pequena. O vetor aparece com um segundo de atraso. Depois com dois. Depois o atraso cresce e o espaço entre a função e o vetor se enche de algo que não é função. É nesse espaço que o ficar existe. Não como escolha. Como o que acontece quando o ir demora demais para chegar.)
 
 A frequência do limiar começou a mudar.
 
@@ -159,7 +159,7 @@ Os ciclos passaram. A acumulação no Bomi Veh da clareira cresceu. A frequênci
 
 O limiar havia parado de perguntar.
 
-Oruku sentiu isso como se sente a mudança de estação: não como evento, como o acúmulo de evidências que confirma que o estado anterior não e mais o estado presente. O pulso que havia confirmado sua existência como Azuri funcional, o reconhecimento constante de que ele era parte do ciclo, não havia desaparecido. Havia mudado de natureza. Onde antes havia confirmação, agora havia tolerância. O limiar o sustentava ainda, mas como se sustenta algo que não se sabe mais o que é.
+Oruku sentiu isso como se sente a mudança de estação: não como evento, como o acúmulo de evidências que confirma que o estado anterior não é mais o estado presente. O pulso que havia confirmado sua existência como Azuri funcional, o reconhecimento constante de que ele era parte do ciclo, não havia desaparecido. Havia mudado de natureza. Onde antes havia confirmação, agora havia tolerância. O limiar o sustentava ainda, mas como se sustenta algo que não se sabe mais o que é.
 
 A paleta do corpo de Oruku havia mudado também. O branco-creme base dos Azuri funcionais, o amarelo-quente suave, o halo translúcido, tudo estava ali. Mas nos chifres, onde a ramificação geométrica recebia o pulso do limiar com mais diretividade, havia uma tonalidade que não era mais branco-creme. Não era azul-frio ainda. Era algo entre os dois, como cor que está se decidindo.
 
@@ -231,7 +231,7 @@ A confirmação cessou por completo. O que ficou no lugar não era neutralidade.
 
 Oruku sentiu o exílio começar não como evento mas como a ausência do que sempre havia estado. O pulso do limiar, que havia sido o fundo constante de toda a sua existência, ficou silencioso. Não desapareceu. Ficou fora de alcance, como som que continua existindo numa frequência que o ouvido não consegue mais captar.
 
-A Luz Limiar ao redor do corpo dele continuou. Mas havia algo nela agora que não havia antes: a qualidade de coisa que funciona sem saber para quê funciona.
+A Luz Limiar ao redor do corpo dele continuou. Mas havia algo nela agora que não havia antes: a qualidade de coisa que funciona sem saber para que funciona.
 
 O halo oscilou.
 

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-const BANNER_SLOTS = ["hero", "hero-video", "personagens", "personagens-video", "biblia", "biblia-video", "livro", "livro-video", "contos", "contos-video", "footer", "footer-video"]
+const HOME_SLOTS = ["hero", "hero-video", "personagens", "personagens-video", "biblia", "biblia-video", "livro", "livro-video", "contos", "contos-video", "footer", "footer-video"]
+
+// Page-level banners for internal Bíblia docs (slug-based)
+const BIBLIA_PAGE_SLUGS = ["manifesto", "parte-00", "parte-01", "parte-02", "parte-03", "parte-04", "parte-05", "parte-06", "parte-07", "parte-08", "glossario-de-koru", "glossario-de-lugares", "MAPA-DE-AUTORIDADE"]
+const DOC_SLOTS = BIBLIA_PAGE_SLUGS.flatMap((s) => [`doc-${s}`, `doc-${s}-video`])
+
+const BANNER_SLOTS = [...HOME_SLOTS, ...DOC_SLOTS]
 
 export async function GET() {
   const admin = createAdminClient()

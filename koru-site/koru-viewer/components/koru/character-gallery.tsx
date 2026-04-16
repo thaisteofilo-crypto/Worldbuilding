@@ -12,9 +12,10 @@ interface GalleryView {
 interface CharacterGalleryProps {
   name: string
   views: GalleryView[]
+  overlay?: React.ReactNode
 }
 
-export function CharacterGallery({ name, views }: CharacterGalleryProps) {
+export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps) {
   const firstWithImage = views.find((v) => v.src !== null)
   const [activeKey, setActiveKey] = useState<string>(
     firstWithImage?.key ?? views[0]?.key ?? "frente"
@@ -23,11 +24,11 @@ export function CharacterGallery({ name, views }: CharacterGalleryProps) {
   const activeView = views.find((v) => v.key === activeKey) ?? views[0]
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-0">
       {/* Main image */}
       <div
-        className="relative w-full overflow-hidden rounded-xl"
-        style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}
+        className="relative w-full overflow-hidden rounded-2xl"
+        style={{ aspectRatio: "16/9", backgroundColor: "var(--surface)" }}
       >
         {activeView?.src ? (
           <Image
@@ -61,10 +62,16 @@ export function CharacterGallery({ name, views }: CharacterGalleryProps) {
             </p>
           </div>
         )}
+        {/* Overlay slot — renderizado dentro do container da imagem */}
+        {overlay && (
+          <div className="absolute inset-0 pointer-events-none">
+            {overlay}
+          </div>
+        )}
       </div>
 
       {/* Thumbnails row */}
-      <div className="flex gap-2">
+      <div className="flex justify-center gap-2 px-8 md:px-16 py-3" style={{ background: "var(--background)" }}>
         {views.map((view) => {
           const isActive = view.key === activeKey
           return (

@@ -271,14 +271,10 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
         <EditorContent
           editor={editor}
           className="flex-1 overflow-y-auto"
-          style={focusMode ? {
+          style={{
             background: 'transparent',
             border: 'none',
             borderRadius: '0',
-          } : {
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-            borderRadius: '0.75rem',
           }}
         />
 
@@ -298,26 +294,35 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
         )}
 
         <style>{`
+          /* Editor WYSIWYG — matches the public site typography (mdx-components.tsx) */
           .koru-editor {
             outline: none;
             font-family: var(--font-sans), Inter, sans-serif;
-            font-size: 15px;
-            line-height: 1.95;
+            font-size: 1rem;
+            line-height: 1.8;
             color: var(--foreground);
-            padding: 2.5rem 2rem;
+            padding: 3rem 2.5rem 5rem;
             min-height: 100%;
+            max-width: 48rem;
+            margin: 0 auto;
             caret-color: var(--foreground);
+            transition: caret-color 0.3s ease;
           }
 
           .koru-editor-focus .koru-editor {
-            font-size: 17px;
+            font-size: 1.0625rem;
             line-height: 1.85;
             padding: 2rem 2rem 6rem;
+            max-width: 42rem;
             color: color-mix(in oklch, var(--foreground) 92%, transparent);
           }
 
           .koru-editor p {
-            margin: 0 0 1.1rem;
+            font-family: var(--font-sans), Inter, sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0 0 1rem;
+            color: var(--foreground);
           }
 
           .koru-editor p:last-child {
@@ -328,62 +333,89 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
             margin: 0 0 1.5rem;
           }
 
+          /* H1 — matches site: font-serif text-5xl md:text-6xl */
           .koru-editor h1 {
-            font-family: var(--font-serif), Georgia, serif;
-            font-size: 1.6rem;
+            font-family: var(--font-sans), Inter, sans-serif;
+            font-size: 3rem;
+            line-height: 1.1;
+            margin: 2.5rem 0 1.5rem;
+            font-weight: 400;
+            color: var(--foreground);
+          }
+          @media (min-width: 768px) {
+            .koru-editor h1 {
+              font-size: 3.75rem;
+            }
+          }
+
+          /* H2 — matches site: font-serif text-3xl md:text-4xl */
+          .koru-editor h2 {
+            font-family: var(--font-sans), Inter, sans-serif;
+            font-size: 1.875rem;
+            line-height: 1.2;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.75rem;
+            font-weight: 400;
+            color: var(--foreground);
+          }
+          @media (min-width: 768px) {
+            .koru-editor h2 {
+              font-size: 2.25rem;
+            }
+          }
+
+          /* H3 — matches site: font-sans font-semibold text-xl */
+          .koru-editor h3 {
+            font-family: var(--font-sans), Inter, sans-serif;
+            font-size: 1.25rem;
             line-height: 1.3;
             margin: 2rem 0 0.75rem;
-            font-weight: 400;
-          }
-
-          .koru-editor h2 {
-            font-family: var(--font-serif), Georgia, serif;
-            font-size: 1.25rem;
-            line-height: 1.4;
-            margin: 1.75rem 0 0.5rem;
-            font-weight: 400;
-          }
-
-          .koru-editor h3 {
-            font-family: var(--font-serif), Georgia, serif;
-            font-size: 1.05rem;
-            line-height: 1.4;
-            margin: 1.5rem 0 0.4rem;
-            font-weight: 400;
+            font-weight: 600;
+            color: var(--foreground);
           }
 
           .koru-editor-focus .koru-editor h1 {
-            font-size: 1.8rem;
-            margin: 3rem 0 1rem;
+            font-size: 2.5rem;
+            margin: 3rem 0 1.25rem;
           }
 
           .koru-editor-focus .koru-editor h2 {
-            font-size: 1.35rem;
-            margin: 2.5rem 0 0.75rem;
+            font-size: 1.75rem;
+            margin: 2.5rem 0 0.875rem;
           }
 
           .koru-editor-focus .koru-editor h3 {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin: 2rem 0 0.6rem;
           }
 
+          /* Blockquote — matches site */
           .koru-editor blockquote {
-            border-left: 2px solid var(--accent);
-            margin: 1.25rem 0;
-            padding: 0.25rem 0 0.25rem 1.25rem;
-            color: color-mix(in oklch, var(--foreground) 65%, transparent);
+            border-left: 2px solid var(--border);
+            margin: 2rem 0;
+            padding: 0.25rem 0 0.25rem 1.5rem;
+            color: color-mix(in oklch, var(--foreground) 72%, transparent);
             font-style: italic;
+            font-size: 1rem;
+            line-height: 1.9;
           }
 
+          /* Lists — matches site */
           .koru-editor ul,
           .koru-editor ol {
-            margin: 0.75rem 0;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0 0 1rem;
             padding-left: 1.5rem;
           }
 
+          .koru-editor ul { list-style: disc; }
+          .koru-editor ol { list-style: decimal; }
+
           .koru-editor li {
             margin: 0.25rem 0;
-            line-height: 1.7;
+            padding-left: 0.25rem;
+            color: var(--foreground);
           }
 
           .koru-editor hr {
@@ -429,7 +461,7 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
           }
 
           .koru-editor ::selection {
-            background: color-mix(in oklch, var(--accent) 25%, transparent);
+            background: color-mix(in oklch, var(--foreground) 20%, transparent);
           }
         `}</style>
       </div>

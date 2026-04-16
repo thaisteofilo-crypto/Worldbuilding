@@ -7,7 +7,16 @@ interface GlossaryTermProps {
   children: React.ReactNode
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  fisica: "Física",
+  criatura: "Criatura",
+  personagem: "Personagem",
+  lugar: "Lugar",
+  fenomeno: "Fenômeno",
+}
+
 export function GlossaryTerm({ term, definition, category, children }: GlossaryTermProps) {
+  const displayCategory = CATEGORY_LABELS[category] ?? category
   return (
     <span className="relative inline-block group">
       {/* Trigger */}
@@ -54,7 +63,7 @@ export function GlossaryTerm({ term, definition, category, children }: GlossaryT
             className="block font-sans text-[10px] uppercase tracking-wider mt-2"
             style={{ color: "var(--muted-foreground)" }}
           >
-            {category}
+            {displayCategory}
           </span>
         </span>
 

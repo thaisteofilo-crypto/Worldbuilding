@@ -89,26 +89,9 @@ function processParagraphChildren(children: ReactNode): ReactNode {
   })
 }
 
-// Drop cap: applies only to the first <p> directly after an <h1> or <h2>
-// Uses CSS adjacent sibling selector — no JS needed, no class on every paragraph
-const DROP_CAP_STYLE = `
-  .mdx-article h1 + p::first-letter,
-  .mdx-article h2 + p::first-letter {
-    float: left;
-    font-size: 3.5em;
-    line-height: 0.8;
-    padding-right: 0.12em;
-    padding-top: 0.05em;
-    font-family: var(--font-serif), Georgia, serif;
-    color: var(--gold);
-    font-style: normal;
-  }
-`
-
 function MDXWrapper({ children }: { children: ReactNode }) {
   return (
     <div className="mdx-article">
-      <style dangerouslySetInnerHTML={{ __html: DROP_CAP_STYLE }} />
       {children}
     </div>
   )
@@ -118,9 +101,9 @@ export const mdxComponents: MDXComponents = {
   wrapper: MDXWrapper,
   h1: ({ children }) => (
     <h1
-      className="font-serif text-5xl md:text-6xl leading-tight mt-10 mb-6"
+      className="font-sans text-5xl md:text-6xl leading-tight mt-10 mb-6"
       style={{
-        fontFamily: "var(--font-serif), Georgia, serif",
+        fontFamily: "var(--font-sans), 'Inter', sans-serif",
         color: "var(--foreground)",
       }}
     >
@@ -129,10 +112,11 @@ export const mdxComponents: MDXComponents = {
   ),
   h2: ({ children }) => (
     <h2
-      className="font-serif text-3xl md:text-4xl leading-tight mt-10 mb-4 pb-3"
+      className="font-sans text-3xl md:text-4xl leading-tight mt-12 mb-5 pb-3"
       style={{
-        fontFamily: "var(--font-serif), Georgia, serif",
+        fontFamily: "var(--font-sans), 'Inter', sans-serif",
         color: "var(--foreground)",
+        borderBottom: "1px solid color-mix(in oklch, var(--border) 40%, transparent)",
       }}
     >
       {children}
@@ -140,7 +124,7 @@ export const mdxComponents: MDXComponents = {
   ),
   h3: ({ children }) => (
     <h3
-      className="font-sans font-semibold text-xl mt-8 mb-3"
+      className="font-sans font-semibold text-xl mt-10 mb-3"
       style={{ color: "var(--foreground)" }}
     >
       {children}
@@ -148,20 +132,38 @@ export const mdxComponents: MDXComponents = {
   ),
   h4: ({ children }) => (
     <h4
-      className="font-sans font-medium text-base uppercase tracking-[0.1em] mt-6 mb-2"
-      style={{ color: "var(--foreground)" }}
+      className="font-sans font-medium text-sm uppercase tracking-[0.15em] mt-8 mb-2"
+      style={{ color: "var(--muted-foreground)" }}
     >
       {children}
     </h4>
   ),
-  p: ({ children }) => (
-    <p
-      className="font-sans text-base leading-[1.8] mb-4"
-      style={{ color: "var(--foreground)" }}
-    >
-      {processParagraphChildren(children)}
-    </p>
-  ),
+  p: ({ children }) => {
+    // Check if this is a reference/citation paragraph
+    const childArray = React.Children.toArray(children)
+    const firstChild = childArray[0]
+    const isRef = (typeof firstChild === "string" && firstChild.trimStart().startsWith("→")) ||
+      (React.isValidElement(firstChild) && firstChild.props?.children &&
+       typeof firstChild.props.children === "string" &&
+       (firstChild.props.children.startsWith("Fonte canônica") || firstChild.props.children.startsWith("Regra de acesso")))
+
+    if (isRef) {
+      return (
+        <p className="text-xs font-sans tracking-wide mt-1 mb-6" style={{ color: "color-mix(in oklch, var(--muted-foreground) 70%, transparent)" }}>
+          {children}
+        </p>
+      )
+    }
+
+    return (
+      <p
+        className="font-sans text-base leading-[1.8] mb-4"
+        style={{ color: "var(--foreground)" }}
+      >
+        {processParagraphChildren(children)}
+      </p>
+    )
+  },
   strong: ({ children }) => (
     <strong style={{ color: "var(--foreground)", fontWeight: 600 }}>
       {children}
@@ -196,7 +198,7 @@ export const mdxComponents: MDXComponents = {
     <blockquote
       className="my-8 pl-6 py-1 font-sans text-base leading-[1.9]"
       style={{
-        borderLeft: "2px solid var(--accent)",
+        borderLeft: "2px solid var(--border)",
         fontStyle: "italic",
         color: "color-mix(in oklch, var(--foreground) 72%, transparent)",
       }}
@@ -228,21 +230,10 @@ export const mdxComponents: MDXComponents = {
       {children}
     </li>
   ),
-  hr: () => (
-    <div className="flex items-center justify-center my-10" role="separator" aria-hidden="true">
-      <div className="flex-1 border-t" style={{ borderColor: "color-mix(in oklch, var(--border) 60%, transparent)" }} />
-      <span
-        className="mx-4 font-serif text-sm select-none"
-        style={{ color: "var(--gold)", opacity: 0.65 }}
-      >
-        ◆
-      </span>
-      <div className="flex-1 border-t" style={{ borderColor: "color-mix(in oklch, var(--border) 60%, transparent)" }} />
-    </div>
-  ),
+  hr: () => null,
   table: ({ children }) => (
-    <div className="overflow-x-auto my-6 glass-card rounded-2xl">
-      <table className="w-full text-sm font-sans border-collapse">
+    <div className="my-6 glass-card rounded-2xl overflow-x-auto koru-table-sticky">
+      <table className="w-full text-sm font-sans border-collapse" style={{ minWidth: "700px" }}>
         {children}
       </table>
     </div>
@@ -271,15 +262,28 @@ export const mdxComponents: MDXComponents = {
       {children}
     </tr>
   ),
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      className="underline underline-offset-2 transition-colors hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-      style={{ color: "var(--foreground)", outlineColor: "var(--foreground)" }}
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }) => {
+    // Convert relative .md links to site routes (e.g. "parte-01-fisica-cosmologia.md" → "/biblia/parte-01")
+    let resolvedHref = href ?? ""
+    if (resolvedHref.endsWith(".md") && !resolvedHref.startsWith("http")) {
+      const filename = resolvedHref.replace(/\.md$/, "").split("/").pop() ?? ""
+      const parteMatch = filename.match(/^(parte-\d+)/)
+      if (parteMatch) {
+        resolvedHref = `/biblia/${parteMatch[1]}`
+      } else if (filename === "glossario-de-lugares" || filename === "glossario-de-koru" || filename === "MAPA-DE-AUTORIDADE") {
+        resolvedHref = `/biblia/${filename}`
+      }
+    }
+    return (
+      <a
+        href={resolvedHref}
+        className="underline underline-offset-2 transition-colors hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
+        style={{ color: "var(--foreground)", outlineColor: "var(--foreground)" }}
+      >
+        {children}
+      </a>
+    )
+  },
   img: ({ src, alt }) => (
     <img
       src={src}

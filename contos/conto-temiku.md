@@ -47,7 +47,7 @@ Ela aprendeu a prender o formigamento antes de virar calor.
 
 Era a primeira habilidade que havia desenvolvido, antes de aprender a ler o Bomi Veh, antes de aprender a estabelecer qualquer acordo com qualquer criatura. Prender a respiração de um jeito específico, redistribuir a tensão do tórax para as patas, deixar o Ngurui fazer o que o Ngurui fazia sem resistência, o pulso do Akwu ajudava quando ela parava de lutar contra ele, distribuindo pelo corpo o que o corpo não conseguia processar sozinho. Era gestão de estado físico. Era sobrevivência. Não havia escolha nela.
 
-Havia, na infância, professores que tentaram ensinar as transmissões das Ariku usando o protocolo formal das Ima-ri. Ela aprendia o protocolo. Sabia o protocolo. Mas o que ela recebia quando encostavaa testa num tronco não chegava em forma de protocolo, chegava em frequência, em temperatura de casca, em variação de peso no ar. Ela ouvia um chão onde os outros ouviam padrão. Os professores não sabiam o que fazer com isso.
+Havia, na infância, professores que tentaram ensinar as transmissões das Ariku usando o protocolo formal das Ima-ri. Ela aprendia o protocolo. Sabia o protocolo. Mas o que ela recebia quando encostava a testa num tronco não chegava em forma de protocolo, chegava em frequência, em temperatura de casca, em variação de peso no ar. Ela ouvia um chão onde os outros ouviam padrão. Os professores não sabiam o que fazer com isso.
 
 Aos quatorze ciclos, no período Asa Oru, ela estava estudando numa clareira quando o ar mudou de qualidade.
 

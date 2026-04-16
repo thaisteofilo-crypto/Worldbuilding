@@ -1,62 +1,56 @@
-# KORÚ, Bíblia do Mundo
-## PARTE 1, FÍSICA & COSMOLOGIA
-
----
-
 ### A NATUREZA DO AKWU
 
 **Akwu** (Igbo: aquilo que sustenta, a palma aberta que carrega)
 
-O Akwu é a câmara fechada que constitui o universo de Korú. Não foi criado por entidade, aconteceu como evento cosmológico. Sustenta:
-- Seu próprio campo de frequência (Ngurui)
-- Seu próprio sistema de luz (teto interno + Ariku)
-- Seu próprio tempo (espiral, Zoeji)
-- Seu próprio ciclo de energia (memória)
+O Akwu é uma câmara fechada que não foi criada por entidade, aconteceu como evento cosmológico. Sustenta tudo o que Korú precisa para existir:
 
-Não há espaço além do Akwu acessível às criaturas de Korú. A questão de "o que há fora" não existe na cultura local, o Akwu é o que existe.
+- Campo de frequência (Ngurui, o pulso-gravidade)
+- Sistema de luz (teto interno + Ariku)
+- Tempo (espiral, Zoeji)
+- Ciclo de energia (memória)
+
+A questão de "o que há fora do Akwu" não existe na cultura de Korú. O Akwu é a borda do pensável.
+
+→ Ver [Parte 03, Ecossistema](parte-03-ecossistema.md) para o ciclo de energia-memória e o Bomi Veh.
 
 ---
 
-### SISTEMA DE LUZ, VERSÃO REVISADA
+### SISTEMA DE LUZ
 
-**Princípio:** Em Korú, a luz não atravessa o espaço de cima para baixo diretamente. Ela é traduzida: recebida pelo teto interno do Akwu, filtrada e redistribuída lateralmente pelas Ariku, depositada onde as coisas vivem. O Bomi Veh ecoa a luz, não a gera.
+**Princípio:** Em Korú, a luz não atravessa o espaço de cima para baixo diretamente. Ela é traduzida: recebida pelo teto interno do Akwu, filtrada e redistribuída lateralmente pelas Arikus, depositada onde as criaturas de Korú vivem.
 
 **Os três tipos de luz:**
 
 #### LUZ ORU
+
 - **Origem:** teto do Akwu em estado Oru
 - **Cor:** âmbar-dourado, amarelo-suave, quente
-- **Mediação pelas Ariku:** amplificam e suavizam → luz dappled no chão da floresta
+- **Mediação pelas Arikus:** amplificam e suavizam → luz salpicada no chão da floresta
 - **Efeito no Bomi Veh:** reflexo em lilás aquecido, fosforescência mais viva
 - **Sensação:** tarde de verão em floresta densa. O ar parece mais espesso
 - **Asa correspondente:** Asa Mwanga (parcialmente Asa Rimbi)
 
 #### LUZ TEMU
+
 - **Origem:** teto do Akwu em estado Temu
 - **Cor:** lilás frio e profundo, cinza-azulado
-- **Mediação pelas Ariku:** filtragem reduzida → luz mais dura, direcional, sombras marcadas
+- **Mediação pelas Arikus:** filtragem reduzida → luz mais dura, direcional, sombras marcadas
 - **Efeito no Bomi Veh:** fosforescência azul-fria, mais tênue
 - **Sensação:** clareza estranha. Tudo visível, nada aquecido
 - **Asa correspondente:** Asa Temu e bordas do Asa Nkosi
 
 #### LUZ LIMIAR
-- **Origem:** emitida pelos Azuri
+
+- **Origem:** emitida pelos Azuris
 - **Natureza:** diferente em categoria dos dois estados do Akwu. Não é Oru nem Temu
 - **Efeito visual:** não ilumina o ambiente fisicamente. Não aquece. Não muda a cor do que está ao redor
 - **Efeito de presença:** altera a frequência do que está ao redor. Criaturas próximas a um Azuri ficam mais *nítidas*, não mais iluminadas, como se o ruído do ar diminuísse
 - **Uso narrativo/visual:** um Azuri numa cena não muda a cor da sala. Muda a qualidade do silêncio
 
-**Tabela: efeito do sistema de luz por Asa**
-
-| Asa | Teto do Akwu | Mediação Ariku | Efeito Visual Final |
-|---|---|---|---|
-| Mwanga | Dourado intenso | Amplificam e suavizam | Luz dappled, quente. Floresta iluminada de dentro. |
-| Rimbi | Cinza difuso, úmido | Pouco filtro, chuva dispersa | Luz densa, úmida, verde-musgo. |
-| Temu | Lilás frio profundo | Reduzem filtragem | Sombras marcadas. Clareza fria. Luz dura. |
-| Nkosi | Dinâmico, variável | Galhos em movimento | Luz pulsante, oscilante, instável. |
-
-**Consequência do Mwanga-ji no sistema de luz:**
-O projeto de Beku tenta forçar o teto do Akwu ao estado Oru permanente. O resultado: os Ubomi-chi morrem → as Ariku enfraquecem → sem filtro, a luz do teto chega crua ao chão. Não é Oru genuíno. É exposição, mais brilhante que qualquer Oru natural, mas fria de um jeito diferente. O sistema de luz de Korú não distingue bem e mal. Distingue processado e bruto.
+→ Ver [Parte 03, Asa](parte-03-ecossistema.md) para os ciclos do Akwu que alternam entre os estados Oru, Temu e combinações.
+→ Ver [Parte 05, Temiku](parte-05-personagens.md) para o único caso documentado de frequência Limiar residual permanente em uma criatura viva.
+→ Ver [Parte 02, Círculo Azul-Frio](parte-02-geografia.md) e [Parte 03, Bomi Veh](parte-03-ecossistema.md) para o caso de Limiar saturando o solo sem ser absorvido.
+→ Ver [Parte 03, Mwanga-ji](parte-03-ecossistema.md) para a consequência da extração forçada no sistema de luz (enfraquecimento das Arikus).
 
 ---
 
@@ -64,12 +58,16 @@ O projeto de Beku tenta forçar o teto do Akwu ao estado Oru permanente. O resul
 
 **Ngurui** (Swahili: força pulsante)
 
-A gravidade de Korú tem ritmo, pulsa levemente, como batimento cardíaco lento. As criaturas de Korú aprendem a se mover com esse ritmo antes de aprenderem qualquer outra coisa.
+A gravidade dentro do Akwu tem ritmo, pulsa levemente, como batimento cardíaco lento. As criaturas de Korú aprendem a se mover com esse ritmo antes de aprenderem qualquer outra coisa.
 
 **Variações:**
+
 - Mais intenso durante o Asa Temu (o mundo "respira" mais devagar)
 - Criaturas jovens sentem o Ngurui de forma mais intensa que adultas
-- Onkweri muito velhos sincronizam seu passo ao Ngurui instintivamente
+- Onkweris muito velhos sincronizam seu passo ao Ngurui instintivamente
+
+→ Ver [Parte 03, Asa](parte-03-ecossistema.md) para a relação entre Ngurui e os ciclos Oru/Temu.
+→ Ver [Parte 04, Onkweri](parte-04-criaturas.md) para a morfologia da sincronização com o Ngurui.
 
 ---
 
@@ -81,10 +79,8 @@ O tempo em Korú não é linear. É espiral, o passado dobra sobre o presente. O
 
 **Manifestações cotidianas documentadas:**
 
-| Manifestação | Descrição | Status cultural |
-|---|---|---|
-| **Dobra** | Sensação de ter vivido aquele momento antes. O passado próximo ao presente. | Normal. Ensinado nas Ima-ri como confirmação, não patologia. |
-| **Vazamento** | Memórias ancestrais que emergem durante o sono ou contato prolongado com Ariku velhas. Emoções de outras vidas. | Comum. Acordar de um vazamento é acordar com saudade de lugares que nunca foram visitados. |
-| **Ressonância de lugar** | Locais que acumulam tempo espiral, onde passado e presente têm menor distância. Qualquer Chi-Oa tem pontos de ressonância. | Conhecido e mapeado pela comunidade. Não marcado fisicamente, transmitido oralmente. |
-
 **Caso extremo:** as Jobi-Koro têm Zoeji colapsado, passado e presente existem simultaneamente sem distância. Entrar sem preparação é entrar em colapso temporal.
+
+→ Ver [Parte 02, Jobi-Koro](parte-02-geografia.md) para o lugar.
+→ Ver [Parte 06, Regra 06](parte-06-regras.md) para a mecânica da violação do ciclo que gera Jobi-Koro.
+→ Ver [Parte 07, Nyame-jo](parte-07-cultura.md) e [Parte 02, Orunjó](parte-02-geografia.md) para práticas culturais que lidam com o Zoeji espiral.

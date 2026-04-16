@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { ChatPanel } from '@/components/admin/chat-panel'
 import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
@@ -19,7 +19,7 @@ interface DocGroup {
 const DEFAULT_DOC_GROUPS: DocGroup[] = [
   {
     section: 'Bíblia',
-    color: 'var(--gold)',
+    color: 'var(--foreground)',
     docs: [
       { label: 'Parte 00', path: 'biblia/parte-00.md' },
       { label: 'Parte 01', path: 'biblia/parte-01.md' },
@@ -34,7 +34,7 @@ const DEFAULT_DOC_GROUPS: DocGroup[] = [
   },
   {
     section: 'Livro',
-    color: 'var(--accent)',
+    color: 'var(--foreground)',
     docs: [
       { label: 'Capítulo 01', path: 'livro/capitulo-01.md' },
       { label: 'Capítulo 02', path: 'livro/capitulo-02.md' },
@@ -47,7 +47,7 @@ const DEFAULT_DOC_GROUPS: DocGroup[] = [
   },
   {
     section: 'Contos',
-    color: 'var(--blue-cold)',
+    color: 'var(--foreground)',
     docs: [
       { label: 'Conto — Temiku', path: 'contos/conto-temiku.md' },
       { label: 'Conto — Amara', path: 'contos/conto-amara.md' },
@@ -107,46 +107,6 @@ function saveDocGroups(groups: DocGroup[]) {
   }).catch(() => { /* ignore */ })
 }
 
-function renderPreview(md: string): string {
-  // Strip frontmatter
-  let text = md.replace(/^---[\s\S]*?---\n?/, '')
-
-  let html = text
-    // Images
-    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:1.5rem 0;display:block" />')
-    // Video passthrough
-    .replace(/<video([^>]*)><\/video>/g, '<video$1 style="max-width:100%;border-radius:8px;margin:1rem 0"></video>')
-    // Audio passthrough
-    .replace(/<audio([^>]*)><\/audio>/g, '<audio$1 style="margin:0.75rem 0;display:block"></audio>')
-    // HR
-    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid color-mix(in oklch,var(--border) 60%,transparent);margin:2rem 0" />')
-    // H1
-    .replace(/^# (.+)$/gm, '<h1 style="font-family:var(--font-serif),Georgia,serif;font-size:1.6rem;line-height:1.3;margin:2rem 0 0.75rem;color:var(--foreground)">$1</h1>')
-    // H2
-    .replace(/^## (.+)$/gm, '<h2 style="font-family:var(--font-serif),Georgia,serif;font-size:1.25rem;line-height:1.4;margin:1.75rem 0 0.5rem;color:var(--foreground)">$1</h2>')
-    // H3
-    .replace(/^### (.+)$/gm, '<h3 style="font-family:var(--font-serif),Georgia,serif;font-size:1.05rem;line-height:1.4;margin:1.5rem 0 0.4rem;color:var(--foreground)">$1</h3>')
-    // Blockquote
-    .replace(/^> (.+)$/gm, '<blockquote style="border-left:2px solid var(--accent);margin:1rem 0;padding:0.5rem 0 0.5rem 1.25rem;color:color-mix(in oklch,var(--foreground) 70%,transparent);font-style:italic">$1</blockquote>')
-    // Bold+italic
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Italic
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Unordered list items
-    .replace(/^- (.+)$/gm, '<li style="margin:0.25rem 0 0.25rem 1.5rem;list-style:disc;padding-left:0.25rem">$1</li>')
-    // Paragraphs (double newline = paragraph break)
-    .replace(/\n\n/g, '</p><p style="margin:0 0 1.25rem;line-height:1.9">')
-
-  // Wrap in container
-  html = '<div style="font-family:var(--font-sans),Inter,sans-serif;font-size:15px;line-height:1.9;color:var(--foreground)">'
-       + '<p style="margin:0 0 1.25rem;line-height:1.9">' + html + '</p>'
-       + '</div>'
-
-  return html
-}
-
 export default function EditorPage() {
   const [docGroups, setDocGroups] = useState<DocGroup[]>(DEFAULT_DOC_GROUPS)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
@@ -155,7 +115,6 @@ export default function EditorPage() {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [showPreview, setShowPreview] = useState(false)
   const richEditorRef = useRef<RichEditorRef>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
@@ -175,8 +134,17 @@ export default function EditorPage() {
   const lastSavedRef = useRef<Date | null>(null)
   const [focusMode, setFocusMode] = useState(false)
   const sessionStartWordsRef = useRef<number>(0)
+  const sessionStartTimeRef = useRef<Date | null>(null)
+  const [sessionElapsed, setSessionElapsed] = useState(0)
+  const [toolbarKey, setToolbarKey] = useState(0)
+  const [editorSelection, setEditorSelection] = useState('')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [showMoreTools, setShowMoreTools] = useState(false)
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [titleDraft, setTitleDraft] = useState('')
+  const titleInputRef = useRef<HTMLInputElement>(null)
 
-  const previewRef = useRef<HTMLDivElement>(null)
+  const editorScrollRef = useRef<HTMLDivElement>(null)
 
   // Find & Replace state
   const [showFindReplace, setShowFindReplace] = useState(false)
@@ -184,11 +152,9 @@ export default function EditorPage() {
   const [replaceText, setReplaceText] = useState('')
   const [findCount, setFindCount] = useState(0)
 
-  // Métricas de escrita
+  // Metricas de escrita
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0
-  const charCount = content.length
   const readingMinutes = Math.max(1, Math.ceil(wordCount / 200))
-  const paragraphCount = content.split(/\n\n+/).filter(p => p.trim()).length
 
   useEffect(() => {
     setDocGroups(loadDocGroups())
@@ -201,6 +167,13 @@ export default function EditorPage() {
       setExcludedPaths(ep)
     })
   }, [])
+
+  useEffect(() => {
+    if (editingTitle && titleInputRef.current) {
+      titleInputRef.current.focus()
+      titleInputRef.current.select()
+    }
+  }, [editingTitle])
 
   useEffect(() => {
     if (addingTo && newDocInputRef.current) {
@@ -223,16 +196,123 @@ export default function EditorPage() {
     setFindCount(matches ? matches.length : 0)
   }, [findText, content])
 
-  // Escape para sair do modo foco
+  // Escape para sair do modo foco ou fechar dropdown
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === 'Escape' && focusMode) {
-        setFocusMode(false)
+      if (e.key === 'Escape') {
+        if (showMoreTools) setShowMoreTools(false)
+        else if (focusMode) setFocusMode(false)
       }
     }
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
-  }, [focusMode])
+  }, [focusMode, showMoreTools])
+
+  // Close "Mais ferramentas" dropdown on outside click
+  useEffect(() => {
+    if (!showMoreTools) return
+    function handleClick() { setShowMoreTools(false) }
+    window.addEventListener('click', handleClick)
+    return () => window.removeEventListener('click', handleClick)
+  }, [showMoreTools])
+
+  // Session timer: track elapsed time since document opened
+  useEffect(() => {
+    if (!selectedPath) {
+      sessionStartTimeRef.current = null
+      setSessionElapsed(0)
+      return
+    }
+    sessionStartTimeRef.current = new Date()
+    setSessionElapsed(0)
+    const interval = setInterval(() => {
+      if (sessionStartTimeRef.current) {
+        setSessionElapsed(Math.floor((Date.now() - sessionStartTimeRef.current.getTime()) / 1000))
+      }
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [selectedPath])
+
+  // Listen to editor selection/transaction changes to update toolbar active states
+  useEffect(() => {
+    const editor = richEditorRef.current?.editor
+    if (!editor) return
+    const handler = () => {
+      setToolbarKey(k => k + 1)
+      const { from, to } = editor.state.selection
+      if (from !== to) {
+        setEditorSelection(editor.state.doc.textBetween(from, to, ' '))
+      } else {
+        setEditorSelection('')
+      }
+    }
+    editor.on('selectionUpdate', handler)
+    editor.on('transaction', handler)
+    return () => {
+      editor.off('selectionUpdate', handler)
+      editor.off('transaction', handler)
+    }
+  }, [selectedPath, loading])
+
+  // Extract headings for outline/TOC
+  const headings = useMemo(() => {
+    const result: { level: number; text: string; index: number }[] = []
+    const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const match = lines[i].match(/^(#{1,3})\s+(.+)$/)
+      if (match) {
+        result.push({ level: match[1].length, text: match[2], index: i })
+      }
+    }
+    return result
+  }, [content])
+
+  // Scroll to heading in editor by line index
+  const scrollToHeading = useCallback((lineIndex: number) => {
+    const editor = richEditorRef.current?.editor
+    if (!editor) return
+    const doc = editor.state.doc
+    let currentLine = 0
+    let targetPos = 0
+    doc.descendants((node, pos) => {
+      if (targetPos > 0) return false
+      if (node.isBlock) {
+        if (currentLine === lineIndex) {
+          targetPos = pos
+          return false
+        }
+        const text = node.textContent
+        const newlines = (text.match(/\n/g) || []).length
+        currentLine += 1 + newlines
+      }
+      return true
+    })
+    if (targetPos > 0) {
+      editor.chain().focus().setTextSelection(targetPos + 1).run()
+      const domEl = editor.view.domAtPos(targetPos + 1)
+      if (domEl?.node) {
+        const el = domEl.node instanceof HTMLElement ? domEl.node : domEl.node.parentElement
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [])
+
+  const handleInsertText = useCallback((text: string) => {
+    const editor = richEditorRef.current?.editor
+    if (!editor) return
+    editor.chain().focus().insertContent(text).run()
+  }, [])
+
+  const handleReplaceSelection = useCallback((text: string) => {
+    const editor = richEditorRef.current?.editor
+    if (!editor) return
+    const { from, to } = editor.state.selection
+    if (from !== to) {
+      editor.chain().focus().deleteRange({ from, to }).insertContentAt(from, text).run()
+    } else {
+      editor.chain().focus().insertContent(text).run()
+    }
+  }, [])
 
   const toggleSection = (section: string) => {
     setCollapsed((prev) => ({ ...prev, [section]: !prev[section] }))
@@ -242,7 +322,6 @@ export default function EditorPage() {
     if (!newDocName.trim()) return
     const name = newDocName.trim()
     const folder = sectionName === 'Bíblia' ? 'biblia' : sectionName === 'Livro' ? 'livro' : 'contos'
-    // Normalize: remove diacritics so "Capítulo 07" → "capitulo-07" (not "capítulo-07")
     const normalized = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     const slug = normalized.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
     const path = `${folder}/${slug}.md`
@@ -267,7 +346,6 @@ export default function EditorPage() {
     setDocGroups(updated)
     saveDocGroups(updated)
 
-    // Add to excluded paths so filesystem scan doesn't bring it back on reload
     const newExcluded = Array.from(new Set([...excludedPaths, docPath]))
     setExcludedPaths(newExcluded)
     fetch('/api/site-content', {
@@ -294,7 +372,6 @@ export default function EditorPage() {
     if (selectedPath === docPath) setSelectedLabel(trimmed)
     setRenamingDoc(null)
 
-    // Also update the corresponding card title in site_content (drives the big title on home page)
     const titleKey = getSiteContentTitleKey(docPath)
     if (titleKey) {
       fetch('/api/site-content', {
@@ -319,10 +396,8 @@ export default function EditorPage() {
         setContent(data.content)
         savedContentRef.current = data.content
         setAutosaveStatus('idle')
-        // Registrar palavras iniciais da sessão
         sessionStartWordsRef.current = data.content.trim() ? data.content.trim().split(/\s+/).length : 0
       } else if (res.status === 404) {
-        // Arquivo novo — começa vazio, salva ao escrever
         setContent('')
         savedContentRef.current = ''
         sessionStartWordsRef.current = 0
@@ -427,22 +502,22 @@ export default function EditorPage() {
       const res = await fetch('/api/editor/upload', { method: 'POST', body: formData })
       const data = await res.json()
       if (data.url) {
+        let tag = ''
         if (type === 'image') {
-          const editor = richEditorRef.current?.editor
-          if (editor) {
-            editor.chain().focus().insertContent(`![${file.name}](${data.url})`).run()
-          }
+          tag = `![${file.name}](${data.url})`
+        } else if (type === 'video') {
+          tag = `<video src="${data.url}" controls width="100%"></video>`
         } else {
-          let markup = ''
-          if (type === 'video') {
-            markup = `<video src="${data.url}" controls width="100%"></video>`
-          } else {
-            markup = `<audio src="${data.url}" controls></audio>`
-          }
-          const editor = richEditorRef.current?.editor
-          if (editor) {
-            editor.chain().focus().insertContent(markup.trim()).run()
-          }
+          tag = `<audio src="${data.url}" controls></audio>`
+        }
+        const editor = richEditorRef.current?.editor
+        if (editor) {
+          editor.chain()
+            .focus('end')
+            .insertContent([
+              { type: 'paragraph', content: [{ type: 'text', text: tag }] },
+            ])
+            .run()
         }
       } else {
         setMessage({ type: 'error', text: data.error || 'Erro no upload.' })
@@ -486,12 +561,18 @@ export default function EditorPage() {
     setShowFindReplace(false)
   }
 
+  // Trigger AI action: open chat and dispatch event
+  const triggerAIAction = useCallback((action: string) => {
+    setShowChat(true)
+    window.dispatchEvent(new CustomEvent('koru-ai-action', { detail: { action } }))
+  }, [])
+
   // Autosave status display
   const autosaveNode = selectedPath && autosaveStatus !== 'idle' ? (
     <span className="font-sans text-[11px] flex items-center gap-1" style={{ color: 'var(--muted-foreground)' }}>
       {autosaveStatus === 'pending' && (
         <>
-          <span style={{ opacity: 0.5 }}>•</span>
+          <span style={{ opacity: 0.5 }}>&#8226;</span>
           <span>modificado</span>
         </>
       )}
@@ -508,7 +589,7 @@ export default function EditorPage() {
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          <span>salvo automaticamente</span>
+          <span>salvo</span>
         </>
       )}
       {autosaveStatus === 'error' && (
@@ -532,7 +613,7 @@ export default function EditorPage() {
           <div className="flex items-center gap-5 min-w-0">
             <h2
               className="text-sm leading-tight truncate"
-              style={{ fontFamily: 'var(--font-serif), Georgia, serif', color: 'var(--foreground)' }}
+              style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', color: 'var(--foreground)' }}
             >
               {selectedLabel}
             </h2>
@@ -540,12 +621,16 @@ export default function EditorPage() {
             {wordCount > 0 && (
               <p className="text-[11px] font-sans tabular-nums flex items-center gap-2.5" style={{ color: 'var(--muted-foreground)' }}>
                 <span>{wordCount.toLocaleString('pt-BR')} palavras</span>
-                <span style={{ opacity: 0.4 }}>·</span>
+                <span style={{ opacity: 0.4 }}>&middot;</span>
                 <span>{readingMinutes} min</span>
-                {wordCount - sessionStartWordsRef.current > 0 && (
+                {(wordCount - sessionStartWordsRef.current > 0 || sessionElapsed >= 60) && (
                   <>
-                    <span style={{ opacity: 0.4 }}>·</span>
-                    <span style={{ color: 'var(--accent)', opacity: 1 }}>+{(wordCount - sessionStartWordsRef.current).toLocaleString('pt-BR')}</span>
+                    <span style={{ opacity: 0.4 }}>&middot;</span>
+                    <span style={{ color: 'var(--foreground)', opacity: 1 }}>
+                      {wordCount - sessionStartWordsRef.current > 0 && `+${(wordCount - sessionStartWordsRef.current).toLocaleString('pt-BR')}`}
+                      {wordCount - sessionStartWordsRef.current > 0 && sessionElapsed >= 60 && ' \u00b7 '}
+                      {sessionElapsed >= 60 && `${Math.floor(sessionElapsed / 60)} min`}
+                    </span>
                   </>
                 )}
               </p>
@@ -578,29 +663,87 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 px-6 py-4 font-sans">
-      {/* Header */}
-      <div className="mb-5">
-        <h1
-          className="text-3xl leading-none mb-1.5"
-          style={{ fontFamily: 'var(--font-serif), Georgia, serif', color: 'var(--foreground)' }}
-        >
-          Editor
-        </h1>
-        <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-          Selecione um documento para editar o conteúdo markdown.
-        </p>
-      </div>
+    <div className="flex-1 flex flex-col min-h-0 px-4 py-3 font-sans">
+      <div className="flex flex-1 gap-3 min-h-0">
+        {/* Sidebar toggle — when collapsed */}
+        {sidebarCollapsed && (
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="shrink-0 flex items-center justify-center w-8 rounded-lg transition-colors self-start mt-1"
+            style={{ color: 'var(--muted-foreground)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            title="Mostrar sidebar"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        )}
 
-      <div className="flex flex-1 gap-5 min-h-0">
         {/* Sidebar */}
         <div
-          className="w-64 shrink-0 overflow-y-auto rounded-xl p-3 flex flex-col gap-1"
-          style={{
+          className={`shrink-0 overflow-y-auto overflow-x-hidden rounded-xl p-3 flex flex-col gap-1 transition-all duration-200 ${
+            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-64'
+          }`}
+          style={sidebarCollapsed ? {} : {
             background: 'var(--card)',
             border: '1px solid var(--border)',
           }}
         >
+          {/* Sidebar header: project name + collapse */}
+          <div className="flex items-center justify-between mb-2">
+            <span
+              className="text-sm font-sans font-medium truncate"
+              style={{ color: 'var(--foreground)' }}
+            >
+              Koru
+            </span>
+            <button
+              onClick={() => setSidebarCollapsed(true)}
+              className="flex items-center justify-center rounded-lg p-1 transition-colors shrink-0"
+              style={{ color: 'var(--muted-foreground)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+              title="Esconder sidebar"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="11 17 6 12 11 7" />
+                <polyline points="18 17 13 12 18 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* + Novo / Importar buttons */}
+          <div className="flex gap-1.5 mb-2">
+            <button
+              onClick={() => { setAddingTo(docGroups[0]?.section ?? 'Biblia'); setNewDocName('') }}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors"
+              style={{ background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--foreground)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Novo
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors"
+              style={{ background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--muted-foreground)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+              title="Em breve"
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Importar
+            </button>
+          </div>
+
           {docGroups.map((group) => {
             const isCollapsed = collapsed[group.section]
             return (
@@ -611,7 +754,7 @@ export default function EditorPage() {
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 transition-all duration-150"
                   style={{ color: 'var(--foreground)' }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = `color-mix(in oklch, ${group.color} 8%, transparent)`
+                    e.currentTarget.style.background = `color-mix(in oklch, var(--foreground) 6%, transparent)`
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'transparent'
@@ -632,11 +775,11 @@ export default function EditorPage() {
                   </svg>
                   <span
                     className="w-1.5 h-1.5 rounded-sm shrink-0"
-                    style={{ background: group.color, opacity: 0.7 }}
+                    style={{ background: 'var(--muted-foreground)', opacity: 0.7 }}
                   />
                   <span
                     className="text-[10px] font-semibold uppercase tracking-[0.15em]"
-                    style={{ color: group.color }}
+                    style={{ color: 'var(--muted-foreground)' }}
                   >
                     {group.section}
                   </span>
@@ -654,7 +797,6 @@ export default function EditorPage() {
                     {group.docs.map((doc) => (
                       <div key={doc.path} className="group flex items-center">
                         {renamingDoc?.path === doc.path ? (
-                          /* Inline rename input */
                           <div className="flex items-center gap-1 px-2 flex-1">
                             <input
                               ref={renameInputRef}
@@ -713,7 +855,6 @@ export default function EditorPage() {
                             )}
                           </button>
                         )}
-                        {/* Rename button (pencil icon, always visible on hover) */}
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => { setRenamingDoc({ section: group.section, path: doc.path }); setRenameLabel(doc.label) }}
@@ -727,7 +868,6 @@ export default function EditorPage() {
                             </svg>
                           </button>
                         )}
-                        {/* Remove button */}
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => removeDocument(group.section, doc.path)}
@@ -810,10 +950,50 @@ export default function EditorPage() {
               </div>
             )
           })}
+
+          {/* Outline / TOC */}
+          {selectedPath && headings.length > 0 && (
+            <div className="mt-3 pt-3" style={{ borderTop: '1px solid color-mix(in oklch, var(--border) 50%, transparent)' }}>
+              <p
+                className="text-[9px] font-sans uppercase tracking-[0.15em] px-2.5 mb-2"
+                style={{ color: 'var(--muted-foreground)', opacity: 0.7 }}
+              >
+                Estrutura
+              </p>
+              <div className="flex flex-col gap-0.5">
+                {headings.map((h, i) => (
+                  <button
+                    key={`${h.index}-${i}`}
+                    onClick={() => scrollToHeading(h.index)}
+                    className="text-left rounded-lg py-1 text-xs transition-all duration-150 truncate"
+                    style={{
+                      color: 'var(--muted-foreground)',
+                      paddingLeft: `${0.75 + (h.level - 1) * 0.75}rem`,
+                      paddingRight: '0.5rem',
+                      fontSize: h.level === 1 ? '12px' : '11px',
+                      fontWeight: h.level === 1 ? 500 : 400,
+                      fontFamily: h.level === 1 ? 'var(--font-sans), Inter, sans-serif' : undefined,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
+                      e.currentTarget.style.color = 'var(--foreground)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent'
+                      e.currentTarget.style.color = 'var(--muted-foreground)'
+                    }}
+                    title={h.text}
+                  >
+                    {h.text}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Editor area */}
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 min-w-0">
           {!selectedPath ? (
             <div
               className="flex-1 flex flex-col items-center justify-center rounded-xl gap-3"
@@ -841,83 +1021,250 @@ export default function EditorPage() {
                   Selecione um documento para editar.
                 </p>
                 <p className="text-xs font-sans mt-1" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
-                  Use ⌘S para salvar rapidamente.
+                  Use Ctrl+S para salvar rapidamente.
                 </p>
               </div>
             </div>
           ) : (
             <>
-              {/* Header bar */}
-              <div className="mb-3 flex items-start justify-between gap-4">
-                <div className="min-w-0">
+              {/* Document title — editable inline */}
+              <div className="mb-2 flex items-center gap-3">
+                {editingTitle ? (
+                  <input
+                    ref={titleInputRef}
+                    value={titleDraft}
+                    onChange={(e) => setTitleDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const trimmed = titleDraft.trim()
+                        if (trimmed && selectedPath) {
+                          const group = docGroups.find(g => g.docs.some(d => d.path === selectedPath))
+                          if (group) renameDocument(group.section, selectedPath, trimmed)
+                        }
+                        setEditingTitle(false)
+                      }
+                      if (e.key === 'Escape') setEditingTitle(false)
+                    }}
+                    onBlur={() => {
+                      const trimmed = titleDraft.trim()
+                      if (trimmed && selectedPath) {
+                        const group = docGroups.find(g => g.docs.some(d => d.path === selectedPath))
+                        if (group) renameDocument(group.section, selectedPath, trimmed)
+                      }
+                      setEditingTitle(false)
+                    }}
+                    className="text-lg leading-tight font-medium outline-none bg-transparent border-b"
+                    style={{
+                      fontFamily: 'var(--font-sans), Inter, sans-serif',
+                      color: 'var(--foreground)',
+                      borderColor: 'var(--border)',
+                      minWidth: '120px',
+                    }}
+                  />
+                ) : (
                   <h2
-                    className="text-xl leading-tight"
-                    style={{ fontFamily: 'var(--font-serif), Georgia, serif', color: 'var(--foreground)' }}
+                    className="text-lg leading-tight font-medium cursor-text"
+                    style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', color: 'var(--foreground)' }}
+                    onClick={() => { setTitleDraft(selectedLabel); setEditingTitle(true) }}
+                    title="Clique para renomear"
                   >
                     {selectedLabel}
                   </h2>
-                  <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-                    {selectedPath}
-                  </p>
-                  {/* Métricas de escrita */}
-                  {wordCount > 0 && (
-                    <p className="text-[11px] font-sans mt-1 tabular-nums flex items-center gap-3" style={{ color: 'var(--muted-foreground)', opacity: 0.7 }}>
-                      <span>{wordCount.toLocaleString('pt-BR')} palavras</span>
-                      <span style={{ opacity: 0.4 }}>·</span>
-                      <span>{paragraphCount} parágrafos</span>
-                      <span style={{ opacity: 0.4 }}>·</span>
-                      <span>{readingMinutes} min de leitura</span>
-                      {wordCount - sessionStartWordsRef.current > 0 && (
-                        <>
-                          <span style={{ opacity: 0.4 }}>·</span>
-                          <span style={{ color: 'var(--accent)' }}>+{(wordCount - sessionStartWordsRef.current).toLocaleString('pt-BR')} nesta sessão</span>
-                        </>
-                      )}
-                    </p>
-                  )}
+                )}
+                <span className="text-[10px] font-mono" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
+                  {selectedPath}
+                </span>
+              </div>
+
+              {/* AI Actions Top Bar — Sudowrite style */}
+              <div
+                className="flex items-center mb-3 rounded-lg px-2 py-1.5"
+                style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+              >
+                {/* Left: Voltar + AI actions */}
+                <div className="flex items-center gap-1">
+                  {/* Voltar */}
+                  <a
+                    href="/admin"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+                    </svg>
+                    Voltar
+                  </a>
+
+                  <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+
+                  {/* Escrever */}
+                  <button
+                    onClick={() => triggerAIAction('continue')}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Escrever
+                  </button>
+
+                  {/* Reescrever */}
+                  <button
+                    onClick={() => triggerAIAction('rewrite')}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                    </svg>
+                    Reescrever
+                  </button>
+
+                  {/* Descrever */}
+                  <button
+                    onClick={() => triggerAIAction('describe')}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    </svg>
+                    Descrever
+                  </button>
+
+                  {/* Expandir */}
+                  <button
+                    onClick={() => triggerAIAction('expand')}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
+                      <line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                    Expandir
+                  </button>
+
+                  {/* Mais ferramentas — dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setShowMoreTools(!showMoreTools) }}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                      style={{ color: 'var(--muted-foreground)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                      Mais
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    {showMoreTools && (
+                      <div
+                        className="absolute top-full left-0 mt-1 rounded-lg py-1 z-20 min-w-[160px]"
+                        style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '0 4px 12px oklch(0 0 0 / 0.15)' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {[
+                          { action: 'consistency', label: 'Consistencia' },
+                          { action: 'correct', label: 'Corrigir' },
+                          { action: 'feedback', label: 'Feedback' },
+                          { action: 'report', label: 'Relatorio' },
+                        ].map((item) => (
+                          <button
+                            key={item.action}
+                            onClick={() => { triggerAIAction(item.action); setShowMoreTools(false) }}
+                            className="w-full text-left px-3 py-2 text-sm font-sans transition-colors"
+                            style={{ color: 'var(--foreground)' }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
+
+                {/* Spacer */}
+                <div className="flex-1" />
+
+                {/* Right side: word count, autosave, focus, IA, save */}
+                <div className="flex items-center gap-2">
+                  {/* Word count */}
+                  <span className="text-[11px] font-sans tabular-nums" style={{ color: 'var(--muted-foreground)' }}>
+                    {wordCount > 0 ? `Palavras: ${wordCount.toLocaleString('pt-BR')}` : ''}
+                  </span>
+
                   {/* Autosave status */}
                   {autosaveNode}
-                  {/* Botão Foco */}
+
+                  <span className="mx-0.5 h-4 w-px" style={{ background: 'var(--border)' }} />
+
+                  {/* Focus mode */}
                   <button
                     onClick={() => setFocusMode(true)}
-                    className="rounded-full px-4 py-1.5 text-xs font-sans font-medium transition-all duration-200"
-                    style={{
-                      background: 'transparent',
-                      color: 'var(--foreground)',
-                      border: '1px solid var(--border)',
-                    }}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
+                    style={{ color: 'var(--muted-foreground)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
                     title="Modo foco (Esc para sair)"
                   >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                    </svg>
                     Foco
                   </button>
+
+                  {/* Chat toggle */}
                   <button
-                    onClick={() => { setShowChat(!showChat); if (!showChat) setShowPreview(false) }}
-                    className="rounded-full px-4 py-1.5 text-xs font-sans font-medium transition-all duration-200"
+                    onClick={() => setShowChat(!showChat)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
                     style={
                       showChat
-                        ? { background: 'var(--foreground)', color: 'var(--background)' }
-                        : { background: 'transparent', color: 'var(--foreground)', border: '1px solid var(--border)' }
+                        ? { background: 'var(--foreground)', color: 'var(--background)', borderRadius: '0.375rem' }
+                        : { color: 'var(--muted-foreground)' }
                     }
+                    onMouseEnter={(e) => {
+                      if (!showChat) {
+                        e.currentTarget.style.color = 'var(--foreground)'
+                        e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!showChat) {
+                        e.currentTarget.style.color = 'var(--muted-foreground)'
+                        e.currentTarget.style.background = 'transparent'
+                      }
+                    }}
                   >
-                    {showChat ? 'Fechar IA' : 'IA'}
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    IA
                   </button>
-                  <button
-                    onClick={() => { setShowPreview(!showPreview); if (!showPreview) setShowChat(false) }}
-                    className="rounded-full px-4 py-1.5 text-xs font-sans font-medium transition-all duration-200"
-                    style={
-                      showPreview
-                        ? { background: 'var(--foreground)', color: 'var(--background)' }
-                        : { background: 'transparent', color: 'var(--foreground)', border: '1px solid var(--border)' }
-                    }
-                  >
-                    Preview
-                  </button>
+
+                  {/* Save */}
                   <button
                     onClick={handleSave}
                     disabled={saving || loading}
-                    className="rounded-full px-5 py-1.5 text-xs font-sans font-medium transition-all duration-200 hover:opacity-80 disabled:opacity-40 flex items-center"
+                    className="rounded-md px-4 py-1.5 text-sm font-sans font-medium transition-all duration-200 hover:opacity-80 disabled:opacity-40 flex items-center"
                     style={{
                       background: 'var(--foreground)',
                       color: 'var(--background)',
@@ -925,9 +1272,6 @@ export default function EditorPage() {
                     }}
                   >
                     {saving ? 'Salvando...' : autosaveStatus === 'saved' ? 'Salvo' : 'Salvar'}
-                    {!saving && autosaveStatus !== 'saved' && (
-                      <span className="ml-1.5 text-[10px]" style={{ opacity: 0.4 }}>⌘S</span>
-                    )}
                   </button>
                 </div>
               </div>
@@ -959,7 +1303,7 @@ export default function EditorPage() {
                   </div>
                   {findText && (
                     <span className="font-sans text-[11px] tabular-nums shrink-0" style={{ color: 'var(--muted-foreground)' }}>
-                      {findCount} ocorrência{findCount !== 1 ? 's' : ''}
+                      {findCount} ocorr&ecirc;ncia{findCount !== 1 ? 's' : ''}
                     </span>
                   )}
                   <button
@@ -990,79 +1334,97 @@ export default function EditorPage() {
                 </div>
               )}
 
-              {/* Toolbar */}
+              {/* Toolbar — sticky with backdrop blur */}
+              {(() => {
+                const editor = richEditorRef.current?.editor
+                void toolbarKey
+                const isActive = (type: string, attrs?: Record<string, unknown>) => editor?.isActive(type, attrs) ?? false
+                const activeStyle = (type: string, attrs?: Record<string, unknown>) => ({
+                  background: isActive(type, attrs) ? 'color-mix(in oklch, var(--foreground) 10%, transparent)' : undefined,
+                  color: isActive(type, attrs) ? 'var(--foreground)' : 'var(--foreground)',
+                  boxShadow: isActive(type, attrs) ? 'inset 0 0 0 1px color-mix(in oklch, var(--foreground) 15%, transparent)' : undefined,
+                })
+                const mutedActiveStyle = (type: string, attrs?: Record<string, unknown>) => ({
+                  background: isActive(type, attrs) ? 'color-mix(in oklch, var(--foreground) 10%, transparent)' : undefined,
+                  color: isActive(type, attrs) ? 'var(--foreground)' : 'var(--muted-foreground)',
+                  boxShadow: isActive(type, attrs) ? 'inset 0 0 0 1px color-mix(in oklch, var(--foreground) 15%, transparent)' : undefined,
+                })
+
+                return (
               <div
-                className="mb-2 flex items-center gap-1 rounded-xl px-3 py-1.5"
+                className="mb-2 flex items-center gap-1 rounded-xl px-3 py-1.5 sticky top-0 z-10"
                 style={{
-                  background: 'var(--card)',
+                  background: 'color-mix(in oklch, var(--background) 85%, transparent)',
                   border: '1px solid var(--border)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
                 }}
               >
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleBold().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                  onClick={() => editor?.chain().focus().toggleBold().run()}
+                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150"
+                  style={activeStyle('bold')}
+                  onMouseEnter={(e) => { if (!isActive('bold')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('bold')) e.currentTarget.style.background = 'transparent' }}
                   title="Negrito"
                 >
                   B
                 </button>
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleItalic().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm italic transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                  title="Itálico"
+                  onClick={() => editor?.chain().focus().toggleItalic().run()}
+                  className="rounded-lg px-2.5 py-1 text-sm italic transition-all duration-150"
+                  style={activeStyle('italic')}
+                  onMouseEnter={(e) => { if (!isActive('italic')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('italic')) e.currentTarget.style.background = 'transparent' }}
+                  title="It&aacute;lico"
                 >
                   I
                 </button>
                 <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                  title="Título H1"
+                  onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150"
+                  style={activeStyle('heading', { level: 1 })}
+                  onMouseEnter={(e) => { if (!isActive('heading', { level: 1 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('heading', { level: 1 })) e.currentTarget.style.background = 'transparent' }}
+                  title="T&iacute;tulo H1"
                 >
                   H1
                 </button>
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-semibold transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                  title="Título H2"
+                  onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                  className="rounded-lg px-2.5 py-1 text-sm font-semibold transition-all duration-150"
+                  style={activeStyle('heading', { level: 2 })}
+                  onMouseEnter={(e) => { if (!isActive('heading', { level: 2 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('heading', { level: 2 })) e.currentTarget.style.background = 'transparent' }}
+                  title="T&iacute;tulo H2"
                 >
                   H2
                 </button>
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-                  className="rounded-lg px-2 py-1 text-xs font-semibold transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                  title="Subtítulo H3"
+                  onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+                  className="rounded-lg px-2 py-1 text-xs font-semibold transition-all duration-150"
+                  style={activeStyle('heading', { level: 3 })}
+                  onMouseEnter={(e) => { if (!isActive('heading', { level: 3 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('heading', { level: 3 })) e.currentTarget.style.background = 'transparent' }}
+                  title="Subt&iacute;tulo H3"
                 >
                   H3
                 </button>
                 <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleBlockquote().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm transition-colors"
-                  style={{ color: 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
-                  title="Citação"
+                  onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+                  className="rounded-lg px-2.5 py-1 text-sm transition-all duration-150"
+                  style={mutedActiveStyle('blockquote')}
+                  onMouseEnter={(e) => { if (!isActive('blockquote')) { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' } }}
+                  onMouseLeave={(e) => { if (!isActive('blockquote')) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' } }}
+                  title="Cita&ccedil;&atilde;o"
                 >
                   &ldquo;
                 </button>
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().setHorizontalRule().run()}
-                  className="rounded-lg px-2.5 py-1 text-xs transition-colors"
+                  onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+                  className="rounded-lg px-2.5 py-1 text-xs transition-all duration-150"
                   style={{ color: 'var(--muted-foreground)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
@@ -1072,16 +1434,17 @@ export default function EditorPage() {
                 </button>
                 <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
                 <button
-                  onClick={() => richEditorRef.current?.editor?.chain().focus().toggleBulletList().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm transition-colors"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                  onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                  className="rounded-lg px-2.5 py-1 text-sm transition-all duration-150"
+                  style={activeStyle('bulletList')}
+                  onMouseEnter={(e) => { if (!isActive('bulletList')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
+                  onMouseLeave={(e) => { if (!isActive('bulletList')) e.currentTarget.style.background = 'transparent' }}
                   title="Lista"
                 >
                   &bull; Lista
                 </button>
                 <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                {/* Media uploads — compact */}
                 <button
                   onClick={() => triggerUpload('image')}
                   disabled={uploading}
@@ -1091,7 +1454,11 @@ export default function EditorPage() {
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
                   title="Inserir imagem"
                 >
-                  Imagem
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
                 </button>
                 <button
                   onClick={() => triggerUpload('video')}
@@ -1100,9 +1467,12 @@ export default function EditorPage() {
                   style={{ color: 'var(--muted-foreground)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
-                  title="Inserir vídeo"
+                  title="Inserir v&iacute;deo"
                 >
-                  Video
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                  </svg>
                 </button>
                 <button
                   onClick={() => triggerUpload('audio')}
@@ -1111,21 +1481,28 @@ export default function EditorPage() {
                   style={{ color: 'var(--muted-foreground)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
-                  title="Inserir áudio"
+                  title="Inserir &aacute;udio"
                 >
-                  Audio
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18V5l12-2v13"/>
+                    <circle cx="6" cy="18" r="3"/>
+                    <circle cx="18" cy="16" r="3"/>
+                  </svg>
                 </button>
-                {uploading && <span className="text-xs ml-2" style={{ color: 'var(--muted-foreground)' }}>Enviando...</span>}
-                {/* Find & Replace button */}
+                {uploading && <span className="text-xs ml-1" style={{ color: 'var(--muted-foreground)' }}>Enviando...</span>}
+                {/* Find & Replace toggle (via Ctrl+H) */}
                 <button
                   onClick={() => setShowFindReplace(prev => !prev)}
-                  className="rounded-lg px-2.5 py-1 text-xs transition-colors ml-auto"
+                  className="rounded-lg px-2 py-1 text-xs transition-colors ml-auto"
                   style={{ color: showFindReplace ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                  title="Buscar e substituir (⌘H)"
+                  title="Buscar e substituir (Ctrl+H)"
                 >
-                  Buscar
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
                 </button>
                 <input
                   ref={fileInputRef}
@@ -1133,10 +1510,18 @@ export default function EditorPage() {
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0]
-                    if (file) handleMediaUpload(file, uploadType)
+                    if (file) {
+                      const mime = file.type || ''
+                      const inferredType: 'image' | 'video' | 'audio' =
+                        mime.startsWith('video/') ? 'video' :
+                        mime.startsWith('audio/') ? 'audio' : 'image'
+                      handleMediaUpload(file, inferredType)
+                    }
                   }}
                 />
               </div>
+                )
+              })()}
 
               {/* Message */}
               {message && (
@@ -1185,51 +1570,89 @@ export default function EditorPage() {
                 </div>
               )}
 
-              {/* Editor + Preview/Chat */}
+              {/* Editor + Chat — 3 column layout */}
               <div className="flex-1 flex gap-4 min-h-0">
-                <div className={`flex flex-col min-h-0 ${showPreview || showChat ? 'flex-1 min-w-0' : 'w-full'}`}>
+                <div
+                  ref={editorScrollRef}
+                  className={`flex flex-col min-h-0 overflow-y-auto ${showChat ? 'flex-1 min-w-0' : 'w-full'}`}
+                >
                   {loading ? (
                     <div
                       className="flex-1 flex items-center justify-center rounded-xl"
-                      style={{ border: '1px solid var(--border)', background: 'var(--card)' }}
+                      style={{ border: '1px dashed var(--border)' }}
                     >
                       <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Carregando...</p>
                     </div>
                   ) : (
-                    <RichEditor
-                      ref={richEditorRef}
-                      markdown={content}
-                      documentKey={selectedPath ?? ''}
-                      onChange={(md) => setContent(md)}
-                      placeholder="Comece a escrever..."
-                      focusMode={focusMode}
-                    />
+                    <>
+                      <RichEditor
+                        ref={richEditorRef}
+                        markdown={content}
+                        documentKey={selectedPath ?? ''}
+                        onChange={(md) => setContent(md)}
+                        placeholder="Comece a escrever..."
+                        focusMode={focusMode}
+                      />
+
+                      {/* Bottom editor quick actions */}
+                      <div
+                        className="flex items-center justify-center gap-2 py-4"
+                        style={{ borderTop: '1px solid color-mix(in oklch, var(--border) 40%, transparent)' }}
+                      >
+                        <button
+                          onClick={() => triggerAIAction('continue')}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
+                          style={{
+                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
+                            color: 'var(--foreground)',
+                            border: '1px solid var(--border)',
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                        >
+                          Gere um rascunho
+                        </button>
+                        <button
+                          onClick={() => triggerAIAction('expand')}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
+                          style={{
+                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
+                            color: 'var(--foreground)',
+                            border: '1px solid var(--border)',
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                        >
+                          Expandir trecho
+                        </button>
+                        <button
+                          onClick={() => setShowChat(true)}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
+                          style={{
+                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
+                            color: 'var(--foreground)',
+                            border: '1px solid var(--border)',
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                        >
+                          Conversar sobre uma ideia
+                        </button>
+                      </div>
+                    </>
                   )}
                 </div>
 
-                {showPreview && (
-                  <div
-                    ref={previewRef}
-                    className="w-1/2 shrink-0 min-h-0 overflow-y-auto rounded-xl"
-                    style={{
-                      border: '1px solid var(--border)',
-                      background: 'var(--card)',
-                      color: 'var(--foreground)',
-                    }}
-                  >
-                    <div className="px-8 py-10 max-w-[600px] mx-auto">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: renderPreview(content) }}
-                      />
-                    </div>
-                  </div>
-                )}
-
                 {showChat && (
-                  <ChatPanel
-                    documentPath={selectedPath}
-                    documentContent={content}
-                  />
+                  <div className="sticky top-0 self-start" style={{ maxHeight: 'calc(100vh - 10rem)' }}>
+                    <ChatPanel
+                      documentPath={selectedPath}
+                      documentContent={content}
+                      selectedText={editorSelection}
+                      onInsertText={handleInsertText}
+                      onReplaceSelection={handleReplaceSelection}
+                    />
+                  </div>
                 )}
               </div>
             </>

@@ -9,61 +9,31 @@ interface DocNavProps {
   items: NavItem[]
   current: string
   basePath: string
-  position?: number
-  total?: number
 }
 
-export function DocNav({ items, current, basePath, position, total }: DocNavProps) {
+export function DocNav({ items, current, basePath }: DocNavProps) {
   const idx = items.findIndex((i) => i.slug === current)
   const prev = idx > 0 ? items[idx - 1] : null
   const next = idx < items.length - 1 ? items[idx + 1] : null
-
-  // Derivar posição a partir dos items se não fornecida explicitamente
-  const derivedPosition = position ?? (idx >= 0 ? idx + 1 : undefined)
-  const derivedTotal = total ?? items.length
 
   if (!prev && !next) return null
 
   return (
     <nav
       aria-label="Navegação entre documentos"
-      className="flex items-center justify-between pt-8 mt-8 border-t"
-      style={{ borderColor: "var(--border)" }}
+      className="flex items-center justify-between pt-8 mt-8"
     >
       {prev ? (
         <Link
           href={`${basePath}/${prev.slug}`}
-          className="flex flex-col gap-1 group max-w-[45%] focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-          style={{ outlineColor: "var(--accent)" }}
+          title={prev.title}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
         >
-          <span
-            className="text-xs font-sans uppercase tracking-[0.1em]"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            ← Anterior
-          </span>
-          <span
-            className="text-sm font-serif group-hover:opacity-80 transition-opacity"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              color: "var(--foreground)",
-            }}
-          >
-            {prev.title}
-          </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          <span className="text-xs font-sans truncate max-w-[200px]">{prev.title}</span>
         </Link>
-      ) : (
-        <div />
-      )}
-
-      {derivedPosition && derivedTotal ? (
-        <span
-          className="font-mono text-xs shrink-0 px-2"
-          style={{ color: "var(--muted-foreground)", opacity: 0.5 }}
-          aria-label={`Documento ${derivedPosition} de ${derivedTotal}`}
-        >
-          {derivedPosition} · {derivedTotal}
-        </span>
       ) : (
         <div />
       )}
@@ -71,24 +41,13 @@ export function DocNav({ items, current, basePath, position, total }: DocNavProp
       {next ? (
         <Link
           href={`${basePath}/${next.slug}`}
-          className="flex flex-col gap-1 group items-end max-w-[45%] focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-          style={{ outlineColor: "var(--accent)" }}
+          title={next.title}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
         >
-          <span
-            className="text-xs font-sans uppercase tracking-[0.1em]"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            Próximo →
-          </span>
-          <span
-            className="text-sm font-serif text-right group-hover:opacity-80 transition-opacity"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              color: "var(--foreground)",
-            }}
-          >
-            {next.title}
-          </span>
+          <span className="text-xs font-sans truncate max-w-[200px]">{next.title}</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </Link>
       ) : (
         <div />

@@ -1,7 +1,7 @@
 # KORÚ, Bíblia do Mundo
 ## PARTE 5, OS PERSONAGENS
 
-*Todos os personagens Azuri e Onkweri são quadrúpedes com chifres. Sem mãos, sem palmas. Paleta da referência visual fundacional.*
+*Fichas das instâncias nomeadas do elenco. Morfologia geral por espécie (Azuri, Onkweri, Ariku, Ubomi-chi) está em [Parte 4, Criaturas](parte-04-criaturas.md). Aqui, apenas traços específicos de cada personagem.*
 
 ---
 
@@ -28,6 +28,8 @@ Em vez de arquivar, o Bomi Veh coagulou com a frequência Azuri já embutida. Te
 - O círculo azul-frio no Bomi Veh onde Amara se dissolveu é o excesso de material que não coagulou em Temiku. É a única marca física de Oruku no mundo.
 - A luz azul-fria nas suas veias é a frequência de Oruku, não herança emocional. Frequência física, herdada de como ela emergiu.
 - Se Oruku nunca tivesse permanecido, Amara teria se dissolvido normalmente. Temiku não existiria.
+
+*Mecânica ecológica do Bomi Veh e da saturação de frequência mista: → Ver [Parte 3, Ecossistema](parte-03-ecossistema.md).*
 
 ---
 
@@ -118,7 +120,7 @@ Dorso mais amplo que Azuri, menos que Onkweri padrão. Estratificação horizont
 **PROMPTS DE CHARACTER DESIGN, AMARA:**
 
 *Frente:*
-Onkweri padrão com postura distintiva: cabeça levemente inclinada para baixo e à frente, escuta ativa, não submissão. Chifres médios e densos, simétricos, com leve alargamento na base. Textura: marrom-terra rico com veins de verde-musgo nas bordas do corpo (resultado de contato frequente com Ariku). Olhos: abertos, escuros, sem luz, expressão de atenção genuína. Corpo: sem tensão aparente. A postura de escuta não é ansiosa, é natural.
+Onkweri padrão com postura distintiva: cabeça levemente inclinada para baixo e à frente, escuta ativa, não submissão. Chifres médios e densos, simétricos, com leve alargamento na base. Textura: marrom-terra rico com veias de verde-musgo nas bordas do corpo (resultado de contato frequente com Ariku). Olhos: abertos, escuros, sem luz, expressão de atenção genuína. Corpo: sem tensão aparente. A postura de escuta não é ansiosa, é natural.
 
 *Perfil:*
 A inclinação da cabeça é o elemento mais marcante de perfil, o pescoço desce em curva suave para a frente. Dorso levemente inclinado no mesmo sentido, como se o corpo todo estivesse voltado para algo à frente. Verde-musgo visível nos flancos e nas patas.
@@ -184,10 +186,10 @@ Onkweri de meia vida com peso visual dominante. Cabeça grande, pescoço curto e
 Corpo de perfil parece um bloco, pouco arqueamento, dorso quase reto. A estratificação de textura é mais visível de perfil, camadas horizontais que cruzam o corpo inteiro. Barriga baixa, perto do chão. Chifres: curvatura descendente muito clara de perfil.
 
 *Costa:*
-Dorso amplo e plano. Estratificação horizontal dominante, o corpo mais camadas visíveis de todos os personagens Onkweri. Ombros levemente contraídos, postura de alguém que carrega sem abrir.
+Dorso amplo e plano. Estratificação horizontal dominante, o corpo com mais camadas visíveis de todos os personagens Onkweri. Ombros levemente contraídos, postura de alguém que carrega sem abrir.
 
 *Características únicas:*
-1. **A estratificação** é o mais densa e mais regular de todos os personagens, décadas de memória acumulada com ordem.
+1. **A estratificação** é a mais densa e a mais regular de todos os personagens, décadas de memória acumulada com ordem.
 2. **Os chifres pesam para baixo**, não crescem para cima como em Onkweri jovens. O peso da memória física.
 3. **Zero luz** em qualquer estado, absorção pura, sem emissão.
 4. **Rastro:** os mais fundos dentre os personagens ativos da narrativa.
@@ -214,7 +216,7 @@ Dorso amplo e plano. Estratificação horizontal dominante, o corpo mais camadas
 
 **Paleta:** marrom-jovem + lilás-frio nas marcas de eleição (testa e bordas dos olhos).
 
-**Nota sobre o toque de eleição:** realizado fronte a fronte, durou três respirações. Kemdi declarou abertura, o Azuri declarou intenção. A luz nas marcas não some mesmo se o Azuri que a elegeu cessar, a transformação é constitutiva, não superficial.
+**Nota sobre o toque de eleição de Kemdi:** o evento ocorreu fronte a fronte, com as duas declarações. As marcas lilás-frias na testa e nas bordas dos olhos são o registro constitutivo. *Mecânica completa em [Parte 6, Regra 10](parte-06-regras.md).*
 
 ---
 
@@ -242,6 +244,8 @@ Dorso menor que adultos. Pouca estratificação. Chifres de costas: eretos, fino
 **Etimologia:** Edo (Nigéria), aquele que separa.
 
 **Espécie:** Onkweri. Orime de Orunjó. Antagonista.
+
+**Projeto que lidera:** tentativa de forçar o teto do Akwu ao estado Oru permanente (**Mwanga-ji**). A mecânica, consequências ecológicas e contraste com a extração sustentável estão em [Parte 3, Ecossistema](parte-03-ecossistema.md). Beku não é vilão por natureza; é a encarnação política de querer conter o custo do ciclo.
 
 ---
 
@@ -335,7 +339,7 @@ Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou B
 
 | Atributo | Descrição |
 |---|---|
-| Tamanho | A maior coluna do Rimba Ngozi, proporcões que não correspondem a nenhuma medida disponível |
+| Tamanho | A maior coluna do Rimba Ngozi, proporções que não correspondem a nenhuma medida disponível |
 | Tronco | Carvão-denso, quase negro. Casca com camadas de séculos acumuladas, rachaduras profundas |
 | Interior | Vermelho-sangue visível nos galhos mais velhos que racham com o peso dos ciclos |
 | Raízes | Emergem como estrutura arquitetônica, raízes superficiais com extensão de metros |

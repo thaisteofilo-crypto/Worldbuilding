@@ -3,7 +3,7 @@
 
 ---
 
-Beku era o Orime de Orunjó — Onkweri mais velho, com a densidade de quem acumulou muitos ciclos de memória. A filha se chamava Kemi. Tinha nove ciclos quando o Asa Temu chegou. Beku nunca havia entendido bem esse período.
+Beku era o Orime de Orunjó, Onkweri mais velho, com a densidade de quem acumulou muitos ciclos de memória. A filha se chamava Kemi. Tinha nove ciclos quando o Asa Temu chegou. Beku nunca havia entendido bem esse período.
 
 Não era que não entendesse a mecânica. A mecânica era clara: o teto do Akwu mudava de estado, a luz descendo em lilás-frio pelas Ariku, mais dura, mais direcional, as sombras entre os troncos ganhando a definição mineral que o Temu impunha. Os Azuri apareciam em maior número nos limiares. O Bomi Veh pulsava com fosforescência atenuada, a qualidade de solo que respira devagar. Os Chi-Oa entravam em silêncio coletivo. As Jobi-Koro ficavam porosas.
 
@@ -127,21 +127,21 @@ Depois foi para a câmara do Oa-Chi. Havia reunião.
 
 ---
 
-Beku não odiava o Asa Temu por tradição. Odiava com a precisão de um arquiteto — conhecia cada tijolo do que o luto havia destruído e havia construído, em resposta, um projeto de substituição.
+Beku não odiava o Asa Temu por tradição. Odiava com a precisão de um arquiteto: conhecia cada tijolo do que o luto havia destruído e havia construído, em resposta, um projeto de substituição.
 
 A lógica não chegou de uma vez. Chegou como tudo em Korú, por acumulação.
 
 A primeira forma era simples: o ciclo Oru-Temu alternava estados. O Oru era processamento ativo. O Temu era o que tornava o mundo perigoso. Se o ciclo permanecesse em Oru, o Temu não acontecia. Se o Temu não acontecia, as Jobi-Koro não ficavam porosas. Se as Jobi-Koro não ficavam porosas, nenhuma criatura jovem de nove ciclos cruzaria um limiar que não deveria existir no estado em que existia.
 
-A segunda forma era mais precisa. O teto do Akwu podia ser forçado ao estado Oru permanente. Não por intervenção no teto — o teto estava além do alcance de qualquer criatura. Mas por intervenção na base. Os Ubomi-chi regulavam a conexão entre o Bomi Veh e as Ariku. As Ariku regulavam a filtragem da luz que descia do teto. A cadeia era longa mas cada elo era identificável.
+A segunda forma era mais precisa. O teto do Akwu podia ser forçado ao estado Oru permanente. Não por intervenção no teto. O teto estava além do alcance de qualquer criatura. Mas por intervenção na base. Os Ubomi-chi regulavam a conexão entre o Bomi Veh e as Ariku. As Ariku regulavam a filtragem da luz que descia do teto. A cadeia era longa mas cada elo era identificável.
 
-Se os Ubomi-chi fossem extraídos além da frequência de superfície — se a memória-núcleo que mantinha as colônias em equilíbrio fosse redirecionada — o ciclo quebraria.
+Se os Ubomi-chi fossem extraídos além da frequência de superfície, se a memória-núcleo que mantinha as colônias em equilíbrio fosse redirecionada, o ciclo quebraria.
 
 A terceira forma era a que carregava o custo.
 
 ---
 
-O projeto Mwanga-ji — *Mwanga*, luz constante, *Ji*, sustento — não nasceu como gesto de raiva. Nasceu como gesto de eliminação.
+O projeto Mwanga-ji (*Mwanga*, luz constante, *Ji*, sustento) não nasceu como gesto de raiva. Nasceu como gesto de eliminação.
 
 Beku havia administrado um Chi-Oa inteiro por décadas. Sabia como sistemas funcionavam. Sabia onde a energia entrava, onde era processada, onde saía. Sabia que todo sistema tem pontos de intervenção: os nós onde alteração produz efeito desproporcional. Os Ubomi-chi eram um desses nós.
 
@@ -149,7 +149,7 @@ A extração sustentável que Orunjó praticava era colheita de superfície. Os 
 
 O que Beku propunha era diferente.
 
-A extração Mwanga-ji não colhia frequência de superfície. Extraía a memória-núcleo das colônias — o registro central que mantinha cada Ubomi-chi capaz de reconhecer a si mesmo como parte de uma rede, de responder à frequência das Ariku, de processar o que o Bomi Veh depositava nas raízes. A diferença entre as duas extrações era a diferença entre colher frutos e arrancar raízes. Uma alimentava. A outra destruía a capacidade de alimentar.
+A extração Mwanga-ji não colhia frequência de superfície. Extraía a memória-núcleo das colônias, o registro central que mantinha cada Ubomi-chi capaz de reconhecer a si mesmo como parte de uma rede, de responder à frequência das Ariku, de processar o que o Bomi Veh depositava nas raízes. A diferença entre as duas extrações era a diferença entre colher frutos e arrancar raízes. Uma alimentava. A outra destruía a capacidade de alimentar.
 
 A engenharia era limpa. Cada componente tinha justificativa.
 
@@ -165,7 +165,7 @@ O que o custo comprava: nenhum Asa Temu. Nenhuma porosidade nas Jobi-Koro. Nenhu
 
 (Beku sabia que o sistema de luz e o sistema de memória eram o mesmo sistema. Sabia que quebrar a alternância do teto do Akwu quebraria a capacidade do mundo de processar memória. Sabia que os Ubomi-chi eram a rede nervosa que permitia ao solo sentir. Sabia tudo isso porque havia administrado tudo isso. A equação era: um mundo que sente, com a possibilidade de produzir o que produziu em Kemi, ou um mundo que não sente, sem essa possibilidade. Beku escolhia o segundo. Não por ignorância do custo. Por recusa do design que incluía o custo como dado aceitável.)
 
-O projeto não declarava. O projeto propunha. O que não estava no projeto era a consequência completa: sem os Ubomi-chi, o Bomi Veh ficava mudo. E sem solo que sente, Korú começaria a perder a capacidade de ser o que era. A memória coletiva que fazia do mundo um organismo, a rede que conectava cada criatura ao solo que a formou, cada Ariku ao arquivo que mantinha, cada momento de presença ao registro que o preservava — morreria. Por graus. Por regiões. Pela mesma acumulação que fazia tudo em Korú acontecer, só que na direção contrária: acumulação de ausência.
+O projeto não declarava. O projeto propunha. O que não estava no projeto era a consequência completa: sem os Ubomi-chi, o Bomi Veh ficava mudo. E sem solo que sente, Korú começaria a perder a capacidade de ser o que era. A memória coletiva que fazia do mundo um organismo, a rede que conectava cada criatura ao solo que a formou, cada Ariku ao arquivo que mantinha, cada momento de presença ao registro que o preservava, morreria. Por graus. Por regiões. Pela mesma acumulação que fazia tudo em Korú acontecer, só que na direção contrária: acumulação de ausência.
 
 Mas Beku não calculava o que não podia calcular. O que podia calcular era preciso. O que não podia calcular era a extensão em que a memória coletiva e a luz do mundo eram o mesmo sistema. A engenharia do Mwanga-ji tratava a luz como variável independente, porque era assim que a engenharia funcionava: isolando variáveis, controlando saídas. O que a engenharia não capturava era que em Korú nenhuma variável era independente. Tudo era rede. Tudo era camada sobre camada. Tirar uma camada não deixava as outras intactas. Deixava as outras sem o que as sustentava.
 
@@ -185,7 +185,7 @@ A segunda colônia parou de pulsar três ciclos depois. A terceira, dois ciclos 
 
 O Bomi Veh nas regiões afetadas começou a mudar.
 
-A fosforescência lilás-rosada diminuiu primeiro. Depois ficou uniforme. Depois ficou tênue. Depois — nas regiões onde as colônias inteiras haviam morrido — ficou preto. Manchas escuras no solo da floresta, pequenas no começo, do tamanho de um casco, depois maiores, do tamanho de uma clareira. Solo que não respondia ao peso de quem pisava. Solo que não registrava presença.
+A fosforescência lilás-rosada diminuiu primeiro. Depois ficou uniforme. Depois ficou tênue. Depois, nas regiões onde as colônias inteiras haviam morrido, ficou preto. Manchas escuras no solo da floresta, pequenas no começo, do tamanho de um casco, depois maiores, do tamanho de uma clareira. Solo que não respondia ao peso de quem pisava. Solo que não registrava presença.
 
 Era o que Temiku e Obaru encontrariam, ciclos depois. O trecho preto na floresta. O apagamento progressivo. A direção que Orike mostraria com a precisão de Ariku que viu Eras passarem.
 

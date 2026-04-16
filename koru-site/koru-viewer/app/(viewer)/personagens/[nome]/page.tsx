@@ -146,53 +146,25 @@ export default async function PersonagemPage({ params }: Props) {
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
       <article className="pb-20" role="article" aria-label={`Perfil de ${char.name}`}>
-        {/* ── Header ── */}
-        <div className="max-w-5xl mx-auto px-8 md:px-16 pt-10">
-          <p
-            className="font-sans text-xs uppercase tracking-[0.2em] mb-2"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            {char.role}
-          </p>
-          <h1
-            className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
-            style={{ color: "var(--foreground)" }}
-          >
-            {char.name}
-          </h1>
-
-          {/* ── Estado atual badge ── */}
-          {char.status && statusStyle && (
-            <div className="mt-4 flex items-center gap-2">
-              <span
-                className="font-sans text-xs uppercase tracking-[0.18em] inline-flex items-center gap-1.5 px-3 py-1 rounded-full"
-                style={{
-                  backgroundColor: statusStyle.bg,
-                  color: statusStyle.color,
-                  border: `1px solid ${statusStyle.border}`,
-                }}
+        {/* ── Hero Gallery ── */}
+        <div className="px-4 md:px-8 pt-6">
+        <CharacterGallery
+          name={char.name}
+          views={galleryViews}
+          overlay={
+            <div
+              className="absolute bottom-0 left-0 right-0 px-8 md:px-16 pb-8 pt-24"
+              style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.75) 0%, transparent 100%)" }}
+            >
+              <h1
+                className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.0]"
+                style={{ color: "white", textShadow: "0 2px 24px oklch(0 0 0 / 0.5)" }}
               >
-                <span
-                  className="inline-block rounded-full"
-                  style={{
-                    width: 5,
-                    height: 5,
-                    backgroundColor: statusStyle.color,
-                    flexShrink: 0,
-                  }}
-                  aria-hidden="true"
-                />
-                {char.status}
-              </span>
+                {char.name}
+              </h1>
             </div>
-          )}
-        </div>
-
-        {/* ── Gallery ── */}
-        <div className="max-w-5xl mx-auto px-8 md:px-16 mt-10">
-          <div className="max-w-sm">
-            <CharacterGallery name={char.name} views={galleryViews} />
-          </div>
+          }
+        />
         </div>
 
         {/* ── Character sheet ── */}
@@ -211,7 +183,7 @@ export default async function PersonagemPage({ params }: Props) {
                 className="inline-flex items-center gap-1 mt-4 font-sans text-xs transition-opacity duration-150 hover:opacity-70"
                 style={{ color: "var(--accent)" }}
               >
-                Ler o conto de {char.name} →
+                Ler o conto de {char.name}
               </Link>
             )}
           </section>
@@ -269,9 +241,7 @@ export default async function PersonagemPage({ params }: Props) {
                       key={rel.slug}
                       href={`/personagens/${rel.slug}`}
                       className="group flex items-center gap-4 glass-card rounded-xl p-4 transition-all duration-200 hover:scale-[1.01]"
-                      style={{
-                        borderLeft: "2px solid var(--accent)",
-                      }}
+                      style={{}}
                       aria-label={`Ver perfil de ${rel.name}`}
                     >
                       {/* Avatar */}
@@ -321,14 +291,6 @@ export default async function PersonagemPage({ params }: Props) {
                         </span>
                       </div>
 
-                      {/* Arrow */}
-                      <span
-                        className="font-sans text-sm opacity-30 group-hover:opacity-70 group-hover:translate-x-0.5 transition-all duration-200 flex-shrink-0"
-                        style={{ color: "var(--accent)" }}
-                        aria-hidden="true"
-                      >
-                        →
-                      </span>
                     </Link>
                   )
                 })}
