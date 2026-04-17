@@ -220,25 +220,30 @@
 .koru-table-scroll table:has(thead tr > th:nth-child(7)) { min-width: 1700px; }
 
 /* Glossário (5 colunas) — 3 visíveis, 2 no scroll. min-width por coluna. */
+.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th,
+.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td {
+  background: transparent !important;
+  position: static !important;
+}
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(1),
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(1) {
-  min-width: 240px;
+  min-width: 280px;
 }
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(2),
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(2) {
-  min-width: 200px;
+  min-width: 240px;
 }
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(3),
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(3) {
-  min-width: 360px;
+  min-width: 420px;
 }
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(4),
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(4) {
-  min-width: 420px;
+  min-width: 500px;
 }
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(5),
 .koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(5) {
-  min-width: 140px;
+  min-width: 160px;
 }
 .koru-table-scroll::-webkit-scrollbar {
   height: 12px;
