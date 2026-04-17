@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { blockInProduction } from '@/lib/production-guard'
 
 const MEDIA_DIR = path.join(process.cwd(), 'public', 'media')
 
 export async function POST(request: NextRequest) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null

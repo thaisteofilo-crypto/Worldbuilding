@@ -142,10 +142,10 @@ export const mdxComponents: MDXComponents = {
     // Check if this is a reference/citation paragraph
     const childArray = React.Children.toArray(children)
     const firstChild = childArray[0]
+    const firstChildProps = React.isValidElement<{ children?: unknown }>(firstChild) ? firstChild.props : null
     const isRef = (typeof firstChild === "string" && firstChild.trimStart().startsWith("→")) ||
-      (React.isValidElement(firstChild) && firstChild.props?.children &&
-       typeof firstChild.props.children === "string" &&
-       (firstChild.props.children.startsWith("Fonte canônica") || firstChild.props.children.startsWith("Regra de acesso")))
+      (firstChildProps && typeof firstChildProps.children === "string" &&
+       (firstChildProps.children.startsWith("Fonte canônica") || firstChildProps.children.startsWith("Regra de acesso")))
 
     if (isRef) {
       return (

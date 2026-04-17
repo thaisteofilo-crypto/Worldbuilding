@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import fs from "fs"
 import path from "path"
 
-const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
+const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 
 interface DocSection {
   section: string

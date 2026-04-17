@@ -3,7 +3,7 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
+const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 const EXCERPT_RADIUS = 150
 const MAX_RESULTS = 20
 

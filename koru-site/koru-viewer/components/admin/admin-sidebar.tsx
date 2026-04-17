@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -97,51 +98,104 @@ const navItems = [
   },
 ]
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  open?: boolean
+  onClose?: () => void
+}
+
+export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname()
 
+  // Auto-close mobile drawer on route change
+  useEffect(() => {
+    onClose?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (open && typeof window !== 'undefined' && window.innerWidth < 1024) {
+      const prev = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => { document.body.style.overflow = prev }
+    }
+  }, [open])
+
   return (
-    <aside className="flex w-56 flex-col bg-background">
-      {/* Logo */}
-      <div className="flex h-14 items-center px-5">
-        <span className="font-serif text-2xl tracking-tight text-foreground">
-          Korú
-        </span>
-        <span className="ml-2.5 rounded-full border border-admin-badge-border px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase text-muted-foreground">
-          Admin
-        </span>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      <div
+        aria-hidden={!open}
+        onClick={onClose}
+        className={cn(
+          'fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden',
+          open ? 'opacity-100' : 'pointer-events-none opacity-0',
+        )}
+      />
 
-      {/* Nav */}
-      <nav className="flex flex-col gap-0.5 p-3 pt-4 flex-1">
-        {navItems.map((item) => {
-          const active = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href)
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
-                active
-                  ? 'bg-admin-active text-foreground font-medium'
-                  : 'text-muted-foreground hover:bg-admin-hover hover:text-foreground',
-              )}
-            >
-              <span className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
-              {item.label}
-            </Link>
-          )
-        })}
-      </nav>
+      <aside
+        className={cn(
+          'flex w-56 flex-col bg-background',
+          // Mobile: off-canvas drawer
+          'fixed inset-y-0 left-0 z-50 transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
+          open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        )}
+      >
+        {/* Logo */}
+        <div className="flex h-14 items-center justify-between px-5">
+          <div className="flex items-center">
+            <span className="font-serif text-2xl tracking-tight text-foreground">
+              Korú
+            </span>
+            <span className="ml-2.5 rounded-full border border-admin-badge-border px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase text-muted-foreground">
+              Admin
+            </span>
+          </div>
+          {/* Mobile close */}
+          <button
+            onClick={onClose}
+            className="lg:hidden flex items-center justify-center rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-admin-hover hover:text-foreground"
+            aria-label="Fechar menu"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
 
-      {/* Divider + Logout */}
-      <div className="p-3">
-        <hr className="mb-3 border-t border-border" />
-        <LogoutButton />
-      </div>
-    </aside>
+        {/* Nav */}
+        <nav className="flex flex-col gap-0.5 p-3 pt-4 flex-1 overflow-y-auto">
+          {navItems.map((item) => {
+            const active = item.exact
+              ? pathname === item.href
+              : pathname.startsWith(item.href)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={cn(
+                  'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
+                  active
+                    ? 'bg-admin-active text-foreground font-medium'
+                    : 'text-muted-foreground hover:bg-admin-hover hover:text-foreground',
+                )}
+              >
+                <span className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
+                {item.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Divider + Logout */}
+        <div className="p-3">
+          <hr className="mb-3 border-t border-border" />
+          <LogoutButton />
+        </div>
+      </aside>
+    </>
   )
 }
 

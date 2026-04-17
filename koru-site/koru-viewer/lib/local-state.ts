@@ -15,6 +15,7 @@ export function readLocalState(): Record<string, string> {
 }
 
 export function writeLocalState(key: string, value: string): void {
+  if (process.env.NODE_ENV === 'production') return
   const state = readLocalState()
   state[key] = value
   try {

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { blockInProduction } from '@/lib/production-guard'
 
 // Same root logic as lib/content.ts
-const REPO_ROOT = path.resolve(path.join(process.cwd(), '..', '..'))
+const REPO_ROOT = path.resolve(path.join(process.cwd(), 'content'))
 
 const ALLOWED_PREFIXES = [
   'biblia/',
@@ -73,6 +74,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const { path: filePath, content } = await request.json()
 

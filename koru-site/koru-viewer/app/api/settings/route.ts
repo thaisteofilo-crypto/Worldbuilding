@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { blockInProduction } from '@/lib/production-guard'
 
 const ENV_FILE = path.resolve(process.cwd(), '.env.local')
 
@@ -21,6 +22,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const { apiKey } = await request.json()
 

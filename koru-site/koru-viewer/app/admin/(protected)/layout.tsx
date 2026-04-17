@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { AdminSidebar } from "@/components/admin/admin-sidebar"
+import { AdminShell } from './_shell'
 
 export default async function AdminLayout({
   children,
@@ -18,12 +18,5 @@ export default async function AdminLayout({
     redirect('/admin/login')
   }
 
-  return (
-    <div className="flex min-h-screen" style={{ background: 'var(--background)' }}>
-      <AdminSidebar />
-      <div className="flex flex-1 flex-col">
-        <main className="flex-1 overflow-auto p-6">{children}</main>
-      </div>
-    </div>
-  )
+  return <AdminShell>{children}</AdminShell>
 }

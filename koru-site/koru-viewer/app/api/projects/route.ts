@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { readLocalState, writeLocalState } from "@/lib/local-state"
+import { blockInProduction } from "@/lib/production-guard"
 import path from "path"
 import fs from "fs"
 
@@ -20,7 +21,7 @@ interface Project {
 // Constants
 // ---------------------------------------------------------------------------
 
-const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
+const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 const PROJECTS_KEY = "projects"
 
 const DEFAULT_PROJECT: Project = {
@@ -114,6 +115,8 @@ export async function GET() {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const { name, description } = await req.json()
     if (!name || typeof name !== "string") {
@@ -164,6 +167,8 @@ export async function POST(req: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function PATCH(req: NextRequest) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const { id, name, description } = await req.json()
     if (!id || typeof id !== "string") {
@@ -199,6 +204,8 @@ export async function PATCH(req: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function DELETE(req: NextRequest) {
+  const blocked = blockInProduction()
+  if (blocked) return blocked
   try {
     const { id } = await req.json()
     if (!id || typeof id !== "string") {

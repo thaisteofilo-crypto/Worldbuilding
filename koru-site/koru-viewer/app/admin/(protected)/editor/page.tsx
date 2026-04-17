@@ -139,6 +139,11 @@ export default function EditorPage() {
   const [toolbarKey, setToolbarKey] = useState(0)
   const [editorSelection, setEditorSelection] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setSidebarCollapsed(true)
+    }
+  }, [])
   const [showMoreTools, setShowMoreTools] = useState(false)
   const [editingTitle, setEditingTitle] = useState(false)
   const [titleDraft, setTitleDraft] = useState('')
@@ -684,7 +689,7 @@ export default function EditorPage() {
         {/* Sidebar */}
         <div
           className={`shrink-0 overflow-y-auto overflow-x-hidden rounded-xl p-3 flex flex-col gap-1 transition-all duration-200 ${
-            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-64'
+            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-[min(16rem,calc(100vw-3rem))]'
           }`}
           style={sidebarCollapsed ? {} : {
             background: 'var(--card)',

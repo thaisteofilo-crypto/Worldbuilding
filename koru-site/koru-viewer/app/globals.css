@@ -311,3 +311,10 @@
   animation-delay: 0.1s;
   opacity: 0;
 }
+
+/* Radix ScrollArea: force inner wrapper to block so content wraps to viewport width */
+[data-slot="scroll-area-viewport"] > div {
+  display: block !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}

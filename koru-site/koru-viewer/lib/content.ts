@@ -3,8 +3,8 @@ import path from "path"
 import matter from "gray-matter"
 import { CONTOS_ITEMS } from "./navigation"
 
-// Root of the worldbuilding project (two levels up from koru-site/koru-viewer)
-const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
+// Content root — lives inside the Next.js project so Vercel bundles it
+const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 
 const ALLOWED_PREFIXES = [
   "biblia/",
