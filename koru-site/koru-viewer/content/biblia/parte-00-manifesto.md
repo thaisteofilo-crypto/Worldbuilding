@@ -1,6 +1,10 @@
+> Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
+
 ### POR QUE SE CHAMA KORÚ
 
-Korú carrega em seu som duas raízes. *Ko*, fragmento presente em várias das línguas-base do mundo, significando aquilo que recolhe, aquilo que leva consigo. *Rú*, em Yoruba, significa levantar-se, brotar, carregar sobre a cabeça. Korú é então aquilo que carrega o que levanta, um mundo nomeado pela função que o define: lugar onde a memória sobe, lugar que leva consigo o vivido. Antes de ter história, o mundo tem esse nome. É a primeira declaração que Korú faz sobre si mesmo: não somos feitos do que esquecemos, somos feitos do que carregamos.
+Korú carrega em seu som duas raízes. *Ko*, fragmento presente em várias das línguas-base do mundo, significando aquilo que recolhe, aquilo que leva consigo. *Rú*, em Yoruba, significa levantar-se, brotar, carregar sobre a cabeça. Korú é então aquilo que carrega o que levanta, um mundo nomeado pela função que o define: lugar onde a memória sobe, lugar que leva consigo o vivido. Antes de ter história, o mundo tem esse nome. É a primeira declaração que Korú faz sobre si mesmo.
+
+**Não somos feitos do que esquecemos. Somos feitos do que carregamos.**
 
 ### AS LÍNGUAS DE KORÚ
 
@@ -16,15 +20,11 @@ Os nomes deste mundo vêm de nove línguas. Não foi escolha decorativa, foi rec
 - **Bengali** (Bengala), lirismo e densidade metafórica.
 - **Edo** (Benin, Nigéria), herança ritual e artesanal, preservação em forma.
 
-### BOAS VINDAS A KORÚ
+### A FÍSICA, EM UMA FRASE
 
-Korú é um mundo onde a memória pesa. Não como metáfora. Como física.
+Korú é um mundo onde a memória pesa. Não como metáfora. Como física. O que é lembrado ocupa espaço. O que se dissolve muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
 
-O que é lembrado ocupa espaço. O que é esquecido não desaparece, muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
-
-Não tem sol. Não tem céu aberto. Korú acontece dentro do Akwu, a câmara fechada que sustenta o próprio ciclo sem nada vindo de fora. Tudo que existe aqui precisa circular, se transformar, voltar. Quando alguma coisa para de circular, o sistema inteiro sente.
-
-É um mundo que precisa aprender, a cada ciclo, a deixar ir.
+Tudo acontece dentro do Akwu, a câmara fechada que sustenta o próprio ciclo sem nada vindo de fora. O que existe aqui precisa circular, se transformar, voltar. Quando alguma coisa para de circular, o sistema inteiro sente.
 
 → Ver [Parte 01, A Natureza do Akwu](parte-01-fisica-cosmologia.md) para a mecânica da câmara.
 

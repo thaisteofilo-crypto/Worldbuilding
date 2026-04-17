@@ -35,6 +35,7 @@ export const CONTOS_ITEMS = [
   { slug: "obaru", title: "Obaru · Conto de Contexto" },
   { slug: "kemdi", title: "Kemdi · Conto de Contexto" },
   { slug: "orike", title: "Orike · Conto Especial" },
+  { slug: "kairo", title: "Kairo · Conto de Origem" },
 ]
 
 export const PERSONAGENS_ITEMS = [

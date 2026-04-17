@@ -49,6 +49,12 @@
 
 Nesta Era, Temiku existe. A única criatura de Korú que é simultaneamente a prova de que o acordo tem buracos e a prova de que os buracos não destroem o acordo, apenas o complicam.
 
-**O que esta Era revela:** o mundo atual de Korú é um mundo que sobreviveu à sua própria ruptura. Não está curado, está processando. Como o Bomi Veh depois de uma morte.
+**Eventos documentados da Era V (em ordem cronológica interna):**
 
-*Ver: [Parte 5, Temiku/Amara/Oruku e demais personagens](parte-05-personagens.md) · [Parte 7, Oa-Chi](parte-07-cultura.md) · [Parte 2, Jobi-Koro](parte-02-geografia.md).*
+1. **Emergência de Temiku.** Bomi Veh no Rimba Ngozi satura simultaneamente por dissolução de Amara + Luz Limiar de Oruku. Coagulação resulta em ser híbrido. Único caso. *Ver [Parte 5, Temiku](parte-05-personagens.md).*
+2. **Evento Kemi, Jobi-Koro durante Asa Temu.** Entrada sem mediação. Sobrescrição de memória constitutiva. Base do caso de estudo da Regra 06. *Ver [Parte 6, Regra 06](parte-06-regras.md).*
+3. **Ruptura no teto do Akwu, chegada de Kairo.** Fenda pontual no teto interno se abre por intervalo curto e cicatriza depois. Pela fenda atravessa Kairo, primeira humana documentada em Korú. Matéria entrou sem declaração; o sistema não registrou frequência de entrada. Exceção fora do acordo fundador, o Akwu não a lê, não a marca, não a processa. *Ver [Parte 5, Anexo, Kairo](parte-05-personagens.md).*
+
+**O que esta Era revela:** o mundo atual de Korú é um mundo que sobreviveu à sua própria ruptura. Não está curado, está processando. Como o Bomi Veh depois de uma morte. A chegada de Kairo adiciona uma segunda categoria de borda: onde Temiku é buraco processável dentro do ciclo, Kairo é entrada que o ciclo não tenta processar.
+
+*Ver: [Parte 5, Temiku/Amara/Oruku/Kairo e demais personagens](parte-05-personagens.md) · [Parte 7, Oa-Chi](parte-07-cultura.md) · [Parte 2, Jobi-Koro](parte-02-geografia.md).*

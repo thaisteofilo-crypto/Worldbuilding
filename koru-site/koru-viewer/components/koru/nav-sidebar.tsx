@@ -72,7 +72,7 @@ function SubLink({ href, children }: { href: string; children: React.ReactNode }
       href={href}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "block py-1.5 pl-10 pr-3 rounded-lg font-sans text-[13px] transition-all duration-150",
+        "block py-1.5 pl-10 pr-3 rounded-lg font-sans text-[13px] koru-nav-item",
         isActive
           ? "bg-admin-active text-foreground font-medium"
           : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
@@ -109,7 +109,7 @@ function Section({
       <button
         onClick={() => hasItems && setOpen(!open)}
         className={cn(
-          "flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150",
+          "flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm koru-nav-item",
           isActiveSection
             ? "bg-admin-active text-foreground font-medium"
             : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
@@ -119,7 +119,7 @@ function Section({
         <span className="flex-1 text-left">{title}</span>
         {hasItems && (
           <span
-            className="opacity-45 transition-transform duration-150"
+            className="opacity-45 transition-transform duration-[350ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
           >
             {ICONS.chevron}
@@ -155,7 +155,7 @@ function FlatLink({
       href={href}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150",
+        "flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm koru-nav-item",
         isActive
           ? "bg-admin-active text-foreground font-medium"
           : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
@@ -204,7 +204,7 @@ export function NavSidebar() {
         <div className="flex h-14 items-center px-5 pt-3">
           <Link
             href="/"
-            className="font-serif text-2xl tracking-tight text-foreground transition-all duration-300 hover:tracking-wide"
+            className="font-serif text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
             style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "none", filter: "none", fontWeight: 400 }}
           >
             Korú
@@ -216,7 +216,7 @@ export function NavSidebar() {
           <button
             onClick={() => window.dispatchEvent(new CustomEvent("koru:open-search"))}
             aria-label="Buscar (Ctrl+K)"
-            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground transition-all duration-150 hover:bg-admin-hover hover:text-foreground"
+            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground koru-nav-item hover:bg-admin-hover hover:text-foreground"
             style={{ border: "1px solid var(--border)" }}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="opacity-45">

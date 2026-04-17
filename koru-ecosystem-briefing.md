@@ -37,9 +37,11 @@ Não é um planeta com ecologia. É uma câmara fechada, o Akwu, que sustenta se
 
 ### INTENÇÃO NARRATIVA CENTRAL
 
-**Um mundo feito de memória que aprende a deixar ir.**
+**Não somos feitos do que esquecemos. Somos feitos do que carregamos.**
 
-A tensão central não é entre bem e mal, mas entre acumular e processar. O que não é processado sufoca. O que não é traduzido congela. O que não é habitado espera.
+Korú é um mundo feito de memória que aprende a circular o que carrega. A tensão central não é entre bem e mal, mas entre acumular e processar. O que não é processado sufoca. O que não é traduzido congela. O que não é habitado espera. O que é contido por posse, medo, recusa de deixar passar, endurece errado e fica cinza no chão.
+
+O manifesto literário do projeto vive em [`koru-site/koru-viewer/content/biblia/manifesto.md`](koru-site/koru-viewer/content/biblia/manifesto.md).
 
 ### INFLUÊNCIAS LINGUÍSTICAS
 

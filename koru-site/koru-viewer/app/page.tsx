@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/koru/theme-toggle"
 import { CardCarousel } from "@/components/koru/card-carousel"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
-import { getBibliaItems, getLivroItems } from "@/lib/content"
+import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 
 interface DocEntry { label: string; path: string }
 
@@ -139,6 +139,7 @@ export default async function HomePage() {
   const filesystemLivro: DocEntry[] = getLivroItems()
     .map((item) => ({ label: item.title, path: item.slug === 'epilogo' ? 'livro/epilogo.md' : `livro/capitulo-${item.slug}.md` }))
     .filter((d) => !excluded.has(d.path))
+  const contosAvailable = new Set(getContosItems().map((i) => i.slug))
 
   // Merge with editor.doc_groups — label overrides + docs added before file exists on disk
   let finalBibliaDocs = filesystemBiblia
@@ -235,10 +236,10 @@ export default async function HomePage() {
             const cardKey = `biblia-${filename}`
             const title = get(siteContent, `biblia.${filename}.title`) || doc.label
             return (
-              <Link key={doc.path} href={`/biblia/${filename}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+              <Link key={doc.path} href={`/biblia/${filename}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {cardImages[cardKey] ? (
-                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -266,10 +267,10 @@ export default async function HomePage() {
           {characterOrder.map((key) => {
             const char = characters[key]
             return (
-              <Link key={key} href={`/personagens/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+              <Link key={key} href={`/personagens/${key}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {cardImages[`char-${key}`] ? (
-                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -288,13 +289,13 @@ export default async function HomePage() {
       {/* Contos */}
       <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
         <CardCarousel>
-          {characterOrder.filter((key) => !excluded.has(`contos/conto-${key}.md`)).map((key) => {
+          {characterOrder.filter((key) => contosAvailable.has(key) && !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
             return (
-              <Link key={key} href={`/contos/${key}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+              <Link key={key} href={`/contos/${key}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {cardImages[`conto-${key}`] ? (
-                    <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                   ) : (
                     <ImagePlaceholder />
                   )}
@@ -319,10 +320,10 @@ export default async function HomePage() {
             const cardKey = livroCardKey(filename)
             const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
             return (
-              <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card group shrink-0 block rounded-xl transition-all duration-300 hover:scale-[1.03] overflow-hidden relative">
+              <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
                 <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                   {cardImages[cardKey] ? (
-                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                   ) : (
                     <ImagePlaceholder />
                   )}
