@@ -207,25 +207,23 @@
   box-shadow: 0 4px 20px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.06);
 }
 
-/* Sticky first two columns in glossary tables */
-.koru-table-sticky th:nth-child(1),
-.koru-table-sticky td:nth-child(1) {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: var(--card);
+/* Horizontal scroll affordance for wide MDX tables */
+.koru-table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--foreground) 25%, transparent) transparent;
 }
-.koru-table-sticky th:nth-child(2),
-.koru-table-sticky td:nth-child(2) {
-  position: sticky;
-  left: 140px;
-  z-index: 2;
-  background: var(--card);
+.koru-table-scroll::-webkit-scrollbar {
+  height: 10px;
 }
-.koru-table-sticky thead th:nth-child(1),
-.koru-table-sticky thead th:nth-child(2) {
-  z-index: 3;
-  background: color-mix(in oklch, var(--surface) 50%, var(--card));
+.koru-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.koru-table-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--foreground) 22%, transparent);
+  border-radius: 999px;
+}
+.koru-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--foreground) 40%, transparent);
 }
 
 /* Hide scrollbar for carousels */
