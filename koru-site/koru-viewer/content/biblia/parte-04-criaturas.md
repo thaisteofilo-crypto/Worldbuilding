@@ -40,24 +40,6 @@
 → Mecânica completa do toque de eleição e do Isilo-Ori: [Regra 10, Parte 6](parte-06-regras.md)
 → Reprodução e surgimento de Azuri (limiar sem tradutor): [Parte 3, Reprodução por espécie](parte-03-ecossistema.md)
 
-**PROMPTS DE CHARACTER DESIGN, AZURI GENÉRICO:**
-
-*Frente:*
-Quadrúpede cervídeo, proporções muito longas e leves. Pescoço comprido, cabeça pequena em relação ao corpo. Chifres: geométricos, muito ramificados, simétricos, bifurcam como galhos secos, em ângulos quase de 90°, sem curvatura orgânica. Olhos grandes, sem pupila visível, irradiação de luz interna branca-amarelada. Peito estreito, costelas sugeridas mas não marcadas. Patas dianteiras finas, terminando sem cascos definidos, silhueta esfumaçada na base. Halo translúcido ao redor do corpo inteiro.
-
-*Perfil:*
-Dorso levemente arqueado, barriga recolhida. Cauda curta e fina, quase invisível. Patas traseiras com ângulo inverso suave, leves, sem musculatura marcada. A silhueta total: forma de U invertido muito alongado. Chifres visíveis em ramificação lateral complexa. Halo mais visível no contorno do dorso e da cabeça.
-
-*Costa:*
-Dorso plano, espinha não marcada. Chifres dominam a silhueta de costas, ramificação densa vista de trás cria efeito de coroa geométrica. Patas traseiras quase sem contato com o chão, levitação implícita. Halo mais denso na base dos chifres.
-
-*Características únicas:*
-- Rastro: zero. O Bomi Veh não registra presença deles.
-- Quando parado: parece estar em leve movimento constante, como se o corpo não soubesse ficar completamente estático.
-- A luz que emitem não projeta sombra deles. O ambiente ao redor parece ter menos ruído de frequência.
-
----
-
 ### ONKWERI
 
 **Classificação:** Corporificação viva da memória da terra. Bomi Veh solidificado com intenção de forma.
@@ -82,24 +64,6 @@ Dorso plano, espinha não marcada. Chifres dominam a silhueta de costas, ramific
 - Onkweri muito velho: peso e estratificação na pele visíveis
 
 → Surgimento de Onkweri a partir de Bomi Veh, ciclo memória-energia e caso híbrido: [Parte 3, Ecossistema](parte-03-ecossistema.md)
-
-**PROMPTS DE CHARACTER DESIGN, ONKWERI GENÉRICO:**
-
-*Frente:*
-Quadrúpede compacto e robusto. Cabeça maior em proporção que o Azuri, pescoço mais curto. Chifres: curvados para a frente e para baixo, como raízes mineralizadas que crescem pesadas demais para se sustentar eretas. Olhos sem emissão de luz, escuros, texturizados como solo. Tórax largo, costelas marcadas pela textura de camadas. Patas dianteiras grossas, terminando em cascos definidos e pesados. Expressão geral: fechada, enraizada.
-
-*Perfil:*
-Dorso horizontal, sem arqueamento. Barriga baixa, corpo perto do chão. Cauda grossa na base, afina gradualmente. Estratificação de textura visível de perfil, camadas horizontais na lateral do corpo, como corte geológico. Chifres visíveis curvados para a frente.
-
-*Costa:*
-Dorso largo e plano. Estratificação visível como listras horizontais de textura, mais densa nos flancos. Patas traseiras espessas, contato total com o chão. Chifres de costas: curvatura para a frente faz com que pontas fiquem visíveis acima da cabeça de costas.
-
-*Características únicas:*
-- Rastro: profundo. Peso real marcado no Bomi Veh.
-- Onkweri mais velhos: textura de pele tem estratificação visível como geologia sedimentar, quanto mais camadas, mais ciclos de vida.
-- A densidade corporal muda com estado emocional, não a forma, mas a *sensação de peso* que transmitem.
-
----
 
 ### ARIKU
 

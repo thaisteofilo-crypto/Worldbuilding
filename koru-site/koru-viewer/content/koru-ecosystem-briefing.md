@@ -432,24 +432,6 @@ Nenhuma espécie existe fora desta cadeia. Efeitos de ruptura são silenciosos, 
 - Toque de eleição (criação de Isilo-Ori): filtragem intencional concentrada na testa. Calibrado para impressão, não dissolução. Limite: 3 respirações. Além disso, mesmo com intenção, começa a dissolver.
 - Exige declaração mútua (Regra 10).
 
-**PROMPTS DE CHARACTER DESIGN, AZURI GENÉRICO:**
-
-*Frente:*
-Quadrúpede cervídeo, proporções muito longas e leves. Pescoço comprido, cabeça pequena em relação ao corpo. Chifres: geométricos, muito ramificados, simétricos, bifurcam como galhos secos, em ângulos quase de 90°, sem curvatura orgânica. Olhos grandes, sem pupila visível, irradiação de luz interna branca-amarelada. Peito estreito, costelas sugeridas mas não marcadas. Patas dianteiras finas, terminando sem cascos definidos, silhueta esfumaçada na base. Halo translúcido ao redor do corpo inteiro.
-
-*Perfil:*
-Dorso levemente arqueado, barriga recolhida. Cauda curta e fina, quase invisível. Patas traseiras com ângulo inverso suave, leves, sem musculatura marcada. A silhueta total: forma de U invertido muito alongado. Chifres visíveis em ramificação lateral complexa. Halo mais visível no contorno do dorso e da cabeça.
-
-*Costa:*
-Dorso plano, espinha não marcada. Chifres dominam a silhueta de costas, ramificação densa vista de trás cria efeito de coroa geométrica. Patas traseiras quase sem contato com o chão, levitação implícita. Halo mais denso na base dos chifres.
-
-*Características únicas:*
-- Rastro: zero. O Bomi Veh não registra presença deles.
-- Quando parado: parece estar em leve movimento constante, como se o corpo não soubesse ficar completamente estático.
-- A luz que emitem não projeta sombra deles. O ambiente ao redor parece ter menos ruído de frequência.
-
----
-
 ### ONKWERI
 
 **Classificação:** Corporificação viva da memória da terra. Bomi Veh solidificado com intenção de forma.
@@ -472,24 +454,6 @@ Dorso plano, espinha não marcada. Chifres dominam a silhueta de costas, ramific
 - Memória não é algo que possuem, é aquilo do que são feitos
 - Onkweri que esquece algo perde densidade na região corporal onde a memória habitava
 - Onkweri muito velho: peso e estratificação na pele visíveis
-
-**PROMPTS DE CHARACTER DESIGN, ONKWERI GENÉRICO:**
-
-*Frente:*
-Quadrúpede compacto e robusto. Cabeça maior em proporção que o Azuri, pescoço mais curto. Chifres: curvados para a frente e para baixo, como raízes mineralizadas que crescem pesadas demais para se sustentar eretas. Olhos sem emissão de luz, escuros, texturizados como solo. Tórax largo, costelas marcadas pela textura de camadas. Patas dianteiras grossas, terminando em cascos definidos e pesados. Expressão geral: fechada, enraizada.
-
-*Perfil:*
-Dorso horizontal, sem arqueamento. Barriga baixa, corpo perto do chão. Cauda grossa na base, afina gradualmente. Estratificação de textura visível de perfil, camadas horizontais na lateral do corpo, como corte geológico. Chifres visíveis curvados para a frente.
-
-*Costa:*
-Dorso largo e plano. Estratificação visível como listras horizontais de textura, mais densa nos flancos. Patas traseiras espessas, contato total com o chão. Chifres de costas: curvatura para a frente faz com que pontas fiquem visíveis acima da cabeça de costas.
-
-*Características únicas:*
-- Rastro: profundo. Peso real marcado no Bomi Veh.
-- Onkweri mais velhos: textura de pele tem estratificação visível como geologia sedimentar, quanto mais camadas, mais ciclos de vida.
-- A densidade corporal muda com estado emocional, não a forma, mas a *sensação de peso* que transmitem.
-
----
 
 ### ARIKU
 
@@ -628,26 +592,6 @@ Temiku é metade Onkweri. A Luz Limiar que a constitui como Azuri dissolve lenta
 
 ---
 
-**PROMPTS DE CHARACTER DESIGN, TEMIKU:**
-
-*Frente:*
-Quadrúpede com corpo base Onkweri (compacto, baixo, denso) mas proporções ligeiramente mais longas, herança Azuri. Cabeça: tamanho médio, nem tão pequena quanto Azuri nem tão larga quanto Onkweri. Chifres: pequenos, finos, ainda crescendo, assimétricos levemente, como se estivessem em dois ritmos diferentes. Olhos: sem emissão de luz em repouso, escuros como Onkweri. Quando ativados: brilho azul-frio nos íris. Tórax: compacto, textura de terra estratificada (Onkweri) com veias azul-gelo ramificadas sob a superfície, tênues em repouso, vívidas quando ativadas. Patas dianteiras: grossas como Onkweri, mas com terminalidade um pouco mais delicada.
-
-*Perfil:*
-Dorso horizontal com leve arqueamento, mais que Onkweri padrão, menos que Azuri. A tensão corporal de conter algo aparece na linha do dorso: nunca completamente relaxada. Veias azuis visíveis ao longo do pescoço e flanco. Cauda: fina, quase Azuri na terminalidade, mas com base grossa Onkweri. Estratificação de textura Onkweri visível de perfil, interrompida pelas veias.
-
-*Costa:*
-Dorso mais amplo que Azuri, menos que Onkweri padrão. Estratificação horizontal de textura Onkweri, atravessada por veias azuis verticais que cruzam as camadas, efeito visual de dois sistemas em sobreposição. Chifres de costas: assimetria sutil, um levemente mais longo que o outro. Patas traseiras: entre os dois tipos, nem tão leves quanto Azuri, nem tão espessas quanto Onkweri.
-
-*Características únicas para o ilustrador:*
-1. **As veias não são uniformes**, ramificam-se mais densamente nas regiões de maior estresse emocional (pescoço, tórax, base dos chifres). Partem dos chifres em direção ao corpo.
-2. **Os chifres têm velocidades diferentes**, o direito levemente mais avançado em crescimento que o esquerdo. Ambos ainda sem a curvatura matura de um Onkweri adulto ou a ramificação de um Azuri adulto.
-3. **A textura base e as veias são sistemas visualmente conflitantes**, a estratificação horizontal da terra é cortada pelas veias verticais de luz. Nunca integrada. Sempre negociação.
-4. **Em repouso:** a luz das veias é tão tênue que pode parecer parte da textura. Em ativação: a luz domina e a estratificação some visualmente.
-5. **Rastro:** deixa marca no Bomi Veh, como Onkweri, mas a marca tem uma leve tintura azul-fria. Único caso documentado.
-
----
-
 ### AMARA
 
 **Etimologia:** Igbo, graça imortal.
@@ -671,24 +615,6 @@ Dorso mais amplo que Azuri, menos que Onkweri padrão. Estratificação horizont
 **Paleta:** marrom-terra rico, verde-musgo, ausência de luz própria.
 
 **Estado no Bomi Veh:** o círculo azul-frio onde se dissolveu é a única marca física da existência de Oruku. O Bomi Veh ali não sabe onde arquivar a frequência mista (Onkweri + Azuri). Ficou azul, esperando.
-
----
-
-**PROMPTS DE CHARACTER DESIGN, AMARA:**
-
-*Frente:*
-Onkweri padrão com postura distintiva: cabeça levemente inclinada para baixo e à frente, escuta ativa, não submissão. Chifres médios e densos, simétricos, com leve alargamento na base. Textura: marrom-terra rico com veias de verde-musgo nas bordas do corpo (resultado de contato frequente com Ariku). Olhos: abertos, escuros, sem luz, expressão de atenção genuína. Corpo: sem tensão aparente. A postura de escuta não é ansiosa, é natural.
-
-*Perfil:*
-A inclinação da cabeça é o elemento mais marcante de perfil, o pescoço desce em curva suave para a frente. Dorso levemente inclinado no mesmo sentido, como se o corpo todo estivesse voltado para algo à frente. Verde-musgo visível nos flancos e nas patas.
-
-*Costa:*
-Dorso com estratificação Onkweri padrão. Verde-musgo mais visível nos ombros e base dos chifres, onde o contato com troncos de Ariku seria frequente.
-
-*Características únicas:*
-1. **A postura de escuta** é o elemento de reconhecimento imediato, mesmo em repouso, o corpo aponta para algo.
-2. **Verde-musgo** não é decorativo, é registro de frequência absorvida de Ariku ao longo de ciclos.
-3. **Ausência de luz** não é ausência de presença, é presença que absorve em vez de emitir.
 
 ---
 
@@ -734,25 +660,6 @@ Oruku não é um Azuri funcional. É uma frequência sem receptor, expulso do li
 
 ---
 
-**PROMPTS DE CHARACTER DESIGN, OBARU:**
-
-*Frente:*
-Onkweri de meia vida com peso visual dominante. Cabeça grande, pescoço curto e grosso. Chifres: largos na base, curvatura para baixo e para a frente, pesados demais para crescer mais. Estratificação de textura muito marcada no tórax, camadas visíveis como corte geológico horizontal. Olhos: pequenos relativamente ao crânio, expressão analítica. Patas dianteiras espessas com marcas fundas nos cascos, rastro pesado.
-
-*Perfil:*
-Corpo de perfil parece um bloco, pouco arqueamento, dorso quase reto. A estratificação de textura é mais visível de perfil, camadas horizontais que cruzam o corpo inteiro. Barriga baixa, perto do chão. Chifres: curvatura descendente muito clara de perfil.
-
-*Costa:*
-Dorso amplo e plano. Estratificação horizontal dominante, o corpo com mais camadas visíveis de todos os personagens Onkweri. Ombros levemente contraídos, postura de alguém que carrega sem abrir.
-
-*Características únicas:*
-1. **A estratificação** é a mais densa e a mais regular de todos os personagens, décadas de memória acumulada com ordem.
-2. **Os chifres pesam para baixo**, não crescem para cima como em Onkweri jovens. O peso da memória física.
-3. **Zero luz** em qualquer estado, absorção pura, sem emissão.
-4. **Rastro:** os mais fundos dentre os personagens ativos da narrativa.
-
----
-
 ### KEMDI
 
 **Etimologia:** Igbo, o meu que existe.
@@ -774,25 +681,6 @@ Dorso amplo e plano. Estratificação horizontal dominante, o corpo com mais cam
 **Paleta:** marrom-jovem + lilás-frio nas marcas de eleição (testa e bordas dos olhos).
 
 **Nota sobre o toque de eleição:** realizado fronte a fronte, durou três respirações. Kemdi declarou abertura, o Azuri declarou intenção. A luz nas marcas não some mesmo se o Azuri que a elegeu cessar, a transformação é constitutiva, não superficial.
-
----
-
-**PROMPTS DE CHARACTER DESIGN, KEMDI:**
-
-*Frente:*
-Onkweri jovem, proporções ainda não totalmente estabelecidas, corpo entre proporções de filhote e adulto. Cabeça ligeiramente grande em relação ao corpo. Chifres: finos, eretos, ainda crescendo, sem curvatura adulta ainda. Marcas de eleição: luz lilás-fria que envolve a testa em forma de arco e corre pelas bordas dos olhos como delineado luminoso. Olhos: abertos, expressão de atenção sem defesa, a única criatura do elenco sem postura de proteção visível. Textura: marrom-jovem, pouca estratificação.
-
-*Perfil:*
-Corpo mais leve que Onkweri adultos, pernas proporcionalmente mais longas. Marcas de eleição visíveis de perfil: a luz na testa é frontal, mas as bordas dos olhos fazem o brilho visível lateralmente. Dorso com leve arqueamento jovem.
-
-*Costa:*
-Dorso menor que adultos. Pouca estratificação. Chifres de costas: eretos, finos, visíveis acima da cabeça sem curvatura.
-
-*Características únicas:*
-1. **As marcas de eleição** são o elemento de identidade visual imediato, luz lilás-fria na testa e bordas dos olhos. Nunca somem.
-2. **A ausência de postura de defesa** é rara no elenco, o corpo de Kemdi não guarda.
-3. **A estratificação mínima** a torna visualmente mais "aberta", menos camadas = menos fechada visualmente.
-4. **Os chifres em crescimento** são assimétricos levemente, estão em processo, não estabilizados.
 
 ---
 
@@ -822,25 +710,6 @@ Dorso menor que adultos. Pouca estratificação. Chifres de costas: eretos, fino
 
 ---
 
-**PROMPTS DE CHARACTER DESIGN, BEKU:**
-
-*Frente:*
-Onkweri de máxima densidade. Corpo: bloco. Proporções quadradas, largura e comprimento quase equivalentes na silhueta frontal. Chifres: monumentais, os mais largos do elenco, curvatura pronunciada para fora antes de curvar para baixo. Espessura na base: maior que todos os outros personagens. Olhos: pequenos, posicionados em crânio largo, expressão de análise sem abertura. Tórax: estratificação máxima, camadas densas e regulares. Patas: espessas, cascos pesados.
-
-*Perfil:*
-O mais próximo de um bloco arquitetônico de perfil, pouco arqueamento, linhas retas. Chifres de perfil: curvatura para fora e para baixo, peso descendente. A silhueta total de perfil lembra estrutura construída, não criatura viva.
-
-*Costa:*
-Dorso: amplo, plano, estratificação densa. Chifres de costas: a largura é o elemento dominante, vistos de costas, os chifres são mais largos que o crânio.
-
-*Características únicas:*
-1. **A monumentalidade dos chifres** é o elemento de reconhecimento imediato, os maiores do elenco, os mais pesados.
-2. **Zero abertura corporal**, todas as linhas do corpo são fechadas, sem vazios, sem espaço entre os elementos.
-3. **A estratificação é a mais regular**, décadas de acumulação ordenada por liderança.
-4. **Sem luz em nenhum estado**, absorção total. Beku não emite. Nunca emitiu.
-
----
-
 ### TEMI
 
 **Etimologia:** Yoruba, aquilo que é meu, dito como afirmação de existência.
@@ -859,24 +728,6 @@ Dorso: amplo, plano, estratificação densa. Chifres de costas: a largura é o e
 | Postura | Fluida para um Onkweri, movimento mais leve que o padrão |
 
 **Paleta:** marrom-terra mais claro, tons de campo aberto, menos estratificação concentrada, mais mistura de lugares.
-
----
-
-**PROMPTS DE CHARACTER DESIGN, TEMI:**
-
-*Frente:*
-Onkweri com proporções entre jovem e adulto em termos de peso visual, não pela idade, mas pela dispersão de substância. Corpo: compacto mas menos denso que Onkweri de Orunjó. Textura: irregular, camadas de lugares diferentes sobrepostas sem ordem regular. Chifres: menores, com leve flexibilidade na curvatura, não monumentais, não rígidos. Olhos: abertos, sem guarda, leitura de frequência direta. Expressão: presença total.
-
-*Perfil:*
-Dorso com leve arqueamento, mais fluido que Onkweri padrão. A textura irregular é mais visível de perfil: camadas de diferentes lugares sobrepostas em ângulos variados.
-
-*Costa:*
-Dorso com textura variada, não as camadas regulares e horizontais de Obaru ou Beku, mas mistura de direções. Chifres de costas: menores, sem monumentalidade.
-
-*Características únicas:*
-1. **A textura irregular** é o elemento de identidade, nenhum Onkweri sedentário tem esse padrão.
-2. **O rastro que deixa** é menos profundo que Onkweri de cidade, substância mais distribuída = menos peso concentrado.
-3. **O movimento** é o mais fluido do grupo de Onkweri, não leveza de Azuri, mas Onkweri que aprendeu a não resistir ao Ngurui.
 
 ---
 
