@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { blockInProduction } from '@/lib/production-guard'
+import { isGitHubConfigured, readContentFile, writeContentFile } from '@/lib/github-writer'
 
 // Same root logic as lib/content.ts
 const REPO_ROOT = path.resolve(path.join(process.cwd(), 'content'))
@@ -51,6 +52,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid path' }, { status: 403 })
   }
 
+  // Em produção com GitHub: lê direto do repo (fresh após edições via API,
+  // antes do redeploy completar).
+  if (process.env.NODE_ENV === 'production' && isGitHubConfigured()) {
+    try {
+      const ghFile = await readContentFile(filePath)
+      if (ghFile) {
+        return NextResponse.json({ content: ghFile.content, resolvedPath: ghFile.path, source: 'github' })
+      }
+    } catch (err) {
+      console.error('[editor] GET github read error:', err)
+      // cai no filesystem como fallback
+    }
+  }
+
   let actualPath = resolved
 
   if (!fs.existsSync(actualPath)) {
@@ -74,7 +89,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const blocked = blockInProduction()
+  const blocked = blockInProduction({ allowGitHub: true })
   if (blocked) return blocked
   try {
     const { path: filePath, content } = await request.json()
@@ -83,11 +98,35 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing path or content' }, { status: 400 })
     }
 
+    // Validação de path (mesma regra usada no fs)
     const resolved = safePath(filePath)
     if (!resolved) {
       return NextResponse.json({ error: 'Invalid path' }, { status: 403 })
     }
 
+    // Em produção com GitHub configurado: commit via GitHub API.
+    // O commit dispara redeploy automático na Vercel (~30s).
+    if (process.env.NODE_ENV === 'production' && isGitHubConfigured()) {
+      const result = await writeContentFile({
+        relPath: filePath,
+        content,
+        message: `Edit ${filePath} via admin`,
+      })
+      if (!result.ok) {
+        return NextResponse.json(
+          { error: result.error },
+          { status: 502 },
+        )
+      }
+      return NextResponse.json({
+        success: true,
+        mode: 'github',
+        commitSha: result.commitSha,
+        note: 'Commit criado. Vercel fará redeploy automático em ~30s.',
+      })
+    }
+
+    // Caminho local: grava no filesystem diretamente.
     let actualPath = resolved
 
     if (!fs.existsSync(actualPath)) {
@@ -107,8 +146,9 @@ export async function PUT(request: NextRequest) {
     }
 
     fs.writeFileSync(actualPath, content, 'utf-8')
-    return NextResponse.json({ success: true })
-  } catch {
+    return NextResponse.json({ success: true, mode: 'local' })
+  } catch (err) {
+    console.error('[editor] PUT error:', err)
     return NextResponse.json({ error: 'Failed to save file' }, { status: 500 })
   }
 }
