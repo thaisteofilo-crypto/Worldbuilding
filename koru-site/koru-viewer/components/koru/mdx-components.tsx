@@ -232,7 +232,7 @@ export const mdxComponents: MDXComponents = {
   ),
   hr: () => null,
   table: ({ children }) => (
-    <div className="my-6 glass-card rounded-2xl overflow-x-auto koru-table-scroll">
+    <div className="my-6 -mx-6 md:-mx-10 lg:-mx-20 xl:-mx-32 2xl:-mx-48 glass-card rounded-2xl overflow-x-auto koru-table-scroll">
       <table className="text-sm font-sans border-collapse" style={{ minWidth: "1100px", width: "100%" }}>
         {children}
       </table>

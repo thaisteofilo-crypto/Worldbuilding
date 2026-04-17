@@ -213,7 +213,7 @@
   scrollbar-color: color-mix(in oklch, var(--foreground) 25%, transparent) transparent;
 }
 .koru-table-scroll::-webkit-scrollbar {
-  height: 10px;
+  height: 12px;
 }
 .koru-table-scroll::-webkit-scrollbar-track {
   background: transparent;
