@@ -14,7 +14,6 @@ export const BIBLIA_ITEMS = [
   { slug: "parte-08", title: "Linha do Tempo · As Cinco Eras" },
   { slug: "glossario-de-koru", title: "Glossário de Korú" },
   { slug: "glossario-de-lugares", title: "Glossário de Lugares" },
-  { slug: "MAPA-DE-AUTORIDADE", title: "Mapa de Autoridade" },
 ]
 
 export const LIVRO_ITEMS = [
@@ -65,5 +64,4 @@ export const BANNER_CONFIG: Record<
   "parte-08": { fallbackHue: 50 },
   "glossario-de-koru": { fallbackHue: 200 },
   "glossario-de-lugares": { fallbackHue: 160 },
-  "MAPA-DE-AUTORIDADE": { fallbackHue: 45 },
 }

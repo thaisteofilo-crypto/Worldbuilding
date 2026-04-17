@@ -11,7 +11,6 @@
 Este glossário reúne **todos os termos nomeados** da bíblia de Korú em ordem alfabética.
 
 Para navegação geográfica específica, ver [Glossário de Lugares](/biblia/glossario-de-lugares).
-Para organização por tema, ver [Mapa de Autoridade](/biblia/MAPA-DE-AUTORIDADE).
 
 ---
 
@@ -92,4 +91,4 @@ Para organização por tema, ver [Mapa de Autoridade](/biblia/MAPA-DE-AUTORIDADE
 
 ---
 
-*Glossário de Korú v1.0. Sincronizado com Bíblia v2.0 e Mapa de Autoridade.*
+*Glossário de Korú v1.0. Sincronizado com Bíblia v2.0.*

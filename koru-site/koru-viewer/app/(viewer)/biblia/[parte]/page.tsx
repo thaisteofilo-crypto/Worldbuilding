@@ -21,7 +21,6 @@ export async function generateStaticParams() {
     { parte: "manifesto" },
     { parte: "glossario-de-koru" },
     { parte: "glossario-de-lugares" },
-    { parte: "MAPA-DE-AUTORIDADE" },
   ]
 }
 

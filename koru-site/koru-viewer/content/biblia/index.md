@@ -3,8 +3,6 @@
 **Versão:** 2.0, Sistema de luz revisado, morfologia corrigida, 13 regras, ecossistema completo
 **Línguas de base:** Yoruba | Igbo | Swahili | Zulu | Amhárico | Bambara | Malaio | Bengali | Edo
 
-> **Antes de editar qualquer parte, consulte o [Mapa de Autoridade](MAPA-DE-AUTORIDADE.md).** Ele define qual parte é fonte canônica para cada conceito. Redefinições em partes secundárias geram inconsistência, use menção + link.
-
 ---
 
 ## Tabela de Conteúdos

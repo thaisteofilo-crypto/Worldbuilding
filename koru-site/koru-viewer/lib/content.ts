@@ -183,9 +183,6 @@ export function getBibliaItems(): { slug: string; title: string }[] {
   if (files.includes("glossario-de-lugares.md")) {
     items.push({ slug: "glossario-de-lugares", title: "Glossário de Lugares" })
   }
-  if (files.includes("MAPA-DE-AUTORIDADE.md")) {
-    items.push({ slug: "MAPA-DE-AUTORIDADE", title: "Mapa de Autoridade" })
-  }
 
   return items
 }

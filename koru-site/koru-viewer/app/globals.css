@@ -212,39 +212,74 @@
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklch, var(--foreground) 25%, transparent) transparent;
 }
-/* min-width escala com número de colunas (detectado por :has()) */
+/* min-width padrão (tabelas sem classe específica) */
 .koru-table-scroll table { min-width: 720px; }
-.koru-table-scroll table:has(thead tr > th:nth-child(4)) { min-width: 1000px; }
-.koru-table-scroll table:has(thead tr > th:nth-child(5)) { min-width: 1360px; }
-.koru-table-scroll table:has(thead tr > th:nth-child(6)) { min-width: 1500px; }
-.koru-table-scroll table:has(thead tr > th:nth-child(7)) { min-width: 1700px; }
 
-/* Glossário (5 colunas) — 3 visíveis, 2 no scroll. min-width por coluna. */
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th,
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td {
+/* Larguras por número de colunas — aplicadas via classe no wrapper,
+   independente de suporte a :has(). Regra: ~3 primeiras colunas visíveis,
+   restantes no scroll horizontal. Viewport útil do artigo (com break-out)
+   fica entre 900-1150px, então a soma das 3 primeiras cabe, e o total
+   força o scroll. */
+
+.koru-table-cols-5 table { min-width: 1760px; table-layout: fixed; }
+.koru-table-cols-5 th,
+.koru-table-cols-5 td {
   background: transparent !important;
   position: static !important;
+  word-break: break-word;
 }
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(1),
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(1) {
-  min-width: 280px;
+.koru-table-cols-5 th:nth-child(1),
+.koru-table-cols-5 td:nth-child(1) { width: 340px; }
+.koru-table-cols-5 th:nth-child(2),
+.koru-table-cols-5 td:nth-child(2) { width: 220px; }
+.koru-table-cols-5 th:nth-child(3),
+.koru-table-cols-5 td:nth-child(3) { width: 480px; }
+.koru-table-cols-5 th:nth-child(4),
+.koru-table-cols-5 td:nth-child(4) { width: 560px; }
+.koru-table-cols-5 th:nth-child(5),
+.koru-table-cols-5 td:nth-child(5) { width: 160px; }
+
+.koru-table-cols-6 table { min-width: 1980px; table-layout: fixed; }
+.koru-table-cols-6 th,
+.koru-table-cols-6 td {
+  background: transparent !important;
+  position: static !important;
+  word-break: break-word;
 }
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(2),
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(2) {
-  min-width: 240px;
+.koru-table-cols-6 th:nth-child(1),
+.koru-table-cols-6 td:nth-child(1) { width: 320px; }
+.koru-table-cols-6 th:nth-child(2),
+.koru-table-cols-6 td:nth-child(2) { width: 220px; }
+.koru-table-cols-6 th:nth-child(3),
+.koru-table-cols-6 td:nth-child(3) { width: 460px; }
+.koru-table-cols-6 th:nth-child(4),
+.koru-table-cols-6 td:nth-child(4) { width: 440px; }
+.koru-table-cols-6 th:nth-child(5),
+.koru-table-cols-6 td:nth-child(5) { width: 380px; }
+.koru-table-cols-6 th:nth-child(6),
+.koru-table-cols-6 td:nth-child(6) { width: 160px; }
+
+.koru-table-cols-7 table { min-width: 2200px; table-layout: fixed; }
+.koru-table-cols-7 th,
+.koru-table-cols-7 td {
+  background: transparent !important;
+  position: static !important;
+  word-break: break-word;
 }
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(3),
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(3) {
-  min-width: 420px;
-}
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(4),
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(4) {
-  min-width: 500px;
-}
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) th:nth-child(5),
-.koru-table-scroll table:has(thead tr > th:nth-child(5)):not(:has(thead tr > th:nth-child(6))) td:nth-child(5) {
-  min-width: 160px;
-}
+.koru-table-cols-7 th:nth-child(1),
+.koru-table-cols-7 td:nth-child(1) { width: 300px; }
+.koru-table-cols-7 th:nth-child(2),
+.koru-table-cols-7 td:nth-child(2) { width: 220px; }
+.koru-table-cols-7 th:nth-child(3),
+.koru-table-cols-7 td:nth-child(3) { width: 440px; }
+.koru-table-cols-7 th:nth-child(4),
+.koru-table-cols-7 td:nth-child(4) { width: 360px; }
+.koru-table-cols-7 th:nth-child(5),
+.koru-table-cols-7 td:nth-child(5) { width: 340px; }
+.koru-table-cols-7 th:nth-child(6),
+.koru-table-cols-7 td:nth-child(6) { width: 380px; }
+.koru-table-cols-7 th:nth-child(7),
+.koru-table-cols-7 td:nth-child(7) { width: 160px; }
 .koru-table-scroll::-webkit-scrollbar {
   height: 12px;
 }

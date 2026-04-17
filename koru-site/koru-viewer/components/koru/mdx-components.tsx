@@ -231,13 +231,35 @@ export const mdxComponents: MDXComponents = {
     </li>
   ),
   hr: () => null,
-  table: ({ children }) => (
-    <div className="my-6 -mx-6 md:-mx-10 lg:-mx-20 xl:-mx-32 2xl:-mx-48 glass-card rounded-2xl overflow-x-auto koru-table-scroll">
-      <table className="text-sm font-sans border-collapse" style={{ width: "100%" }}>
-        {children}
-      </table>
-    </div>
-  ),
+  table: ({ children }) => {
+    // Count columns in the first <thead><tr> to add a col-count class.
+    let cols = 0
+    React.Children.forEach(children, (child) => {
+      if (cols > 0) return
+      if (!React.isValidElement<{ children?: ReactNode }>(child)) return
+      if (child.type !== "thead" && (child as unknown as { props?: { originalType?: string } }).props?.originalType !== "thead") {
+        // Tolerate both "thead" strings and MDX-transformed variants.
+        if (typeof child.type === "string" && child.type !== "thead") return
+      }
+      const theadChildren = child.props?.children
+      React.Children.forEach(theadChildren, (row) => {
+        if (cols > 0) return
+        if (!React.isValidElement<{ children?: ReactNode }>(row)) return
+        const cells = React.Children.toArray(row.props?.children).filter(Boolean)
+        cols = cells.length
+      })
+    })
+
+    const colClass = cols >= 5 ? `koru-table-cols-${Math.min(cols, 7)}` : ""
+
+    return (
+      <div className={`my-6 -mx-6 md:-mx-10 lg:-mx-20 xl:-mx-32 2xl:-mx-48 glass-card rounded-2xl overflow-x-auto koru-table-scroll ${colClass}`}>
+        <table className="text-sm font-sans border-collapse" style={{ width: "100%" }}>
+          {children}
+        </table>
+      </div>
+    )
+  },
   thead: ({ children }) => (
     <thead style={{ backgroundColor: "color-mix(in oklch, var(--surface) 50%, transparent)" }}>{children}</thead>
   ),
@@ -270,7 +292,7 @@ export const mdxComponents: MDXComponents = {
       const parteMatch = filename.match(/^(parte-\d+)/)
       if (parteMatch) {
         resolvedHref = `/biblia/${parteMatch[1]}`
-      } else if (filename === "glossario-de-lugares" || filename === "glossario-de-koru" || filename === "MAPA-DE-AUTORIDADE") {
+      } else if (filename === "glossario-de-lugares" || filename === "glossario-de-koru") {
         resolvedHref = `/biblia/${filename}`
       }
     }
