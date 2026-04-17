@@ -46,8 +46,4 @@ A seta é sempre fundação → derivado. Nunca o contrário.
 
 ---
 
-
-
----
-
 *Este mapa é a referência de consistência. Atualize quando a estrutura mudar.*
