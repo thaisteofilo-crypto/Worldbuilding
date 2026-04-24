@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { AIAnalysisPanel } from "@/components/admin/ai-analysis-panel"
 
 /* ─── Analytics types ─── */
 
@@ -98,6 +99,11 @@ export default function AdminDashboardPage() {
         <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="var(--gold)" href="/admin/editor" />
         <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" href="/admin/tasks" />
         <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" href="/admin/gallery" />
+      </div>
+
+      {/* AI Analysis Panel */}
+      <div className="mt-8">
+        <AIAnalysisPanel />
       </div>
     </div>
   )
