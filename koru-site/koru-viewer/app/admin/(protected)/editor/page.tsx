@@ -72,6 +72,30 @@ function getSiteContentTitleKey(docPath: string): string | null {
   return null
 }
 
+// Extract title from frontmatter, falling back to first H1, then fallback label.
+function extractTitleFromContent(content: string, fallback: string): string {
+  const fmMatch = content.match(/^---\s*\n([\s\S]*?)\n---/)
+  if (fmMatch) {
+    const titleLine = fmMatch[1].match(/^title:\s*["']?(.+?)["']?\s*$/m)
+    if (titleLine) return titleLine[1].trim()
+  }
+  const h1Match = content.match(/^#\s+(.+)$/m)
+  if (h1Match) return h1Match[1].trim()
+  return fallback
+}
+
+// Sync title to Supabase site_content so the home page shows the updated title immediately.
+function syncTitleToSiteContent(docPath: string, content: string, fallbackLabel: string) {
+  const titleKey = getSiteContentTitleKey(docPath)
+  if (!titleKey) return
+  const title = extractTitleFromContent(content, fallbackLabel)
+  fetch('/api/site-content', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ key: titleKey, value: title }),
+  }).catch(() => { /* ignore */ })
+}
+
 function loadDocGroups(): DocGroup[] {
   if (typeof window === 'undefined') return DEFAULT_DOC_GROUPS
   try {
@@ -437,6 +461,7 @@ export default function EditorPage() {
       if (res.ok) {
         savedContentRef.current = content
         setAutosaveStatus('saved')
+        syncTitleToSiteContent(selectedPath, content, selectedLabel)
         setMessage({ type: 'success', text: 'Arquivo salvo com sucesso.' })
       } else {
         setMessage({ type: 'error', text: data.error || 'Erro ao salvar.' })
@@ -486,6 +511,7 @@ export default function EditorPage() {
           savedContentRef.current = content
           lastSavedRef.current = new Date()
           setAutosaveStatus('saved')
+          syncTitleToSiteContent(selectedPath, content, selectedLabel)
           setTimeout(() => setAutosaveStatus('idle'), 3000)
         } else {
           setAutosaveStatus('error')

@@ -132,12 +132,23 @@ export default async function HomePage() {
     if (excludedRaw) excluded = new Set<string>(JSON.parse(excludedRaw))
   } catch { /* ignore */ }
 
-  // Primary: filesystem scan — auto-discovers files that exist on disk
+  // Primary: filesystem scan — auto-discovers files that exist on disk.
+  // Editor-supplied titles in site_content override the filesystem default when present.
   const filesystemBiblia: DocEntry[] = getBibliaItems()
-    .map((item) => ({ label: item.title, path: `biblia/${item.slug}.md` }))
+    .map((item) => {
+      const override = siteContent[`biblia.${item.slug}.title`]
+      return { label: (override ?? item.title), path: `biblia/${item.slug}.md` }
+    })
     .filter((d) => !excluded.has(d.path))
   const filesystemLivro: DocEntry[] = getLivroItems()
-    .map((item) => ({ label: item.title, path: item.slug === 'epilogo' ? 'livro/epilogo.md' : `livro/capitulo-${item.slug}.md` }))
+    .map((item) => {
+      const key = item.slug === 'epilogo' ? 'livro.epilogo.title' : `livro.${item.slug}.title`
+      const override = siteContent[key]
+      return {
+        label: (override ?? item.title),
+        path: item.slug === 'epilogo' ? 'livro/epilogo.md' : `livro/capitulo-${item.slug}.md`,
+      }
+    })
     .filter((d) => !excluded.has(d.path))
   const contosAvailable = new Set(getContosItems().map((i) => i.slug))
 
@@ -203,7 +214,7 @@ export default async function HomePage() {
         ) : (
           <div className="absolute inset-0 bg-background" />
         )}
-        <div className="relative z-10 px-8 md:px-16">
+        <div className="relative z-10 px-4 sm:px-8 md:px-16">
           <h1
             className="koru-hero-text font-serif leading-[0.85] mb-8"
             style={{
