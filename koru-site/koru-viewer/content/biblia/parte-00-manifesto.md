@@ -1,6 +1,6 @@
 > Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
 
-
+### Karibu
 
 Korú é um mundo onde a memória pesa. Não como metáfora. Como física. O que é lembrado ocupa espaço. O que se dissolve muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
 
