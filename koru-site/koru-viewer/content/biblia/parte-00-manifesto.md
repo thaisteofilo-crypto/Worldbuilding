@@ -28,14 +28,6 @@ Os nomes deste mundo vêm de nove línguas. Não foi escolha decorativa, foi rec
 - **Bengali** (Bengala), lirismo e densidade metafórica.
 - **Edo** (Benin, Nigéria), herança ritual e artesanal, preservação em forma.
 
-### A FÍSICA, EM UMA FRASE
-
-Korú é um mundo onde a memória pesa. Não como metáfora. Como física. O que é lembrado ocupa espaço. O que se dissolve muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
-
-Tudo acontece dentro do Akwu, a câmara fechada que sustenta o próprio ciclo sem nada vindo de fora. O que existe aqui precisa circular, se transformar, voltar. Quando alguma coisa para de circular, o sistema inteiro sente.
-
-→ Ver [Parte 01, A Natureza do Akwu](parte-01-fisica-cosmologia.md) para a mecânica da câmara.
-
 ### O QUE KORÚ NÃO É
 
 - Não é pós-apocalíptico. As ruínas (Jobi-Koro) existem, mas não são o fim de uma civilização destruída de fora. São consequência de uma ruptura do ciclo na Era IV, memória que ficou presa quando deveria ter circulado.
