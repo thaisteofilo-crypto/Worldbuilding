@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
-import { ChatPanel } from '@/components/admin/chat-panel'
+import { ChatPanel, ChatToggleButton } from '@/components/admin/chat-panel'
 import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
 import { DocumentStatusBadge } from '@/components/admin/document-status-badge'
@@ -1618,11 +1618,11 @@ export default function EditorPage() {
                 </div>
               )}
 
-              {/* Editor + Chat — 3 column layout */}
+              {/* Editor (chat is floating now, rendered as portal outside) */}
               <div className="flex-1 flex gap-4 min-h-0">
                 <div
                   ref={editorScrollRef}
-                  className={`flex flex-col min-h-0 overflow-y-auto ${showChat ? 'flex-1 min-w-0' : 'w-full'}`}
+                  className="flex flex-col min-h-0 overflow-y-auto w-full"
                 >
                   {loading ? (
                     <div
@@ -1691,22 +1691,23 @@ export default function EditorPage() {
                   )}
                 </div>
 
-                {showChat && (
-                  <div className="sticky top-0 self-start" style={{ maxHeight: 'calc(100vh - 10rem)' }}>
-                    <ChatPanel
-                      documentPath={selectedPath}
-                      documentContent={content}
-                      selectedText={editorSelection}
-                      onInsertText={handleInsertText}
-                      onReplaceSelection={handleReplaceSelection}
-                    />
-                  </div>
-                )}
               </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Floating AI assistant */}
+      <ChatToggleButton open={showChat} onClick={() => setShowChat(true)} />
+      <ChatPanel
+        documentPath={selectedPath}
+        documentContent={content}
+        selectedText={editorSelection}
+        onInsertText={handleInsertText}
+        onReplaceSelection={handleReplaceSelection}
+        open={showChat}
+        onClose={() => setShowChat(false)}
+      />
     </div>
   )
 }

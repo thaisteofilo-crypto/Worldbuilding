@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -15,15 +16,13 @@ interface ChatPanelProps {
   selectedText?: string
   onInsertText?: (text: string) => void
   onReplaceSelection?: (text: string) => void
+  open: boolean
+  onClose: () => void
 }
 
 // --- localStorage persistence ---
 
 const CHAT_STORAGE_KEY = 'koru-chat-history'
-const CHAT_WIDTH_KEY = 'koru-chat-width'
-const DEFAULT_WIDTH = 380
-const MIN_WIDTH = 300
-const MAX_WIDTH = 600
 
 function loadHistory(path: string): Message[] {
   try {
@@ -37,23 +36,8 @@ function loadHistory(path: string): Message[] {
 function saveHistory(path: string, messages: Message[]) {
   try {
     const all = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) ?? '{}')
-    // Keep only last 20 messages per doc to avoid storage bloat
     all[path] = messages.slice(-20)
     localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(all))
-  } catch {}
-}
-
-function loadWidth(): number {
-  try {
-    const w = parseInt(localStorage.getItem(CHAT_WIDTH_KEY) ?? '', 10)
-    if (w >= MIN_WIDTH && w <= MAX_WIDTH) return w
-  } catch {}
-  return DEFAULT_WIDTH
-}
-
-function saveWidth(w: number) {
-  try {
-    localStorage.setItem(CHAT_WIDTH_KEY, String(w))
   } catch {}
 }
 
@@ -67,15 +51,12 @@ function formatTime(ts: number): string {
 type ReactNode = React.ReactNode
 
 function renderInline(text: string): ReactNode[] {
-  // Splits text into segments: bold-italic, bold, italic, inline code, plain
   const parts: ReactNode[] = []
-  // Pattern order matters: bold-italic before bold before italic
   const pattern = /(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|_(.+?)_|`([^`]+)`)/g
   let lastIndex = 0
   let match: RegExpExecArray | null
 
   while ((match = pattern.exec(text)) !== null) {
-    // Push plain text before this match
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index))
     }
@@ -110,7 +91,6 @@ function renderInline(text: string): ReactNode[] {
     lastIndex = match.index + full.length
   }
 
-  // Push remaining plain text
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex))
   }
@@ -118,16 +98,89 @@ function renderInline(text: string): ReactNode[] {
   return parts
 }
 
+// Render a markdown table into an HTML table element, returning both the rendered React and the
+// raw markdown so we can insert it back into the editor verbatim.
+function parseTableMarkdown(lines: string[]): { rendered: ReactNode; markdown: string } | null {
+  if (lines.length < 2) return null
+  const header = lines[0]
+  const sep = lines[1]
+  if (!header.includes('|') || !sep.match(/^\s*\|?[-:\s|]+\|?\s*$/)) return null
+
+  const splitRow = (row: string) =>
+    row.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|').map((c) => c.trim())
+
+  const headerCells = splitRow(header)
+  const bodyRows = lines.slice(2).map(splitRow)
+
+  return {
+    markdown: lines.join('\n'),
+    rendered: (
+      <table
+        style={{
+          width: '100%',
+          borderCollapse: 'separate',
+          borderSpacing: 0,
+          fontSize: '0.8rem',
+          margin: '0.5rem 0',
+          borderRadius: '0.5rem',
+          overflow: 'hidden',
+        }}
+      >
+        <thead>
+          <tr>
+            {headerCells.map((h, i) => (
+              <th
+                key={i}
+                style={{
+                  textAlign: 'left',
+                  fontFamily: 'var(--font-sans), Inter, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase' as const,
+                  padding: '0.5rem 0.6rem',
+                  color: 'var(--muted-foreground)',
+                  background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
+                }}
+              >
+                {renderInline(h)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {bodyRows.map((row, ri) => (
+            <tr key={ri}>
+              {row.map((cell, ci) => (
+                <td
+                  key={ci}
+                  style={{
+                    padding: '0.5rem 0.6rem',
+                    verticalAlign: 'top',
+                    color: 'var(--foreground)',
+                    background: ri % 2 === 1
+                      ? 'color-mix(in oklch, var(--foreground) 3%, transparent)'
+                      : 'transparent',
+                  }}
+                >
+                  {renderInline(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ),
+  }
+}
+
 function renderMarkdownSafe(
   text: string,
-  onInsertSuggestion?: (text: string) => void,
-  onReplaceSuggestion?: (text: string) => void
+  onInsert?: (text: string) => void,
+  onReplace?: (text: string) => void
 ): ReactNode {
   const elements: ReactNode[] = []
   let key = 0
-
-  // Split into blocks on double newline, but first extract fenced code blocks
-  // We process line by line to handle code fences, lists, headers, paragraphs
 
   const lines = text.split('\n')
   let i = 0
@@ -149,14 +202,13 @@ function renderMarkdownSafe(
 
       const codeContent = codeLines.join('\n')
 
-      // --- Suggestion block (special rendering) ---
       if (lang === 'suggestion') {
         elements.push(
           <div
             key={key++}
             style={{
               background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-              borderLeft: '2px solid var(--border)',
+              borderLeft: '2px solid var(--accent)',
               padding: '0.75rem 1rem',
               borderRadius: '0 0.5rem 0.5rem 0',
               margin: '0.5rem 0',
@@ -176,33 +228,11 @@ function renderMarkdownSafe(
               {codeContent}
             </div>
             <div className="flex items-center gap-2 mt-2">
-              {onInsertSuggestion && (
-                <button
-                  onClick={() => onInsertSuggestion(codeContent)}
-                  className="rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-80"
-                  style={{
-                    fontSize: '10px',
-                    color: 'var(--foreground)',
-                    border: '1px solid var(--border)',
-                    background: 'transparent',
-                  }}
-                >
-                  Inserir no editor
-                </button>
+              {onInsert && (
+                <InsertButton onClick={() => onInsert(codeContent)} label="Inserir no editor" primary />
               )}
-              {onReplaceSuggestion && (
-                <button
-                  onClick={() => onReplaceSuggestion(codeContent)}
-                  className="rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-80"
-                  style={{
-                    fontSize: '10px',
-                    color: 'var(--foreground)',
-                    border: '1px solid var(--border)',
-                    background: 'transparent',
-                  }}
-                >
-                  Aplicar
-                </button>
+              {onReplace && (
+                <InsertButton onClick={() => onReplace(codeContent)} label="Aplicar na seleção" />
               )}
             </div>
           </div>
@@ -210,79 +240,83 @@ function renderMarkdownSafe(
         continue
       }
 
-      // --- Regular code block ---
+      // Regular code block — with insert button
       elements.push(
-        <pre
-          key={key++}
-          style={{
-            background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
-            padding: '0.75rem',
-            borderRadius: '0.5rem',
-            fontSize: '0.75rem',
-            overflowX: 'auto' as const,
-            maxWidth: '100%',
-            margin: '0.5rem 0',
-          }}
-        >
-          <code>{codeContent}</code>
-        </pre>
+        <div key={key++} style={{ margin: '0.5rem 0' }}>
+          <pre
+            style={{
+              background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
+              padding: '0.75rem',
+              borderRadius: '0.5rem',
+              fontSize: '0.75rem',
+              overflowX: 'auto' as const,
+              maxWidth: '100%',
+              margin: 0,
+            }}
+          >
+            <code>{codeContent}</code>
+          </pre>
+          {onInsert && (
+            <div className="mt-1">
+              <InsertButton onClick={() => onInsert(codeContent)} label="Inserir no editor" />
+            </div>
+          )}
+        </div>
       )
       continue
     }
 
-    // --- H1 ---
+    // --- Markdown table ---
+    // Detect header row followed by separator line
+    if (line.includes('|') && i + 1 < lines.length && lines[i + 1].match(/^\s*\|?[-:\s|]+\|?\s*$/)) {
+      const tableLines: string[] = [line, lines[i + 1]]
+      let j = i + 2
+      while (j < lines.length && lines[j].includes('|') && lines[j].trim() !== '') {
+        tableLines.push(lines[j])
+        j++
+      }
+      const parsed = parseTableMarkdown(tableLines)
+      if (parsed) {
+        elements.push(
+          <div key={key++} style={{ margin: '0.5rem 0' }}>
+            <div style={{ overflowX: 'auto' }}>{parsed.rendered}</div>
+            {onInsert && (
+              <div className="mt-1">
+                <InsertButton onClick={() => onInsert(parsed.markdown)} label="Inserir tabela no editor" />
+              </div>
+            )}
+          </div>
+        )
+        i = j
+        continue
+      }
+    }
+
+    // --- Headings ---
     const h1Match = line.match(/^# (.+)$/)
     if (h1Match) {
       elements.push(
-        <p
-          key={key++}
-          style={{
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            fontSize: '1.15rem',
-            fontWeight: 600,
-            margin: '1rem 0 0.25rem',
-          }}
-        >
+        <p key={key++} style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', fontSize: '1.15rem', fontWeight: 600, margin: '1rem 0 0.25rem' }}>
           {renderInline(h1Match[1])}
         </p>
       )
       i++
       continue
     }
-
-    // --- H2 ---
     const h2Match = line.match(/^## (.+)$/)
     if (h2Match) {
       elements.push(
-        <p
-          key={key++}
-          style={{
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            fontSize: '1.05rem',
-            fontWeight: 600,
-            margin: '1rem 0 0.25rem',
-          }}
-        >
+        <p key={key++} style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', fontSize: '1.05rem', fontWeight: 600, margin: '1rem 0 0.25rem' }}>
           {renderInline(h2Match[1])}
         </p>
       )
       i++
       continue
     }
-
-    // --- H3 ---
     const h3Match = line.match(/^### (.+)$/)
     if (h3Match) {
       elements.push(
-        <p
-          key={key++}
-          style={{
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            fontSize: '0.95rem',
-            fontWeight: 600,
-            margin: '0.75rem 0 0.25rem',
-          }}
-        >
+        <p key={key++} style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', fontSize: '0.95rem', fontWeight: 600, margin: '0.75rem 0 0.25rem' }}>
           {renderInline(h3Match[1])}
         </p>
       )
@@ -290,16 +324,13 @@ function renderMarkdownSafe(
       continue
     }
 
-    // --- List block: collect consecutive list items ---
+    // --- List block ---
     if (line.match(/^- .+/)) {
       const listItems: ReactNode[] = []
       while (i < lines.length && lines[i].match(/^- .+/)) {
         const itemText = lines[i].slice(2)
         listItems.push(
-          <li
-            key={i}
-            style={{ marginLeft: '1rem', listStyle: 'disc', marginBottom: '0.15rem' }}
-          >
+          <li key={i} style={{ marginLeft: '1rem', listStyle: 'disc', marginBottom: '0.15rem' }}>
             {renderInline(itemText)}
           </li>
         )
@@ -313,27 +344,26 @@ function renderMarkdownSafe(
       continue
     }
 
-    // --- Blank line: paragraph break (skip) ---
     if (line.trim() === '') {
       i++
       continue
     }
 
-    // --- Regular paragraph: collect until blank line or special block ---
+    // --- Paragraph ---
     const paraLines: string[] = []
     while (
       i < lines.length &&
       lines[i].trim() !== '' &&
       !lines[i].match(/^```/) &&
       !lines[i].match(/^#{1,3} /) &&
-      !lines[i].match(/^- /)
+      !lines[i].match(/^- /) &&
+      !(lines[i].includes('|') && i + 1 < lines.length && lines[i + 1].match(/^\s*\|?[-:\s|]+\|?\s*$/))
     ) {
       paraLines.push(lines[i])
       i++
     }
 
     if (paraLines.length > 0) {
-      // Render lines within a paragraph, joining with <br /> on single newlines
       const paraContent: ReactNode[] = []
       paraLines.forEach((pLine, idx) => {
         if (idx > 0) paraContent.push(<br key={`br-${idx}`} />)
@@ -350,83 +380,43 @@ function renderMarkdownSafe(
   return <>{elements}</>
 }
 
-// --- Copy icon SVG ---
+// --- Insert button (reusable) ---
+
+function InsertButton({ onClick, label, primary = false }: { onClick: () => void; label: string; primary?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1 rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-85"
+      style={{
+        fontSize: '10px',
+        color: primary ? 'var(--background)' : 'var(--foreground)',
+        border: primary ? 'none' : '1px solid var(--border)',
+        background: primary ? 'var(--foreground)' : 'transparent',
+      }}
+    >
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      {label}
+    </button>
+  )
+}
+
+// --- Icons ---
 
 function CopyIcon() {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="9" y="9" width="13" height="13" rx="2" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
     </svg>
   )
 }
 
-// --- Export icon SVG ---
-
-function ExportIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
-  )
-}
-
-// --- Stop icon SVG ---
-
 function StopIcon() {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2" />
-    </svg>
-  )
-}
-
-// --- Sparkle icon SVG (empty state) ---
-
-function SparkleIcon() {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ color: 'var(--foreground)' }}
-    >
-      <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
-      <path d="M18 14l1.05 3.15L22 18.5l-2.95.85L18 22.5l-1.05-3.15L14 18.5l2.95-.85L18 14z" opacity="0.5" />
     </svg>
   )
 }
@@ -455,8 +445,6 @@ const MODE_PROMPTS: Record<string, string> = {
   continue: 'Continue escrevendo as próximas 200 palavras no tom e ritmo do texto atual. Retorne APENAS o texto novo, sem explicações.',
 }
 
-// --- Error message mapping by HTTP status ---
-
 function getErrorMessage(status: number | null, isNetworkError: boolean): string {
   if (isNetworkError) return 'Sem conexão com o servidor.'
   if (status === 429) return 'Muitas requisições. Aguarde alguns instantes.'
@@ -464,168 +452,55 @@ function getErrorMessage(status: number | null, isNetworkError: boolean): string
   return 'Erro ao processar resposta. Tente novamente.'
 }
 
-// --- Streaming timeout (ms) ---
-
 const STREAM_TIMEOUT_MS = 90_000
-
-// --- Typing indicator component ---
 
 function TypingIndicator() {
   return (
-    <div
-      className="flex items-center gap-1.5 px-1 py-1"
-      style={{ color: 'var(--muted-foreground)' }}
-    >
+    <div className="flex items-center gap-1.5 px-1 py-1" style={{ color: 'var(--muted-foreground)' }}>
       <span className="text-[11px] italic">Claude está escrevendo</span>
       <span className="flex items-center gap-0.5">
-        <span
-          className="inline-block w-1 h-1 rounded-full animate-bounce"
-          style={{
-            background: 'var(--foreground)',
-            animationDelay: '0ms',
-            animationDuration: '1s',
-          }}
-        />
-        <span
-          className="inline-block w-1 h-1 rounded-full animate-bounce"
-          style={{
-            background: 'var(--foreground)',
-            animationDelay: '200ms',
-            animationDuration: '1s',
-          }}
-        />
-        <span
-          className="inline-block w-1 h-1 rounded-full animate-bounce"
-          style={{
-            background: 'var(--foreground)',
-            animationDelay: '400ms',
-            animationDuration: '1s',
-          }}
-        />
+        <span className="inline-block w-1 h-1 rounded-full animate-bounce" style={{ background: 'var(--foreground)', animationDelay: '0ms', animationDuration: '1s' }} />
+        <span className="inline-block w-1 h-1 rounded-full animate-bounce" style={{ background: 'var(--foreground)', animationDelay: '200ms', animationDuration: '1s' }} />
+        <span className="inline-block w-1 h-1 rounded-full animate-bounce" style={{ background: 'var(--foreground)', animationDelay: '400ms', animationDuration: '1s' }} />
       </span>
     </div>
   )
 }
 
-// --- Quick action button (shared between empty state and input area) ---
+// --- Main component (floating) ---
 
-function QuickActionButton({
-  action,
-  onClick,
-  disabled,
-  pulse,
-}: {
-  action: (typeof QUICK_ACTIONS)[number]
-  onClick: () => void
-  disabled: boolean
-  pulse?: boolean
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      title={action.title}
-      className={`rounded-full px-3 py-1 font-sans text-[11px] transition-all disabled:opacity-40 ${
-        pulse ? 'animate-pulse' : ''
-      }`}
-      style={{
-        background: 'color-mix(in oklch, var(--foreground) 7%, transparent)',
-        color: 'var(--foreground)',
-        border: '1px solid var(--border)',
-        animationDuration: pulse ? '3s' : undefined,
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 14%, transparent)'
-        e.currentTarget.classList.remove('animate-pulse')
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 7%, transparent)'
-      }}
-    >
-      {action.label}
-    </button>
-  )
-}
-
-// --- Main component ---
-
-export function ChatPanel({ documentPath, documentContent, selectedText, onInsertText, onReplaceSelection }: ChatPanelProps) {
+export function ChatPanel({ documentPath, documentContent, selectedText, onInsertText, onReplaceSelection, open, onClose }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH)
-  const [responseMode, setResponseMode] = useState<'concise' | 'detailed'>('concise')
+  const [responseMode, setResponseMode] = useState<'concise' | 'detailed'>('detailed')
+  const [mounted, setMounted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const panelRef = useRef<HTMLDivElement>(null)
-  const isDragging = useRef(false)
 
-  // Streaming throttle refs
   const streamBufferRef = useRef('')
   const streamTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  // AbortController ref for fetch cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  // Load saved width on mount
-  useEffect(() => {
-    setPanelWidth(loadWidth())
-  }, [])
+  useEffect(() => setMounted(true), [])
 
-  // --- Resize drag handling ---
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    isDragging.current = true
-    const startX = e.clientX
-    const startWidth = panelRef.current?.offsetWidth ?? DEFAULT_WIDTH
-
-    const handleMouseMove = (ev: MouseEvent) => {
-      if (!isDragging.current) return
-      // Dragging left edge: moving left increases width
-      const delta = startX - ev.clientX
-      const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + delta))
-      setPanelWidth(newWidth)
-    }
-
-    const handleMouseUp = () => {
-      isDragging.current = false
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-      document.body.style.cursor = ''
-      document.body.style.userSelect = ''
-      // Save final width
-      if (panelRef.current) {
-        saveWidth(panelRef.current.offsetWidth)
-      }
-    }
-
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-  }, [])
-
-  // --- Textarea auto-expand ---
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
     const el = e.target
     el.style.height = 'auto'
-    const maxHeight = 8 * 24 // ~8 rows at ~24px line height
+    const maxHeight = 8 * 24
     el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
   }, [])
 
-  // Reset textarea height when input clears
   useEffect(() => {
     if (input === '' && inputRef.current) {
       inputRef.current.style.height = 'auto'
     }
   }, [input])
 
-  // Determine suggestion callbacks for current context
   const suggestionInsertCb = onInsertText
   const suggestionReplaceCb = selectedText && selectedText.length > 0 ? onReplaceSelection : undefined
 
-  // Memoised render per-message so it doesn't re-run on unrelated state changes
   const renderedMessages = useMemo(
     () =>
       messages.map((msg) => ({
@@ -643,10 +518,9 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
   }, [])
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, scrollToBottom])
+    if (open) scrollToBottom()
+  }, [messages, scrollToBottom, open])
 
-  // Load history when documentPath changes
   useEffect(() => {
     if (documentPath) {
       setMessages(loadHistory(documentPath))
@@ -655,7 +529,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
     }
   }, [documentPath])
 
-  // Cleanup interval and abort on unmount
   useEffect(() => {
     return () => {
       if (streamTimerRef.current) clearInterval(streamTimerRef.current)
@@ -663,74 +536,38 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
     }
   }, [])
 
-  // --- Stop streaming ---
+  // ESC closes the panel
+  useEffect(() => {
+    if (!open) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !isStreaming) onClose()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [open, isStreaming, onClose])
 
   function handleStop() {
     abortControllerRef.current?.abort()
   }
 
-  // --- Export conversation as Markdown file ---
-
-  function handleExport() {
-    if (messages.length === 0) return
-
-    const date = new Date().toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
-
-    const lines: string[] = [`# Conversa — ${date}`, '']
-
-    for (const msg of messages) {
-      const label = msg.role === 'user' ? '**Você:**' : '**Claude:**'
-      lines.push(label)
-      lines.push('')
-      lines.push(msg.content)
-      lines.push('')
-    }
-
-    const content = lines.join('\n')
-    const blob = new Blob([content], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `koru-conversa-${date.replace(/\//g, '-')}.md`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
-  // --- Shared streaming logic ---
-
-  async function sendToAPI(
-    messagesToSend: Message[],
-    mode: string | null
-  ) {
+  async function sendToAPI(messagesToSend: Message[], mode: string | null) {
     setIsStreaming(true)
 
-    // Add empty assistant placeholder with timestamp
     const withAssistant: Message[] = [
       ...messagesToSend,
       { role: 'assistant', content: '', timestamp: Date.now() },
     ]
     setMessages(withAssistant)
 
-    // Reset stream buffer
     streamBufferRef.current = ''
 
-    // Create a new AbortController for this request
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    // Timeout: abort after 90 seconds without completion
     const timeoutId = setTimeout(() => {
       controller.abort('timeout')
     }, STREAM_TIMEOUT_MS)
 
-    // Start throttled UI update interval (4x/sec max)
     streamTimerRef.current = setInterval(() => {
       const buf = streamBufferRef.current
       if (buf) {
@@ -765,11 +602,7 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         const errorMessage = getErrorMessage(res.status, false)
         setMessages((prev) => {
           const updated = [...prev]
-          updated[updated.length - 1] = {
-            role: 'assistant',
-            content: errorMessage,
-            timestamp: Date.now(),
-          }
+          updated[updated.length - 1] = { role: 'assistant', content: errorMessage, timestamp: Date.now() }
           return updated
         })
         setIsStreaming(false)
@@ -798,14 +631,11 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue
           const data = line.slice(6)
-
           if (data === '[DONE]') break
-
           try {
             const parsed = JSON.parse(data)
             if (parsed.text) {
               accumulated += parsed.text
-              // Only update the ref, not state — interval handles UI
               streamBufferRef.current = accumulated
             }
             if (parsed.error) {
@@ -813,14 +643,12 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
               streamBufferRef.current = accumulated
             }
           } catch {
-            // skip malformed chunks
+            /* skip */
           }
         }
       }
 
       clearTimeout(timeoutId)
-
-      // Streaming done: clear interval, do final state update
       if (streamTimerRef.current) clearInterval(streamTimerRef.current)
       setMessages((prev) => {
         const updated = [...prev]
@@ -828,7 +656,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         if (last?.role === 'assistant') {
           updated[updated.length - 1] = { ...last, content: accumulated }
         }
-        // Persist completed conversation
         if (documentPath) saveHistory(documentPath, updated)
         return updated
       })
@@ -840,7 +667,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
       const isTimeout = isAbort && (err as Error).message === 'timeout'
       const isNetwork = err instanceof TypeError && err.message.toLowerCase().includes('fetch')
 
-      // If user manually aborted, keep partial content
       if (isAbort && !isTimeout) {
         setMessages((prev) => {
           const updated = [...prev]
@@ -859,14 +685,9 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         const errorContent = isTimeout
           ? 'A resposta demorou demais. Tente novamente.'
           : getErrorMessage(null, isNetwork)
-
         setMessages((prev) => {
           const updated = [...prev]
-          updated[updated.length - 1] = {
-            role: 'assistant',
-            content: errorContent,
-            timestamp: Date.now(),
-          }
+          updated[updated.length - 1] = { role: 'assistant', content: errorContent, timestamp: Date.now() }
           return updated
         })
       }
@@ -874,8 +695,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
       setIsStreaming(false)
     }
   }
-
-  // --- Send chat message (mode: null = normal chat) ---
 
   async function handleSend() {
     const text = input.trim()
@@ -886,13 +705,10 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
     setMessages(newMessages)
     setInput('')
 
-    // Persist user message immediately
     if (documentPath) saveHistory(documentPath, newMessages)
 
     await sendToAPI(newMessages, null)
   }
-
-  // --- Trigger a mode action (correct / feedback / consistency / report / expand / describe / continue) ---
 
   async function triggerModeAction(mode: string) {
     if (isStreaming) return
@@ -900,7 +716,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
     let userText = MODE_PROMPTS[mode]
     if (!userText) return
 
-    // For writing actions, include selected text as context and request suggestion block
     if (WRITING_ACTIONS.has(mode) && selectedText && selectedText.length > 0) {
       userText = `${userText}\n\nTrecho:\n"${selectedText}"\n\nRetorne o resultado em um bloco \`\`\`suggestion.`
     }
@@ -912,8 +727,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
 
     await sendToAPI(newMessages, mode)
   }
-
-  // --- Rewrite selection action ---
 
   async function handleRewriteSelection() {
     if (isStreaming || !selectedText || selectedText.length === 0) return
@@ -927,7 +740,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
     await sendToAPI(newMessages, 'rewrite')
   }
 
-  // Listen for AI action events from the editor
   useEffect(() => {
     function handleAIAction(e: Event) {
       const action = (e as CustomEvent).detail?.action
@@ -953,64 +765,58 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
   }
 
   const hasSelection = selectedText && selectedText.length > 0
-  const truncatedSelection =
-    hasSelection && selectedText!.length > 60
-      ? selectedText!.slice(0, 60) + '...'
-      : selectedText
+  const truncatedSelection = hasSelection && selectedText!.length > 60 ? selectedText!.slice(0, 60) + '...' : selectedText
 
-  return (
+  if (!mounted || !open) return null
+
+  return createPortal(
     <div
-      ref={panelRef}
-      className="shrink-0 flex flex-col min-h-0 h-full rounded-md border relative"
+      className="fixed flex flex-col rounded-2xl overflow-hidden glass-card"
       style={{
-        width: `${panelWidth}px`,
-        borderColor: 'var(--border)',
-        background: 'var(--card, var(--surface))',
-        color: 'var(--foreground)',
-        overflow: 'hidden',
+        bottom: 20,
+        right: 20,
+        width: 'min(440px, calc(100vw - 40px))',
+        height: 'min(640px, calc(100vh - 120px))',
+        zIndex: 90,
+        border: '1px solid var(--border)',
+        boxShadow: '0 20px 50px oklch(0 0 0 / 0.35)',
+        animation: 'koru-chat-in 180ms ease-out',
       }}
+      role="dialog"
+      aria-label="Assistente de IA"
     >
-      {/* Resize handle (left edge) */}
-      <div
-        onMouseDown={handleMouseDown}
-        className="absolute left-0 top-0 bottom-0 w-1 hover:w-1.5 transition-all z-10"
-        style={{
-          cursor: 'col-resize',
-          background: 'transparent',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--foreground)'
-          e.currentTarget.style.opacity = '0.3'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-          e.currentTarget.style.opacity = '1'
-        }}
-      />
+      <style jsx>{`
+        @keyframes koru-chat-in {
+          from { opacity: 0; transform: translateY(16px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
 
-      {/* Header — tab-style (Sudowrite-inspired) */}
+      {/* Header */}
       <div
-        className="flex items-center justify-between px-3 py-1.5 border-b"
-        style={{ borderColor: 'var(--border)' }}
+        className="flex items-center justify-between px-4 py-2.5 shrink-0"
       >
-        {/* Left: active tab label */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 min-w-0">
           <span
-            className="font-sans font-medium"
+            className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5"
             style={{
-              fontSize: '11px',
-              color: 'var(--foreground)',
-              borderBottom: '1.5px solid var(--foreground)',
-              paddingBottom: '2px',
+              background: 'color-mix(in oklch, var(--accent) 14%, transparent)',
+              color: 'var(--accent)',
+              fontSize: 10,
+              letterSpacing: '0.15em',
             }}
           >
-            Conversa
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
+            </svg>
+            IA
           </span>
-
-          {/* Response mode toggle */}
+          <span className="font-serif text-base truncate" style={{ color: 'var(--foreground)' }}>
+            Assistente
+          </span>
           <button
             onClick={() => setResponseMode((m) => (m === 'concise' ? 'detailed' : 'concise'))}
-            className="rounded-full px-2 py-0.5 font-sans transition-colors"
+            className="ml-1 rounded-full px-2 py-0.5 font-sans transition-colors"
             style={{
               fontSize: '10px',
               border: '1px solid var(--border)',
@@ -1019,9 +825,7 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
                   ? 'color-mix(in oklch, var(--foreground) 10%, transparent)'
                   : 'transparent',
               color:
-                responseMode === 'detailed'
-                  ? 'var(--foreground)'
-                  : 'var(--muted-foreground)',
+                responseMode === 'detailed' ? 'var(--foreground)' : 'var(--muted-foreground)',
             }}
             title={responseMode === 'concise' ? 'Respostas curtas' : 'Respostas detalhadas'}
           >
@@ -1029,91 +833,78 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
           </button>
         </div>
 
-        {/* Right: export + clear */}
-        <div className="flex items-center gap-2">
-          {messages.length > 0 && (
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-1 text-[10px] transition-colors"
-              style={{ color: 'var(--muted-foreground)' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
-              title="Exportar conversa como Markdown"
-            >
-              <ExportIcon />
-            </button>
-          )}
+        <div className="flex items-center gap-1">
           {messages.length > 0 && (
             <button
               onClick={handleClear}
-              className="text-[10px] transition-colors"
+              className="text-[10px] transition-colors rounded px-1.5 py-1"
               style={{ color: 'var(--muted-foreground)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
               onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+              title="Limpar conversa"
             >
               Limpar
             </button>
           )}
+          <button
+            onClick={onClose}
+            className="transition-colors rounded p-1"
+            style={{ color: 'var(--muted-foreground)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+            title="Fechar (Esc)"
+            aria-label="Fechar assistente"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 min-h-0" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
         {messages.length === 0 && (
-          <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
-            <p
-              className="text-sm font-sans font-medium"
-              style={{ color: 'var(--foreground)' }}
+          <div className="flex flex-col items-center justify-center text-center px-6 py-8">
+            <div
+              className="rounded-full p-2.5 mb-3"
+              style={{ background: 'color-mix(in oklch, var(--accent) 12%, transparent)', color: 'var(--accent)' }}
             >
-              Inicie uma conversa
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
+              </svg>
+            </div>
+            <p className="font-serif text-base" style={{ color: 'var(--foreground)' }}>
+              Pergunte, corrija, expanda
             </p>
-            <p
-              className="text-[11px] max-w-[260px] leading-relaxed mt-2"
-              style={{ color: 'var(--muted-foreground)' }}
-            >
-              Faça perguntas sobre seu projeto, receba sugestões de escrita ou cole um texto longo para análise.
+            <p className="text-[11px] max-w-[280px] leading-relaxed mt-1.5" style={{ color: 'var(--muted-foreground)' }}>
+              Respostas em prosa, tabelas ou sugestões inseríveis com um clique.
             </p>
           </div>
         )}
 
         {renderedMessages.map((msg, i) => {
           const isThisStreaming = isStreaming && i === messages.length - 1 && msg.role === 'assistant'
+          const canInsertWhole = msg.role === 'assistant' && !isThisStreaming && !!msg.content && !!onInsertText
 
           return (
-            <div
-              key={i}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className="max-w-[85%] rounded-lg px-3 py-2 text-sm leading-relaxed"
+                className="max-w-[88%] rounded-xl px-3 py-2 text-sm leading-relaxed"
                 style={
                   msg.role === 'user'
-                    ? {
-                        background: 'var(--foreground)',
-                        color: 'var(--background)',
-                        overflow: 'hidden' as const,
-                        wordBreak: 'break-word' as const,
-                      }
-                    : {
-                        background: 'color-mix(in oklch, var(--foreground) 7%, transparent)',
-                        color: 'var(--foreground)',
-                        overflow: 'hidden' as const,
-                        wordBreak: 'break-word' as const,
-                      }
+                    ? { background: 'var(--foreground)', color: 'var(--background)', overflow: 'hidden', wordBreak: 'break-word' }
+                    : { background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--foreground)', overflow: 'hidden', wordBreak: 'break-word' }
                 }
               >
                 {msg.role === 'assistant' ? (
                   <>
                     <div className="group relative">
                       {msg.rendered}
-                      {/* Streaming cursor */}
                       {isThisStreaming && (
-                        <span
-                          className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse rounded-sm"
-                          style={{ background: 'var(--foreground)' }}
-                        />
+                        <span className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse rounded-sm" style={{ background: 'var(--foreground)' }} />
                       )}
-                      {/* Copy button — only on complete messages */}
                       {!isThisStreaming && msg.content && (
                         <button
                           onClick={() => navigator.clipboard.writeText(msg.content)}
@@ -1125,31 +916,12 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
                         </button>
                       )}
                     </div>
-                    {/* Token estimate + timestamp — only on complete messages */}
-                    {!isThisStreaming && msg.content && (
-                      <div className="flex items-center justify-between mt-1">
-                        <p
-                          className="font-sans"
-                          style={{
-                            fontSize: '10px',
-                            color: 'var(--muted-foreground)',
-                            opacity: 0.4,
-                          }}
-                        >
-                          ~{Math.round(msg.content.length / 4)} tokens
-                        </p>
-                        {msg.timestamp && (
-                          <p
-                            className="font-sans"
-                            style={{
-                              fontSize: '10px',
-                              color: 'var(--muted-foreground)',
-                              opacity: 0.35,
-                            }}
-                          >
-                            {formatTime(msg.timestamp)}
-                          </p>
-                        )}
+                    {canInsertWhole && (
+                      <div className="flex items-center justify-between gap-2 mt-3">
+                        <span className="font-sans" style={{ fontSize: '10px', color: 'var(--muted-foreground)', opacity: 0.5 }}>
+                          {msg.timestamp ? formatTime(msg.timestamp) : ''}
+                        </span>
+                        <InsertButton onClick={() => onInsertText!(msg.content)} label="Inserir resposta" primary />
                       </div>
                     )}
                   </>
@@ -1157,13 +929,7 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
                   <div className="flex flex-col">
                     <span>{msg.content}</span>
                     {msg.timestamp && (
-                      <p
-                        className="font-sans mt-1 self-end"
-                        style={{
-                          fontSize: '10px',
-                          color: 'color-mix(in oklch, var(--background) 60%, transparent)',
-                        }}
-                      >
+                      <p className="font-sans mt-1 self-end" style={{ fontSize: '10px', color: 'color-mix(in oklch, var(--background) 60%, transparent)' }}>
                         {formatTime(msg.timestamp)}
                       </p>
                     )}
@@ -1178,11 +944,7 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
       </div>
 
       {/* Input area */}
-      <div
-        className="border-t"
-        style={{ borderColor: 'var(--border)' }}
-      >
-        {/* Selection chip — shown when text is selected in the editor */}
+      <div className="shrink-0">
         {hasSelection && (
           <div className="px-3 pt-2 pb-1 flex items-center gap-2">
             <button
@@ -1198,16 +960,12 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
             >
               Reescrever seleção
             </button>
-            <span
-              className="text-[10px] truncate"
-              style={{ color: 'var(--muted-foreground)' }}
-            >
+            <span className="text-[10px] truncate" style={{ color: 'var(--muted-foreground)' }}>
               {truncatedSelection}
             </span>
           </div>
         )}
 
-        {/* Typing indicator */}
         {isStreaming && (
           <div className="px-3 pt-1">
             <TypingIndicator />
@@ -1221,9 +979,9 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Pergunte sobre o mundo, personagens, física..."
-              rows={3}
-              className="flex-1 resize-none rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-1 transition-colors"
+              placeholder={documentPath ? 'Pergunte, corrija, expanda...' : 'Selecione um documento'}
+              rows={2}
+              className="flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 transition-colors"
               style={{
                 borderColor: 'var(--border)',
                 background: 'color-mix(in oklch, var(--foreground) 4%, transparent)',
@@ -1232,35 +990,29 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
                 '--tw-ring-color': 'var(--foreground)',
                 overflow: 'hidden',
               }}
-              disabled={isStreaming}
+              disabled={isStreaming || !documentPath}
             />
             <div className="flex flex-col gap-1 shrink-0">
               {isStreaming ? (
-                <>
-                  {/* Stop button (replaces send) */}
-                  <button
-                    onClick={handleStop}
-                    className="rounded-md px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80 flex items-center justify-center gap-1.5"
-                    style={{
-                      background: 'color-mix(in oklch, oklch(0.55 0.22 25) 15%, var(--surface))',
-                      color: 'oklch(0.65 0.2 25)',
-                      border: '1px solid color-mix(in oklch, oklch(0.55 0.22 25) 25%, transparent)',
-                    }}
-                    title="Parar geração"
-                  >
-                    <StopIcon />
-                    <span>Parar</span>
-                  </button>
-                </>
+                <button
+                  onClick={handleStop}
+                  className="rounded-lg px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80 flex items-center justify-center gap-1.5"
+                  style={{
+                    background: 'color-mix(in oklch, oklch(0.55 0.22 25) 15%, var(--surface))',
+                    color: 'oklch(0.65 0.2 25)',
+                    border: '1px solid color-mix(in oklch, oklch(0.55 0.22 25) 25%, transparent)',
+                  }}
+                  title="Parar geração"
+                >
+                  <StopIcon />
+                  <span>Parar</span>
+                </button>
               ) : (
                 <button
                   onClick={handleSend}
-                  disabled={!input.trim()}
-                  className="rounded-md px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
-                  style={{
-                    background: 'var(--foreground)',
-                    color: 'var(--background)',
-                  }}
+                  disabled={!input.trim() || !documentPath}
+                  className="rounded-lg px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80 disabled:opacity-40"
+                  style={{ background: 'var(--foreground)', color: 'var(--background)' }}
                 >
                   Enviar
                 </button>
@@ -1269,6 +1021,66 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
+  )
+}
+
+// --- Floating toggle button (separate export) ---
+
+interface ChatToggleProps {
+  open: boolean
+  onClick: () => void
+  unread?: number
+}
+
+export function ChatToggleButton({ open, onClick, unread }: ChatToggleProps) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
+
+  return createPortal(
+    <button
+      onClick={onClick}
+      className="fixed rounded-full flex items-center justify-center transition-all hover:scale-105"
+      style={{
+        bottom: 20,
+        right: 20,
+        width: 48,
+        height: 48,
+        zIndex: 89,
+        background: 'var(--foreground)',
+        color: 'var(--background)',
+        boxShadow: '0 8px 24px oklch(0 0 0 / 0.35)',
+        opacity: open ? 0 : 1,
+        pointerEvents: open ? 'none' : 'auto',
+        transform: open ? 'translateY(16px)' : 'translateY(0)',
+      }}
+      aria-label="Abrir assistente de IA"
+      title="Assistente de IA"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
+        <path d="M18 14l1.05 3.15L22 18.5l-2.95.85L18 22.5l-1.05-3.15L14 18.5l2.95-.85L18 14z" opacity="0.5" />
+      </svg>
+      {unread !== undefined && unread > 0 && (
+        <span
+          className="absolute rounded-full flex items-center justify-center font-sans font-medium"
+          style={{
+            top: -2,
+            right: -2,
+            minWidth: 18,
+            height: 18,
+            padding: '0 5px',
+            fontSize: 10,
+            background: 'oklch(0.65 0.2 25)',
+            color: 'white',
+          }}
+        >
+          {unread > 9 ? '9+' : unread}
+        </span>
+      )}
+    </button>,
+    document.body
   )
 }
