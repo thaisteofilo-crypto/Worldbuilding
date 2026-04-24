@@ -1,20 +1,4 @@
-> ```suggestion
-> ### A TENSÃO CENTRAL: ACUMULAR VS. PROCESSAR
->
-> **Mecânicas físicas:**
-> - Onkweri acumulam memória → ganham densidade → eventualmente precisam morrer/dissolver
-> - Bomi Veh processa memória → fica saturado → para de funcionar se sobrecarregado
-> - Azuris traduzem → podem "cessar" se não há memórias para traduzir → deixam lacunas no sistema
->
-> **Conflito em ação:**
-> - Beku quer preservar (extração Mwanga-ji para luz permanente) = acumular sem processar
-> - Temiku precisa liberar (oferece memórias aos Ubomi-chis) = processar com custo físico
-> - Oruku ficou preso entre estados = nem acumula nem processa = anomalia no sistema
->
-> **Consequência narrativa:** Toda escolha move o personagem entre acumular (segurança/estagnação) e processar (transformação/perda). Não há escolha sem custo físico mensurável.
-> ```
->
-> Assim conecta a filosofia do mundo às suas regras físicas específicas.Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
+> Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
 
 ### KARIBU - Boas vindas!
 
