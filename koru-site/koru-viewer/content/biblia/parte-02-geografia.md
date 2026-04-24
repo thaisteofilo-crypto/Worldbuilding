@@ -1,4 +1,4 @@
-# MAPA DE RELAÇÕES ESPACIAIS
+
 
 ### Topologia geral
 
@@ -175,7 +175,7 @@ Denominação local: *memórias em pé*. Não são chamadas de ruínas.
 
 **Nota de governo:** Orunjó não é capital de um estado, é o Chi-Oa maior. A influência do seu Oa-Chi vem de ser o maior ponto de confluência de Ima-Kwe, não de autoridade formal sobre outros assentamentos.
 
-→ *Estrutura do Oa-Chi, Orime, Ima-Kwe:* [Parte 7, Cultura & Cotidiano](parte-07-cultura.md)
+→ *Estrutura do Oa-Chi, Orime, Ima-Kwe:* [Parte 7, Cultura &amp; Cotidiano](parte-07-cultura.md)
 
 ---
 
