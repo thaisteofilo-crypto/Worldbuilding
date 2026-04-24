@@ -55,6 +55,8 @@ AKWU (câmara fechada, teto luminoso)
 
 ---
 
+## DIMENSÃO COSMOLÓGICA
+
 ### AKWU, A CÂMARA
 
 **Akwu** (Igbo: aquilo que sustenta, a palma aberta que carrega)
