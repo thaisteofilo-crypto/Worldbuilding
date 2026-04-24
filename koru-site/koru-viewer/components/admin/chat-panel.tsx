@@ -117,13 +117,15 @@ function parseTableMarkdown(lines: string[]): { rendered: ReactNode; markdown: s
     rendered: (
       <table
         style={{
-          width: '100%',
           borderCollapse: 'separate',
           borderSpacing: 0,
           fontSize: '0.8rem',
           margin: '0.5rem 0',
           borderRadius: '0.5rem',
           overflow: 'hidden',
+          // Cada coluna ganha pelo menos 140px; tabela expande além do container e o wrapper rola horizontalmente.
+          minWidth: `${headerCells.length * 140}px`,
+          tableLayout: 'auto' as const,
         }}
       >
         <thead>
@@ -138,9 +140,13 @@ function parseTableMarkdown(lines: string[]): { rendered: ReactNode; markdown: s
                   fontSize: '0.7rem',
                   letterSpacing: '0.04em',
                   textTransform: 'uppercase' as const,
-                  padding: '0.5rem 0.6rem',
+                  padding: '0.55rem 0.7rem',
                   color: 'var(--muted-foreground)',
                   background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
+                  whiteSpace: 'normal' as const,
+                  wordBreak: 'normal' as const,
+                  overflowWrap: 'break-word' as const,
+                  minWidth: 140,
                 }}
               >
                 {renderInline(h)}
@@ -155,12 +161,16 @@ function parseTableMarkdown(lines: string[]): { rendered: ReactNode; markdown: s
                 <td
                   key={ci}
                   style={{
-                    padding: '0.5rem 0.6rem',
+                    padding: '0.55rem 0.7rem',
                     verticalAlign: 'top',
                     color: 'var(--foreground)',
                     background: ri % 2 === 1
                       ? 'color-mix(in oklch, var(--foreground) 3%, transparent)'
                       : 'transparent',
+                    whiteSpace: 'normal' as const,
+                    wordBreak: 'normal' as const,
+                    overflowWrap: 'break-word' as const,
+                    lineHeight: 1.45,
                   }}
                 >
                   {renderInline(cell)}
