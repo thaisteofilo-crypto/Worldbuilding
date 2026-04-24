@@ -1,5 +1,9 @@
 > Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
 
+
+
+&nbsp;
+
 ### POR QUE SE CHAMA KORÚ
 
 Korú carrega em seu som duas raízes. *Ko*, fragmento presente em várias das línguas-base do mundo, significando aquilo que recolhe, aquilo que leva consigo. *Rú*, em Yoruba, significa levantar-se, brotar, carregar sobre a cabeça. Korú é então aquilo que carrega o que levanta, um mundo nomeado pela função que o define: lugar onde a memória sobe, lugar que leva consigo o vivido. Antes de ter história, o mundo tem esse nome. É a primeira declaração que Korú faz sobre si mesmo.
