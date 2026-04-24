@@ -12,11 +12,12 @@
   "livro.06.title": "O que ela paga",
   "biblia.parte-02.title": "Geografia",
   "biblia.parte-01.title": "Física",
-  "biblia.parte-00.title": "Introdução",
+  "biblia.parte-00.title": "Introdução · A Língua de Korú",
   "biblia.parte-03.title": "Ecossistema",
   "biblia.parte-04.title": "Criaturas",
   "biblia.parte-05.title": "Personagens",
   "biblia.parte-06.title": "Regras",
   "biblia.parte-07.title": "Cultura",
-  "biblia.parte-08.title": "Linha do Tempo"
+  "biblia.parte-08.title": "Linha do Tempo",
+  "status.biblia/manifesto.md": ""
 }

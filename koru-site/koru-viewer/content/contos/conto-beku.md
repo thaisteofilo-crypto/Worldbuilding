@@ -168,8 +168,3 @@ Beku afastou a testa. Ficou parado por um momento. Depois se virou em direção 
 O peso dos cascos no Bomi Veh deixou a marca de sempre. O chão havia aprendido aquele trajeto. A impressão era funda, regular, como fundação de coisa que já sabia onde ia.
 
 Ele foi.
-
----
-*Status: COMPLETO*
-*Estrutura: 5 seções, cronológica com intercalação*
-*Conecta com: livro/capitulo-04.md, livro/capitulo-05.md, biblia/parte-06-regras.md (Regra 06)*

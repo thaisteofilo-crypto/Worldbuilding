@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { readMarkdown, livroChapters, contoSlugs, bibliaParts } from "@/lib/content"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { DocumentStatus, isValidStatus, parseStatusKey } from "@/lib/document-status"
+import { readLocalState } from "@/lib/local-state"
 
 export async function GET() {
   // ─── Read chapters from filesystem ───
@@ -110,17 +112,32 @@ export async function GET() {
   }
   let totalBanners = 0
   let totalGallery = 0
+  const statusByDoc: Record<string, DocumentStatus> = {}
+  const statusCounts: Record<DocumentStatus, number> = {
+    rascunho: 0, aprimorar: 0, revisar: 0, completo: 0, arquivar: 0,
+  }
 
   try {
     const admin = createAdminClient()
-    const [tasksResult, bannersResult, galleryResult] = await supabaseTimeout(
+    const [tasksResult, bannersResult, galleryResult, siteContentResult] = await supabaseTimeout(
       Promise.all([
         admin.from("tasks").select("*"),
         admin.storage.from("banners").list(""),
         admin.storage.from("gallery").list(""),
+        admin.from("site_content").select("key, value"),
       ]),
-      [{ data: null }, { data: null }, { data: null }] as any
+      [{ data: null }, { data: null }, { data: null }, { data: null }] as any
     )
+
+    const siteRows = (siteContentResult?.data ?? []) as Array<{ key: string; value: string }>
+    for (const row of siteRows) {
+      const path = parseStatusKey(row.key)
+      if (!path) continue
+      if (isValidStatus(row.value)) {
+        statusByDoc[path] = row.value
+        statusCounts[row.value]++
+      }
+    }
 
     const tasks = tasksResult.data
     if (tasks) {
@@ -142,6 +159,30 @@ export async function GET() {
     // Supabase unavailable — continue with filesystem data only
   }
 
+  // Fallback: merge statuses from local state too (in case Supabase is unavailable or partial)
+  try {
+    const localState = readLocalState()
+    for (const [key, value] of Object.entries(localState)) {
+      const path = parseStatusKey(key)
+      if (!path || statusByDoc[path]) continue
+      if (isValidStatus(value)) {
+        statusByDoc[path] = value
+        statusCounts[value]++
+      }
+    }
+  } catch { /* ignore */ }
+
+  // Derive total documents tracked in each section (for sem-status count)
+  // Union of core docs + any doc that already has a status assigned.
+  const coreTrackedPaths: string[] = [
+    ...bibliaList.map(({ parte }) => `biblia/parte-${parte}.md`),
+    ...chapterSlugs.map(({ capitulo }) => capitulo === "epilogo" ? "livro/epilogo.md" : `livro/capitulo-${capitulo}.md`),
+    ...contosList.map(({ personagem }) => `contos/conto-${personagem}.md`),
+  ]
+  const trackedSet = new Set([...coreTrackedPaths, ...Object.keys(statusByDoc)])
+  const statusTotalTracked = trackedSet.size
+  const statusWithoutStatus = Array.from(trackedSet).filter((p) => !statusByDoc[p]).length
+
   const totalDocuments = bibliaComplete + chapters.length + contosWritten
 
   return NextResponse.json({
@@ -159,5 +200,8 @@ export async function GET() {
     totalCharacters: characterNames.length,
     totalBanners,
     totalGallery,
+    statusCounts,
+    statusTotalTracked,
+    statusWithoutStatus,
   })
 }

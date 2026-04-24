@@ -4,6 +4,8 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { ChatPanel } from '@/components/admin/chat-panel'
 import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
+import { DocumentStatusBadge } from '@/components/admin/document-status-badge'
+import { useDocumentStatuses } from '@/hooks/use-document-statuses'
 
 interface DocEntry {
   label: string
@@ -132,6 +134,7 @@ function saveDocGroups(groups: DocGroup[]) {
 }
 
 export default function EditorPage() {
+  const { statuses: docStatuses, setStatus: setDocStatus } = useDocumentStatuses()
   const [docGroups, setDocGroups] = useState<DocGroup[]>(DEFAULT_DOC_GROUPS)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [selectedLabel, setSelectedLabel] = useState('')
@@ -875,16 +878,25 @@ export default function EditorPage() {
                               }
                             }}
                           >
-                            <span className="flex-1">{doc.label}</span>
+                            <span className="flex-1 truncate">{doc.label}</span>
                             {selectedPath === doc.path && wordCount > 0 && (
                               <span
-                                className="ml-auto text-[10px] font-sans tabular-nums shrink-0"
+                                className="ml-2 text-[10px] font-sans tabular-nums shrink-0"
                                 style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}
                               >
                                 {wordCount}
                               </span>
                             )}
                           </button>
+                        )}
+                        {renamingDoc?.path !== doc.path && (
+                          <div className="shrink-0 pl-1" onClick={(e) => e.stopPropagation()}>
+                            <DocumentStatusBadge
+                              value={docStatuses[doc.path] ?? null}
+                              onChange={(next) => setDocStatus(doc.path, next)}
+                              compact
+                            />
+                          </div>
                         )}
                         {renamingDoc?.path !== doc.path && (
                           <button

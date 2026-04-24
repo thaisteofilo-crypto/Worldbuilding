@@ -206,8 +206,3 @@ A pedra no bolso estava fria. O corpo estava mais leve. O Bomi Veh ao redor proc
 Ela seguiu caminhando. O Rimba Ngozi se fechou atrás dela com a paciência de floresta que havia visto Eras passarem e sabia que veria mais. Os rastros azul-frios no solo foram absorvidos pelo lilás com a gradualidade habitual. O círculo ficou.
 
 Sempre ficava.
-
----
-
-*Status: expandido, versão completa*
-*Expansões implementadas: física da auto-dissolução (luz acesa ao máximo intencionalmente, custo na substância Onkweri), o que se perde como fragmento físico (memória removida como substância, leveza que não é alívio), cena de Kemdi expandida (toque de eleição, frequência entre elas), cena de Obaru expandida (testa no flanco, vinte e dois ciclos de distância), cena de Beku expandida (uma noite com testa em raiz, desativação como engenharia reversa), inconsistência morfológica corrigida (testa no flanco, nunca mão no ombro)*

@@ -204,8 +204,3 @@ Ela desviou o olhar para o Bomi Veh sob os cascos. O lilás profundo ao redor de
 O Nkosi-ha não se moveu.
 
 A floresta guardou o que a floresta sempre guarda.
-
----
-
-*Status: expandido, versão completa*
-*Expansões implementadas: física do Bomi preto (sufocamento/travamento), caminhada progressiva com degradação do solo, cena expandida com Orike (diferença de acesso Temiku vs. Obaru, camadas de memória), inconsistência morfológica corrigida (testa/focinho, nunca palma), Nkosi-ha como marcador de transição, revelação de Orunjó com peso completo*

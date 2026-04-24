@@ -166,8 +166,3 @@ No Rimba Ngozi, o círculo ficava no mesmo ponto onde havia ficado a vida inteir
 Dois pedaços do mesmo evento. Ela ia. O círculo ficava.
 
 Era assim desde o começo.
-
----
-*Status: COMPLETO, versão refinada*
-*Estrutura: kishotenketsu, Ki / Sho / Ten / Ketsu*
-*Conecta com: livro/capitulo-01.md, livro/capitulo-02.md, contos/conto-amara.md*

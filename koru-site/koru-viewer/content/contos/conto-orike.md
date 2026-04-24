@@ -156,9 +156,3 @@ O que Orike sabe, se a palavra se aplica a algo que não pensa em linguagem, é 
 A permanência de Orike não tem a qualidade de ato heroico nem de resistência. Tem a qualidade de raiz. De coisa que está onde está porque é onde está, e que enquanto estiver ali o que está ao redor tem onde se ancorar.
 
 O Bomi Veh pulsa. Os Ubomi-chi registram. Orike permanece.
-
----
-*Status: COMPLETO*
-*Estrutura: registro em seis movimentos -- congestionamento, sobreposição, permanência, recuperação, encontro, arquivo*
-*Perspectiva: Bomi Veh e Ubomi-chi ao redor de Orike*
-*Conecta com: livro/capitulo-03.md, contos/conto-amara.md, contos/conto-temiku.md*

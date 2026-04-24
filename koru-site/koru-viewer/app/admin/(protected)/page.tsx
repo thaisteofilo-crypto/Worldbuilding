@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AIAnalysisPanel } from "@/components/admin/ai-analysis-panel"
+import { StatusProgressCard } from "@/components/admin/status-progress-card"
+import { DocumentStatus } from "@/lib/document-status"
 
 /* ─── Analytics types ─── */
 
@@ -27,6 +29,9 @@ interface Analytics {
   totalCharacters: number
   totalBanners: number
   totalGallery: number
+  statusCounts?: Record<DocumentStatus, number>
+  statusTotalTracked?: number
+  statusWithoutStatus?: number
 }
 
 /* ─── Helpers ─── */
@@ -71,9 +76,9 @@ export default function AdminDashboardPage() {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>{greeting}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+        <div className="min-w-0">
+          <h1 className="font-serif text-2xl sm:text-3xl" style={{ color: "var(--foreground)" }}>{greeting}</h1>
           <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
             Painel de controle do mundo de Koru
           </p>
@@ -100,6 +105,17 @@ export default function AdminDashboardPage() {
         <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" href="/admin/tasks" />
         <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" href="/admin/gallery" />
       </div>
+
+      {/* Status Progress */}
+      {analytics.statusCounts && analytics.statusTotalTracked !== undefined && (
+        <div className="mt-8">
+          <StatusProgressCard
+            counts={analytics.statusCounts}
+            totalTracked={analytics.statusTotalTracked}
+            withoutStatus={analytics.statusWithoutStatus ?? 0}
+          />
+        </div>
+      )}
 
       {/* AI Analysis Panel */}
       <div className="mt-8">

@@ -332,7 +332,3 @@ Ela foi dormir com o círculo azul-frio pulsando em algum lugar da floresta atr�
 Como sempre fizera.
 
 Como ela mesma havia aprendido a fazer.
-
----
-
-*Status: expandido, versão completa*

@@ -26,7 +26,7 @@ const TABS: TabDef[] = [
   {
     id: "all",
     label: "Visão geral",
-    description: "Coerência do mundo, pontos fortes, lacunas, feedback narrativo e próximos passos.",
+    description: "Leitura atenta do mundo inteiro: o que está respirando, o que ainda procura forma, a voz da autora e por onde começar agora.",
     accentVar: "var(--accent)",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -37,8 +37,8 @@ const TABS: TabDef[] = [
   },
   {
     id: "inconsistencies",
-    label: "Inconsistências",
-    description: "Contradições entre bíblia, livro e contos. Morfologia, luz, Bomi Veh, Oruku.",
+    label: "Atritos",
+    description: "Onde os textos não estão fechando entre si — morfologia, luz, Bomi Veh, Oruku — com o trecho, o porquê e uma sugestão de reescrita.",
     accentVar: "var(--destructive)",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -50,7 +50,7 @@ const TABS: TabDef[] = [
   {
     id: "feedback",
     label: "Voz narrativa",
-    description: "Análise de voz e estilo nos textos narrativos. Abertura, ritmo, emoções.",
+    description: "Leitura literária do livro e dos contos. Temperatura, ritmo, onde a voz vacila, trechos que ilustram.",
     accentVar: "var(--gold)",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -61,8 +61,8 @@ const TABS: TabDef[] = [
   },
   {
     id: "report",
-    label: "Relatório",
-    description: "Métricas, estado por seção, dependências e próximos passos priorizados.",
+    label: "Estado do projeto",
+    description: "Onde o projeto está hoje, o que tem densidade, o que ainda é esqueleto, por onde começar agora.",
     accentVar: "var(--blue-cold)",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -73,7 +73,7 @@ const TABS: TabDef[] = [
   },
 ]
 
-const STORAGE_KEY = "koru-admin-ai-analysis"
+const STORAGE_KEY = "koru-admin-ai-analysis-v2"
 
 /* ─── Persistência ─── */
 
@@ -315,56 +315,58 @@ export function AIAnalysisPanel() {
   return (
     <section className="rounded-xl glass-card overflow-hidden">
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 flex items-start justify-between gap-4 flex-wrap">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em]"
-              style={{
-                background: "color-mix(in oklch, var(--accent) 14%, transparent)",
-                color: "var(--accent)",
-              }}
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
-              </svg>
-              IA
-            </span>
-            <h2 className="font-serif text-xl" style={{ color: "var(--foreground)" }}>
-              Análise do universo
-            </h2>
+      <div className="px-5 pt-5 pb-4">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4">
+          <div className="min-w-0 md:flex-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
+                style={{
+                  background: "color-mix(in oklch, var(--accent) 14%, transparent)",
+                  color: "var(--accent)",
+                }}
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
+                </svg>
+                IA
+              </span>
+              <h2 className="font-serif text-xl leading-tight" style={{ color: "var(--foreground)" }}>
+                Análise do universo
+              </h2>
+            </div>
+            <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
+              {activeTab.description}
+            </p>
           </div>
-          <p className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-            {activeTab.description}
-          </p>
-        </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          {current && !streaming && (
-            <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
-              Última: {timeAgo(current.generatedAt)}
-            </span>
-          )}
-          {streaming ? (
-            <button
-              onClick={stop}
-              className="rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80"
-              style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
-            >
-              Parar
-            </button>
-          ) : (
-            <button
-              onClick={run}
-              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs transition-opacity hover:opacity-85"
-              style={{ background: "var(--foreground)", color: "var(--background)" }}
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-              </svg>
-              {current ? "Regenerar" : "Gerar análise"}
-            </button>
-          )}
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            {current && !streaming && (
+              <span className="font-sans text-[10px] whitespace-nowrap" style={{ color: "var(--muted-foreground)" }}>
+                Última: {timeAgo(current.generatedAt)}
+              </span>
+            )}
+            {streaming ? (
+              <button
+                onClick={stop}
+                className="rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80"
+                style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
+              >
+                Parar
+              </button>
+            ) : (
+              <button
+                onClick={run}
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs transition-opacity hover:opacity-85"
+                style={{ background: "var(--foreground)", color: "var(--background)" }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                {current ? "Regenerar" : "Gerar análise"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

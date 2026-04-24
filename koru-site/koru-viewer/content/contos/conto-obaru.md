@@ -190,8 +190,3 @@ O Bomi Veh registrou. Em silêncio. Como sempre registrava.
 Embaixo de tudo, muitas camadas abaixo da superfície, num ponto que o solo guardava sem que ele pedisse, a frequência de um Obaru com a cabeça alta e os ombros abertos ainda estava lá. Coberta. Intacta. Inacessível por decisão, não por perda.
 
 O projeto estava completo.
-
----
-*Status: COMPLETO*
-*Estrutura: kishotenketsu expandido, Ki / Sho / Ten / Ketsu / coda*
-*Conecta com: livro/capitulo-02.md, livro/capitulo-06.md, biblia/parte-05-personagens.md*

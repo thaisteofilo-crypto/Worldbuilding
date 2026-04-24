@@ -186,8 +186,3 @@ A pausa entre eles durou o tempo que durou. Nem mais, nem menos. O tipo de pausa
 "Você está aqui", disse ele. Não como cumprimento. Como confirmação de um mau presságio.
 
 "Você também", disse ela.
-
----
-
-*Status: expandido, versão completa*
-*Expansões implementadas: intervalo antes do sim, a mentira que não é dita, Asa Rimbi sensorial, noite da convocação, núcleo comunitário, visita ao círculo, preparação da missão, Obaru expandido com história compartilhada*

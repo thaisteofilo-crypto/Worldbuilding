@@ -140,8 +140,3 @@ O teto do Akwu continuou em dourado. O Bomi Veh continuou em lilás. O caminho c
 Era o que tinha. Era o que sempre havia tido. E o que havia aprendido, em ciclos suficientes de planícies e Chi-Oa e saídas e retornos, era que o que se tem e o que se precisa às vezes são a mesma coisa, e a diferença entre saber isso e acreditar nisso era a diferença entre o primeiro passo e todos os outros.
 
 Continuou.
-
----
-*Status: COMPLETO*
-*Estrutura: kishotenketsu, Ki / Sho / Ten / Ketsu + coda*
-*Conecta com: livro/epilogo.md (Kanda de Temi para Temiku), livro geral (Temi como apoio)*

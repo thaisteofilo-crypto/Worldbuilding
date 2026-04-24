@@ -234,8 +234,3 @@ Não conhecia o que as patas carregavam.
 O peso dos cascos no Bomi Veh deixou a marca de sempre. O chão havia aprendido aquele trajeto. A impressão era funda, regular, como fundação de coisa que já sabia onde ia.
 
 Ele foi.
-
----
-
-*Status: expandido, versão completa*
-*Expansões implementadas: física da porosidade das Jobi-Koro no Asa Temu, Kemi na floresta (evento expandido), ciclos de cuidado e perda (integração com conto-beku), lógica de arquiteto do Mwanga-ji (engenharia vs. ecologia), implementação do projeto e apagamento progressivo, conexão com capítulo III (o que Temiku e Obaru encontram), inconsistências morfológicas corrigidas (testa/focinho, nunca mãos/palmas)*

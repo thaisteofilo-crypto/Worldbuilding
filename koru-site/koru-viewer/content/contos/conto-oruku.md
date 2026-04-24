@@ -240,8 +240,3 @@ No Bomi Veh da clareira, nenhum registro.
 O Rimba Ngozi continuou. A luz do teto desceu. As Ariku filtraram. O solo processou. O ciclo seguiu.
 
 Oruku ficou.
-
----
-*Status: COMPLETO*
-*Estrutura: progressão por acumulação, da função ao exílio*
-*Conecta com: contos/conto-amara.md, contos/conto-temiku.md, livro/capitulo-01.md*

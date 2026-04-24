@@ -571,7 +571,7 @@ export default function CharactersPage() {
               </div>
 
               {/* 3 image views */}
-              <div className="grid grid-cols-3 gap-4 mb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
                 {VIEWS.map((view) => (
                   <ViewImageSlot
                     key={view.key}
@@ -595,21 +595,21 @@ export default function CharactersPage() {
               )}
 
               {/* Character details — identity */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
                 <EditableField label="Papel" value={char.role ?? ""} onSave={(v) => saveField(char.id, "role", v)} />
                 <EditableField label="Especie" value={char.species ?? ""} onSave={(v) => saveField(char.id, "species", v)} />
                 <EditableField label="Status" value={char.status ?? ""} onSave={(v) => saveField(char.id, "status", v)} />
               </div>
 
               {/* Character details — physical */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
                 <EditableField label="Morfologia" value={char.morphology ?? ""} onSave={(v) => saveField(char.id, "morphology", v)} multiline />
                 <EditableField label="Habilidade" value={char.ability ?? ""} onSave={(v) => saveField(char.id, "ability", v)} multiline />
                 <EditableField label="Marca (Isilo-Ori)" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
               </div>
 
               {/* Character details — world */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
                 <EditableField label="Origem" value={char.origin ?? ""} onSave={(v) => saveField(char.id, "origin", v)} />
                 <EditableField label="Localização" value={char.location ?? ""} onSave={(v) => saveField(char.id, "location", v)} />
                 <EditableField label="Citação" value={char.quote ?? ""} onSave={(v) => saveField(char.id, "quote", v)} />

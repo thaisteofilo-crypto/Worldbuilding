@@ -153,7 +153,7 @@ export default async function PersonagemPage({ params }: Props) {
           views={galleryViews}
           overlay={
             <div
-              className="absolute bottom-0 left-0 right-0 px-8 md:px-16 pb-8 pt-24"
+              className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-16 pb-6 sm:pb-8 pt-16 sm:pt-24"
               style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.75) 0%, transparent 100%)" }}
             >
               <h1
@@ -168,7 +168,7 @@ export default async function PersonagemPage({ params }: Props) {
         </div>
 
         {/* ── Character sheet ── */}
-        <div className="max-w-5xl mx-auto px-8 md:px-16 mt-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 md:px-16 mt-8 sm:mt-12">
           {/* Description */}
           <section className="mb-10" aria-label="Sobre">
             <p

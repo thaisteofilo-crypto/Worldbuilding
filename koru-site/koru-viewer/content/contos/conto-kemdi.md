@@ -130,8 +130,3 @@ Kemdi abaixou a cabeça até a testa encostar no Bomi Veh, o gesto que havia fei
 Levantou a cabeça. A luz nas bordas dos olhos captou a luz fria do Temu e a devolveu levemente diferente, como superfície que havia aprendido uma nota nova.
 
 Retomou o caminho para o Chi-Oa. O rastro que os cascos deixavam no Bomi Veh era o mesmo rastro leve de Onkweri jovem que sempre havia sido, mas a fosforescência ao redor das marcas ficava com uma leve tintura lilás-fria, perceptível para quem soubesse olhar.
-
----
-*Status: COMPLETO*
-*Estrutura: kishotenketsu, Ki / Sho / Ten / Ketsu + coda*
-*Conecta com: livro/capitulo-02.md, livro/epilogo.md, contos/conto-temiku.md*

@@ -238,8 +238,3 @@ Não precisava haver. A transição já havia acontecido.
 Ela caminhou atrás de Obaru com o peso redistribuído no corpo de forma que ninguém de fora perceberia como diferente. Os flancos tinham a mesma inclinação. Os cascos deixavam as mesmas marcas. A contenção nas veias era a mesma de sempre.
 
 Mas a pedra contra o peito estava morna. Ainda. Por mais um pouco.
-
----
-
-*Status: expandido, versão completa*
-*Expansões implementadas: cena de Beku expandida com diálogo e dinâmica completa, Nkosi-ha na entrada das Jobi-Koro (expansão obrigatória 1), Zoeji nas ruínas com sobreposição temporal (expansão obrigatória 2), reconhecimento pelo limiar expandido com física detalhada (expansão obrigatória 3), Obaru na borda com gesto de despedida e retorno, saída das ruínas com transição cinza→lilás, inconsistência morfológica corrigida (bolso→tira de fibra ao pescoço, contra o peito)*
