@@ -12,13 +12,13 @@ export async function GET() {
       .order("key")
 
     if (!error && data) {
-      // Merge: local state fills in any keys not in Supabase
+      // Merge: local file wins when keys overlap (it's written synchronously on every PATCH;
+      // Supabase upsert can fail silently and return stale values).
       const localState = readLocalState()
-      const supabaseKeys = new Set(data.map((r) => r.key))
-      const extra = Object.entries(localState)
-        .filter(([k]) => !supabaseKeys.has(k))
-        .map(([key, value]) => ({ key, value, updated_at: null }))
-      return NextResponse.json({ content: [...data, ...extra] })
+      const localKeys = new Set(Object.keys(localState))
+      const fromSupabase = data.filter((r) => !localKeys.has(r.key))
+      const fromLocal = Object.entries(localState).map(([key, value]) => ({ key, value, updated_at: null }))
+      return NextResponse.json({ content: [...fromSupabase, ...fromLocal] })
     }
   } catch { /* ignore */ }
 

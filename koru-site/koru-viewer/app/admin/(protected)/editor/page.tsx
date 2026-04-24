@@ -4,8 +4,10 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { ChatPanel, ChatToggleButton } from '@/components/admin/chat-panel'
 import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
+import type { Editor } from '@tiptap/react'
 import { DocumentStatusBadge } from '@/components/admin/document-status-badge'
 import { useDocumentStatuses } from '@/hooks/use-document-statuses'
+import { markdownToHtml } from '@/lib/markdown-to-html'
 
 interface DocEntry {
   label: string
@@ -329,22 +331,70 @@ export default function EditorPage() {
     }
   }, [])
 
+  // Aplica destaque visual e scroll nos blocos entre [fromPos, toPos] — as posições são
+  // do documento ProseMirror, capturadas antes/depois do insert. Usa view.nodeDOM para
+  // pegar o elemento renderizado de cada node de bloco.
+  // Toast de confirmação quando a autora aceita uma sugestão. Aparece no topo do
+  // editor, fade in + fade out via transition (keyframe animation + forwards travou
+  // em opacity 0 no Chrome quando o elemento é remontado via key).
+  const [toastPhase, setToastPhase] = useState<'hidden' | 'in' | 'out'>('hidden')
+  const toastTimersRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
+
+  const scrollToAfterInsert = useCallback((editor: Editor, toPos: number) => {
+    setTimeout(() => {
+      try {
+        const docSize = editor.state.doc.content.size
+        const pos = Math.min(Math.max(0, toPos), docSize)
+        const dom = editor.view.domAtPos(pos)
+        const el = dom.node instanceof Element ? dom.node : dom.node.parentElement
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      } catch {
+        /* scroll cosmético */
+      }
+    }, 60)
+  }, [])
+
+  const showInsertToast = useCallback(() => {
+    toastTimersRef.current.forEach(clearTimeout)
+    toastTimersRef.current = []
+    // Monta escondido, então fade in em 1 frame (evita frame inicial visível no lugar final)
+    setToastPhase('hidden')
+    toastTimersRef.current.push(setTimeout(() => setToastPhase('in'), 10))
+    toastTimersRef.current.push(setTimeout(() => setToastPhase('out'), 1600))
+    toastTimersRef.current.push(setTimeout(() => setToastPhase('hidden'), 1900))
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      toastTimersRef.current.forEach(clearTimeout)
+    }
+  }, [])
+
   const handleInsertText = useCallback((text: string) => {
     const editor = richEditorRef.current?.editor
     if (!editor) return
-    editor.chain().focus().insertContent(text).run()
-  }, [])
+    const html = markdownToHtml(text)
+    editor.chain().focus().insertContent(html, { parseOptions: { preserveWhitespace: false } }).run()
+    scrollToAfterInsert(editor, editor.state.selection.to)
+    showInsertToast()
+  }, [scrollToAfterInsert, showInsertToast])
 
-  const handleReplaceSelection = useCallback((text: string) => {
+  // "Aceitar": substitui a seleção se houver, senão insere no cursor. Em qualquer caso,
+  // o markdown é convertido para HTML antes de entrar no TipTap.
+  const handleAcceptSuggestion = useCallback((text: string) => {
     const editor = richEditorRef.current?.editor
     if (!editor) return
+    const html = markdownToHtml(text)
     const { from, to } = editor.state.selection
+
     if (from !== to) {
-      editor.chain().focus().deleteRange({ from, to }).insertContentAt(from, text).run()
+      editor.chain().focus().deleteRange({ from, to }).insertContentAt(from, html, { parseOptions: { preserveWhitespace: false } }).run()
     } else {
-      editor.chain().focus().insertContent(text).run()
+      editor.chain().focus().insertContent(html, { parseOptions: { preserveWhitespace: false } }).run()
     }
-  }, [])
+    scrollToAfterInsert(editor, editor.state.selection.to)
+    showInsertToast()
+  }, [scrollToAfterInsert, showInsertToast])
 
   const toggleSection = (section: string) => {
     setCollapsed((prev) => ({ ...prev, [section]: !prev[section] }))
@@ -1704,10 +1754,37 @@ export default function EditorPage() {
         documentContent={content}
         selectedText={editorSelection}
         onInsertText={handleInsertText}
-        onReplaceSelection={handleReplaceSelection}
+        onReplaceSelection={handleAcceptSuggestion}
         open={showChat}
         onClose={() => setShowChat(false)}
       />
+
+      {/* Toast de confirmação ao aceitar uma sugestão da IA */}
+      {toastPhase !== 'hidden' && (
+        <div
+          className="fixed rounded-full flex items-center gap-2 px-4 py-2 pointer-events-none koru-insert-toast"
+          style={{
+            top: 24,
+            left: '50%',
+            zIndex: 100,
+            background: 'color-mix(in oklch, var(--accent) 90%, transparent)',
+            color: 'white',
+            fontSize: 12,
+            fontFamily: 'var(--font-sans), Inter, sans-serif',
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+            boxShadow: '0 8px 24px color-mix(in oklch, var(--accent) 40%, transparent)',
+            opacity: toastPhase === 'in' ? 1 : 0,
+            transform: `translate(-50%, ${toastPhase === 'in' ? '0' : '-8px'})`,
+            transition: 'opacity 260ms var(--ease-smooth), transform 260ms var(--ease-smooth)',
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Texto inserido
+        </div>
+      )}
     </div>
   )
 }

@@ -213,11 +213,16 @@ function renderMarkdownSafe(
       const codeContent = codeLines.join('\n')
 
       if (lang === 'suggestion') {
+        // A autora vê o trecho já diagramado (negrito, itálico, parágrafos, listas, tabelas)
+        // exatamente como vai entrar no editor. Um único botão "Aceitar" decide internamente
+        // entre substituir a seleção (se houver) ou inserir no cursor — o editor aplica o
+        // flash lilás no trecho recém-inserido.
+        const accept = onReplace ?? onInsert
         elements.push(
           <div
             key={key++}
             style={{
-              background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
+              background: 'color-mix(in oklch, var(--accent) 6%, transparent)',
               borderLeft: '2px solid var(--accent)',
               padding: '0.75rem 1rem',
               borderRadius: '0 0.5rem 0.5rem 0',
@@ -227,24 +232,21 @@ function renderMarkdownSafe(
             }}
           >
             <div
+              className="koru-suggestion-preview"
               style={{
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
                 fontSize: '0.875rem',
-                lineHeight: '1.8',
-                whiteSpace: 'pre-wrap',
+                lineHeight: '1.7',
                 color: 'var(--foreground)',
               }}
             >
-              {codeContent}
+              {renderMarkdownSafe(codeContent)}
             </div>
-            <div className="flex items-center gap-2 mt-2">
-              {onInsert && (
-                <InsertButton onClick={() => onInsert(codeContent)} label="Inserir no editor" primary />
-              )}
-              {onReplace && (
-                <InsertButton onClick={() => onReplace(codeContent)} label="Aplicar na seleção" />
-              )}
-            </div>
+            {accept && (
+              <div className="flex items-center gap-2 mt-2">
+                <InsertButton onClick={() => accept(codeContent)} label="Aceitar" primary />
+              </div>
+            )}
           </div>
         )
         continue

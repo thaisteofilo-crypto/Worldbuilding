@@ -31,7 +31,7 @@ Não é um planeta com ecologia. É uma câmara fechada, o Akwu, que sustenta se
 ### O QUE KORÚ NÃO É
 
 - Não é pós-apocalíptico. As ruínas (Jobi-Koro) são consequência de uma ruptura do ciclo na Era IV, não de uma civilização destruída de fora.
-- Não tem humanos. Não existe essa categoria de ser.
+- Não tem humanos na Era V nem nas anteriores. O Akwu foi câmara fechada do design original da Era I até o fim da Era V. A Era VI documenta a chegada de criaturas exteriores (Kairo é a primeira) pela fratura no teto do Akwu.
 - Não tem vilões no sentido convencional. Os antagonistas agem por lógica interna coerente, não por maldade.
 - Não tem salvação. Tem restauração, com custo.
 
@@ -281,15 +281,21 @@ CICLO RECOMEÇA
 
 ---
 
-### BOMI VEH, 5 ESTADOS DOCUMENTADOS
+### BOMI VEH, 6 ESTADOS DOCUMENTADOS
 
 | Estado | Aparência | O que é |
 |---|---|---|
-| **Vivo** (processando) | Lilás-rosado, fosforescência suave, vegetação baixa | Solo ativo digerindo memória recebida |
-| **Solidificado** (armazenado) | Denso, escuro, pesado | Memória em excesso num único ponto, coagulada. Os Onkweri *são* este estado. |
-| **Preto** (saturado/morto) | Ausência de cor, sem fosforescência | Ubomi-chi mortos. Memórias presas sem rota. Irreversível sem intervenção. |
-| **Cinza permanente** (congestionado) | Cinza frio, sem lilás, sem fosforescência | Memória sem destinatário. Jobi-Koro. Saturação por violação do ciclo. |
-| **Azul-frio** (frequência sem categoria) | Azul-esbranquiçado frio, fosforescência estranha | Único caso documentado: dissolução de Amara. Memória Onkweri + luz Azuri = registro sem categoria no sistema. |
+| **1. Vivo** (processando) | Lilás-rosado, fosforescência suave, vegetação baixa | Solo ativo digerindo memória recebida |
+| **2. Solidificado** (armazenado) | Denso, escuro, pesado | Memória em excesso num único ponto, coagulada. Os Onkweri *são* este estado. |
+| **3. Preto** (ciclo nunca iniciado) | Ausência de cor, sem fosforescência | Ubomi-chi mortos antes de começar a processar. Memórias presas sem rota de entrada. Irreversível sem intervenção. |
+| **4. Saturado sem rota** (ciclo travado no meio) | Cinza denso, compacto, oscilação de fosforescência sem padrão | Registro feito, transmissão impossível. Categoria geral. Reversível se o sistema receber densidade afetiva real (evento de referência: restauração por Temiku, fim da Era V). |
+| **5. Cinza permanente** (instância extrema do 4º) | Cinza frio uniforme, sem lilás | Jobi-Koro. Caso máximo e antigo do 4º estado cristalizado em escala de território (violação do ciclo na Era IV). |
+| **6. Azul-frio** (frequência sem categoria) | Azul-esbranquiçado frio, fosforescência estranha | Único caso documentado: dissolução de Amara. Memória Onkweri + luz Azuri = registro sem categoria no sistema. |
+
+**Diferenças críticas:**
+- **3º (Preto) vs. 4º (Saturado sem rota):** Preto = ciclo nunca começou (Ubomi-chi morto). Saturado = ciclo começou e travou no meio.
+- **4º (Saturado sem rota) vs. 5º (Cinza permanente):** o Cinza permanente das Jobi-Koro é a instância máxima e territorial do 4º estado. O 4º pode aparecer localizado em floresta viva.
+- **Pisada no 4º:** pressão sobe do solo em vez de descer. Sensação de "cheio demais" em vez de "vazio".
 
 ---
 
@@ -995,13 +1001,29 @@ Cozinhar é prática de autorregulação, criatura que cozinha com raiva produz 
 
 ---
 
-### ERA V, AGORA
+### ERA V, RETORNO: O MUNDO PROCESSANDO A PRÓPRIA RUPTURA
 
 **O que acontece:** Os Azuri retornaram em menor número. Jobi-Koro existem como memórias em pé. O Oa-Chi governa com memória viva de que acordos existem porque as alternativas foram testadas.
 
 Nesta Era, Temiku existe. A única criatura de Korú que é simultaneamente a prova de que o acordo tem buracos e a prova de que os buracos não destroem o acordo, apenas o complicam.
 
-**O que esta Era revela:** o mundo atual de Korú é um mundo que sobreviveu à sua própria ruptura. Não está curado, está processando. Como o Bomi Veh depois de uma morte.
+A Era V encerra com dois eventos acoplados: a restauração do Bomi Veh por Temiku (que paga com memória afetiva) e a fratura no teto do Akwu sobre o Rimba Ngozi, resposta cosmológica do teto à reverberação do pagamento afetivo.
+
+**O que esta Era revela:** o mundo atual de Korú é um mundo que sobreviveu à sua própria ruptura. Não está curado, está processando. Como o Bomi Veh depois de uma morte. A Era V termina no instante em que o sistema reconhece que se tornou permeável.
+
+---
+
+### ERA VI, A COSTURA: O MUNDO RECEBE O QUE NÃO TEM PROTOCOLO PARA LER
+
+**Nome:** *A Costura* (fratura residual no teto do Akwu). Também *Era do Que Chega*.
+
+**O que acontece:** pela fratura pontual sobre o Rimba Ngozi, matéria externa ao Akwu começa a atravessar. Kairo, primeira humana documentada, chega. O acordo fundador não prevê entrada externa: o sistema de Korú não tem protocolo para ler o que vem pela costura. Bomi Veh não registra, Ariku não arquiva, Azuri não traduz.
+
+Korú era câmara fechada autossustentada. Deixou de ser. A Era VI é expansão do que o acordo não cobre, não ruptura do acordo (como a Era IV foi).
+
+**Status atual:** início. A era está se desenrolando. Outras entradas podem vir pela costura; o sistema não mede a frequência do que atravessa porque não a lê.
+
+**O que esta Era revela:** o mundo agora inclui presenças para as quais não tem vocabulário. A tarefa em aberto é descobrir o que fazer com o que não tem categoria.
 
 ---
 

@@ -3,8 +3,8 @@ import path from "path"
 import matter from "gray-matter"
 import { CONTOS_ITEMS } from "./navigation"
 
-// Content root — lives inside the Next.js project so Vercel bundles it
-const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
+// Content root — lives at the repo root (two levels above koru-site/koru-viewer)
+const REPO_ROOT = path.resolve(path.join(process.cwd(), "..", ".."))
 
 const ALLOWED_PREFIXES = [
   "biblia/",
@@ -110,7 +110,7 @@ const KNOWN_BIBLIA_TITLES: Record<string, string> = {
   "parte-05": "Personagens · Quem Habita",
   "parte-06": "Regras · Os 13 Acordos",
   "parte-07": "Cultura · Como se Vive",
-  "parte-08": "Linha do Tempo · As Cinco Eras",
+  "parte-08": "Linha do Tempo · As Seis Eras",
 }
 
 export function bibliaParts(): { parte: string }[] {

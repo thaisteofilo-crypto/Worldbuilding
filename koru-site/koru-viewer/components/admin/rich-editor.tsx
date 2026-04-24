@@ -3,6 +3,10 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Markdown } from '@tiptap/markdown'
+import { Table } from '@tiptap/extension-table'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { TableCell } from '@tiptap/extension-table-cell'
 import { forwardRef, useImperativeHandle, useEffect, useRef, useState, useCallback } from 'react'
 import type { Editor } from '@tiptap/react'
 
@@ -123,6 +127,10 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
           heading: { levels: [1, 2, 3] },
         }),
         Markdown,
+        Table.configure({ resizable: false }),
+        TableRow,
+        TableHeader,
+        TableCell,
       ],
       content: markdown,
       contentType: 'markdown',

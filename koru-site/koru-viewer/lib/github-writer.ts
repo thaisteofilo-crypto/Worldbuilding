@@ -11,7 +11,7 @@
  *   GITHUB_REPO            nome do repo (ex.: "Worldbuilding")
  *   GITHUB_BRANCH          branch alvo (default: "main")
  *   GITHUB_CONTENT_PREFIX  prefixo do content dentro do repo
- *                          (default: "koru-site/koru-viewer/content")
+ *                          (default: "" — docs vivem na raiz do repo)
  */
 
 const API = "https://api.github.com"
@@ -35,7 +35,7 @@ export function getGitHubConfig(): GitHubConfig | null {
     repo,
     branch: process.env.GITHUB_BRANCH || "main",
     contentPrefix:
-      process.env.GITHUB_CONTENT_PREFIX || "koru-site/koru-viewer/content",
+      process.env.GITHUB_CONTENT_PREFIX ?? "",
   }
 }
 
@@ -53,7 +53,7 @@ function headers(cfg: GitHubConfig): HeadersInit {
 
 function repoPath(cfg: GitHubConfig, relPath: string): string {
   const clean = relPath.replace(/^\/+/, "")
-  return `${cfg.contentPrefix}/${clean}`
+  return cfg.contentPrefix ? `${cfg.contentPrefix}/${clean}` : clean
 }
 
 interface GhFileInfo {

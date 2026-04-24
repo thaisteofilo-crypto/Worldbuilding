@@ -35,13 +35,19 @@ const DEFAULT_BIBLIA_DOCS: DocEntry[] = [
 ]
 
 const DEFAULT_LIVRO_DOCS: DocEntry[] = [
-  { label: 'Capítulo 01', path: 'livro/capitulo-01.md' },
-  { label: 'Capítulo 02', path: 'livro/capitulo-02.md' },
-  { label: 'Capítulo 03', path: 'livro/capitulo-03.md' },
-  { label: 'Capítulo 04', path: 'livro/capitulo-04.md' },
-  { label: 'Capítulo 05', path: 'livro/capitulo-05.md' },
-  { label: 'Capítulo 06', path: 'livro/capitulo-06.md' },
-  { label: 'Epílogo', path: 'livro/epilogo.md' },
+  { label: 'Capítulo I — O que ela é', path: 'livro/capitulo-01.md' },
+  { label: 'Capítulo II — Manhãs', path: 'livro/capitulo-02.md' },
+  { label: 'Capítulo III — A cidade', path: 'livro/capitulo-03.md' },
+  { label: 'Capítulo IV — A mentira silenciosa', path: 'livro/capitulo-04.md' },
+  { label: 'Capítulo V — Entre o lilás e o cinza', path: 'livro/capitulo-05.md' },
+  { label: 'Capítulo VI — O que a floresta guarda', path: 'livro/capitulo-06.md' },
+  { label: 'Capítulo VII — O projeto do fim do luto', path: 'livro/capitulo-07.md' },
+  { label: 'Capítulo VIII — A chuva', path: 'livro/capitulo-08.md' },
+  { label: 'Capítulo IX — O limiar como morada', path: 'livro/capitulo-09.md' },
+  { label: 'Capítulo X — A noite antes', path: 'livro/capitulo-10.md' },
+  { label: 'Capítulo XI — O que ela paga', path: 'livro/capitulo-11.md' },
+  { label: 'Capítulo XII — O retorno', path: 'livro/capitulo-12.md' },
+  { label: 'Epílogo — Depois', path: 'livro/epilogo.md' },
 ]
 
 function pathFilename(path: string): string {

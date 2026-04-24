@@ -138,9 +138,3 @@ Ficou ali sentada no fundo da Ariku oca com o seixo na mão enquanto a luz lilá
 Em algum ponto da floresta, também, o pequeno círculo cinza na terra do tamanho de uma palma humana continuava ali.
 
 Kairo fechou a mão sobre o seixo.
-
----
-
-*Status: COMPLETO*
-*Estrutura: kishotenketsu, Ki / Sho / Ten / Ketsu + coda*
-*Conecta com: contos/conto-temi.md (contraponto simétrico), livro/capitulo-01.md (Rimba Ngozi)*
