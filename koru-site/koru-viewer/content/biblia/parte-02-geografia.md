@@ -55,7 +55,7 @@ AKWU (câmara fechada, teto luminoso)
 
 ---
 
-### DIMENSÃO COSMOLÓGICA
+## DIMENSÃO COSMOLÓGICA
 
 ### AKWU, A CÂMARA
 
