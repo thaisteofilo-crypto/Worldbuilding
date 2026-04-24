@@ -1,8 +1,14 @@
 > Este documento é o prefácio conceitual da bíblia. O manifesto literário do projeto vive em [Propósito · Manifesto](manifesto.md). Aqui está o mapa: etimologia, línguas-base, tensão central, o que Korú não é.
 
+### A FÍSICA, EM UMA FRASE
+
+Korú é um mundo onde a memória pesa. Não como metáfora. Como física. O que é lembrado ocupa espaço. O que se dissolve muda de estado, endurece, vira solo. As criaturas são memória solidificada em forma de corpo. As árvores são memória arquivada em forma de tronco. O chão lembra de tudo que já foi pisado nele, e por isso é fértil.
+
+Tudo acontece dentro do Akwu, a câmara fechada que sustenta o próprio ciclo sem nada vindo de fora. O que existe aqui precisa circular, se transformar, voltar. Quando alguma coisa para de circular, o sistema inteiro sente.
+
+→ Ver [Parte 01, A Natureza do Akwu](parte-01-fisica-cosmologia.md) para a mecânica da câmara.
 
 
-&nbsp;
 
 ### POR QUE SE CHAMA KORÚ
 
