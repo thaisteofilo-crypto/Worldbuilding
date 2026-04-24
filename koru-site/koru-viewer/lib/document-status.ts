@@ -3,46 +3,54 @@ export type DocumentStatus = "rascunho" | "aprimorar" | "revisar" | "completo" |
 export interface StatusDef {
   id: DocumentStatus
   label: string
+  short: string
   description: string
   color: string
   dotColor: string
 }
 
+// Colors: chroma reduzido (tom editorial/contemplativo, não SaaS).
+// Para uso em fundo escuro, dot lightness ~0.62, color (texto) ~0.70.
 export const DOCUMENT_STATUSES: StatusDef[] = [
   {
     id: "rascunho",
     label: "Rascunho",
+    short: "Rasc",
     description: "Primeira forma, ainda procurando estrutura.",
-    color: "oklch(0.55 0.01 280)",
-    dotColor: "oklch(0.60 0.02 280)",
+    color: "oklch(0.70 0.02 280)",
+    dotColor: "oklch(0.62 0.03 280)",
   },
   {
     id: "aprimorar",
     label: "Aprimorar",
+    short: "Aprim",
     description: "Tem forma, mas precisa de camada ou polimento.",
-    color: "oklch(0.55 0.13 65)",
-    dotColor: "oklch(0.62 0.13 65)",
+    color: "oklch(0.72 0.08 75)",
+    dotColor: "oklch(0.66 0.10 72)",
   },
   {
     id: "revisar",
     label: "Revisar",
+    short: "Rev",
     description: "Precisa de leitura crítica ou correção pontual.",
-    color: "oklch(0.52 0.22 25)",
-    dotColor: "oklch(0.58 0.18 25)",
+    color: "oklch(0.68 0.12 25)",
+    dotColor: "oklch(0.62 0.14 25)",
   },
   {
     id: "completo",
     label: "Completo",
+    short: "OK",
     description: "Fechado, consistente, pode publicar.",
-    color: "oklch(0.50 0.13 155)",
-    dotColor: "oklch(0.58 0.13 155)",
+    color: "oklch(0.70 0.09 155)",
+    dotColor: "oklch(0.64 0.10 155)",
   },
   {
     id: "arquivar",
     label: "Arquivar",
+    short: "Arq",
     description: "Fora do fluxo ativo, guardado por referência.",
-    color: "oklch(0.42 0.01 280)",
-    dotColor: "oklch(0.48 0.01 280)",
+    color: "oklch(0.58 0.01 280)",
+    dotColor: "oklch(0.50 0.01 280)",
   },
 ]
 

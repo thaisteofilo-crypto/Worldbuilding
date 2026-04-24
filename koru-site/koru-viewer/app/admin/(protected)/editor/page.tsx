@@ -718,7 +718,7 @@ export default function EditorPage() {
         {/* Sidebar */}
         <div
           className={`shrink-0 overflow-y-auto overflow-x-hidden rounded-xl p-3 flex flex-col gap-1 transition-all duration-200 ${
-            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-[min(16rem,calc(100vw-3rem))]'
+            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-[min(19rem,calc(100vw-3rem))]'
           }`}
           style={sidebarCollapsed ? {} : {
             background: 'var(--card)',
@@ -827,9 +827,9 @@ export default function EditorPage() {
 
                 {/* Doc list */}
                 {!isCollapsed && (
-                  <div className="flex flex-col gap-0.5 mt-0.5 mb-2">
+                  <div className="flex flex-col gap-0.5 mt-0.5 mb-2 pr-2">
                     {group.docs.map((doc) => (
-                      <div key={doc.path} className="group flex items-center">
+                      <div key={doc.path} className="group flex items-center gap-1">
                         {renamingDoc?.path === doc.path ? (
                           <div className="flex items-center gap-1 px-2 flex-1">
                             <input
@@ -890,11 +890,16 @@ export default function EditorPage() {
                           </button>
                         )}
                         {renamingDoc?.path !== doc.path && (
-                          <div className="shrink-0 pl-1" onClick={(e) => e.stopPropagation()}>
+                          <div
+                            className="shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                            data-row-status
+                          >
                             <DocumentStatusBadge
                               value={docStatuses[doc.path] ?? null}
                               onChange={(next) => setDocStatus(doc.path, next)}
                               compact
+                              showLabel={selectedPath === doc.path}
                             />
                           </div>
                         )}

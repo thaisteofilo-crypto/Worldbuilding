@@ -13,11 +13,13 @@ interface Props {
   onChange: (next: DocumentStatus | null) => void
   size?: "sm" | "md"
   compact?: boolean
+  /** show the short label inline next to the dot (compact mode only); for hover/selected rows */
+  showLabel?: boolean
 }
 
 interface Coords { top: number; left: number }
 
-export function DocumentStatusBadge({ value, onChange, size = "sm", compact = false }: Props) {
+export function DocumentStatusBadge({ value, onChange, size = "sm", compact = false, showLabel = false }: Props) {
   const [open, setOpen] = useState(false)
   const [coords, setCoords] = useState<Coords | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -87,7 +89,8 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
   }, [open])
 
   const dotSize = size === "sm" ? 6 : 8
-  const labelText = def?.label ?? "Sem status"
+  const fullLabel = def?.label ?? "Sem status"
+  const shortLabel = def?.short ?? ""
   const labelColor = def?.color ?? "var(--muted-foreground)"
   const dotColor = def?.dotColor ?? "var(--border)"
 
@@ -185,26 +188,57 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
           e.preventDefault()
           setOpen((v) => !v)
         }}
-        className="inline-flex items-center gap-1.5 rounded-full transition-all hover:opacity-90"
-        style={{
-          padding: compact ? "2px 6px" : "2px 8px",
-          background: def ? "color-mix(in oklch, " + def.color + " 14%, transparent)" : "transparent",
-          border: def ? "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)" : "1px dashed var(--border)",
+        className="inline-flex items-center justify-center rounded-full transition-all"
+        style={compact ? {
+          // Compact mode: apenas ponto (hit-area invisível ao redor), sem pill/border/bg.
+          padding: 4,
+          background: "transparent",
+          border: "none",
           color: labelColor,
-          fontSize: compact ? 9 : 10,
+          gap: 6,
+          opacity: def ? 1 : 0.35,
+        } : {
+          // Full mode: pill tradicional (usado em cards/dropdowns).
+          padding: "3px 9px",
+          background: def ? "color-mix(in oklch, " + def.color + " 14%, transparent)" : "transparent",
+          border: def ? "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)" : "1px dashed color-mix(in oklch, var(--border) 70%, transparent)",
+          color: labelColor,
+          fontSize: 10,
           lineHeight: 1,
-          letterSpacing: "0.05em",
+          letterSpacing: "0.06em",
+          opacity: def ? 1 : 0.55,
+          gap: 6,
         }}
-        title={def?.description ?? "Definir status"}
+        title={def ? def.label + " — " + def.description : "Definir status"}
         aria-haspopup="menu"
         aria-expanded={open}
+        aria-label={def ? "Status: " + def.label : "Sem status — definir"}
       >
         <span
           className="rounded-full shrink-0"
-          style={{ width: dotSize, height: dotSize, background: dotColor }}
+          style={{
+            width: dotSize,
+            height: dotSize,
+            background: def ? dotColor : "transparent",
+            border: def ? "none" : "1px dashed color-mix(in oklch, var(--muted-foreground) 55%, transparent)",
+            boxShadow: def ? "0 0 0 3px color-mix(in oklch, " + def.color + " 16%, transparent)" : "none",
+          }}
           aria-hidden
         />
-        {!compact && <span className="font-sans uppercase tracking-[0.08em] whitespace-nowrap">{labelText}</span>}
+        {compact && def && (
+          <span
+            className={
+              "font-sans uppercase whitespace-nowrap transition-all duration-150 " +
+              (showLabel
+                ? "max-w-[80px] opacity-90"
+                : "max-w-0 opacity-0 overflow-hidden group-hover:max-w-[80px] group-hover:opacity-70")
+            }
+            style={{ fontSize: 9, letterSpacing: "0.12em", fontWeight: 500 }}
+          >
+            {shortLabel}
+          </span>
+        )}
+        {!compact && <span className="font-sans uppercase tracking-[0.08em] whitespace-nowrap">{fullLabel}</span>}
       </button>
       {menu}
     </>
