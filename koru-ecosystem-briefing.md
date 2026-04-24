@@ -281,7 +281,7 @@ CICLO RECOMEÇA
 
 ---
 
-### BOMI VEH, DOIS ESTADOS
+### BOMI VEH, 5 ESTADOS DOCUMENTADOS
 
 | Estado | Aparência | O que é |
 |---|---|---|
@@ -845,11 +845,20 @@ Oruku não é um Azuri funcional. É uma frequência sem receptor, expulso do li
 
 ### REGRA 10, O toque de eleição exige declaração mútua. Sem as duas declarações, o toque dissolve em vez de eleger.
 
-**Fundamento:** a filtragem que torna o toque de eleição seguro requer que ambas as partes estejam em frequência consciente e declarada. O Onkweri declara abertura. O Azuri declara intenção. A declaração não é formalidade, é parte do mecanismo físico.
+**Fundamento:** a filtragem que torna o toque de eleição seguro requer que ambas as partes estejam em frequência consciente e declarada. O Onkweri declara abertura. O Azuri declara intenção. A declaração não é formalidade, é parte do mecanismo físico, cada voz ajusta a frequência do contato no momento em que as frontes se tocam.
 
-**Mecânica:** o toque se dá fronte a fronte (testa a testa) por no máximo três respirações. A luz nas marcas resultantes (testa e bordas dos olhos do Onkweri) não some mesmo se o Azuri que elegeu cessar.
+**Mecânica completa do toque de eleição (Isilo-Ori):**
 
-**Consequência:** toque com uma declaração = dissolução parcial. Toque sem declaração = dissolução completa.
+1. **Postura:** fronte a fronte. A testa do Onkweri encosta a testa do Azuri. Único ponto de contato permitido. Não há uso de focinho, flanco ou pata.
+2. **Duração:** exatamente três respirações compartilhadas. Menos: o mecanismo não completa. Mais: a dissolução padrão do contato Azuri/Onkweri começa a operar (ver Regra 08).
+3. **Duas declarações:** durante as três respirações, ambas as declarações devem ser emitidas. O Onkweri declara abertura. O Azuri declara intenção. Ordem não importa, simultaneidade é permitida. O que importa é a coexistência das duas frequências no intervalo.
+4. **Resultado físico:** luz lilás-fria surge na testa do Onkweri e nas bordas dos olhos, em forma de arco frontal e delineado ocular. A cor é específica da eleição, não é Luz Limiar nem Temu. É fenômeno próprio do toque.
+5. **Natureza da mudança:** constitutiva, não superficial. A estrutura de frequência do Onkweri é alterada na substância base. A marca não pode ser apagada, lavada nem encoberta. Permanece mesmo após a morte ou cessação do Azuri que elegeu (ver Regra 11 para irreversibilidade).
+
+**Consequência de quebra:**
+- Toque com uma declaração apenas: dissolução parcial do Onkweri. Memória recente perdida. Sem marca.
+- Toque sem nenhuma declaração: dissolução completa, idêntica ao contato descrito na Regra 08.
+- Toque em postura diferente de fronte a fronte: não conta como eleição. A frequência não se ajusta e o contato responde como contato comum.
 
 ---
 
@@ -861,19 +870,25 @@ Oruku não é um Azuri funcional. É uma frequência sem receptor, expulso do li
 
 ---
 
-### REGRA 12, Um Azuri que cessa de traduzir, por escolha ou por exílio, é considerado morto pelo acordo fundador, mesmo que ainda exista em outra forma.
+### REGRA 12, Um Azuri que cessa de traduzir é considerado morto pelo acordo fundador.
 
-**Fundamento:** o acordo fundador define os Azuris por função, não por existência. Oruku é o caso de estudo, existe como anomalia no Akwu, mas é ausente do ciclo.
+**Cobertura:** Azuri **cessado**, aquele que deixou de traduzir por escolha própria ou por fim natural da função, mas permanece coerente com o ciclo (dissolução padrão, memória devolvida ao Bomi Veh).
 
-**Consequência:** a frequência de um Azuri em estado de "passagem presa" não pode ser invocada nem mapeada pelas Arikus. Existe fora do ciclo. Sem endereço no sistema.
+**Fundamento:** o acordo fundador define os Azuris por função, não por existência biológica. Cessar de traduzir é equivalente, no sistema, a cessar de existir. A ausência de tradução é a morte registrada pelo mundo.
+
+**Consequência:** a frequência do Azuri cessado é arquivada. Ubomi-chi de Ariku podem acessá-la como memória, nunca como presença. Não há frequência ativa a invocar.
+
+*Distinção crítica: Regra 12 trata de cessação dentro do ciclo. Azuri exilado, que permanece como frequência ativa fora do ciclo, é tratado na Regra 13.*
 
 ---
 
 ### REGRA 13, A frequência de um Azuri em estado de exílio não pode ser invocada nem mapeada. Ela existe fora do ciclo.
 
-**Fundamento:** extensão da Regra 12. Protege o ciclo de perturbações causadas por frequências "presas".
+**Cobertura:** Azuri **exilado** ("passagem presa"), aquele expulso do limiar por ter escolhido um lado sem completar tradução nem ter memória solidificada. Continua existindo como anomalia no Akwu, mas sem endereço no sistema. Caso de estudo: Oruku.
 
-**Consequência:** tentativas de localizar ou invocar um Azuri exilado criam frequência incoerente nas Arikus próximas. Os Ubomi-chis daquelas raízes ficam desorientados por dias. O sistema rejeita entrada inválida.
+**Fundamento:** o exilado não foi cessado nem arquivado. A frequência persiste viva, porém sem receptor. Invocar um exilado é pedir endereço a um sistema que rejeitou registrar aquele ponto.
+
+**Consequência:** tentativas de localizar ou invocar um Azuri exilado criam frequência incoerente nas Arikus próximas. Os Ubomi-chis daquelas raízes ficam desorientados por dias. O sistema rejeita a entrada inválida. Ao contrário do cessado da Regra 12, o exilado não pode ser acessado nem como memória arquivada, porque nunca foi arquivado.
 
 ---
 

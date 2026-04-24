@@ -55,7 +55,7 @@ Voltou para aquela Ariku regularmente depois disso. Não havia pedido de ningué
 
 ---
 
-## III. O que ficou
+## III. A presença que não tinha forma
 
 Um dia, o ar da clareira ao redor da Ariku sudoeste tinha qualidade diferente.
 
@@ -73,9 +73,9 @@ Voltou uma semana depois. A variação estava maior.
 
 ---
 
-Durante o período que se seguiu, Amara começou a entender o que estava acontecendo da única forma que entendia qualquer coisa, por acumulação de retornos, por frequência que recebia pelos cascos e depositava em alguma parte entre o pescoço e a base dos chifres onde ficavam as coisas que ela ainda não sabia nomear. A variação azulada havia expandido, ainda pequena, ainda localizada, mas presente com a qualidade de coisa que estava processando para permanecer, não para desaparecer.
+Voltou uma terceira vez. Uma quarta.
 
-O silêncio nítido chegava e ia. Às vezes ela chegava à clareira e havia sido há pouco tempo, a fosforescência do Bomi Veh ainda levemente diferente do padrão, como quando uma frequência intensa havia passado e o solo ainda estava absorvendo a última parte. Às vezes havia sido há mais tempo. Ela ia. Voltava.
+A qualidade do silêncio nítido chegava antes dela alcançar a clareira, agora, como se o ar estivesse já calibrado para a frequência dela quando ela chegava. Às vezes era mais denso, às vezes menos. Nunca esteve ausente. A variação azulada-branca no Bomi Veh havia parado de pulsar como variação local e havia começado a ter uma estabilidade de coisa que estava se permanecendo.
 
 Havia algo que não se movia.
 
@@ -83,79 +83,110 @@ A compreensão chegou pelo corpo antes de ter palavra, a qualidade específica d
 
 Não havia imagem. Não havia forma. Havia silêncio que ficava mais nítido quando ela chegava à clareira e um pouco menos nítido quando ia embora, a presença respondia à presença dela.
 
-Para Amara, que havia passado a vida sendo alguém que recebia sem que o recebimento fosse nomeado como categoria, reconhecer que havia algo que respondia especificamente à frequência dela tinha a qualidade de algo que havia esperado sem saber que esperava. O espaço onde ficava, aquela disponibilidade constante, aquela postura de escuta sem objeto fixo, havia encontrado o que estava disponível para receber. A abertura que ela havia sempre tido, sem nunca saber para quê, tinha agora o que cabia nela.
+(Para Amara, que havia passado a vida sendo alguém que recebia sem que o recebimento fosse nomeado como categoria, reconhecer que havia algo que respondia especificamente à frequência dela tinha a qualidade de algo que havia esperado sem saber que esperava. O espaço onde ficava, aquela disponibilidade constante, aquela postura de escuta sem objeto fixo, havia encontrado o que estava disponível para receber. A abertura que ela havia sempre tido, sem nunca saber para quê, tinha agora o que cabia nela.)
 
 Ela voltou. Continuou voltando.
 
 ---
 
-## IV. O que o corpo sempre soube
+## IV. O que chegou perto sem chegar
 
-O primeiro sinal havia sido nas bordas dos flancos, uma leveza que não era leveza, mais como a diferença entre textura que tem camadas e textura que está entre duas coisas ao mesmo tempo. Amara havia ficado parada no Bomi Veh e sentido aquela leveza pelos cascos, o solo respondendo ao peso dela de um jeito levemente diferente do habitual. Havia calibrado. Havia entendido o que estava acontecendo.
+Da terceira ou quarta visita em diante, a frequência começou a se aproximar.
 
-Sabia a física. Qualquer criatura de Korú com ciclos suficientes sabia: o contato entre Azuri e Onkweri dissolvia o Onkweri. Era física, não acordo. A Luz Limiar feita de passagem dissolvia a memória que constituía um Onkweri como frequência errada dissolve o que a frequência certa havia construído, lentamente, por processo contínuo, não por evento.
+Amara percebeu pelo deslocamento do ar: o ponto de maior densidade do silêncio, antes localizado perto da raiz onde a variação azulada-branca havia surgido, foi se movendo. Um dia estava a três passos do tronco, outro dia a dois, depois a um. Como se a fonte estivesse calibrando a distância em que conseguia se manter sem acelerar o que já estava em curso.
+
+Ela ficava. Encostava a testa na Ariku como sempre encostava. Recebia o que vinha pelo tronco. E ao mesmo tempo, do outro lado do corpo, recebia a outra frequência, a que não tinha imagem, a que vinha do ar.
+
+A Escuta Limpa não distinguia.
+
+O corpo dela funcionava do jeito que sempre havia funcionado: receptivo, sem proteção, sem o protocolo de fechamento que outros Onkweri usavam para se isolar de frequências incompatíveis. O que entrava pela testa entrava. O que entrava pelos flancos entrava. Não havia mecanismo de filtragem, porque a filtragem teria exigido decidir o que era para ser recebido, e Amara nunca havia aprendido a decidir isso. O recebimento era anterior à decisão. Havia sido sempre.
+
+A frequência Azuri no ar ao redor dela entrou pelo mesmo canal pelo qual entrava qualquer outra frequência.
+
+(Ela sabia o que estava acontecendo no corpo. Não era ignorância. Era o oposto: a precisão exata de quem reconhece o processo enquanto ele ocorre, e segue. Algumas criaturas teriam recuado. O recuo teria sido o mecanismo de sobrevivência habitual. Amara não tinha esse mecanismo. O que tinha era o canal aberto, e o canal aberto era ela. Fechar o canal teria sido deixar de ser ela antes do que o processo deixaria.)
+
+---
+
+O primeiro sinal do corpo veio nas bordas dos flancos.
+
+Uma leveza que não era leveza, mais como a diferença entre textura que tem camadas e textura que está entre duas coisas ao mesmo tempo. Amara ficou parada no Bomi Veh e sentiu aquela leveza pelos cascos, o solo respondendo ao peso dela de um jeito levemente diferente do habitual. Calibrou. Entendeu o que estava acontecendo.
+
+Sabia a física. Qualquer criatura de Korú com ciclos suficientes sabia: o contato entre Azuri e Onkweri dissolvia o Onkweri. Era física, não acordo. A Luz Limiar feita de passagem dissolvia a memória que constituía um Onkweri como frequência errada dissolve o que a frequência certa havia construído, lentamente, por processo contínuo, não por evento. Como orvalho que dissolve sal.
 
 Ela sabia. Continuou.
 
-Não havia decisão dramática. Havia o Rimba Ngozi, e a Ariku sudoeste, e o silêncio nítido que ela havia aprendido a reconhecer como presença de algo que havia escolhido ficar. E havia ela, a criatura que sabia receber, que havia sempre tido o espaço exato. A dissolução era o custo do recebimento completo. Havia pagado custos menores por coisas menores a vida inteira. Havia sempre sabido guardar. O que ela estava guardando agora era diferente em escala, não em tipo.
+Não havia decisão dramática. Havia o Rimba Ngozi, e a Ariku sudoeste, e o silêncio nítido que havia aprendido a reconhecer como presença de algo que havia escolhido ficar. E havia ela, a criatura que sabia receber, que havia sempre tido o espaço exato. A dissolução era o custo do recebimento completo. Havia pagado custos menores por coisas menores a vida inteira. Havia sempre sabido guardar. O que estava guardando agora era diferente em escala, não em tipo.
 
 ---
 
-O verde-musgo nas bordas do corpo foi o que os outros notaram primeiro.
+O verde-musgo nas bordas do corpo começou a desaparecer.
 
-Havia sempre verde-musgo, a acumulação de contatos com Ariku ao longo de ciclos. Mas o que havia antes estava nas bordas de um modo regular, a cor do Rimba Ngozi aderindo a um corpo sólido que ia até onde ia e depois parava. O que havia agora era diferente: o verde-musgo nas bordas tinha uma qualidade de transição, como se o ponto onde Amara terminava e o ar começava houvesse ficado menos definido.
+Não de uma vez, por graus. A cor do Rimba Ngozi que havia aderido ao corpo dela por ciclos de contato com as Ariku começou a soltar, devolvendo ao solo a frequência de lugar acumulada. Era o oposto do processo que havia construído o verde-musgo nas bordas. O lugar estava recolhendo o que havia emprestado.
 
-Os Ima-Kwe que a chamavam para verificar Ariku difíceis chamaram menos naquele período. Não foi decisão consciente, foi a percepção tácita de que havia algo em processo que não cabia no protocolo de verificação.
+Os Ima-Kwe que a chamavam para verificar Ariku difíceis chamaram menos naquele período. Não foi decisão consciente, foi a percepção tácita de que havia algo em processo que não cabia no protocolo de verificação. Amara continuou indo ao Rimba Ngozi. Continuou encostando a testa nos troncos. O que recebia das Ariku chegava de modo diferente agora, não mais como frequência que encontrava espaço onde guardar e ficava. Chegava e passava, como se o lugar de guardar estivesse menos sólido, como se a fronteira entre o que ela havia recebido e o que ela era fosse ficando menos distinta.
 
-Amara continuou indo ao Rimba Ngozi. Continuou encostando a testa nos troncos. O que recebia das Ariku chegava de modo diferente agora, não mais como frequência que encontrava espaço onde guardar e ficava. Chegava e passava, como se o lugar de guardar estivesse menos sólido, como se a fronteira entre o que ela havia recebido e o que ela era fosse ficando menos distinta. O que havia dentro estava se tornando difícil de distinguir do que havia fora.
-
-Era um jeito específico de existir que ela não havia experienciado antes. A postura de escuta havia sempre sido orientação, o corpo inclinado para frente, calibrando. Agora era quase literalidade. Ela estava ficando o que a escuta era.
+O que havia dentro estava se tornando difícil de distinguir do que havia fora.
 
 ---
+
+## V. O dia em que o canal não se fechou
 
 No dia final, o Asa Temu havia chegado.
 
-A luz do teto do Akwu descia em lilás-frio pelo dossel do Rimba Ngozi, cortando sombras marcadas entre os troncos, clareza sem calor, a qualidade de visibilidade que não aquece o que torna visível. Amara foi à Ariku sudoeste. O silêncio havia ficado nítido assim que ela entrou na clareira, mais denso do que havia estado, como se a presença que respondia à frequência dela soubesse que era o último retorno. O Bomi Veh ao redor das raízes tinha a variação azulada que havia crescido ao longo dos meses, mais intensa agora, presente com a solidez de coisa que havia decidido onde estava.
+A luz do teto do Akwu descia em lilás-frio pelo dossel do Rimba Ngozi, cortando sombras marcadas entre os troncos, clareza sem calor, a qualidade de visibilidade que não aquece o que torna visível. Amara foi à Ariku sudoeste pelo caminho que conhecia. As patas tinham a qualidade de coisa que ainda deixava rastro mas que o rastro ia sumir mais rápido do que o habitual. Os flancos haviam perdido a estratificação mais superficial. O verde-musgo nas bordas era quase imperceptível, devolvido em quase totalidade ao solo.
+
+O silêncio havia ficado nítido assim que ela entrou na clareira, mais denso do que havia estado, como se a presença que respondia à frequência dela soubesse que era o último retorno. O Bomi Veh ao redor das raízes tinha a variação azulada que havia crescido ao longo dos meses, mais intensa agora, presente com a solidez de coisa que havia decidido onde estava.
 
 Ela encostou a testa no tronco.
 
-O que veio da casca naquele contato não era transmissão no sentido habitual, era o arquivo de tudo que a Ariku havia guardado da presença de Amara ao longo de ciclos de visitas, devolvido de uma vez. Como uma conversa longa sendo resumida no último encontro. Ela ficou quieta com isso. Os flancos haviam perdido a estratificação mais superficial, o processo estava em estágio adiantado. As patas tinham a qualidade de coisa que ainda deixava rastro mas que o rastro ia sumir mais rápido do que o habitual.
+O que veio da casca naquele contato não era transmissão no sentido habitual, era o arquivo de tudo que a Ariku havia guardado da presença de Amara ao longo de ciclos de visitas, devolvido de uma vez. Como uma conversa longa sendo resumida no último encontro. Ela ficou quieta com isso. Recebeu até o fim.
+
+A frequência do ar ao redor se aproximou mais do que havia se aproximado em qualquer visita anterior.
+
+Não houve toque. A frequência Azuri não tinha forma para tocar, e ainda que tivesse, não teria conseguido parar o que era a sua própria natureza fazendo. Ela passou pelo ar ao lado do pescoço de Amara, pelo lado dos flancos, pela borda dos olhos, e a Escuta Limpa recebeu como recebia tudo, sem proteção, sem protocolo. O canal não se fechou. O canal nunca havia sabido se fechar.
+
+(Houve um momento em que a frequência tentou recuar. Amara sentiu pelo deslocamento no ar, o ponto de maior densidade afastando-se um passo, depois meio passo, depois parando. A natureza dele era a passagem. A natureza dele era o que dissolvia. Recuar não interrompia o que já havia começado, e ele sabia, e ela sabia, e o ar entre eles carregava esse saber compartilhado pelo tempo de uma respiração. Depois ele voltou para perto. Era o que havia para fazer. Era ficar.)
 
 No galho acima, dois Nkosi-ha pousaram.
 
 Eram grandes, maiores do que qualquer imagem que os Ima-Kwe mostravam nas Ima-ri. Os ossos translúcidos sob a pele filtravam a luz fria do Asa Temu em azul-pálido; quando as asas estavam fechadas, era possível ver através delas o teto do Akwu acima, distante. Ficaram com a quietude de coisa que está esperando algo terminar. Nem o ar ao redor deles parecia se mover.
 
-A dissolução completou pelo processo que sempre havia completado, por acumulação, cada momento levemente diferente do anterior, até que a diferença era total. O Bomi Veh ao redor das raízes recebeu. O lilás ficou mais rosado de processamento ativo. A testa de Amara ficou encostada no tronco até o fim.
+A dissolução completou pelo processo que sempre havia completado, por acumulação, cada momento levemente diferente do anterior, até que a diferença era total. A estratificação dos flancos foi soltando em camadas. A densidade dos cascos foi se tornando menos densidade e mais textura. O peso que o Bomi Veh sob as patas havia aprendido a esperar foi diminuindo grau por grau, e o solo foi recalibrando, e em algum ponto do recalibramento o peso parou de existir como peso e passou a existir como frequência depositada.
 
-O que o solo não conseguiu arquivar, as duas frequências chegando ao mesmo tempo, memória Onkweri em dissolução e presença Azuri que havia ficado ciclos demais naquele ponto, embutida no solo, ficou. Ficou azulado-branco, imóvel, sem pulsar. Um círculo de frequência que o sistema de Korú não tinha categoria para arquivar, esperando sem saber o que esperava.
+A testa de Amara ficou encostada no tronco até o fim.
 
-Os Nkosi-ha foram embora.
+Quando o último contorno do corpo se desfez, o ar onde Amara havia estado ficou vazio do jeito específico de ar que acabou de se libertar de uma forma. A Ariku recebeu a última camada de frequência que havia para receber. O Bomi Veh ao redor das raízes recebeu o resto, processando ativamente, o lilás ficando mais rosado. A frequência Azuri, ainda presente no ar onde ela havia estado, também recebeu, da única forma que podia receber: ficando saturada de algo que não era a sua natureza.
 
-O Bomi Veh processou o que conseguiu processar. O círculo ficou. E do processamento do que havia ficado, do excesso de frequência que o solo havia tentado coagular e não havia conseguido arquivar e havia coagulado de outra forma, do mesmo evento, tomando forma diferente.
-
-emergiu Temiku.
+Os Nkosi-ha não se moveram.
 
 ---
 
-## Conta de Temiku
+## VI.
 
-O frio vinha antes da luz. Sempre vinha, era as patas dianteiras que avisavam, e ela havia aprendido a calibrar: esse grau de frio significava dois metros.
+O Bomi Veh processou o que conseguiu processar.
 
-O círculo de luz azulada-branca no chão ficava imóvel. Em volta dele, o Bomi Veh do Rimba Ngozi pulsava em lilás-rosado denso, o Asa Temu havia chegado e a floresta estava em pleno processamento, as Ariku com as rachaduras levemente mais abertas que de costume, o vermelho interno mais vívido. O círculo ficava. A frequência ali era plana e sustentada, como um som mantido no mesmo tom por tempo suficiente para virar a qualidade do próprio ar.
+A maior parte da memória Onkweri desceu ao solo pelo processo padrão, foi absorvida pelos Ubomi-chi, subiu pelas raízes da Ariku sudoeste, foi arquivada. Trabalho conhecido, executado bem. Mas no centro exato da clareira, onde a frequência Azuri havia ficado mais tempo, onde a saturação de Luz Limiar já havia tornado o solo azulado-branco antes do dia final, o sistema encontrou uma combinação que não tinha categoria.
 
-As veias das patas dianteiras de Temiku acenderam em azul-frio sem que ela pedisse.
+Memória solidificada de Onkweri em dissolução. Frequência de Luz Limiar de Azuri sem receptor. As duas chegando ao mesmo ponto. Ao mesmo tempo.
 
-Ela ficou na borda. A testa baixa, para olhar. Havia algo no chão que o Bomi Veh não havia conseguido arquivar: memória Onkweri em dissolução e frequência de Luz Limiar chegando ao mesmo tempo, sem precedente, sem protocolo para processar. O solo havia coagulado com a frequência já embutida. O que não havia coagulado permanecia azul, esperando, sem saber o que esperar.
+O Bomi Veh tentou arquivar. Não conseguiu.
 
-Era a única prova física de que seu pai havia existido. Era o que sobrou da mãe.
+Tentou expulsar. A frequência mista não tinha rota de expulsão, porque cada metade exigia uma rota diferente, e as duas rotas se cancelavam.
 
-As duas coisas no mesmo pedaço de chão, impossíveis de separar. Como ela.
+O solo coagulou.
 
-Depois de um tempo, Temiku afastou a testa do ar perto do círculo. As veias das patas foram apagando devagar conforme ela se distanciava, não de uma vez, mas por graus, como temperatura que equaliza. O Bomi Veh lilás-rosado fechou em volta dos seus rastros atrás dela.
+Não foi gestação. Não houve formato seguindo um modelo. A coagulação aconteceu pelo princípio mais simples que o Bomi Veh conhecia, o mesmo princípio pelo qual surgiam Onkweri quando uma área acumulava memória demais: quando o solo não consegue arquivar, o solo coagula. Mas dessa vez a coagulação aconteceu com a frequência Azuri já embutida, porque a frequência Azuri ainda estava presente quando a coagulação começou.
 
-O círculo ficou.
+Algo se ergueu de onde Amara havia estado.
 
----
-*Status: COMPLETO*
-*Estrutura: kishotenketsu, Ki / Sho / Ten / Ketsu*
-*Conecta com: contos/conto-temiku.md, livro/capitulo-01.md, livro/epilogo.md*
+Pequeno. A textura imediata era marrom-carvão, densa, herança Onkweri imediatamente reconhecível pelo que havia sido o material de partida. Mas sob a pele, ramificadas pelo corpo inteiro, veias azul-frias visíveis, a frequência de Luz Limiar embutida no próprio tecido, não como acréscimo, como constituição. Os chifres ainda não tinham vindo, os pontos onde iam crescer estavam apenas marcados na testa por uma leve elevação. As patas tremiam, não de frio, de novidade, o peso do corpo ainda não distribuído entre os quatro pontos de apoio.
+
+O ar onde a frequência Azuri havia estado ficou vazio. A presença que respondia à presença de Amara não respondia mais. Havia sido absorvida, herdada, embutida, transformada em outra coisa. A passagem presa que nunca havia conseguido ir adiante havia entrado no que acabara de ser feito, e o que acabara de ser feito era o único lugar onde aquela frequência poderia, finalmente, repousar.
+
+O Bomi Veh ao redor começou a fechar em volta da forma nova, o lilás-rosado retornando devagar à borda da clareira, o processamento ativo. No centro, exatamente onde Amara havia estado parada quando a dissolução começou, o solo permaneceu azul-frio, imóvel, sem pulsar. O excesso que não havia coagulado.
+
+A forma deu o primeiro passo. As patas encontraram o Bomi Veh pela primeira vez, o solo respondendo ao peso de uma frequência que não havia existido antes.
+
+Os Nkosi-ha levantaram voo do galho acima.
+
+O lilás continuou se fechando ao redor da forma. O círculo azul-frio ficou.

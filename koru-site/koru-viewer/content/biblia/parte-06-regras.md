@@ -67,8 +67,6 @@
 
 **Consequência:** além de três respirações sem declaração, dissolução irreversível. A memória perdida não volta.
 
-**Exceção registrada (Era V), Kairo:** a regra não opera sobre Kairo. O mecanismo de dissolução pressupõe substrato reconhecível pelo sistema (Onkweri = Bomi Veh solidificado com frequência arquivável). Kairo, por ser humana biológica e não emitir Zoeji, não é lida como contraparte do contato, e o sistema não inicia dissolução sobre o que não reconhece. O contato com Azuri não a dissolve. *Ver [Parte 5, Anexo, Kairo](parte-05-personagens.md).*
-
 ---
 
 ### REGRA 09, Onkweri não invocam ancestrais diretamente. Recebem o que os Azuri traduzem, nunca o original.
@@ -95,8 +93,6 @@
 - Toque com uma declaração apenas: dissolução parcial do Onkweri. Memória recente perdida. Sem marca.
 - Toque sem nenhuma declaração: dissolução completa, idêntica ao contato descrito na Regra 08.
 - Toque em postura diferente de fronte a fronte: não conta como eleição. A frequência não se ajusta e o contato responde como contato comum.
-
-**Exceção registrada (Era V), Kairo:** a regra não opera sobre Kairo. O toque de eleição depende de duas frequências conscientes ajustando-se mutuamente durante três respirações. Kairo não emite Zoeji e não é lida pelo Bomi Veh; não há frequência emissiva a ajustar. Kairo não pode ser eleita. A ausência de canal impede tanto o resultado constitutivo (marca de Isilo-Ori) quanto as consequências de quebra (dissolução por declaração faltante). O contato permanece em categoria sem precedente no sistema. *Ver [Parte 5, Anexo, Kairo](parte-05-personagens.md).*
 
 *Referência de instância: → Ver [Parte 5, Kemdi](parte-05-personagens.md). Marca visual como atributo morfológico: → Ver [Parte 4, Onkweri](parte-04-criaturas.md). Cargo e função política de Isilo-Ori: → Ver [Parte 7, Cultura](parte-07-cultura.md).*
 
