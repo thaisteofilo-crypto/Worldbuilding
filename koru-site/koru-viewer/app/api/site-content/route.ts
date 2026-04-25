@@ -32,14 +32,27 @@ export async function PATCH(req: NextRequest) {
   const { key, value } = await req.json()
   if (!key) return NextResponse.json({ error: "key is required" }, { status: 400 })
 
-  // Always write to local file — instant, no dependency
-  writeLocalState(key, value)
+  // Try local file first (no-op in production, where FS is read-only)
+  const localOk = writeLocalState(key, value)
 
-  // Also try to sync to Supabase (optional, fire-and-forget)
+  // Try Supabase
+  let supabaseOk = false
+  let supabaseError: string | null = null
   try {
     const admin = createAdminClient()
-    await admin.from("site_content").upsert({ key, value }, { onConflict: "key" })
-  } catch { /* ignore — local file is the source of truth */ }
+    const { error } = await admin.from("site_content").upsert({ key, value }, { onConflict: "key" })
+    if (error) supabaseError = error.message
+    else supabaseOk = true
+  } catch (e) {
+    supabaseError = e instanceof Error ? e.message : String(e)
+  }
 
-  return NextResponse.json({ ok: true })
+  if (!localOk && !supabaseOk) {
+    return NextResponse.json(
+      { error: "Falha ao persistir", supabaseError, hint: "Local FS bloqueado (prod) e Supabase falhou. Verifique tabela site_content e SUPABASE_SERVICE_ROLE_KEY." },
+      { status: 500 }
+    )
+  }
+
+  return NextResponse.json({ ok: true, localOk, supabaseOk, supabaseError })
 }

@@ -14,11 +14,12 @@ export function readLocalState(): Record<string, string> {
   return {}
 }
 
-export function writeLocalState(key: string, value: string): void {
-  if (process.env.NODE_ENV === 'production') return
+export function writeLocalState(key: string, value: string): boolean {
+  if (process.env.NODE_ENV === 'production') return false
   const state = readLocalState()
   state[key] = value
   try {
     fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), "utf-8")
-  } catch { /* ignore */ }
+    return true
+  } catch { return false }
 }

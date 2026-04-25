@@ -170,7 +170,10 @@ export default async function HomePage() {
       const fsBibliaPaths = new Set(filesystemBiblia.map((d) => d.path))
       const fsLivroPaths = new Set(filesystemLivro.map((d) => d.path))
 
-      // Filesystem titles always win — editor labels only for extras not on disk
+      // Editor labels (with "Kicker · Título" format) take precedence on the home cards,
+      // so simplifying biblia.parte-XX.title in site_content doesn't strip the kicker.
+      finalBibliaDocs = filesystemBiblia.map((d) => ({ ...d, label: bibliaLabels.get(d.path) ?? d.label }))
+      finalLivroDocs = filesystemLivro.map((d) => ({ ...d, label: livroLabels.get(d.path) ?? d.label }))
 
       const extraBiblia = editorBiblia.filter((d) => !fsBibliaPaths.has(d.path) && !excluded.has(d.path))
       const extraLivro = editorLivro.filter((d) => !fsLivroPaths.has(d.path) && !excluded.has(d.path))
