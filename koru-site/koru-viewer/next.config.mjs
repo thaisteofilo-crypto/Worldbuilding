@@ -16,17 +16,6 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
-  // Bundle markdown content from repo root (../..) into the serverless functions.
-  // Without this, lib/content.ts can read files in dev (real FS) but 404s on Vercel.
-  outputFileTracingRoot: path.join(__dirname, "../.."),
-  outputFileTracingIncludes: {
-    "/**/*": [
-      "livro/**/*.md",
-      "biblia/**/*.md",
-      "contos/**/*.md",
-      "*.md",
-    ],
-  },
   async headers() {
     return [
       {
