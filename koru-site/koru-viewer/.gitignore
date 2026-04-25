@@ -15,9 +15,6 @@
 /.next/
 /out/
 
-# content mirror — gerado pelo prebuild para Vercel
-/.content-mirror/
-
 # production
 /build
 

@@ -3,18 +3,10 @@ import path from "path"
 import matter from "gray-matter"
 import { CONTOS_ITEMS } from "./navigation"
 
-// Content root resolution:
-// - Em DEV / runtime local: lê direto da raiz do repo (dois níveis acima do cwd).
-// - Na Vercel: o serverless function não enxerga arquivos fora de koru-site/koru-viewer/,
-//   então usamos um mirror copiado pelo prebuild script (.content-mirror/).
-function resolveContentRoot(): string {
-  const mirror = path.join(process.cwd(), ".content-mirror")
-  // Em produção na Vercel, sempre prefere mirror.
-  if (process.env.VERCEL && fs.existsSync(mirror)) return mirror
-  // Em outros ambientes, usa raiz do repo (dev tem hot reload dos MDs).
-  return path.resolve(path.join(process.cwd(), "..", ".."))
-}
-const REPO_ROOT = resolveContentRoot()
+// Content root: koru-site/koru-viewer/content/ — mantém os MDs dentro do
+// pacote do app, simplifica o deploy na Vercel (sem path tracing) e o admin
+// continua editando os mesmos arquivos via GitHub API.
+const REPO_ROOT = path.join(process.cwd(), "content")
 
 const ALLOWED_PREFIXES = [
   "biblia/",

@@ -35,7 +35,7 @@ export function getGitHubConfig(): GitHubConfig | null {
     repo,
     branch: process.env.GITHUB_BRANCH || "main",
     contentPrefix:
-      process.env.GITHUB_CONTENT_PREFIX ?? "",
+      process.env.GITHUB_CONTENT_PREFIX ?? "koru-site/koru-viewer/content",
   }
 }
 
