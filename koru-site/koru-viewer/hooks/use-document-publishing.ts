@@ -6,9 +6,11 @@ import {
   PublishState,
   isValidPublishState,
   parsePublishAtKey,
+  parsePublishKey,
   parsePublishStateKey,
-  publishAtKey,
-  publishStateKey,
+  parsePublishValue,
+  publishKey,
+  serializePublishConfig,
 } from "@/lib/document-publish"
 
 interface SiteContentRow {
@@ -30,11 +32,12 @@ export function useDocumentPublishing() {
         if (cancelled) return
         const rows: SiteContentRow[] = data.content ?? []
         const next: Record<string, PublishConfig> = {}
+        // Pass 1: legacy split-key format.
         for (const row of rows) {
           const statePath = parsePublishStateKey(row.key)
           if (statePath) {
             const cfg = next[statePath] ?? { ...DEFAULT }
-            if (isValidPublishState(row.value)) cfg.state = row.value
+            if (isValidPublishState(row.value)) cfg.state = row.value as PublishState
             next[statePath] = cfg
             continue
           }
@@ -45,46 +48,55 @@ export function useDocumentPublishing() {
             next[atPath] = cfg
           }
         }
+        // Pass 2: new single-key format wins over legacy.
+        for (const row of rows) {
+          const path = parsePublishKey(row.key)
+          if (!path) continue
+          const parsed = parsePublishValue(row.value)
+          if (parsed) next[path] = parsed
+        }
         setConfigs(next)
         setLoaded(true)
       })
-      .catch(() => setLoaded(true))
+      .catch((err) => {
+        console.error("[publishing] failed to load configs:", err)
+        setLoaded(true)
+      })
     return () => { cancelled = true }
   }, [])
 
   const setConfig = useCallback(async (docPath: string, next: PublishConfig) => {
     setConfigs((prev) => ({ ...prev, [docPath]: next }))
-    const stateValue: string = next.state
-    const atValue: string = next.state === "scheduled" && next.at ? next.at : ""
 
-    async function patch(key: string, value: string) {
-      const res = await fetch("/api/site-content", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, value }),
-      })
-      if (!res.ok) {
-        let detail = "HTTP " + res.status
-        try {
-          const data = await res.json()
-          if (data?.error) detail = String(data.error)
-          if (data?.supabaseError) detail += " — supabase: " + data.supabaseError
-        } catch { /* keep status-only */ }
-        throw new Error(detail)
-      }
-      const data = await res.json().catch(() => ({}))
-      // Surface partial failures: API returns 200 even when only local FS wrote
-      // (Supabase upsert failed). In production FS is read-only, so a Supabase
-      // failure means the change won't survive a refresh.
-      if (data && data.supabaseOk === false && data.localOk === false) {
-        throw new Error("API returned 200 but neither local nor Supabase persisted")
-      }
+    const key = publishKey(docPath)
+    const value = serializePublishConfig(next)
+    console.log("[publishing] saving", { key, value })
+
+    const res = await fetch("/api/site-content", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key, value }),
+    })
+
+    let body: { ok?: boolean; localOk?: boolean; supabaseOk?: boolean; supabaseError?: string | null; error?: string } = {}
+    try { body = await res.json() } catch { /* keep empty */ }
+
+    console.log("[publishing] response", res.status, body)
+
+    if (!res.ok) {
+      let detail = "HTTP " + res.status
+      if (body.error) detail = body.error
+      if (body.supabaseError) detail += " — supabase: " + body.supabaseError
+      throw new Error(detail)
     }
 
-    await Promise.all([
-      patch(publishStateKey(docPath), stateValue),
-      patch(publishAtKey(docPath), atValue),
-    ])
+    // Surface partial failures: API returns 200 even when only local FS wrote.
+    // In production FS is read-only, so a Supabase failure means the change
+    // won't survive a refresh.
+    if (body.supabaseOk === false) {
+      const detail = "Supabase rejeitou: " + (body.supabaseError ?? "sem detalhe")
+      throw new Error(detail)
+    }
   }, [])
 
   const getConfig = useCallback((docPath: string): PublishConfig => {

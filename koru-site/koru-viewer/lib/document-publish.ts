@@ -1,11 +1,14 @@
 // Publishing state per document — gates which cards/pages the public site shows.
-// Stored alongside other site_content keys, sharing the same Supabase table.
+// Stored as a single JSON value in the site_content table (one row per doc).
 //
-// Keys (one or both per doc):
-//   publish.<path>.state  one of "published" | "draft" | "scheduled"
-//   publish.<path>.at     ISO 8601 datetime (only when state === "scheduled")
+//   key:   publish.<path>           e.g. "publish.contos/conto-amara.md"
+//   value: JSON {"state":"...","at":"...|null"}
 //
-// Default (no keys set): "published" — keeps existing content visible without
+// Backwards compat: legacy split-key format (publish.<path>.state +
+// publish.<path>.at) is still readable. Writes always use the single-key
+// format below.
+//
+// Default (no key set): "published" — keeps existing content visible without
 // requiring a backfill.
 
 export type PublishState = "published" | "draft" | "scheduled"
@@ -16,38 +19,66 @@ export interface PublishConfig {
   at?: string | null
 }
 
-const STATE_PREFIX = "publish."
-const STATE_SUFFIX = ".state"
-const AT_SUFFIX = ".at"
+const PREFIX = "publish."
+const LEGACY_STATE_SUFFIX = ".state"
+const LEGACY_AT_SUFFIX = ".at"
 
-export function publishStateKey(docPath: string): string {
-  return STATE_PREFIX + docPath + STATE_SUFFIX
+export function publishKey(docPath: string): string {
+  return PREFIX + docPath
 }
 
-export function publishAtKey(docPath: string): string {
-  return STATE_PREFIX + docPath + AT_SUFFIX
+export function parsePublishKey(key: string): string | null {
+  if (!key.startsWith(PREFIX)) return null
+  // Skip legacy keys here — collectPublishConfigs handles those separately.
+  if (key.endsWith(LEGACY_STATE_SUFFIX) || key.endsWith(LEGACY_AT_SUFFIX)) return null
+  return key.slice(PREFIX.length)
 }
 
+// Legacy parsers — still used for reading existing data.
 export function parsePublishStateKey(key: string): string | null {
-  if (!key.startsWith(STATE_PREFIX) || !key.endsWith(STATE_SUFFIX)) return null
-  return key.slice(STATE_PREFIX.length, -STATE_SUFFIX.length)
+  if (!key.startsWith(PREFIX) || !key.endsWith(LEGACY_STATE_SUFFIX)) return null
+  return key.slice(PREFIX.length, -LEGACY_STATE_SUFFIX.length)
 }
 
 export function parsePublishAtKey(key: string): string | null {
-  if (!key.startsWith(STATE_PREFIX) || !key.endsWith(AT_SUFFIX)) return null
-  return key.slice(STATE_PREFIX.length, -AT_SUFFIX.length)
+  if (!key.startsWith(PREFIX) || !key.endsWith(LEGACY_AT_SUFFIX)) return null
+  return key.slice(PREFIX.length, -LEGACY_AT_SUFFIX.length)
 }
 
 export function isValidPublishState(value: unknown): value is PublishState {
   return value === "published" || value === "draft" || value === "scheduled"
 }
 
+export function serializePublishConfig(cfg: PublishConfig): string {
+  return JSON.stringify({ state: cfg.state, at: cfg.at ?? null })
+}
+
+export function parsePublishValue(raw: string): PublishConfig | null {
+  try {
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== "object") return null
+    const state = parsed.state
+    if (!isValidPublishState(state)) return null
+    const at = typeof parsed.at === "string" && parsed.at ? parsed.at : null
+    return { state, at }
+  } catch {
+    return null
+  }
+}
+
 export function getPublishConfig(
   siteContent: Record<string, string>,
   docPath: string,
 ): PublishConfig {
-  const stateRaw = siteContent[publishStateKey(docPath)]
-  const at = siteContent[publishAtKey(docPath)] || null
+  // New single-key format wins.
+  const raw = siteContent[publishKey(docPath)]
+  if (raw) {
+    const parsed = parsePublishValue(raw)
+    if (parsed) return parsed
+  }
+  // Legacy fallback.
+  const stateRaw = siteContent[PREFIX + docPath + LEGACY_STATE_SUFFIX]
+  const at = siteContent[PREFIX + docPath + LEGACY_AT_SUFFIX] || null
   const state = isValidPublishState(stateRaw) ? stateRaw : "published"
   return { state, at }
 }
@@ -66,11 +97,13 @@ export function isPublic(cfg: PublishConfig, now: Date = new Date()): boolean {
 }
 
 // Convenience: build a Map of path → PublishConfig from a flat siteContent object.
-// Includes only paths that have an explicit publish.* key set.
+// Includes only paths that have an explicit publish.* key set. The new
+// single-key format (publish.<path> = JSON) wins when both formats exist.
 export function collectPublishConfigs(
   siteContent: Record<string, string>,
 ): Map<string, PublishConfig> {
   const map = new Map<string, PublishConfig>()
+  // Pass 1: legacy split keys.
   for (const [key, value] of Object.entries(siteContent)) {
     const statePath = parsePublishStateKey(key)
     if (statePath) {
@@ -85,6 +118,13 @@ export function collectPublishConfigs(
       existing.at = value || null
       map.set(atPath, existing)
     }
+  }
+  // Pass 2: new single-key format overrides legacy.
+  for (const [key, value] of Object.entries(siteContent)) {
+    const path = parsePublishKey(key)
+    if (!path) continue
+    const parsed = parsePublishValue(value)
+    if (parsed) map.set(path, parsed)
   }
   return map
 }
