@@ -581,9 +581,19 @@ export default function EditorPage() {
           syncTitleToSiteContent(selectedPath, content, selectedLabel)
           setTimeout(() => setAutosaveStatus('idle'), 3000)
         } else {
+          // Surface the actual error so diagnosing 409/502/etc. doesn't require devtools.
+          let errMsg = `HTTP ${res.status}`
+          try {
+            const data = await res.json()
+            if (data?.error) errMsg = String(data.error)
+          } catch { /* keep status-only message */ }
+          console.error('[autosave]', errMsg)
+          setMessage({ type: 'error', text: 'Autosave: ' + errMsg })
           setAutosaveStatus('error')
         }
-      } catch {
+      } catch (err) {
+        console.error('[autosave] network error', err)
+        setMessage({ type: 'error', text: 'Autosave: erro de conexão.' })
         setAutosaveStatus('error')
       } finally {
         saveInFlightRef.current = false
