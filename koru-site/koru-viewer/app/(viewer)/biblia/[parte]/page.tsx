@@ -1,4 +1,6 @@
-import { readMarkdown, bibliaParts, getBibliaItems } from "@/lib/content"
+import { readMarkdownFresh, bibliaParts, getBibliaItems } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -30,7 +32,7 @@ export default async function BibliaPage({ params }: Props) {
   const validSlugs = getBibliaItems().map((i) => i.slug)
   if (!validSlugs.includes(parte)) notFound()
 
-  const doc = readMarkdown(`biblia/${parte}.md`)
+  const doc = await readMarkdownFresh(`biblia/${parte}.md`)
   if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 

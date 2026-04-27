@@ -1,4 +1,6 @@
-import { readMarkdown, livroChapters, getLivroItems } from "@/lib/content"
+import { readMarkdownFresh, livroChapters, getLivroItems } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -55,7 +57,7 @@ export default async function LivroPage({ params }: Props) {
       ? "livro/epilogo.md"
       : `livro/capitulo-${capitulo}.md`
 
-  const doc = readMarkdown(filePath)
+  const doc = await readMarkdownFresh(filePath)
   if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
 

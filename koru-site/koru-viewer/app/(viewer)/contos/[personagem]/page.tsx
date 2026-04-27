@@ -1,4 +1,6 @@
-import { readMarkdown, contoSlugs, getContosItems } from "@/lib/content"
+import { readMarkdownFresh, contoSlugs, getContosItems } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
@@ -51,7 +53,7 @@ export default async function ContoPage({ params }: Props) {
   const validSlugs = contoSlugs().map((s) => s.personagem)
   if (!validSlugs.includes(personagem)) notFound()
 
-  const doc = readMarkdown(`contos/conto-${personagem}.md`)
+  const doc = await readMarkdownFresh(`contos/conto-${personagem}.md`)
   if (doc.title === "Documento não encontrado") notFound()
   const safeContent = sanitizeForMdx(stripLeadingHeadings(doc.content))
   const { chars } = await getCharactersForViewer()

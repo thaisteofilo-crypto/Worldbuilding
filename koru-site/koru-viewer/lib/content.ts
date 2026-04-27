@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 import { CONTOS_ITEMS } from "./navigation"
+import { isGitHubConfigured, readContentFile } from "./github-writer"
 
 // Content root: koru-site/koru-viewer/content/ — mantém os MDs dentro do
 // pacote do app, simplifica o deploy na Vercel (sem path tracing) e o admin
@@ -100,6 +101,29 @@ export function readMarkdown(relativePath: string): DocContent {
 function extractTitleFromContent(content: string): string | null {
   const match = content.match(/^#\s+(.+)$/m)
   return match ? match[1].trim() : null
+}
+
+// Reads markdown from GitHub when configured (production), otherwise from
+// filesystem. Lets viewer pages show edits made via the admin editor without
+// waiting for the Vercel redeploy to complete (~30-90s).
+export async function readMarkdownFresh(relativePath: string): Promise<DocContent> {
+  if (process.env.NODE_ENV === "production" && isGitHubConfigured()) {
+    try {
+      const gh = await readContentFile(relativePath)
+      if (gh) {
+        const { data, content } = matter(gh.content)
+        const title =
+          typeof data.title === "string"
+            ? data.title
+            : extractTitleFromContent(content) ?? relativePath
+        return { title, content, frontmatter: data }
+      }
+    } catch (err) {
+      console.error("[content] readMarkdownFresh github error:", err)
+      // fall through to filesystem
+    }
+  }
+  return readMarkdown(relativePath)
 }
 
 // Known biblia titles for display (manual curation for existing parts)

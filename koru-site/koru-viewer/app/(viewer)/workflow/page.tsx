@@ -1,12 +1,14 @@
-import { readMarkdown } from "@/lib/content"
+import { readMarkdownFresh } from "@/lib/content"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/koru/mdx-components"
 import { mdxOptions } from "@/lib/mdx-options"
 import { sanitizeForMdx } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
+export const dynamic = "force-dynamic"
+
 export default async function WorkflowPage() {
-  const doc = readMarkdown("koru-workflow.md")
+  const doc = await readMarkdownFresh("koru-workflow.md")
   const safeContent = sanitizeForMdx(doc.content)
 
   return (

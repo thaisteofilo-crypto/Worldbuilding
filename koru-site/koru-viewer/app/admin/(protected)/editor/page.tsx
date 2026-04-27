@@ -159,6 +159,9 @@ export default function EditorPage() {
   const renameInputRef = useRef<HTMLInputElement>(null)
   const autosaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const savedContentRef = useRef<string>('')
+  // Synchronous lock — prevents autosave + manual save races that produce
+  // GitHub 409 (stale blob SHA).
+  const saveInFlightRef = useRef<boolean>(false)
   const [autosaveStatus, setAutosaveStatus] = useState<'idle' | 'pending' | 'saving' | 'saved' | 'error'>('idle')
   const lastSavedRef = useRef<Date | null>(null)
   const [focusMode, setFocusMode] = useState(false)
@@ -500,6 +503,13 @@ export default function EditorPage() {
 
   const handleSave = useCallback(async () => {
     if (!selectedPath) return
+    if (saveInFlightRef.current) return
+    // Cancel any pending autosave so it doesn't race with this save.
+    if (autosaveTimerRef.current) {
+      clearTimeout(autosaveTimerRef.current)
+      autosaveTimerRef.current = null
+    }
+    saveInFlightRef.current = true
     setSaving(true)
     setMessage(null)
 
@@ -523,8 +533,9 @@ export default function EditorPage() {
       setMessage({ type: 'error', text: 'Erro de conexão.' })
     } finally {
       setSaving(false)
+      saveInFlightRef.current = false
     }
-  }, [selectedPath, content])
+  }, [selectedPath, content, selectedLabel])
 
   // Keyboard shortcuts: Cmd/Ctrl+S to save, Cmd/Ctrl+H for find & replace
   useEffect(() => {
@@ -553,6 +564,9 @@ export default function EditorPage() {
     setAutosaveStatus('pending')
     if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current)
     autosaveTimerRef.current = setTimeout(async () => {
+      // Skip if a manual save is in flight — prevents stale-SHA 409.
+      if (saveInFlightRef.current) return
+      saveInFlightRef.current = true
       setAutosaveStatus('saving')
       try {
         const res = await fetch('/api/editor', {
@@ -571,12 +585,14 @@ export default function EditorPage() {
         }
       } catch {
         setAutosaveStatus('error')
+      } finally {
+        saveInFlightRef.current = false
       }
     }, 2000)
     return () => {
       if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current)
     }
-  }, [content, selectedPath])
+  }, [content, selectedPath, selectedLabel])
 
   async function handleMediaUpload(file: File, type: 'image' | 'video' | 'audio') {
     setUploading(true)
