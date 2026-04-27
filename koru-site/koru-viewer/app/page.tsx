@@ -336,20 +336,34 @@ export default async function HomePage() {
         <CardCarousel>
           {characterOrder.map((key) => {
             const char = characters[key]
+            const docPath = `personagens/${key}`
+            const cfg = cfgFor(docPath)
+            const open = isPublic(cfg, now)
+            const cardInner = (
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                {cardImages[`char-${key}`] ? (
+                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                ) : (
+                  <ImagePlaceholder />
+                )}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                {!open && <LockedCardOverlay releaseAt={cfg.at} />}
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
+                  <p className="font-serif text-lg md:text-2xl leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
+                  <p className="text-sm md:text-base font-sans text-white/70 mt-1">{char.role.split(",")[0].trim()}</p>
+                </div>
+              </div>
+            )
+            if (!open) {
+              return (
+                <div key={key} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative" aria-disabled="true" style={{ cursor: "default" }}>
+                  {cardInner}
+                </div>
+              )
+            }
             return (
               <Link key={key} href={`/personagens/${key}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
-                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[`char-${key}`] ? (
-                    <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
-                  ) : (
-                    <ImagePlaceholder />
-                  )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="font-serif text-lg md:text-2xl leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
-                    <p className="text-sm md:text-base font-sans text-white/70 mt-1">{char.role.split(",")[0].trim()}</p>
-                  </div>
-                </div>
+                {cardInner}
               </Link>
             )
           })}

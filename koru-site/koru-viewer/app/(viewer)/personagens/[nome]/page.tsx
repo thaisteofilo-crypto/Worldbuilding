@@ -1,5 +1,7 @@
 import { getCharactersForViewer } from "@/lib/characters-db"
 import { contoSlugs } from "@/lib/content"
+import { getSiteContent } from "@/lib/site-content"
+import { getPublishConfig, isPublic } from "@/lib/document-publish"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -123,6 +125,9 @@ export default async function PersonagemPage({ params }: Props) {
   const char = chars[nome]
 
   if (!char) notFound()
+
+  const siteContent = await getSiteContent()
+  if (!isPublic(getPublishConfig(siteContent, `personagens/${nome}`))) notFound()
 
   const hasConto = contoSlugs().some((s) => s.personagem === nome)
 

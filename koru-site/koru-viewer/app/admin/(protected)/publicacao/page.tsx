@@ -6,6 +6,7 @@ import { PublishConfig, PublishState, isPublic } from "@/lib/document-publish"
 
 interface DocEntry { label: string; path: string }
 interface DocGroup { section: string; color: string; docs: DocEntry[] }
+interface PersonagemEntry { slug: string; title: string }
 
 function formatRelease(at: string | null | undefined): string {
   if (!at) return ""
@@ -73,6 +74,7 @@ function StateButton({
 
 export default function PublicacaoPage() {
   const [groups, setGroups] = useState<DocGroup[]>([])
+  const [personagens, setPersonagens] = useState<PersonagemEntry[]>([])
   const [docsLoaded, setDocsLoaded] = useState(false)
   const { configs, loaded: cfgLoaded, getConfig, setConfig } = useDocumentPublishing()
   const [savingPath, setSavingPath] = useState<string | null>(null)
@@ -83,15 +85,31 @@ export default function PublicacaoPage() {
       .then((r) => r.json())
       .then((data) => {
         setGroups(data.groups ?? [])
+        setPersonagens(data.personagens ?? [])
         setDocsLoaded(true)
       })
       .catch(() => setDocsLoaded(true))
   }, [])
 
+  // Personagens use a virtual path "personagens/<slug>" since they aren't MD files.
+  const personagemGroup: DocGroup = useMemo(() => ({
+    section: "Personagens",
+    color: "var(--accent)",
+    docs: personagens.map((p) => ({ label: p.title, path: `personagens/${p.slug}` })),
+  }), [personagens])
+
+  const allGroups = useMemo(() => {
+    // Personagens between Bíblia and Livro to mirror the home page order.
+    const biblia = groups.find((g) => g.section === "Bíblia")
+    const livro = groups.find((g) => g.section === "Livro")
+    const contos = groups.find((g) => g.section === "Contos")
+    return [biblia, personagemGroup, contos, livro].filter((g): g is DocGroup => !!g)
+  }, [groups, personagemGroup])
+
   const stats = useMemo(() => {
     let pub = 0, sch = 0, dft = 0
     const now = new Date()
-    for (const g of groups) {
+    for (const g of allGroups) {
       for (const d of g.docs) {
         const cfg = getConfig(d.path)
         if (cfg.state === "published") pub++
@@ -103,7 +121,7 @@ export default function PublicacaoPage() {
       }
     }
     return { pub, sch, dft }
-  }, [groups, configs, getConfig])
+  }, [allGroups, configs, getConfig])
 
   async function applyConfig(path: string, next: PublishConfig) {
     setSavingPath(path)
@@ -148,7 +166,7 @@ export default function PublicacaoPage() {
         </div>
       </div>
 
-      {groups.map((group) => (
+      {allGroups.map((group) => (
         <section key={group.section} className="mb-10">
           <h2 className="font-sans text-xs uppercase tracking-[0.2em] mb-3" style={{ color: "var(--muted-foreground)" }}>
             {group.section} <span style={{ opacity: 0.5 }}>· {group.docs.length}</span>
