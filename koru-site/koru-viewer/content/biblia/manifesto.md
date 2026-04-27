@@ -1,5 +1,3 @@
-
-
 **Diferencial de Korú:** único mundo onde memória tem consequência material direta e o sistema inteiro funciona como um organismo processando luto coletivo.
 
 Somos o que carregamos.
