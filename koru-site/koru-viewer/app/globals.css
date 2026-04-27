@@ -413,21 +413,28 @@
 }
 
 /* ─── Card hover suave (carrosséis da home) ─── */
+/* Durations menores (era 650/1100ms) — com scroll-snap proximity, durações
+   longas se acumulavam com a inércia do scroll e davam sensação de travar.
+   transform-origin: center mantém o scale centrado quando o card está
+   parcialmente fora do viewport (sem isso, o crescimento puxa pra um lado
+   e amplia o problema de borda cortada). */
 .koru-card {
-  transition-property: transform, box-shadow, filter;
-  transition-duration: 650ms;
-  transition-timing-function: var(--ease-smooth);
+  transition: transform 380ms var(--ease-gentle), box-shadow 380ms var(--ease-gentle);
+  transform-origin: center;
   will-change: transform;
+  backface-visibility: hidden;
 }
 .koru-card:hover {
-  transform: scale(1.018);
+  transform: scale(1.012);
 }
 .koru-card-img {
-  transition: transform 1100ms var(--ease-smooth);
+  transition: transform 720ms var(--ease-gentle);
+  transform-origin: center;
   will-change: transform;
+  backface-visibility: hidden;
 }
 .group:hover .koru-card-img {
-  transform: scale(1.055);
+  transform: scale(1.04);
 }
 
 /* Nav item hover suave (sidebars) */

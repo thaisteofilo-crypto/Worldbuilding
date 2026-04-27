@@ -56,14 +56,22 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative group/carousel">
-      {/* Scroll container — scroll-smooth ensures smooth programmatic scrolling */}
+      {/* Scroll container.
+          py-6 -my-6: with overflow-x:auto the browser silently promotes
+          overflow-y to auto too, which clips the hover scale on the cards.
+          Generous vertical padding inside the scroller (matched by negative
+          margins outside) gives the scaled cards room to breathe.
+          scroll-snap proximity > mandatory: lets the user free-scroll without
+          the snap fighting momentum at every card boundary. */}
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-3 -my-3"
+        className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-6 -my-6"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
-          scrollSnapType: "x mandatory",
+          scrollSnapType: "x proximity",
+          scrollPaddingInline: "4px",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {indexedChildren}
