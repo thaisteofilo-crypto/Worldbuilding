@@ -1,4 +1,6 @@
 import { readMarkdownFresh, livroChapters, getLivroItems } from "@/lib/content"
+import { getSiteContent } from "@/lib/site-content"
+import { getPublishConfig, isPublic } from "@/lib/document-publish"
 
 export const dynamic = "force-dynamic"
 import { MDXRemote } from "next-mdx-remote/rsc"
@@ -56,6 +58,9 @@ export default async function LivroPage({ params }: Props) {
     capitulo === "epilogo"
       ? "livro/epilogo.md"
       : `livro/capitulo-${capitulo}.md`
+
+  const siteContent = await getSiteContent()
+  if (!isPublic(getPublishConfig(siteContent, filePath))) notFound()
 
   const doc = await readMarkdownFresh(filePath)
   if (doc.title === "Documento não encontrado") notFound()

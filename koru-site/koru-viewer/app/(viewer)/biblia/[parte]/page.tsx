@@ -1,4 +1,6 @@
 import { readMarkdownFresh, bibliaParts, getBibliaItems } from "@/lib/content"
+import { getSiteContent } from "@/lib/site-content"
+import { getPublishConfig, isPublic } from "@/lib/document-publish"
 
 export const dynamic = "force-dynamic"
 import { MDXRemote } from "next-mdx-remote/rsc"
@@ -31,6 +33,9 @@ export default async function BibliaPage({ params }: Props) {
 
   const validSlugs = getBibliaItems().map((i) => i.slug)
   if (!validSlugs.includes(parte)) notFound()
+
+  const siteContent = await getSiteContent()
+  if (!isPublic(getPublishConfig(siteContent, `biblia/${parte}.md`))) notFound()
 
   const doc = await readMarkdownFresh(`biblia/${parte}.md`)
   if (doc.title === "Documento não encontrado") notFound()

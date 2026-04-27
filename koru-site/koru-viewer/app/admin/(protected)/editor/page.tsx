@@ -6,7 +6,9 @@ import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
 import type { Editor } from '@tiptap/react'
 import { DocumentStatusBadge } from '@/components/admin/document-status-badge'
+import { DocumentPublishControl } from '@/components/admin/document-publish-control'
 import { useDocumentStatuses } from '@/hooks/use-document-statuses'
+import { useDocumentPublishing } from '@/hooks/use-document-publishing'
 import { markdownToHtml } from '@/lib/markdown-to-html'
 
 interface DocEntry {
@@ -137,6 +139,7 @@ function saveDocGroups(groups: DocGroup[]) {
 
 export default function EditorPage() {
   const { statuses: docStatuses, setStatus: setDocStatus } = useDocumentStatuses()
+  const { getConfig: getPublishConfig, setConfig: setPublishConfig } = useDocumentPublishing()
   const [docGroups, setDocGroups] = useState<DocGroup[]>(DEFAULT_DOC_GROUPS)
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
   const [selectedLabel, setSelectedLabel] = useState('')
@@ -975,6 +978,19 @@ export default function EditorPage() {
                               value={docStatuses[doc.path] ?? null}
                               onChange={(next) => setDocStatus(doc.path, next)}
                               compact
+                              showLabel={selectedPath === doc.path}
+                            />
+                          </div>
+                        )}
+                        {renamingDoc?.path !== doc.path && (
+                          <div
+                            className="shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                            data-row-publish
+                          >
+                            <DocumentPublishControl
+                              value={getPublishConfig(doc.path)}
+                              onChange={(next) => setPublishConfig(doc.path, next)}
                               showLabel={selectedPath === doc.path}
                             />
                           </div>

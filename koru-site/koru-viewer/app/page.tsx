@@ -8,6 +8,7 @@ import { CardCarousel } from "@/components/koru/card-carousel"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
+import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
 
 interface DocEntry { label: string; path: string }
 
@@ -36,6 +37,42 @@ function ImagePlaceholder() {
         <polyline points="21,15 16,10 5,21" />
       </svg>
     </div>
+  )
+}
+
+// Format ISO date as a short PT-BR label for "scheduled" cards.
+function formatReleaseLabel(at: string | null | undefined): string | null {
+  if (!at) return null
+  const d = new Date(at)
+  if (isNaN(d.getTime())) return null
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })
+}
+
+interface LockedCardOpts {
+  releaseAt?: string | null
+  kicker?: string
+}
+
+function LockedCardOverlay({ releaseAt, kicker }: LockedCardOpts) {
+  const release = formatReleaseLabel(releaseAt)
+  return (
+    <>
+      <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.55)", backdropFilter: "blur(2px)" }} />
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 px-4 text-center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "oklch(1 0 0 / 0.7)" }}>
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <p className="font-sans text-[10px] uppercase tracking-[0.18em]" style={{ color: "oklch(1 0 0 / 0.55)" }}>
+          {kicker ?? "Em breve"}
+        </p>
+        {release && (
+          <p className="font-serif text-base" style={{ color: "oklch(1 0 0 / 0.85)", fontFamily: "var(--font-serif), Georgia, serif" }}>
+            {release}
+          </p>
+        )}
+      </div>
+    </>
   )
 }
 
@@ -124,6 +161,12 @@ export default async function HomePage() {
     getSiteContent(),
     getCharactersForViewer(),
   ])
+
+  const publishConfigs = collectPublishConfigs(siteContent)
+  const now = new Date()
+  const cfgFor = (path: string): PublishConfig =>
+    publishConfigs.get(path) ?? { state: "published", at: null }
+  const visible = (path: string) => isPublic(cfgFor(path), now)
 
   // Excluded paths — docs the user explicitly removed from the editor
   let excluded = new Set<string>()
@@ -249,26 +292,39 @@ export default async function HomePage() {
             const filename = pathFilename(doc.path)
             const cardKey = `biblia-${filename}`
             const title = get(siteContent, `biblia.${filename}.title`) || doc.label
+            const cfg = cfgFor(doc.path)
+            const open = isPublic(cfg, now)
+            const cardInner = (
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                {cardImages[cardKey] ? (
+                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                ) : (
+                  <ImagePlaceholder />
+                )}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                {!open && <LockedCardOverlay releaseAt={cfg.at} />}
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
+                  {doc.label.includes(" · ") ? (
+                    <>
+                      <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
+                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
+                    </>
+                  ) : (
+                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                  )}
+                </div>
+              </div>
+            )
+            if (!open) {
+              return (
+                <div key={doc.path} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative" aria-disabled="true" style={{ cursor: "default" }}>
+                  {cardInner}
+                </div>
+              )
+            }
             return (
               <Link key={doc.path} href={`/biblia/${filename}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
-                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[cardKey] ? (
-                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
-                  ) : (
-                    <ImagePlaceholder />
-                  )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    {doc.label.includes(" · ") ? (
-                      <>
-                        <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
-                        <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
-                      </>
-                    ) : (
-                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
-                    )}
-                  </div>
-                </div>
+                {cardInner}
               </Link>
             )
           })}
@@ -305,20 +361,34 @@ export default async function HomePage() {
         <CardCarousel>
           {characterOrder.filter((key) => contosAvailable.has(key) && !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
+            const docPath = `contos/conto-${key}.md`
+            const cfg = cfgFor(docPath)
+            const open = isPublic(cfg, now)
+            const cardInner = (
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                {cardImages[`conto-${key}`] ? (
+                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                ) : (
+                  <ImagePlaceholder />
+                )}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                {!open && <LockedCardOverlay releaseAt={cfg.at} />}
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
+                  <p className="text-xs md:text-base font-sans text-white/60">Conto</p>
+                  <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
+                </div>
+              </div>
+            )
+            if (!open) {
+              return (
+                <div key={key} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative" aria-disabled="true" style={{ cursor: "default" }}>
+                  {cardInner}
+                </div>
+              )
+            }
             return (
               <Link key={key} href={`/contos/${key}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
-                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[`conto-${key}`] ? (
-                    <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
-                  ) : (
-                    <ImagePlaceholder />
-                  )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="text-xs md:text-base font-sans text-white/60">Conto</p>
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{char.name}</p>
-                  </div>
-                </div>
+                {cardInner}
               </Link>
             )
           })}
@@ -333,20 +403,33 @@ export default async function HomePage() {
             const urlSlug = livroUrlSlug(filename)
             const cardKey = livroCardKey(filename)
             const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
+            const cfg = cfgFor(doc.path)
+            const open = isPublic(cfg, now)
+            const cardInner = (
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+                {cardImages[cardKey] ? (
+                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                ) : (
+                  <ImagePlaceholder />
+                )}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
+                {!open && <LockedCardOverlay releaseAt={cfg.at} />}
+                <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
+                  <p className="text-xs md:text-base font-sans text-white/60">{urlSlug === 'epilogo' ? 'Fim' : `Cap. ${urlSlug}`}</p>
+                  <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
+                </div>
+              </div>
+            )
+            if (!open) {
+              return (
+                <div key={doc.path} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative" aria-disabled="true" style={{ cursor: "default" }}>
+                  {cardInner}
+                </div>
+              )
+            }
             return (
               <Link key={doc.path} href={`/livro/${urlSlug}`} className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative">
-                <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
-                  {cardImages[cardKey] ? (
-                    <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
-                  ) : (
-                    <ImagePlaceholder />
-                  )}
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5">
-                    <p className="text-xs md:text-base font-sans text-white/60">{urlSlug === 'epilogo' ? 'Fim' : `Cap. ${urlSlug}`}</p>
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
-                  </div>
-                </div>
+                {cardInner}
               </Link>
             )
           })}
