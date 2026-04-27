@@ -54,20 +54,36 @@ export function useDocumentPublishing() {
 
   const setConfig = useCallback(async (docPath: string, next: PublishConfig) => {
     setConfigs((prev) => ({ ...prev, [docPath]: next }))
-    // Two PATCHes — state and at. The at key is cleared when not scheduled.
     const stateValue: string = next.state
     const atValue: string = next.state === "scheduled" && next.at ? next.at : ""
+
+    async function patch(key: string, value: string) {
+      const res = await fetch("/api/site-content", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, value }),
+      })
+      if (!res.ok) {
+        let detail = "HTTP " + res.status
+        try {
+          const data = await res.json()
+          if (data?.error) detail = String(data.error)
+          if (data?.supabaseError) detail += " — supabase: " + data.supabaseError
+        } catch { /* keep status-only */ }
+        throw new Error(detail)
+      }
+      const data = await res.json().catch(() => ({}))
+      // Surface partial failures: API returns 200 even when only local FS wrote
+      // (Supabase upsert failed). In production FS is read-only, so a Supabase
+      // failure means the change won't survive a refresh.
+      if (data && data.supabaseOk === false && data.localOk === false) {
+        throw new Error("API returned 200 but neither local nor Supabase persisted")
+      }
+    }
+
     await Promise.all([
-      fetch("/api/site-content", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: publishStateKey(docPath), value: stateValue }),
-      }).catch(() => { /* optimistic UI applied */ }),
-      fetch("/api/site-content", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: publishAtKey(docPath), value: atValue }),
-      }).catch(() => { /* optimistic UI applied */ }),
+      patch(publishStateKey(docPath), stateValue),
+      patch(publishAtKey(docPath), atValue),
     ])
   }, [])
 
