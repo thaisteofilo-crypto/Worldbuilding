@@ -30,5 +30,6 @@
   "status.biblia/parte-02.md": "",
   "status.biblia/parte-00.md": "",
   "status.biblia/parte-03.md": "",
-  "status.livro/capitulo-01.md": "rascunho"
+  "status.livro/capitulo-01.md": "rascunho",
+  "publish.biblia/parte-00.md": "{\"state\":\"draft\",\"at\":null}"
 }
