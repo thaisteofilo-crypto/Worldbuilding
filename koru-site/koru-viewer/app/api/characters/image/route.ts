@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 // Views: front, profile, back
 const VALID_VIEWS = ["front", "profile", "back"]
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
       .eq("id", characterId)
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ url: publicUrl, view: viewName })
 }
 
@@ -82,6 +84,7 @@ export async function DELETE(req: NextRequest) {
       .eq("id", characterId)
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }
 

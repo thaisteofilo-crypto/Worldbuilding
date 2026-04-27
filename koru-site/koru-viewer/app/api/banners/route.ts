@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 const HOME_SLOTS = ["hero", "hero-video", "personagens", "personagens-video", "biblia", "biblia-video", "livro", "livro-video", "contos", "contos-video", "footer", "footer-video"]
 
@@ -66,6 +67,7 @@ export async function POST(req: NextRequest) {
 
   const { data: urlData } = admin.storage.from("banners").getPublicUrl(fileName)
 
+  revalidatePublicSite()
   return NextResponse.json({ url: urlData.publicUrl, slot })
 }
 
@@ -83,5 +85,6 @@ export async function DELETE(req: NextRequest) {
     await admin.storage.from("banners").remove([oldFile.name])
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }

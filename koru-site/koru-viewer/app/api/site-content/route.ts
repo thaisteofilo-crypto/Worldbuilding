@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { readLocalState, writeLocalState } from "@/lib/local-state"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 export async function GET() {
   // Try Supabase first; fall back to local file if table doesn't exist
@@ -54,5 +55,6 @@ export async function PATCH(req: NextRequest) {
     )
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true, localOk, supabaseOk, supabaseError })
 }

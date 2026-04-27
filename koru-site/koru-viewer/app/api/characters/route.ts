@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 export async function GET() {
   const admin = createAdminClient()
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ character })
 }
 
@@ -80,6 +82,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }
 
@@ -89,5 +92,6 @@ export async function DELETE(req: NextRequest) {
   const admin = createAdminClient()
   const { error } = await admin.from("characters").delete().eq("id", id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 // Build Supabase Storage public URL statically — avoids N+1 getPublicUrl() calls in loops.
 function storagePublicUrl(bucket: string, filename: string): string {
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ url: storagePublicUrl("gallery", fileName), name: fileName })
 }
 
@@ -72,5 +74,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }

@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { blockInProduction } from '@/lib/production-guard'
 import { isGitHubConfigured, readContentFile, writeContentFile } from '@/lib/github-writer'
+import { revalidatePublicSite } from '@/lib/revalidate'
 
 // Same root logic as lib/content.ts
 const REPO_ROOT = path.resolve(path.join(process.cwd(), 'content'))
@@ -118,6 +119,7 @@ export async function PUT(request: NextRequest) {
           { status: 502 },
         )
       }
+      revalidatePublicSite()
       return NextResponse.json({
         success: true,
         mode: 'github',
@@ -146,6 +148,7 @@ export async function PUT(request: NextRequest) {
     }
 
     fs.writeFileSync(actualPath, content, 'utf-8')
+    revalidatePublicSite()
     return NextResponse.json({ success: true, mode: 'local' })
   } catch (err) {
     console.error('[editor] PUT error:', err)

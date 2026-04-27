@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 // Card images are stored in the "card-images" bucket
 // Naming convention: {section}-{slug}.{ext}
@@ -61,6 +62,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { data: urlData } = admin.storage.from("card-images").getPublicUrl(fileName)
+  revalidatePublicSite()
   return NextResponse.json({ url: `${urlData.publicUrl}?v=${Date.now()}`, key })
 }
 
@@ -77,5 +79,6 @@ export async function DELETE(req: NextRequest) {
     await admin.storage.from("card-images").remove([oldFile.name])
   }
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }

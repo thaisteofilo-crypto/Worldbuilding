@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { revalidatePublicSite } from "@/lib/revalidate"
 
 const META_FILE = ".prompts.json"
 const BUCKET = "gallery"
@@ -78,6 +79,7 @@ export async function POST(req: NextRequest) {
   }
 
   await writeMeta(supabase, meta)
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }
 
@@ -94,5 +96,6 @@ export async function DELETE(req: NextRequest) {
   delete meta[name]
   await writeMeta(supabase, meta)
 
+  revalidatePublicSite()
   return NextResponse.json({ ok: true })
 }
