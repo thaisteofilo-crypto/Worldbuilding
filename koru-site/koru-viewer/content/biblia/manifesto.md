@@ -1,20 +1,4 @@
-## Comparação: Korú vs. Outros Mundos Ficcionais
 
-
-| Mundo                     | Base Física                                                                         | Relação com Memória                                                          | Sistema de Morte                                                | Estrutura de Conflito                                 |
-| ------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| **Korú**                  | Memória tem peso físico, solo processa lembranças, luz filtrada por árvores-arquivo | Memória é matéria constitutiva, criaturas são feitas de memória solidificada | Dissolução gradual, retorno ao Bomi Veh, morte alimenta o ciclo | Tensão entre acumular vs. processar, não bem vs. mal  |
-| **Terra-média (Tolkien)** | Física convencional com magia sobreposta                                            | Memória como nostalgia, ligada a lugares e objetos                           | Morte linear, espíritos vão para Mandos ou ficam presos         | Bem absoluto vs. mal absoluto, corrupção da criação   |
-| **Earthsea (Le Guin)**    | Arquipélago com magia verbal, equilíbrio natural                                    | Nomes verdadeiros guardam essência, saber é poder                            | Morte cruza para Terra Seca, volta é possível mas custosa       | Equilíbrio vs. hubris, responsabilidade do poder      |
-| **Discworld (Pratchett)** | Disco plano em tartarugas, física paródica                                          | Memória coletiva cria realidade, crenças manifestam                          | Morte é pessoa, trabalha de forma burocrática                   | Ordem absurda vs. caos absurdo, sátira social         |
-| **Tlön (Borges)**         | Realidade ideativa, objetos surgem de conceitos                                     | Memória coletiva constrói mundo, detalhes retroativos                        | Inexistente como conceito, seres são ideias                     | Conhecimento vs. realidade, construção vs. descoberta |
-
-
-**Diferencial de Korú:** único mundo onde memória tem consequência material direta e o sistema inteiro funciona como um organismo processando luto coletivo.
-
-## Comparação: Korú vs. Outros Mundos Ficcionais
-
-MundoBase FísicaRelação com MemóriaSistema de MorteEstrutura de Conflito**Korú**Memória tem peso físico, solo processa lembranças, luz filtrada por árvores-arquivoMemória é matéria constitutiva, criaturas são feitas de memória solidificadaDissolução gradual, retorno ao Bomi Veh, morte alimenta o cicloTensão entre acumular vs. processar, não bem vs. mal**Terra-média (Tolkien)**Física convencional com magia sobrepostaMemória como nostalgia, ligada a lugares e objetosMorte linear, espíritos vão para Mandos ou ficam presosBem absoluto vs. mal absoluto, corrupção da criação**Earthsea (Le Guin)**Arquipélago com magia verbal, equilíbrio naturalNomes verdadeiros guardam essência, saber é poderMorte cruza para Terra Seca, volta é possível mas custosaEquilíbrio vs. hubris, responsabilidade do poder**Discworld (Pratchett)**Disco plano em tartarugas, física paródicaMemória coletiva cria realidade, crenças manifestamMorte é pessoa, trabalha de forma burocráticaOrdem absurda vs. caos absurdo, sátira social**Tlön (Borges)**Realidade ideativa, objetos surgem de conceitosMemória coletiva constrói mundo, detalhes retroativosInexistente como conceito, seres são ideiasConhecimento vs. realidade, construção vs. descoberta
 
 **Diferencial de Korú:** único mundo onde memória tem consequência material direta e o sistema inteiro funciona como um organismo processando luto coletivo.
 
