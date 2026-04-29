@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic'
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import type { Document } from '@/lib/database.types'
 
 // Load MD editor dynamically (SSR not supported)
@@ -16,26 +15,21 @@ export function DocumentEditor({ document }: { document: Document }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  const supabase = createClient()
-
   const handleSave = useCallback(async () => {
     setSaving(true)
     setSaved(false)
 
-    await supabase
-      .from('documents')
-      .update({
-        title,
-        content,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', document.id)
+    await fetch('/api/documents', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: document.id, title, content }),
+    })
 
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
     router.refresh()
-  }, [supabase, document.id, title, content, router])
+  }, [document.id, title, content, router])
 
   return (
     <div className="flex h-[calc(100vh-48px)] flex-col">

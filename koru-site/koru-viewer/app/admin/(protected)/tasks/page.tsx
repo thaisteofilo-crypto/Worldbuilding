@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import type { Task } from '@/lib/database.types'
 
 const COLUMNS: { key: Task['status']; label: string }[] = [
@@ -67,27 +66,18 @@ export default function TasksPage() {
   // Tarefa 4 — feedback de erro
   const [moveError, setMoveError] = useState<string | null>(null)
 
-  const supabase = createClient()
-
   const fetchTasks = useCallback(async () => {
-    const { data } = await supabase
-      .from('tasks')
-      .select('*')
-      .order('order_index', { ascending: true })
-    setTasks(data ?? [])
+    const res = await fetch('/api/tasks', { cache: 'no-store' })
+    const json = await res.json()
+    setTasks(json.tasks ?? [])
     setLoading(false)
-  }, [supabase])
+  }, [])
 
   useEffect(() => {
     fetchTasks()
-    const channel = supabase
-      .channel('tasks-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => {
-        fetchTasks()
-      })
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [fetchTasks, supabase])
+    const interval = setInterval(fetchTasks, 5000)
+    return () => clearInterval(interval)
+  }, [fetchTasks])
 
   // Tarefa 4 — limpar erro após 3s
   useEffect(() => {
@@ -112,24 +102,39 @@ export default function TasksPage() {
     if (!hasSmallGap) return
 
     const updates = colTasks.map((t, i) => ({ id: t.id, order_index: i + 1 }))
-    const { error } = await supabase.from('tasks').upsert(updates)
-    if (error) {
-      setMoveError('Erro ao reindexar tarefas: ' + error.message)
+    const res = await fetch('/api/tasks', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ updates }),
+    })
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      setMoveError('Erro ao reindexar tarefas: ' + (json.error ?? res.statusText))
+    }
+  }
+
+  async function patchTask(id: string, fields: Partial<Task>) {
+    const res = await fetch('/api/tasks', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ...fields }),
+    })
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      throw new Error(json.error ?? res.statusText)
     }
   }
 
   async function moveTask(id: string, newStatus: Task['status']) {
     const colTasks = tasks.filter((t) => t.status === newStatus && t.id !== id)
     const maxIndex = colTasks.reduce((m, t) => Math.max(m, t.order_index), 0)
-    const { error } = await supabase
-      .from('tasks')
-      .update({ status: newStatus, order_index: maxIndex + 1 })
-      .eq('id', id)
-    if (error) {
-      setMoveError('Erro ao mover tarefa: ' + error.message)
+    try {
+      await patchTask(id, { status: newStatus, order_index: maxIndex + 1 })
+    } catch (e) {
+      setMoveError('Erro ao mover tarefa: ' + (e as Error).message)
       return
     }
-    // Reindexar após mover — usar snapshot atual com atualização simulada
+    fetchTasks()
     const updated = tasks.map((t) =>
       t.id === id ? { ...t, status: newStatus, order_index: maxIndex + 1 } : t
     )
@@ -149,15 +154,13 @@ export default function TasksPage() {
       ? (prev.order_index + target.order_index) / 2
       : target.order_index - 1
 
-    const { error } = await supabase
-      .from('tasks')
-      .update({ status: targetStatus, order_index: newIndex })
-      .eq('id', draggedId)
-    if (error) {
-      setMoveError('Erro ao reordenar tarefa: ' + error.message)
+    try {
+      await patchTask(draggedId, { status: targetStatus, order_index: newIndex })
+    } catch (e) {
+      setMoveError('Erro ao reordenar tarefa: ' + (e as Error).message)
       return
     }
-    // Reindexar após mover — usar snapshot atualizado
+    fetchTasks()
     const updated = tasks.map((t) =>
       t.id === draggedId ? { ...t, status: targetStatus, order_index: newIndex } : t
     )
@@ -165,30 +168,37 @@ export default function TasksPage() {
   }
 
   async function updateTask(id: string, updates: Partial<Pick<Task, 'title' | 'description' | 'category' | 'priority'>>) {
-    await supabase.from('tasks').update(updates).eq('id', id)
+    await patchTask(id, updates)
+    fetchTasks()
   }
 
   async function deleteTask(id: string) {
-    await supabase.from('tasks').delete().eq('id', id)
+    await fetch('/api/tasks', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+    fetchTasks()
   }
 
   async function handleAddTask(status: Task['status']) {
     if (!newTask.title.trim()) return
     setSaving(true)
-    const maxIndex = tasks
-      .filter((t) => t.status === status)
-      .reduce((m, t) => Math.max(m, t.order_index), 0)
-    await supabase.from('tasks').insert({
-      title: newTask.title.trim(),
-      description: newTask.description.trim() || null,
-      status,
-      category: newTask.category,
-      priority: newTask.priority,
-      order_index: maxIndex + 1,
+    await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: newTask.title.trim(),
+        description: newTask.description.trim() || null,
+        status,
+        category: newTask.category,
+        priority: newTask.priority,
+      }),
     })
     setNewTask(emptyNewTask)
     setAddingToColumn(null)
     setSaving(false)
+    fetchTasks()
   }
 
   function handleDrop(e: React.DragEvent, targetStatus: Task['status'], targetTaskId?: string) {

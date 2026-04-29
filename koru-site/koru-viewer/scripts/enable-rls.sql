@@ -5,28 +5,31 @@
 -- Resolve o alerta "Table publicly accessible / rls_disabled_in_public".
 --
 -- Estratégia:
--- 1. Tabelas acessadas SÓ via API routes (service role): RLS on, sem policy.
---    O service role bypassa RLS, então tudo continua funcionando.
--- 2. Tabelas acessadas direto pelo browser (anon key): RLS on + policy
---    permissiva. Não adiciona segurança real, mas remove o alerta.
---    (O site é privado por SITE_TOKEN, então o risco é limitado.)
+-- Todas as tabelas são acessadas APENAS via API routes que usam o
+-- service role key (SUPABASE_SERVICE_ROLE_KEY). O service role bypassa
+-- RLS automaticamente, então nenhuma policy é necessária.
+-- Acesso anônimo (browser/anon key) fica completamente bloqueado.
+--
+-- Pré-requisito: o site precisa estar usando as API routes para
+-- tasks/documents (não mais o cliente Supabase direto no browser).
 -- ============================================================
 
--- ---- Service-role only (sem policies) ----
+ALTER TABLE documents     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE characters    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE images        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_content  ENABLE ROW LEVEL SECURITY;
 
--- ---- Acessadas pelo browser admin (precisam de policy permissiva) ----
-ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS documents_all ON documents;
-CREATE POLICY documents_all ON documents
-  FOR ALL USING (true) WITH CHECK (true);
+-- Limpa policies permissivas legadas (caso existam de versões anteriores)
+DROP POLICY IF EXISTS documents_all          ON documents;
+DROP POLICY IF EXISTS tasks_all              ON tasks;
+DROP POLICY IF EXISTS gallery_metadata_read  ON gallery_metadata;
+DROP POLICY IF EXISTS gallery_metadata_write ON gallery_metadata;
+DROP POLICY IF EXISTS "Service role full access" ON image_positions;
 
-ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS tasks_all ON tasks;
-CREATE POLICY tasks_all ON tasks
-  FOR ALL USING (true) WITH CHECK (true);
+-- Garante RLS nas tabelas que já tinham (sem policies)
+ALTER TABLE image_positions  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gallery_metadata ENABLE ROW LEVEL SECURITY;
 
 -- ---- Verificação ----
 SELECT

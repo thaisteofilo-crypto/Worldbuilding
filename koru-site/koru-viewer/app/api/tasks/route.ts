@@ -67,6 +67,24 @@ export async function PATCH(req: NextRequest) {
   return NextResponse.json({ ok: true })
 }
 
+export async function PUT(req: NextRequest) {
+  const { updates } = await req.json()
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return NextResponse.json({ error: "Missing updates array" }, { status: 400 })
+  }
+
+  const admin = createAdminClient()
+  for (const { id, ...fields } of updates) {
+    if (!id) continue
+    const { error } = await admin.from("tasks").update(fields).eq("id", id)
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  return NextResponse.json({ ok: true })
+}
+
 export async function DELETE(req: NextRequest) {
   const { id } = await req.json()
   if (!id) {
