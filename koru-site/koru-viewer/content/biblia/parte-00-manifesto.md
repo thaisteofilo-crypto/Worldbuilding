@@ -1,16 +1,44 @@
-Somos o que carregamos.
+# Parte 0 · Introdução · A Língua de Korú
 
-Não o que conseguimos contar quando alguém pergunta. O outro tipo de memória, aquela que fica no corpo: o cheiro que traz de volta uma cozinha antiga, o gesto herdado de alguém que já morreu, a voz que ainda aparece em noites difíceis. Isso pesa. Isso sustenta. Uma pessoa é a soma do que ficou do que viveu.
+A Parte 0 estabelece o contrato ontológico do mundo: o que Korú é em sua natureza mais básica, o que não é, e o vocabulário linguístico que governa toda a nomenclatura. Tudo o que vem depois (física, geografia, ecossistema, criaturas, personagens, regras, cultura, linha do tempo) depende deste contrato.
 
-Korú nasceu de uma pergunta: e se a memória tivesse peso físico?
+O [manifesto literário](manifesto.md) é o equivalente afetivo deste documento. Esta parte é a versão técnica.
 
-E se o chão lembrasse de quem pisou. Se amar alguém mudasse a cor do solo. Se o esquecimento endurecesse devagar, como pedra.
+---
 
-É a tradução. É dar forma visível ao que, no nosso mundo, é invisível . A saudade tem peso. A ausência ocupa espaço. O luto muda a temperatura do ar de uma casa. A gente sabe. Apenas aprendeu a não dizer.
+## O que Korú é
 
-O nosso tempo pede velocidade. Pede que se troque de pele a cada manhã e descarte o que pesa. Korú diz o contrário. Que o peso é a matéria. Que carregar é a forma mais antiga de ser alguém.
+Korú é um mundo cuja física é baseada em memória. Memória tem peso, frequência e consequência material. Criaturas são constituídas por memória solidificada. O solo armazena e processa memória. Árvores arquivam memória. O que é esquecido não desaparece, muda de estado.
 
-Quem lê não encontra aqui um lugar melhor que o nosso. Encontra um lugar onde certas verdades ficam mais nítidas por estarem escritas onde qualquer criatura pisa.
+Não é um planeta com ecologia. É uma câmara fechada, o **Akwu**, que sustenta seu próprio ciclo de energia sem fonte externa. Nada entra de fora. O sistema precisa circular o que tem.
 
-Somos feitos do que carregamos e lembramos.
+---
 
+## O que Korú não é
+
+| Não é | Porque |
+|---|---|
+| Pós-apocalíptico | As ruínas (Jobi-Koro) são consequência de uma ruptura interna do ciclo na Era IV, não de uma civilização destruída de fora. |
+| Habitado por humanos antes da Era VI | O Akwu foi câmara fechada do design original (Era I) até o fim da Era V. A Era VI documenta a chegada de criaturas exteriores pela fratura no teto do Akwu. Kairo é a primeira humana documentada. |
+| Mundo com vilões | Os antagonistas agem por lógica interna coerente, não por maldade. Beku age por proteção, o ambiente responde, não pune. |
+| Mundo com salvação | Tem restauração, com custo. Nenhuma resolução desfaz o dano, reintegra com marcas. |
+
+---
+
+## Influências linguísticas
+
+A nomenclatura de Korú é construída a partir de raízes de línguas africanas e asiáticas. Cada língua atende a um campo semântico específico.
+
+| Língua | Aplicação em Korú |
+|---|---|
+| Yoruba | Nomes de lugares, conceitos cosmológicos, governo |
+| Igbo | Nomes de criaturas, sistemas de acordos, cosmologia |
+| Swahili | Tecnologia, estados de ser, estados climáticos |
+| Zulu | Fenômenos climáticos, poder natural |
+| Amhárico | Nomes próprios específicos |
+| Bambara | Terra, raízes, ancestralidade |
+| Malaio | Geografia e ambiente |
+| Bengali | Conceitos filosóficos sutis |
+| Edo | Nomes de personagens específicos (Nigéria) |
+
+O vocabulário canônico completo está no [Glossário de Korú](glossario-de-koru.md).
