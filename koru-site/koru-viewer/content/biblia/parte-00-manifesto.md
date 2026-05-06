@@ -1,4 +1,4 @@
-## B
+## Boas 
 
 Korú é um mundo cuja física é baseada em memória. Memória tem peso, frequência e consequência material. Criaturas são constituídas por memória solidificada. O solo armazena e processa memória. Árvores arquivam memória. O que é esquecido não desaparece, muda de estado.
 
