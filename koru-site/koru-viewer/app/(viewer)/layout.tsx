@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { NavSidebar } from "@/components/koru/nav-sidebar"
 import { Breadcrumb } from "@/components/koru/breadcrumb"
+import { ThemeToggle } from "@/components/koru/theme-toggle"
 
 // SearchModal is only ever shown when the user presses Cmd+K (or clicks the
 // sidebar search). Loading it lazily keeps it out of the initial viewer bundle.
@@ -92,6 +93,9 @@ export default function ViewerLayout({
         <header className="sticky top-0 z-10 flex items-center gap-3 px-4 h-10" style={{ background: "var(--background)" }}>
           <SidebarTrigger className="text-muted-foreground hover:text-foreground shrink-0" />
           <Breadcrumb />
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </header>
         <main id="main-content" className="flex-1">{children}</main>
       </SidebarInset>

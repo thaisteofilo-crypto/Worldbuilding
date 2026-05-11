@@ -299,7 +299,7 @@ export function KoruChat() {
           {/* Header */}
           <div
             className={cn(
-              "flex items-center justify-between border-b border-[var(--border)]",
+              "flex items-center justify-between",
               "px-3 py-3 gap-2"
             )}
           >
@@ -360,7 +360,7 @@ export function KoruChat() {
 
             <div className="flex min-w-0 flex-1 flex-col items-center">
               <span
-                className="font-serif text-lg leading-none text-[var(--foreground)]"
+                className="font-sans text-lg leading-none text-[var(--foreground)]"
                 style={{ letterSpacing: "0.01em" }}
               >
                 {view === "chat" ? "Korú" : "Histórico"}
@@ -428,6 +428,19 @@ export function KoruChat() {
 
           {view === "chat" ? (
             <>
+              {/* Aviso beta */}
+              <div
+                className={cn(
+                  "px-4 pt-2 pb-1",
+                  "text-[10px] font-sans text-[var(--muted-foreground)]",
+                  "text-center"
+                )}
+                role="note"
+              >
+                <strong className="font-medium">Beta:</strong>{" "}
+                Modelo Gemma — pode apresentar erros e lentidão.
+              </div>
+
               {/* Mensagens */}
               <div
                 ref={scrollRef}
@@ -461,12 +474,12 @@ export function KoruChat() {
               </div>
 
               {/* Input */}
-              <div className="border-t border-[var(--border)] p-3 space-y-2">
+              <div className="p-3 space-y-2">
                 <div
                   className={cn(
-                    "flex items-center gap-2 rounded-xl border border-[var(--border)]",
-                    "bg-[var(--background)] pl-3 pr-2 py-1",
-                    "focus-within:border-[var(--accent)] transition-colors"
+                    "flex items-center gap-2 rounded-xl",
+                    "bg-[color-mix(in_oklch,var(--foreground)_5%,transparent)] pl-3 pr-2 py-1",
+                    "transition-colors"
                   )}
                 >
                   <input

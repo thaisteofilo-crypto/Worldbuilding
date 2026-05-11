@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import Anthropic from "@anthropic-ai/sdk"
 import { readMarkdown } from "@/lib/content"
+import { clientKeyFromHeaders, rateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 const anthropic = new Anthropic() // Uses ANTHROPIC_API_KEY env var
 
@@ -13,6 +14,14 @@ function smartTruncate(text: string, maxChars: number): string {
 
 export async function POST(req: Request) {
   try {
+    // Rate-limit: 5 req/min por IP. Análises são caras; segurar mais apertado.
+    const rl = rateLimit({
+      key: `analyze-emotion:${clientKeyFromHeaders(req.headers)}`,
+      limit: 5,
+      windowMs: 60_000,
+    })
+    if (!rl.success) return rateLimitResponse(rl)
+
     const { chapter } = await req.json()
     if (!chapter)
       return NextResponse.json({ error: "chapter required" }, { status: 400 })

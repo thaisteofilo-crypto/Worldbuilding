@@ -44,17 +44,7 @@ const nextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "style-src 'self' 'unsafe-inline'",
-              "font-src 'self' data: https://fonts.gstatic.com",
-              "img-src 'self' data: https://*.supabase.co",
-              "connect-src 'self' https://*.supabase.co",
-            ].join("; "),
-          },
+          // Content-Security-Policy é definido em middleware.ts (CSP com nonce por request)
         ],
       },
       {

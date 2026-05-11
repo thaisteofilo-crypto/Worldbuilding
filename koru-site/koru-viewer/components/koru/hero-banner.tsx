@@ -88,9 +88,8 @@ export function HeroBanner({
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full max-w-3xl mx-auto px-6 md:px-10 pb-8">
         <h1
-          className="koru-content-enter font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
+          className="koru-content-enter font-sans text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
           style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
             color: "white",
             animationDelay: "0.08s",
           }}

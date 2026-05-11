@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter, Instrument_Serif } from "next/font/google"
+import { Inter } from "next/font/google"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -8,12 +8,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { KoruChat } from "@/components/koru/koru-chat"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-serif",
-})
 
 export const metadata: Metadata = {
   title: { default: "Korú", template: "%s · Korú" },
@@ -40,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn("dark antialiased", inter.variable, instrumentSerif.variable)}
+      className={cn("dark antialiased", inter.variable)}
       suppressHydrationWarning
     >
       <body className="bg-background text-foreground min-h-screen">

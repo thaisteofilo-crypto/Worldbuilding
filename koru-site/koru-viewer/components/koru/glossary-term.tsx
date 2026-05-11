@@ -48,7 +48,7 @@ export function GlossaryTerm({ term, definition, category, children }: GlossaryT
           }}
         >
           <span
-            className="block font-serif text-sm font-medium mb-1"
+            className="block font-sans text-sm font-medium mb-1"
             style={{ color: "var(--foreground)" }}
           >
             {term}

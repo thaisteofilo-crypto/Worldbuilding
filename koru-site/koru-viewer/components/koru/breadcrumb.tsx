@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const SECTION_LABELS: Record<string, string> = {
@@ -60,13 +61,25 @@ export function Breadcrumb() {
       aria-label="Localização atual"
       className="flex items-center gap-2 text-xs font-sans min-w-0"
     >
+      <Link
+        href="/"
+        className="shrink-0 transition-colors hover:opacity-80"
+        style={{ color: "var(--muted-foreground)" }}
+      >
+        Korú
+      </Link>
       {section && (
-        <span
-          className="shrink-0"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          {section}
-        </span>
+        <>
+          <span aria-hidden="true" style={{ color: "var(--border)" }}>
+            ›
+          </span>
+          <span
+            className="shrink-0"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {section}
+          </span>
+        </>
       )}
       {item && section && (
         <span aria-hidden="true" style={{ color: "var(--border)" }}>

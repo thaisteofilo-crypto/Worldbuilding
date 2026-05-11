@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import fs from "fs"
 import path from "path"
+import { clientKeyFromHeaders, rateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 export const runtime = "nodejs"
 
@@ -164,6 +165,14 @@ Seja específica, use números quando ajudarem, mas escreva com voz. Nada de "St
 
 export async function POST(req: Request) {
   try {
+    // Rate-limit: 5 req/min por IP. Carrega todos os docs e gera análise longa.
+    const rl = rateLimit({
+      key: `analyze-universe:${clientKeyFromHeaders(req.headers)}`,
+      limit: 5,
+      windowMs: 60_000,
+    })
+    if (!rl.success) return rateLimitResponse(rl)
+
     const { type = "all" } = await req.json()
 
     const apiKey = process.env.ANTHROPIC_API_KEY

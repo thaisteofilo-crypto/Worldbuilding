@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk"
 import fs from "fs"
 import path from "path"
+import { clientKeyFromHeaders, rateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 export const runtime = "nodejs"
 
@@ -243,6 +244,14 @@ REGRAS:
 
 export async function POST(req: Request) {
   try {
+    // Rate-limit: 10 req/min por IP. Aplicado antes de qualquer chamada ao LLM.
+    const rl = rateLimit({
+      key: `chat:${clientKeyFromHeaders(req.headers)}`,
+      limit: 10,
+      windowMs: 60_000,
+    })
+    if (!rl.success) return rateLimitResponse(rl)
+
     const { messages, documentPath, documentContent, mode, responseMode } = await req.json()
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {

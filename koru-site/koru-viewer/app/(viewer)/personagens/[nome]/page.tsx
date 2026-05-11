@@ -1,7 +1,9 @@
 import { getCharactersForViewer } from "@/lib/characters-db"
+import { characterOrder } from "@/lib/characters"
 import { contoSlugs } from "@/lib/content"
 import { getSiteContent } from "@/lib/site-content"
 import { getPublishConfig, isPublic } from "@/lib/document-publish"
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -14,7 +16,35 @@ interface Props {
   params: Promise<{ nome: string }>
 }
 
-export const dynamic = "force-dynamic"
+// ISR: regenera personagens a cada hora para refletir edições no Supabase.
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  // characterOrder é a fonte canônica em código; o Supabase pode adicionar
+  // novos slugs em runtime e o fallback dynamic params trata isso.
+  return characterOrder.map((nome) => ({ nome }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { nome } = await params
+  const { chars } = await getCharactersForViewer()
+  const char = chars[nome]
+  const displayName = char?.name ?? nome.charAt(0).toUpperCase() + nome.slice(1)
+  const title = `${displayName} · Personagens · Korú`
+  const description =
+    char?.description?.slice(0, 160) ??
+    `Perfil de ${displayName}, ser do Akwu, no universo de Korú.`
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      locale: "pt_BR",
+    },
+  }
+}
 
 function findImage(nome: string, view: string): string | null {
   const extensions = ["jpg", "jpeg", "png", "webp"]

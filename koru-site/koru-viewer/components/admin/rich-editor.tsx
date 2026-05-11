@@ -34,17 +34,14 @@ const MARKDOWN_SHORTCUTS = [
   { syntax: '> citação',     description: 'Citação' },
 ]
 
-// The @tiptap/markdown extension adds getMarkdown() directly to the editor instance
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// The @tiptap/markdown extension augments the Editor type with getMarkdown()
 function getMarkdownFromEditor(editor: Editor): string {
-  return (editor as any).getMarkdown?.() ?? editor.getText()
+  return editor.getMarkdown?.() ?? editor.getText()
 }
 
-// Set content parsed as markdown using the Markdown extension's command override
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Set content parsed as markdown using the Markdown extension's SetContentOptions augmentation
 function setMarkdownContent(editor: Editor, markdown: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(editor.commands as any).setContent(markdown, { contentType: 'markdown' })
+  editor.commands.setContent(markdown, { contentType: 'markdown' })
 }
 
 export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(

@@ -66,7 +66,7 @@ export default function Timeline({ events }: TimelineProps) {
                     {event.year}
                   </p>
                   <h3
-                    className="font-serif text-base leading-snug"
+                    className="font-sans text-base leading-snug"
                     style={{ color: "var(--foreground)" }}
                   >
                     {event.title}
@@ -98,7 +98,7 @@ export default function Timeline({ events }: TimelineProps) {
                         {event.year}
                       </p>
                       <h3
-                        className="font-serif text-base leading-snug"
+                        className="font-sans text-base leading-snug"
                         style={{ color: "var(--foreground)" }}
                       >
                         {event.title}
@@ -143,7 +143,7 @@ export default function Timeline({ events }: TimelineProps) {
                         {event.year}
                       </p>
                       <h3
-                        className="font-serif text-base leading-snug"
+                        className="font-sans text-base leading-snug"
                         style={{ color: "var(--foreground)" }}
                       >
                         {event.title}

@@ -1,6 +1,39 @@
 import { NextRequest, NextResponse } from "next/server"
+import { z } from "zod"
 import { createAdminClient } from "@/lib/supabase/admin"
 import mammoth from "mammoth"
+
+// Limites e schema do upload de documentos.
+// Documentos são textos (md/txt/docx/rtf): 10 MB é teto generoso.
+const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024 // 10 MB
+
+const ALLOWED_DOCUMENT_MIMETYPES = new Set([
+  "text/markdown",
+  "text/plain",
+  "text/x-markdown",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "application/msword", // alguns clientes mandam isso para .docx
+  "application/rtf",
+  "text/rtf",
+  // Alguns navegadores enviam "" para .md; aceitamos via extensão.
+  "application/octet-stream",
+  "",
+])
+
+const ALLOWED_DOCUMENT_EXTENSIONS = new Set(["md", "txt", "docx", "rtf"])
+
+const documentUploadSchema = z.object({
+  name: z.string().min(1, "Nome do arquivo obrigatório"),
+  size: z
+    .number()
+    .int()
+    .positive()
+    .max(MAX_DOCUMENT_BYTES, "Arquivo excede 10 MB"),
+  type: z.string().refine(
+    (t) => ALLOWED_DOCUMENT_MIMETYPES.has(t),
+    "Tipo de arquivo não permitido"
+  ),
+})
 
 function slugify(text: string): string {
   return text
@@ -70,6 +103,35 @@ export async function POST(req: NextRequest) {
 
   if (!file) {
     return NextResponse.json({ error: "Nenhum arquivo enviado" }, { status: 400 })
+  }
+
+  // Validação de tamanho separada do schema para devolver 413 (Payload Too Large)
+  // em vez do 400 genérico de validação Zod.
+  if (file.size > MAX_DOCUMENT_BYTES) {
+    return NextResponse.json(
+      { error: "Arquivo excede 10 MB", maxBytes: MAX_DOCUMENT_BYTES },
+      { status: 413 }
+    )
+  }
+
+  // Validação Zod do mimetype + extensão. Aceitamos vários mimetypes porque
+  // navegadores variam; combinamos com checagem por extensão.
+  const parsed = documentUploadSchema.safeParse({
+    name: file.name,
+    size: file.size,
+    type: file.type,
+  })
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? ""
+  if (!parsed.success || !ALLOWED_DOCUMENT_EXTENSIONS.has(ext)) {
+    return NextResponse.json(
+      {
+        error: "Arquivo inválido",
+        details: parsed.success
+          ? "Extensão não permitida (use md, txt, docx ou rtf)"
+          : parsed.error.issues.map((i) => i.message).join("; "),
+      },
+      { status: 400 }
+    )
   }
 
   try {

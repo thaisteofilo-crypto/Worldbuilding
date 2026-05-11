@@ -35,6 +35,7 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
             src={activeView.src}
             alt={`${name} — ${activeView.label}`}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1024px"
             className="object-cover"
             priority
           />
@@ -96,6 +97,8 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
                   src={view.src}
                   alt={`${name} — ${view.label}`}
                   fill
+                  sizes="64px"
+                  loading="lazy"
                   className="object-cover"
                 />
               ) : (
