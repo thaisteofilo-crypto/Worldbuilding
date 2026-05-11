@@ -17,11 +17,11 @@
 - **Pelagem/cor base:** marrom-terra rico, denso, textura estratificada de Onkweri padrão. Verde-musgo nas bordas do corpo (resultado de contato repetido com troncos de Ariku ao longo de ciclos, frequência de lugar absorvida por presença).
 - **Chifres:** médios, densos, sem curvatura extrema. Nem grandes nem pequenos. Proporção equilibrada para Onkweri madura.
 - **Olhos:** escuros, sem luz própria, com qualidade receptiva. Bordas dos olhos frequentemente úmidas em estado de escuta.
-- **Marcas (Isilo-Ori ou outras):** **não tem Isilo-Ori**. As marcas dela são o **verde-musgo nas bordas do corpo**, registro de retornos (não de eleição declarada). Cor do Rimba Ngozi aderindo ao corpo de quem passou tempo suficiente em contato com a floresta.
+- **Características (Isilo-Ori ou outras):** **não tem Isilo-Ori**. As marcas dela são o **verde-musgo nas bordas do corpo**, registro de retornos (não de eleição declarada). Cor do Rimba Ngozi aderindo ao corpo de quem passou tempo suficiente em contato com a floresta.
 - **Tamanho/porte:** Onkweri padrão. Densa, compacta, perto do chão.
 - **Postura:** sempre levemente inclinada para a frente, **como se estivesse escutando**. Pescoço descendo em curva suave. Postura de escuta constante, sem objeto fixo, como antena calibrada para o que vier. Permissão completa, nunca tensão de protocolo.
 - **Aura/luz própria:** **ausente**. Sem luz própria, sem halo. Visualmente receptiva, como superfície que absorve em vez de emitir. Esta é a caracterização: ausência luminosa = receptividade visual.
-- **Marcas únicas/cicatrizes:** no estágio final da dissolução, as bordas do corpo perdem definição (transição entre sólido e ar), o verde-musgo desaparece em pontos, os flancos ficam quase translúcidos como objeto visto através de água turva.
+- **Características únicas/cicatrizes:** no estágio final da dissolução, as bordas do corpo perdem definição (transição entre sólido e ar), o verde-musgo desaparece em pontos, os flancos ficam quase translúcidos como objeto visto através de água turva.
 
 ---
 

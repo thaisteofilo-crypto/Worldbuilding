@@ -17,11 +17,11 @@
 - **Pelagem/cor base:** marrom-carvão com textura de terra estratificada (herança Onkweri). Camadas visíveis nos flancos, mas menos densas do que em Onkweri adulto puro.
 - **Chifres:** pequenos, ainda em crescimento. Menores que Azuri adulto e mais finos que Onkweri médio. Um levemente mais avançado que o outro, assimetria de processo, não defeito.
 - **Olhos:** escuros, sem halo Azuri. Sem marca de Isilo-Ori (não foi eleita).
-- **Marcas (Isilo-Ori ou outras):** nenhuma marca de eleição. Tem, em vez disso, **veias azul-gelo ramificadas visíveis sob a pele**, principalmente no pescoço, tórax e flancos. Em repouso, são tênues ou invisíveis. Acendem com intensidade emocional. No estado máximo, brilho branco-frio.
+- **Características (Isilo-Ori ou outras):** nenhuma marca de eleição. Tem, em vez disso, **veias azul-gelo ramificadas visíveis sob a pele**, principalmente no pescoço, tórax e flancos. Em repouso, são tênues ou invisíveis. Acendem com intensidade emocional. No estado máximo, brilho branco-frio.
 - **Tamanho/porte:** alta para padrões Onkweri, menor que Azuri adulto. Compacta, densa, perto do chão (estrutura Onkweri).
 - **Postura:** contida, controlada. Distribuição cuidadosa do peso pelas quatro patas. Postura de quem aprendeu a "prender o formigamento antes de virar calor", redistribuindo tensão do tórax para as patas. Não é frieza, é gestão física constante.
 - **Aura/luz própria:** não tem halo translúcido como Azuri funcional. A luz dela não emana, **responde**. Espelho do que se move por dentro, não fonte. Quando ativada: azul-gelo nas veias; pico = branco-frio.
-- **Marcas únicas/cicatrizes:** rastros que ela deixa no Bomi Veh têm leve tintura azul-fria perceptível para quem souber olhar. Isso é assinatura única, nenhuma outra criatura de Korú deixa rastro assim.
+- **Características únicas/cicatrizes:** rastros que ela deixa no Bomi Veh têm leve tintura azul-fria perceptível para quem souber olhar. Isso é assinatura única, nenhuma outra criatura de Korú deixa rastro assim.
 
 ---
 

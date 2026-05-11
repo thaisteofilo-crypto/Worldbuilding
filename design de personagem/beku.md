@@ -15,11 +15,11 @@
 - **Pelagem/cor base:** carvão-denso, máxima densidade. Sem variação de cor. **Sem herança visível de lugar** (sem verde-musgo, sem mistura). Décadas de liderança acumuladas.
 - **Chifres:** **monumentais, largos, com peso visível**. Os maiores do elenco. Curvatura descendente extrema, peso de décadas. Estrutura que parece arquitetura, não ornamento.
 - **Olhos:** pequenos, fixos. Posição absorvente: lê tudo, devolve nada. O Oa-Chi inteiro aprendeu a não conseguir determinar pela postura dele se concorda ou discorda.
-- **Marcas (Isilo-Ori ou outras):** nenhuma. Sem Isilo-Ori. Sem luminescência. Sem marcas decorativas. Pele uniforme, leitura apenas por densidade.
+- **Características (Isilo-Ori ou outras):** nenhuma. Sem Isilo-Ori. Sem luminescência. Sem marcas decorativas. Pele uniforme, leitura apenas por densidade.
 - **Tamanho/porte:** **o maior do elenco ativo**. Estratificação extrema, densa, regular, parece geologia compactada — camadas que parecem ter sido comprimidas até quase fundirem. O corpo inteiro lê como bloco.
 - **Postura:** **fechada e arquitetônica**. "Como estrutura projetada para não ceder." Densidade absorve e não emite. Postura de Orime: leitura total do ambiente, expressão zero.
 - **Aura/luz própria:** ausente. Sem halo. Densidade pura.
-- **Marcas únicas/cicatrizes:** rastros no Bomi Veh **fundos**, regulares, registrando o trajeto que ele faz todos os dias entre o espaço de descanso e a câmara do Oa-Chi (o solo aprendeu o peso específico das patas dele naquele caminho).
+- **Características únicas/cicatrizes:** rastros no Bomi Veh **fundos**, regulares, registrando o trajeto que ele faz todos os dias entre o espaço de descanso e a câmara do Oa-Chi (o solo aprendeu o peso específico das patas dele naquele caminho).
 
 ---
 

@@ -21,11 +21,11 @@ Para fins de referência (não de cena narrativa), se forçado a representar:
 - **Pelagem/cor base:** **fragmentada, sem coesão**. O que era branco-creme / amarelo-quente suave de Azuri funcional está se desfazendo nos contornos. Nos chifres, há tonalidade que não é mais branco-creme mas ainda não é azul-frio: cor entre estados, indecisa.
 - **Chifres:** geométricos, ramificados, bifurcando em ângulos como galhos secos. Estrutura típica de Azuri, mas com pulsação anômala (recebem o pulso do limiar mudado de fase).
 - **Olhos:** indefinidos, sem foco claro. Difíceis de localizar na silhueta.
-- **Marcas:** ausência total de Isilo-Ori (não aplicável a Azuri). A "marca" dele no mundo é externa: o círculo azulado-branco no Bomi Veh, as veias de Temiku.
+- **Características:** ausência total de Isilo-Ori (não aplicável a Azuri). A "marca" dele no mundo é externa: o círculo azulado-branco no Bomi Veh, as veias de Temiku.
 - **Tamanho/porte:** cervídeo longo e leve (Azuri padrão), mas sem o peso visual nem a forma fechada. As proporções não se sustentam, parecem sugerir ausência de gravidade levada ao extremo.
 - **Postura:** parado, sem vetor. Patas finas que não deixam rastro algum no Bomi Veh. **A ausência de rastro num ponto onde uma criatura está imóvel é, em Korú, a informação mais estranha que o solo pode conter.**
 - **Aura/luz própria:** halo translúcido **oscilante**, não constante. Luz Limiar **intermitente** (única no mundo: Azuri funcional tem luz constante). A oscilação é a assinatura visual primária.
-- **Marcas únicas/cicatrizes:** halo se fragmentando, contornos do corpo se desfazendo nas bordas, cor entre branco-creme e azul-frio nos chifres. Distorção do ar ao redor.
+- **Características únicas/cicatrizes:** halo se fragmentando, contornos do corpo se desfazendo nas bordas, cor entre branco-creme e azul-frio nos chifres. Distorção do ar ao redor.
 
 ---
 

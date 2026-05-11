@@ -15,11 +15,11 @@
 - **Pelagem/cor base:** marrom-terra mais claro que Onkweri de cidade, **tons de campo aberto**. Menos estratificação concentrada. Mais mistura de lugares: a textura tem **camadas em ângulos diferentes** (cada lugar onde ficou tempo suficiente deixou frequência em orientação própria, então as camadas não combinam direção entre si).
 - **Chifres:** **menores e mais flexíveis** que a média Onkweri, menos formais. Sem o peso e curvatura dos sedentários velhos, sem a finura erecta dos jovens. Algo intermediário, com aparência de estrutura adaptada ao movimento.
 - **Olhos:** sem detalhe específico documentado. Provável: alertas, fixos no horizonte (postura de quem lê o Bomi Veh em movimento).
-- **Marcas (Isilo-Ori ou outras):** **nenhuma**. Sem Isilo-Ori. Sem marcas decorativas. A "marca" dela é a textura irregular dos flancos.
+- **Características (Isilo-Ori ou outras):** **nenhuma**. Sem Isilo-Ori. Sem marcas decorativas. A "marca" dela é a textura irregular dos flancos.
 - **Tamanho/porte:** Onkweri padrão, mas com **substância levemente mais dispersa** (nomadismo distribui memória por muitos lugares, peso menos concentrado).
 - **Postura:** **fluida** para um Onkweri, **movimento mais leve que o padrão**. Sincronismo com o Ngurui (pulso do Akwu): os flancos cedem levemente no ritmo da pulsação, o peso redistribui, as patas ajustam. Isso parece leveza mas é precisão.
 - **Aura/luz própria:** ausente. Sem halo, sem luminescência.
-- **Marcas únicas/cicatrizes:** rastro no Bomi Veh **menos profundo** que Onkweri de cidade. Em pontos de pausa longa, fica quase tão fundo, mas some em um ou dois dias. Os flancos com camadas em ângulos diferentes captam a luz de forma diferente conforme ela se move (o corpo muda de tom levemente quando o ângulo muda).
+- **Características únicas/cicatrizes:** rastro no Bomi Veh **menos profundo** que Onkweri de cidade. Em pontos de pausa longa, fica quase tão fundo, mas some em um ou dois dias. Os flancos com camadas em ângulos diferentes captam a luz de forma diferente conforme ela se move (o corpo muda de tom levemente quando o ângulo muda).
 
 ---
 

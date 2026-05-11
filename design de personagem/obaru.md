@@ -15,11 +15,11 @@
 - **Pelagem/cor base:** carvão-escuro denso, sem variação de cor. Marrom-antigo nas camadas mais profundas. **Nenhuma herança visível de lugar específico** (sem verde-musgo, sem mistura). A densidade visual *é* a caracterização.
 - **Chifres:** largos e pesados, curvados com peso descendente. Não crescem mais, chegaram ao ponto máximo. A curvatura descendente é a marca mais reconhecível dele entre os Onkweri de Orunjó: os chifres cedendo ao peso da base, se tornando estrutura que desce em vez de subir.
 - **Olhos:** pequenos, fixos. Posição característica de quem avalia antes de se aproximar (cabeça baixa em ângulo preciso, olhos na altura exata de avaliação).
-- **Marcas (Isilo-Ori ou outras):** **nenhuma marca de eleição**. Sem Isilo-Ori. Sem marcas decorativas. A pele é uniforme, lida apenas como densidade.
+- **Características (Isilo-Ori ou outras):** **nenhuma marca de eleição**. Sem Isilo-Ori. Sem marcas decorativas. A pele é uniforme, lida apenas como densidade.
 - **Tamanho/porte:** grande para Onkweri. Estratificação **regular e organizada** em camadas horizontais densas, "geologia visível", mais regular que qualquer Onkweri vivo do seu Chi-Oa.
 - **Postura:** fechada. Ombros levemente contraídos (contração que não estava ali aos dezessete, foi construída). Cabeça baixa mas não submissa. Postura de bloco arquitetônico que absorve e não emite. "Distância de três passos quando avalia, dois quando decide, um quando exige proximidade. Nunca zero."
 - **Aura/luz própria:** ausente. Sem halo, sem luminescência. Densidade pura.
-- **Marcas únicas/cicatrizes:** rastro no Bomi Veh **mais fundo do que o de qualquer Ima-Kwe ativo no Chi-Oa**, mais fundo do que a idade dele justifica (por causa do peso que carrega abaixo das camadas visíveis).
+- **Características únicas/cicatrizes:** rastro no Bomi Veh **mais fundo do que o de qualquer Ima-Kwe ativo no Chi-Oa**, mais fundo do que a idade dele justifica (por causa do peso que carrega abaixo das camadas visíveis).
 
 ---
 

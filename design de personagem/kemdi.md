@@ -15,11 +15,11 @@
 - **Pelagem/cor base:** marrom-jovem, mais claro e menos denso que Onkweri adultos. Pouca estratificação ainda, poucas camadas acumuladas (corpo de Onkweri jovem, ainda em formação).
 - **Chifres:** finos, em crescimento ativo, **mais eretos do que curvados**. Direção ainda subindo, sem peso descendente. **Um levemente mais avançado que o outro**, assimetria de processo.
 - **Olhos:** vivos. **Bordas dos olhos com luz fria lilás-fria**, contorno superior e inferior delineado pela marca de eleição.
-- **Marcas (Isilo-Ori ou outras):** **MARCA DE ISILO-ORI completa**. Arco de luz lilás-fria na **testa** (resultado do toque fronte a fronte) e a mesma luz como **delineado nas bordas dos olhos** (contorno superior e inferior, com precisão de coisa que sabe exatamente até onde ir). Esta é a marca canônica do Isilo-Ori, na sua forma mais clara em todo o elenco.
+- **Características (Isilo-Ori ou outras):** **MARCA DE ISILO-ORI completa**. Arco de luz lilás-fria na **testa** (resultado do toque fronte a fronte) e a mesma luz como **delineado nas bordas dos olhos** (contorno superior e inferior, com precisão de coisa que sabe exatamente até onde ir). Esta é a marca canônica do Isilo-Ori, na sua forma mais clara em todo o elenco.
 - **Tamanho/porte:** Onkweri jovem. Cabeça grande em proporção ao corpo (proporção que ainda não se resolveu, "esperando o resto alcançar"). Corpo menor que adultos, ainda em crescimento.
 - **Postura:** aberta, atenta. Cabeça levantada (atenção visível, posição de Onkweri jovem que ainda não aprendeu a esconder). Pescoço estendido. Configuração interna sem o medo que fecha: o espaço onde a contração estaria está vazio do que fecha, cheio do que permite.
 - **Aura/luz própria:** **a luz na testa e nas bordas dos olhos é constitutiva**, não é halo. Não emana ao redor do corpo, está integrada à pele nas regiões marcadas. Pulsação tênue ao Bomi Veh ao redor pode adquirir leve tintura lilás-fria onde ela passa.
-- **Marcas únicas/cicatrizes:** os rastros leves dela no Bomi Veh ficam com leve tintura lilás-fria perceptível para quem souber olhar.
+- **Características únicas/cicatrizes:** os rastros leves dela no Bomi Veh ficam com leve tintura lilás-fria perceptível para quem souber olhar.
 
 ---
 
