@@ -15,7 +15,9 @@ interface ContentRow {
 const DEFAULTS: Record<string, string> = {
   "hero.tagline": "Um mundo cuja física é baseada em memória.",
   "hero.cta_primary_text": "Bíblia do Mundo",
+  "hero.cta_primary_href": "/biblia/parte-00",
   "hero.cta_secondary_text": "O Livro",
+  "hero.cta_secondary_href": "/livro/01",
   "section.personagens.label": "Personagens",
   "section.personagens.title": "Os seres do Akwu",
   "section.biblia.label": "Bíblia do Mundo",
@@ -25,21 +27,30 @@ const DEFAULTS: Record<string, string> = {
   "section.contos.label": "Contos",
   "section.contos.title": "Vozes do Akwu",
   "footer.copyright": "Todos os direitos reservados a Thaís Teófilo",
-  "biblia.parte-00.title": "Introdução",
-  "biblia.parte-01.title": "Física e Cosmologia",
-  "biblia.parte-02.title": "Geografia",
-  "biblia.parte-03.title": "Ecossistema",
-  "biblia.parte-04.title": "Criaturas",
-  "biblia.parte-05.title": "Personagens",
-  "biblia.parte-06.title": "Regras",
-  "biblia.parte-07.title": "Cultura",
-  "biblia.parte-08.title": "Linha do Tempo",
-  "livro.01.title": "Capítulo 1",
-  "livro.02.title": "Capítulo 2",
-  "livro.03.title": "Capítulo 3",
-  "livro.04.title": "Capítulo 4",
-  "livro.05.title": "Capítulo 5",
-  "livro.06.title": "Capítulo 6",
+  "biblia.manifesto.title": "Propósito · Manifesto",
+  "biblia.parte-00.title": "Introdução · A Língua de Korú",
+  "biblia.parte-01.title": "Física · A Natureza do Akwu",
+  "biblia.parte-02.title": "Geografia · Ikwe e seus Lugares",
+  "biblia.parte-03.title": "Ecossistema · O Ciclo da Memória",
+  "biblia.parte-04.title": "Criaturas · Os Seres de Korú",
+  "biblia.parte-05.title": "Personagens · Quem Habita",
+  "biblia.parte-06.title": "Regras · Os 13 Acordos",
+  "biblia.parte-07.title": "Cultura · Como se Vive",
+  "biblia.parte-08.title": "Linha do Tempo · As Seis Eras",
+  "biblia.glossario-de-koru.title": "Glossário de Korú",
+  "biblia.glossario-de-lugares.title": "Glossário de Lugares",
+  "livro.01.title": "O que ela é",
+  "livro.02.title": "Manhãs",
+  "livro.03.title": "A cidade",
+  "livro.04.title": "A mentira silenciosa",
+  "livro.05.title": "Entre o lilás e o cinza",
+  "livro.06.title": "O que a floresta guarda",
+  "livro.07.title": "O projeto do fim do luto",
+  "livro.08.title": "A chuva",
+  "livro.09.title": "O limiar como morada",
+  "livro.10.title": "A noite antes",
+  "livro.11.title": "O que ela paga",
+  "livro.12.title": "O retorno",
   "livro.epilogo.title": "Epílogo",
 }
 
@@ -65,7 +76,9 @@ const GROUPS: GroupDef[] = [
     fields: [
       { key: "hero.tagline", label: "Tagline principal" },
       { key: "hero.cta_primary_text", label: "Botão primário — Texto" },
+      { key: "hero.cta_primary_href", label: "Botão primário — Link" },
       { key: "hero.cta_secondary_text", label: "Botão secundário — Texto" },
+      { key: "hero.cta_secondary_href", label: "Botão secundário — Link" },
     ],
   },
   {
@@ -96,6 +109,7 @@ const GROUPS: GroupDef[] = [
     title: "Bíblia — Títulos dos Cards",
     color: "oklch(0.48 0.12 65)",
     fields: [
+      { key: "biblia.manifesto.title", label: "Manifesto" },
       { key: "biblia.parte-00.title", label: "Parte 00" },
       { key: "biblia.parte-01.title", label: "Parte 01" },
       { key: "biblia.parte-02.title", label: "Parte 02" },
@@ -105,6 +119,8 @@ const GROUPS: GroupDef[] = [
       { key: "biblia.parte-06.title", label: "Parte 06" },
       { key: "biblia.parte-07.title", label: "Parte 07" },
       { key: "biblia.parte-08.title", label: "Parte 08" },
+      { key: "biblia.glossario-de-koru.title", label: "Glossário de Korú" },
+      { key: "biblia.glossario-de-lugares.title", label: "Glossário de Lugares" },
     ],
   },
   {
@@ -118,6 +134,12 @@ const GROUPS: GroupDef[] = [
       { key: "livro.04.title", label: "Capítulo 4" },
       { key: "livro.05.title", label: "Capítulo 5" },
       { key: "livro.06.title", label: "Capítulo 6" },
+      { key: "livro.07.title", label: "Capítulo 7" },
+      { key: "livro.08.title", label: "Capítulo 8" },
+      { key: "livro.09.title", label: "Capítulo 9" },
+      { key: "livro.10.title", label: "Capítulo 10" },
+      { key: "livro.11.title", label: "Capítulo 11" },
+      { key: "livro.12.title", label: "Capítulo 12" },
       { key: "livro.epilogo.title", label: "Epílogo" },
     ],
   },
@@ -360,11 +382,26 @@ export default function ConteudoPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key, value }),
       })
-      if (!res.ok) return { ok: false }
+      if (!res.ok) {
+        setError("Falha ao salvar. O valor não foi persistido.")
+        return { ok: false }
+      }
+      const json = await res.json().catch(() => ({}))
+      // O endpoint devolve ok mesmo quando o Supabase falha silenciosamente
+      // (em dev, o arquivo local cobre). Avisamos para que o público em
+      // produção não fique com valor desatualizado.
+      if (json && json.supabaseOk === false) {
+        setError(
+          "Salvo localmente, mas o banco rejeitou a escrita. Verifique a tabela `site_content` e a SUPABASE_SERVICE_ROLE_KEY — o site público pode mostrar valor antigo."
+        )
+      } else {
+        setError(null)
+      }
       // Update local state immediately
       setContent((prev) => ({ ...prev, [key]: value }))
       return { ok: true }
     } catch {
+      setError("Erro de rede ao salvar.")
       return { ok: false }
     }
   }

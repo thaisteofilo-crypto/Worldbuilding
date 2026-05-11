@@ -17,35 +17,41 @@ const DEFAULTS: Record<string, string> = {
   "section.contos.label": "Contos",
   "section.contos.title": "Vozes do Akwu",
   "footer.copyright": "Todos os direitos reservados a Thaís Teófilo",
-  "biblia.parte-00.title": "Introdução",
-  "biblia.parte-01.title": "Física e Cosmologia",
-  "biblia.parte-02.title": "Geografia",
-  "biblia.parte-03.title": "Ecossistema",
-  "biblia.parte-04.title": "Criaturas",
-  "biblia.parte-05.title": "Personagens",
-  "biblia.parte-06.title": "Regras",
-  "biblia.parte-07.title": "Cultura",
-  "biblia.parte-08.title": "Linha do Tempo",
+  "biblia.manifesto.title": "Propósito · Manifesto",
+  "biblia.parte-00.title": "Introdução · A Língua de Korú",
+  "biblia.parte-01.title": "Física · A Natureza do Akwu",
+  "biblia.parte-02.title": "Geografia · Ikwe e seus Lugares",
+  "biblia.parte-03.title": "Ecossistema · O Ciclo da Memória",
+  "biblia.parte-04.title": "Criaturas · Os Seres de Korú",
+  "biblia.parte-05.title": "Personagens · Quem Habita",
+  "biblia.parte-06.title": "Regras · Os 13 Acordos",
+  "biblia.parte-07.title": "Cultura · Como se Vive",
+  "biblia.parte-08.title": "Linha do Tempo · As Seis Eras",
+  "biblia.glossario-de-koru.title": "Glossário de Korú",
+  "biblia.glossario-de-lugares.title": "Glossário de Lugares",
   "livro.01.title": "O que ela é",
-  "livro.02.title": "A mentira silenciosa",
-  "livro.03.title": "O que a floresta guarda",
-  "livro.04.title": "O projeto do fim do luto",
-  "livro.05.title": "O limiar como morada",
-  "livro.06.title": "O que ela paga",
+  "livro.02.title": "Manhãs",
+  "livro.03.title": "A cidade",
+  "livro.04.title": "A mentira silenciosa",
+  "livro.05.title": "Entre o lilás e o cinza",
+  "livro.06.title": "O que a floresta guarda",
+  "livro.07.title": "O projeto do fim do luto",
+  "livro.08.title": "A chuva",
+  "livro.09.title": "O limiar como morada",
+  "livro.10.title": "A noite antes",
+  "livro.11.title": "O que ela paga",
+  "livro.12.title": "O retorno",
   "livro.epilogo.title": "Epílogo",
 }
 
 export async function getSiteContent(): Promise<Record<string, string>> {
-  // Start with defaults, then layer: local file, then Supabase
+  // Camadas (mais fraca → mais forte): DEFAULTS → Supabase → arquivo local.
+  // O arquivo local vence porque ele é escrito de forma síncrona em todo PATCH
+  // do admin, enquanto o upsert no Supabase pode falhar silenciosamente e
+  // devolver valor antigo. Mesma regra usada em app/api/site-content/route.ts.
   const result = { ...DEFAULTS }
 
-  // 1. Local file — always available, fastest
-  const localState = readLocalState()
-  for (const [key, value] of Object.entries(localState)) {
-    result[key] = value
-  }
-
-  // 2. Supabase — overrides local if table exists
+  // 1. Supabase
   try {
     const admin = createAdminClient()
     const { data, error } = await admin
@@ -59,7 +65,13 @@ export async function getSiteContent(): Promise<Record<string, string>> {
         }
       }
     }
-  } catch { /* ignore — local state is sufficient */ }
+  } catch { /* ignore — local state é suficiente */ }
+
+  // 2. Arquivo local — sobrescreve Supabase quando há divergência
+  const localState = readLocalState()
+  for (const [key, value] of Object.entries(localState)) {
+    result[key] = value
+  }
 
   return result
 }
