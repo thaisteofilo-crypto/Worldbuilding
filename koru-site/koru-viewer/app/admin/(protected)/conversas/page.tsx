@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { ToggleHiddenButton } from "./toggle-hidden-button"
 
 interface SavedMessage {
   role: "user" | "assistant"
@@ -15,6 +16,7 @@ interface ConversationRow {
   updated_at: string
   user_agent: string | null
   message_count: number | null
+  is_hidden: boolean | null
 }
 
 const PAGE_SIZE = 50
@@ -71,7 +73,7 @@ export default async function ConversasPage({ searchParams }: PageProps) {
     const { data, error, count } = await supabase
       .from("koru_chat_conversations")
       .select(
-        "id, session_id, messages, created_at, updated_at, user_agent, message_count",
+        "id, session_id, messages, created_at, updated_at, user_agent, message_count, is_hidden",
         { count: "exact" }
       )
       .order("updated_at", { ascending: false })
@@ -254,6 +256,10 @@ function ConversationItem({ conv }: { conv: ConversationRow }) {
             </span>
           </div>
         </div>
+        <ToggleHiddenButton
+          id={conv.id}
+          initialHidden={conv.is_hidden ?? false}
+        />
       </summary>
 
       {/* Timeline */}

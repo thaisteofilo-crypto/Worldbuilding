@@ -28,6 +28,8 @@ const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODE
 const CONTENT_ROOT = path.resolve(path.join(process.cwd(), "content"))
 const SESSION_COOKIE = "koru-chat-session"
 const SESSION_MAX_AGE = 60 * 60 * 24 * 90 // 90 dias
+const CURRENT_COOKIE = "koru-chat-current"
+const CURRENT_MAX_AGE = 60 * 60 * 24 * 30 // 30 dias
 
 let bibleCache: { content: string; timestamp: number } | null = null
 const BIBLE_CACHE_TTL = 10 * 60 * 1000 // 10 min
@@ -193,10 +195,29 @@ function buildSessionCookie(sessionId: string): string {
     .join("; ")
 }
 
+function buildCurrentCookie(conversationId: string): string {
+  return [
+    `${CURRENT_COOKIE}=${conversationId}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    `Max-Age=${CURRENT_MAX_AGE}`,
+    process.env.NODE_ENV === "production" ? "Secure" : "",
+  ]
+    .filter(Boolean)
+    .join("; ")
+}
+
 /* ─── Persistência ─── */
 
-async function persistConversation(
+/**
+ * Persiste com conversation_id pré-decidido (caminho do stream).
+ * Se isNew: INSERT explicitando o id. Se não: UPDATE apendando mensagens.
+ */
+async function persistInteraction(
   sessionId: string,
+  conversationId: string,
+  isNew: boolean,
   newMessages: SavedMessage[],
   userAgent: string | null
 ) {
@@ -204,34 +225,106 @@ async function persistConversation(
     const supabase = createAdminClient()
     const ua = (userAgent ?? "").slice(0, 200)
 
-    const { data: existing } = await supabase
-      .from("koru_chat_conversations")
-      .select("id, messages")
-      .eq("session_id", sessionId)
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-
-    if (existing) {
-      const prev = (existing.messages as SavedMessage[] | null) ?? []
-      const merged = [...prev, ...newMessages]
-      await supabase
-        .from("koru_chat_conversations")
-        .update({
-          messages: merged,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existing.id)
-    } else {
+    if (isNew) {
       await supabase.from("koru_chat_conversations").insert({
+        id: conversationId,
         session_id: sessionId,
         messages: newMessages,
         user_agent: ua,
       })
+      return
     }
+
+    const { data: existing } = await supabase
+      .from("koru_chat_conversations")
+      .select("messages")
+      .eq("id", conversationId)
+      .eq("session_id", sessionId)
+      .maybeSingle()
+
+    if (!existing) {
+      // Fallback: row sumiu entre a verificação e o UPDATE — insere com o id.
+      await supabase.from("koru_chat_conversations").insert({
+        id: conversationId,
+        session_id: sessionId,
+        messages: newMessages,
+        user_agent: ua,
+      })
+      return
+    }
+
+    const prev = (existing.messages as SavedMessage[] | null) ?? []
+    const merged = [...prev, ...newMessages]
+    await supabase
+      .from("koru_chat_conversations")
+      .update({
+        messages: merged,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", conversationId)
+  } catch (err) {
+    console.error("koru-chat: falha ao persistir (stream)", err)
+  }
+}
+
+/**
+ * Persiste a interação. Estratégia:
+ *   - Se `conversationId` foi passado, faz UPDATE nessa row específica
+ *     (apenda mensagens, atualiza updated_at).
+ *   - Se ausente OU se a row não existir mais OU se não pertencer à sessão,
+ *     faz INSERT de uma row nova.
+ *
+ * Retorna o id da row efetivamente usado (caller usa pra emitir cookie).
+ */
+async function persistConversation(
+  sessionId: string,
+  conversationId: string | null,
+  newMessages: SavedMessage[],
+  userAgent: string | null
+): Promise<string | null> {
+  try {
+    const supabase = createAdminClient()
+    const ua = (userAgent ?? "").slice(0, 200)
+
+    // Caso 1: temos um conversationId — tenta UPDATE na row específica
+    if (conversationId) {
+      const { data: existing } = await supabase
+        .from("koru_chat_conversations")
+        .select("id, messages, session_id")
+        .eq("id", conversationId)
+        .maybeSingle()
+
+      // Só atualiza se a row existe E pertence à mesma sessão.
+      if (existing && existing.session_id === sessionId) {
+        const prev = (existing.messages as SavedMessage[] | null) ?? []
+        const merged = [...prev, ...newMessages]
+        await supabase
+          .from("koru_chat_conversations")
+          .update({
+            messages: merged,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existing.id)
+        return existing.id as string
+      }
+      // Senão, cai pro INSERT abaixo (cookie obsoleto ou conversa de outra sessão).
+    }
+
+    // Caso 2: INSERT nova conversa
+    const { data: inserted } = await supabase
+      .from("koru_chat_conversations")
+      .insert({
+        session_id: sessionId,
+        messages: newMessages,
+        user_agent: ua,
+      })
+      .select("id")
+      .single()
+    return (inserted?.id as string | undefined) ?? null
   } catch (err) {
     // Falha de persistência nunca quebra o chat — apenas loga.
     console.error("koru-chat: falha ao persistir", err)
+    return null
   }
 }
 
@@ -265,6 +358,8 @@ export async function POST(req: Request) {
       sessionId = randomUUID()
       issuedCookie = true
     }
+    // Conversa atual (cookie httpOnly). Se ausente, INSERT cria nova e seta cookie.
+    const currentConversationId = cookies[CURRENT_COOKIE] || null
     const userAgent = req.headers.get("user-agent")
 
     const lastUser = [...messages].reverse().find((m) => m.role === "user")
@@ -276,22 +371,28 @@ export async function POST(req: Request) {
       // Persistir mesmo a resposta canned. Aguardado para garantir gravação
       // em ambiente serverless.
       const now = new Date().toISOString()
-      await persistConversation(
+      const persistedId = await persistConversation(
         sessionId,
+        currentConversationId,
         [
           { role: "user", content: userText, ts: now },
           { role: "assistant", content: reply, ts: now },
         ],
         userAgent
-      ).catch(() => {})
+      ).catch(() => null)
 
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
+      // Set-Cookie pode ter múltiplos valores; usamos array com Headers().
+      const responseHeaders = new Headers({ "Content-Type": "application/json" })
+      if (issuedCookie) {
+        responseHeaders.append("Set-Cookie", buildSessionCookie(sessionId))
       }
-      if (issuedCookie) headers["Set-Cookie"] = buildSessionCookie(sessionId)
+      // Se a row é nova (não havia cookie current ou ele estava obsoleto), seta cookie.
+      if (persistedId && persistedId !== currentConversationId) {
+        responseHeaders.append("Set-Cookie", buildCurrentCookie(persistedId))
+      }
       return new Response(JSON.stringify({ reply }), {
         status: 200,
-        headers,
+        headers: responseHeaders,
       })
     }
 
@@ -334,6 +435,32 @@ export async function POST(req: Request) {
         }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       )
+    }
+
+    // Resolve qual conversation_id vai ser usado pra esta interação.
+    // Se o cookie current está presente e a row ainda existe + pertence à sessão,
+    // reusa. Caso contrário, gera um novo UUID que será INSERTado no fim do stream.
+    let effectiveConversationId = currentConversationId
+    let isNewConversation = false
+    try {
+      if (effectiveConversationId) {
+        const supabase = createAdminClient()
+        const { data } = await supabase
+          .from("koru_chat_conversations")
+          .select("id, session_id")
+          .eq("id", effectiveConversationId)
+          .maybeSingle()
+        if (!data || data.session_id !== sessionId) {
+          effectiveConversationId = null
+        }
+      }
+    } catch {
+      // Se a verificação falhar, segue como se fosse novo (defensivo).
+      effectiveConversationId = null
+    }
+    if (!effectiveConversationId) {
+      effectiveConversationId = randomUUID()
+      isNewConversation = true
     }
 
     // Transformar o SSE do Gemini num SSE próprio, mais simples,
@@ -402,8 +529,10 @@ export async function POST(req: Request) {
           const now = new Date().toISOString()
           const trimmedReply = assistantText.trim()
           if (trimmedReply) {
-            await persistConversation(
+            await persistInteraction(
               sessionId!,
+              effectiveConversationId!,
+              isNewConversation,
               [
                 { role: "user", content: userText, ts: now },
                 { role: "assistant", content: trimmedReply, ts: now },
@@ -423,15 +552,24 @@ export async function POST(req: Request) {
       },
     })
 
-    const headers: Record<string, string> = {
+    const responseHeaders = new Headers({
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
       "X-Accel-Buffering": "no",
+    })
+    if (issuedCookie) {
+      responseHeaders.append("Set-Cookie", buildSessionCookie(sessionId))
     }
-    if (issuedCookie) headers["Set-Cookie"] = buildSessionCookie(sessionId)
+    // Sempre que a conversa for nova (ou cookie current obsoleto), emite cookie novo.
+    if (isNewConversation) {
+      responseHeaders.append(
+        "Set-Cookie",
+        buildCurrentCookie(effectiveConversationId)
+      )
+    }
 
-    return new Response(stream, { status: 200, headers })
+    return new Response(stream, { status: 200, headers: responseHeaders })
   } catch (err) {
     console.error("koru-chat erro", err)
     return new Response(
