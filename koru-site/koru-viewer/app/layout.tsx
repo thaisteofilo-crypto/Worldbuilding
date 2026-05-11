@@ -5,6 +5,7 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/koru/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { KoruChat } from "@/components/koru/koru-chat"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-screen">
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
+          <KoruChat />
         </ThemeProvider>
       </body>
     </html>
