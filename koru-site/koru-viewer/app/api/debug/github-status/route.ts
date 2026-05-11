@@ -26,7 +26,7 @@ export async function GET() {
     return NextResponse.json({ ...envs, githubAuth: 'skipped (no token)' })
   }
 
-  // Testa autenticação no GitHub
+  // Testa autenticação no GitHub (5s timeout para não pendurar o request)
   try {
     const r = await fetch('https://api.github.com/user', {
       headers: {
@@ -34,6 +34,7 @@ export async function GET() {
         Accept: 'application/vnd.github+json',
       },
       cache: 'no-store',
+      signal: AbortSignal.timeout(5000),
     })
     if (!r.ok) {
       return NextResponse.json({
@@ -57,6 +58,7 @@ export async function GET() {
             Accept: 'application/vnd.github+json',
           },
           cache: 'no-store',
+          signal: AbortSignal.timeout(5000),
         },
       )
       repoStatus = rr.status

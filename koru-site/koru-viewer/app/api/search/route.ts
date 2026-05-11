@@ -3,9 +3,18 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
+export const runtime = "nodejs"
+
 const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 const EXCERPT_RADIUS = 150
 const MAX_RESULTS = 20
+
+// Cache file contents + parsed frontmatter for 60s. Search is invoked on every
+// keystroke (debounced by client), so the same ~25 files would otherwise be
+// read+parsed dozens of times per minute. Keep TTL short so edits show up fast.
+const FILE_CACHE_TTL = 60 * 1000
+type CachedFile = { content: string; data: Record<string, unknown>; mtimeMs: number }
+const fileCache = new Map<string, { entry: CachedFile; timestamp: number }>()
 
 export interface SearchResult {
   title: string
@@ -22,6 +31,20 @@ function readFile(filePath: string): string | null {
   } catch {
     return null
   }
+}
+
+function readParsedFile(filePath: string): CachedFile | null {
+  const now = Date.now()
+  const cached = fileCache.get(filePath)
+  if (cached && now - cached.timestamp < FILE_CACHE_TTL) {
+    return cached.entry
+  }
+  const raw = readFile(filePath)
+  if (!raw) return null
+  const { data, content } = matter(raw)
+  const entry: CachedFile = { content, data: data as Record<string, unknown>, mtimeMs: now }
+  fileCache.set(filePath, { entry, timestamp: now })
+  return entry
 }
 
 function findFileByPrefix(dir: string, prefix: string): string | null {
@@ -73,11 +96,11 @@ function searchDoc(
   slug: string,
   url: string
 ): SearchResult | null {
-  const raw = readFile(filePath)
-  if (!raw) return null
+  const parsed = readParsedFile(filePath)
+  if (!parsed) return null
 
-  const { data, content } = matter(raw)
-  const docTitle = extractTitle(content, data as Record<string, unknown>, title)
+  const { data, content } = parsed
+  const docTitle = extractTitle(content, data, title)
   const matchCount = countMatches(content, query)
   if (matchCount === 0) return null
 

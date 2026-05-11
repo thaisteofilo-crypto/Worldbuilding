@@ -1,11 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { NavSidebar } from "@/components/koru/nav-sidebar"
 import { Breadcrumb } from "@/components/koru/breadcrumb"
-import { SearchModal } from "@/components/koru/search-modal"
+
+// SearchModal is only ever shown when the user presses Cmd+K (or clicks the
+// sidebar search). Loading it lazily keeps it out of the initial viewer bundle.
+const SearchModal = dynamic(
+  () => import("@/components/koru/search-modal").then((m) => m.SearchModal),
+  { ssr: false }
+)
 
 function ViewTransitions() {
   const router = useRouter()
@@ -89,7 +96,9 @@ export default function ViewerLayout({
         <main id="main-content" className="flex-1">{children}</main>
       </SidebarInset>
 
-      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {searchOpen && (
+        <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+      )}
     </SidebarProvider>
   )
 }

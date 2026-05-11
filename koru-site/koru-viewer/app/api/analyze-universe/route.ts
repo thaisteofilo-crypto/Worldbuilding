@@ -2,6 +2,8 @@ import Anthropic from "@anthropic-ai/sdk"
 import fs from "fs"
 import path from "path"
 
+export const runtime = "nodejs"
+
 const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 
 interface DocSection {
@@ -9,6 +11,13 @@ interface DocSection {
   title: string
   content: string
 }
+
+// Cache loaded docs + the built document context string to avoid re-reading
+// ~25 markdown files + rebuilding a ~200KB string on every POST.
+// TTL = 5 min: long enough to cover bursts of analyses (4 types × user retries),
+// short enough that edits via the editor show up in the next analysis.
+const DOCS_CACHE_TTL = 5 * 60 * 1000
+let docsCache: { docs: DocSection[]; context: string; timestamp: number } | null = null
 
 function loadAllDocs(): DocSection[] {
   const docs: DocSection[] = []
@@ -53,6 +62,17 @@ function loadAllDocs(): DocSection[] {
   }
 
   return docs
+}
+
+function getCachedDocsContext(): { docs: DocSection[]; context: string } {
+  const now = Date.now()
+  if (docsCache && now - docsCache.timestamp < DOCS_CACHE_TTL) {
+    return { docs: docsCache.docs, context: docsCache.context }
+  }
+  const docs = loadAllDocs()
+  const context = buildDocumentContext(docs)
+  docsCache = { docs, context, timestamp: now }
+  return { docs, context }
 }
 
 function buildDocumentContext(docs: DocSection[]): string {
@@ -154,7 +174,7 @@ export async function POST(req: Request) {
       })
     }
 
-    const docs = loadAllDocs()
+    const { docs, context: docContext } = getCachedDocsContext()
     if (docs.length === 0) {
       return new Response(JSON.stringify({ error: "Nenhum documento encontrado." }), {
         status: 404,
@@ -162,7 +182,6 @@ export async function POST(req: Request) {
       })
     }
 
-    const docContext = buildDocumentContext(docs)
     const analysisPrompt = ANALYSIS_PROMPTS[type] ?? ANALYSIS_PROMPTS.all
 
     const systemPrompt = `Você é uma leitora crítica experiente que conhece profundamente o universo de Koru — um mundo cuja física é baseada em memória — e está conversando com a autora sobre a obra dela. Não é uma auditoria. É uma conversa entre duas pessoas que levam o texto a sério.

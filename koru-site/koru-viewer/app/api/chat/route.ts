@@ -2,19 +2,24 @@ import Anthropic from "@anthropic-ai/sdk"
 import fs from "fs"
 import path from "path"
 
+export const runtime = "nodejs"
+
 const REPO_ROOT = path.resolve(path.join(process.cwd(), "content"))
 
 let bibleCache: { content: string; timestamp: number } | null = null
 const BIBLE_CACHE_TTL = 5 * 60 * 1000 // 5 min
+const BIBLE_PATH = path.join(REPO_ROOT, "koru-ecosystem-briefing.md")
 
 function loadBible(): string {
   const now = Date.now()
   if (bibleCache && now - bibleCache.timestamp < BIBLE_CACHE_TTL) {
     return bibleCache.content
   }
-  const biblePath = path.join(REPO_ROOT, "koru-ecosystem-briefing.md")
-  if (!fs.existsSync(biblePath)) return ""
-  const raw = fs.readFileSync(biblePath, "utf-8")
+  if (!fs.existsSync(BIBLE_PATH)) {
+    bibleCache = { content: "", timestamp: now }
+    return ""
+  }
+  const raw = fs.readFileSync(BIBLE_PATH, "utf-8")
   // Truncate to ~80k chars to stay within context limits
   bibleCache = { content: raw.slice(0, 80000), timestamp: now }
   return bibleCache.content

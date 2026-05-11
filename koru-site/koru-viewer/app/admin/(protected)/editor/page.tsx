@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
-import { ChatPanel, ChatToggleButton } from '@/components/admin/chat-panel'
+import dynamic from 'next/dynamic'
 import { RichEditor } from '@/components/admin/rich-editor'
 import type { RichEditorRef } from '@/components/admin/rich-editor'
 import type { Editor } from '@tiptap/react'
@@ -10,6 +10,18 @@ import { DocumentPublishControl } from '@/components/admin/document-publish-cont
 import { useDocumentStatuses } from '@/hooks/use-document-statuses'
 import { useDocumentPublishing } from '@/hooks/use-document-publishing'
 import { markdownToHtml } from '@/lib/markdown-to-html'
+
+// chat-panel.tsx weighs ~1.1k lines (markdown renderer, table parser, streaming
+// logic). It's only needed after the writer clicks the floating assistant
+// button, so we keep both exports out of the initial editor chunk.
+const ChatPanel = dynamic(
+  () => import('@/components/admin/chat-panel').then((m) => m.ChatPanel),
+  { ssr: false }
+)
+const ChatToggleButton = dynamic(
+  () => import('@/components/admin/chat-panel').then((m) => m.ChatToggleButton),
+  { ssr: false }
+)
 
 interface DocEntry {
   label: string
@@ -1791,15 +1803,17 @@ export default function EditorPage() {
 
       {/* Floating AI assistant */}
       <ChatToggleButton open={showChat} onClick={() => setShowChat(true)} />
-      <ChatPanel
-        documentPath={selectedPath}
-        documentContent={content}
-        selectedText={editorSelection}
-        onInsertText={handleInsertText}
-        onReplaceSelection={handleAcceptSuggestion}
-        open={showChat}
-        onClose={() => setShowChat(false)}
-      />
+      {showChat && (
+        <ChatPanel
+          documentPath={selectedPath}
+          documentContent={content}
+          selectedText={editorSelection}
+          onInsertText={handleInsertText}
+          onReplaceSelection={handleAcceptSuggestion}
+          open={showChat}
+          onClose={() => setShowChat(false)}
+        />
+      )}
 
       {/* Toast de confirmação ao aceitar uma sugestão da IA */}
       {toastPhase !== 'hidden' && (

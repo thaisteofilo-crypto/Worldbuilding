@@ -3,19 +3,36 @@ import fs from 'fs'
 import path from 'path'
 import { blockInProduction } from '@/lib/production-guard'
 
+export const runtime = 'nodejs'
+
 const ENV_FILE = path.resolve(process.cwd(), '.env.local')
+
+// Cache the .env.local presence check. POST invalidates it on save.
+const ENV_CHECK_TTL = 30 * 1000
+let envCheckCache: { fileHasKey: boolean; timestamp: number } | null = null
+
+function checkEnvFileForKey(): boolean {
+  const now = Date.now()
+  if (envCheckCache && now - envCheckCache.timestamp < ENV_CHECK_TTL) {
+    return envCheckCache.fileHasKey
+  }
+  let fileHasKey = false
+  if (fs.existsSync(ENV_FILE)) {
+    const content = fs.readFileSync(ENV_FILE, 'utf-8')
+    fileHasKey = content.includes('ANTHROPIC_API_KEY=')
+  }
+  envCheckCache = { fileHasKey, timestamp: now }
+  return fileHasKey
+}
 
 export async function GET() {
   try {
     const hasKey = !!process.env.ANTHROPIC_API_KEY
-    let fileHasKey = false
-
-    if (fs.existsSync(ENV_FILE)) {
-      const content = fs.readFileSync(ENV_FILE, 'utf-8')
-      fileHasKey = content.includes('ANTHROPIC_API_KEY=')
-    }
-
-    return NextResponse.json({ configured: hasKey || fileHasKey })
+    const fileHasKey = checkEnvFileForKey()
+    return NextResponse.json(
+      { configured: hasKey || fileHasKey },
+      { headers: { 'Cache-Control': 'private, max-age=15' } },
+    )
   } catch {
     return NextResponse.json({ configured: false })
   }
@@ -50,6 +67,7 @@ export async function POST(request: Request) {
     }
 
     fs.writeFileSync(ENV_FILE, existingContent, 'utf-8')
+    envCheckCache = null // invalidate cached presence check
 
     return NextResponse.json({ success: true, message: 'API key saved. Restart the server for changes to take effect.' })
   } catch {
