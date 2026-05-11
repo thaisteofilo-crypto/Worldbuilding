@@ -10,7 +10,7 @@ type Message = {
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "O Akwu se estende em três camadas. Pergunte ao mundo.",
+  content: "Que parte das memórias de Korú gostaria de visitar?",
 }
 
 export function KoruChat() {
