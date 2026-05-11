@@ -17,21 +17,22 @@ export function KoruChat() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
   const [input, setInput] = useState("")
+  // `pending` = aguardando o primeiro token (fase de thinking)
+  // `streaming` = já chegou o primeiro token, vai chegando incremental
   const [pending, setPending] = useState(false)
+  const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll para baixo a cada nova mensagem
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
     el.scrollTop = el.scrollHeight
-  }, [messages, pending])
+  }, [messages, pending, streaming])
 
-  // Foco no input ao abrir
   useEffect(() => {
     if (open) {
       const t = setTimeout(() => inputRef.current?.focus(), 50)
@@ -39,7 +40,6 @@ export function KoruChat() {
     }
   }, [open])
 
-  // Fechar com Esc
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -51,7 +51,7 @@ export function KoruChat() {
 
   async function send() {
     const text = input.trim()
-    if (!text || pending) return
+    if (!text || pending || streaming) return
 
     const next: Message[] = [...messages, { role: "user", content: text }]
     setMessages(next)
@@ -59,23 +59,103 @@ export function KoruChat() {
     setPending(true)
     setError(null)
 
+    // Index da bolha do assistente que vamos preencher incrementalmente.
+    // É inserida só quando o primeiro chunk chega, pra manter o indicador
+    // "pensando..." durante a fase de thinking.
+    let assistantIndex = -1
+    let firstTokenReceived = false
+
     try {
       const res = await fetch("/api/koru-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // Não enviar a mensagem inicial padrão (é só visual)
           messages: next.slice(next[0] === INITIAL_MESSAGE ? 1 : 0),
         }),
       })
-      const data = (await res.json()) as { reply?: string; error?: string }
-      if (!res.ok || data.error) {
-        setError(data.error ?? "Falha ao consultar o mundo.")
-      } else if (data.reply) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.reply! },
-        ])
+
+      // Resposta canned (guard do livro) vem como JSON, não SSE.
+      const contentType = res.headers.get("content-type") ?? ""
+      if (contentType.includes("application/json")) {
+        const data = (await res.json()) as { reply?: string; error?: string }
+        if (!res.ok || data.error) {
+          setError(data.error ?? "Falha ao consultar o mundo.")
+        } else if (data.reply) {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: data.reply! },
+          ])
+        }
+        return
+      }
+
+      if (!res.ok || !res.body) {
+        setError("Falha ao consultar o mundo.")
+        return
+      }
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+
+      // Processa um line "data: {...}" ou "data: [DONE]"
+      function handleEvent(line: string) {
+        const trimmed = line.trim()
+        if (!trimmed.startsWith("data:")) return
+        const payload = trimmed.slice(5).trim()
+        if (!payload) return
+        if (payload === "[DONE]") return
+        let evt: { delta?: string; error?: string }
+        try {
+          evt = JSON.parse(payload)
+        } catch {
+          return
+        }
+        if (evt.error) {
+          setError(evt.error)
+          return
+        }
+        if (typeof evt.delta === "string" && evt.delta.length > 0) {
+          if (!firstTokenReceived) {
+            firstTokenReceived = true
+            setPending(false)
+            setStreaming(true)
+            setMessages((prev) => {
+              assistantIndex = prev.length
+              return [...prev, { role: "assistant", content: evt.delta! }]
+            })
+          } else {
+            setMessages((prev) => {
+              if (assistantIndex < 0 || assistantIndex >= prev.length) return prev
+              const copy = prev.slice()
+              copy[assistantIndex] = {
+                ...copy[assistantIndex],
+                content: copy[assistantIndex].content + evt.delta,
+              }
+              return copy
+            })
+          }
+        }
+      }
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        let sep
+        while ((sep = buffer.indexOf("\n\n")) !== -1) {
+          const chunk = buffer.slice(0, sep)
+          buffer = buffer.slice(sep + 2)
+          for (const line of chunk.split("\n")) handleEvent(line)
+        }
+      }
+      if (buffer.trim()) {
+        for (const line of buffer.split("\n")) handleEvent(line)
+      }
+
+      // Caso o stream tenha terminado sem nenhum token visível.
+      if (!firstTokenReceived) {
+        setError("O modelo não retornou conteúdo. Tente novamente.")
       }
     } catch (e) {
       setError(
@@ -83,6 +163,7 @@ export function KoruChat() {
       )
     } finally {
       setPending(false)
+      setStreaming(false)
     }
   }
 
@@ -92,6 +173,8 @@ export function KoruChat() {
       send()
     }
   }
+
+  const busy = pending || streaming
 
   return (
     <>
@@ -103,34 +186,12 @@ export function KoruChat() {
         aria-expanded={open}
         className={cn(
           "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full",
-          "transition-transform duration-300 ease-out hover:scale-105 active:scale-95",
+          "transition-all duration-300 ease-out hover:scale-105 active:scale-95",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
           "koru-chat-button"
         )}
-        style={{
-          background:
-            "radial-gradient(circle at 30% 30%, var(--accent), color-mix(in oklch, var(--accent) 60%, var(--background)))",
-          boxShadow:
-            "0 0 24px color-mix(in oklch, var(--accent) 40%, transparent), 0 0 60px color-mix(in oklch, var(--gold) 14%, transparent), 0 6px 22px color-mix(in oklch, black 35%, transparent)",
-        }}
       >
-        {/* Sparkles inline SVG (mesmo padrão dos outros componentes do projeto) */}
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-[var(--background)] drop-shadow-[0_0_6px_color-mix(in_oklch,white_50%,transparent)]"
-          aria-hidden="true"
-        >
-          <path d="M12 3l1.7 4.6L18 9.3l-4.3 1.7L12 15l-1.7-4.6L6 9.3l4.6-1.7z" />
-          <path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z" />
-          <path d="M5 4l.6 1.6L7 6l-1.6.6L5 8l-.6-1.6L3 6l1.6-.6z" />
-        </svg>
+        <KoruGlyph />
       </button>
 
       {/* Painel de chat */}
@@ -200,9 +261,19 @@ export function KoruChat() {
               "scrollbar-thin"
             )}
           >
-            {messages.map((m, i) => (
-              <MessageBubble key={i} message={m} />
-            ))}
+            {messages.map((m, i) => {
+              const isLastAssistant =
+                streaming &&
+                i === messages.length - 1 &&
+                m.role === "assistant"
+              return (
+                <MessageBubble
+                  key={i}
+                  message={m}
+                  showCursor={isLastAssistant}
+                />
+              )
+            })}
             {pending && <PendingBubble />}
             {error && (
               <div
@@ -229,7 +300,7 @@ export function KoruChat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                disabled={pending}
+                disabled={busy}
                 placeholder="Pergunte ao mundo..."
                 aria-label="Sua pergunta"
                 className={cn(
@@ -241,7 +312,7 @@ export function KoruChat() {
               <button
                 type="button"
                 onClick={send}
-                disabled={pending || !input.trim()}
+                disabled={busy || !input.trim()}
                 aria-label="Enviar pergunta"
                 className={cn(
                   "inline-flex h-8 w-8 items-center justify-center rounded-lg",
@@ -268,56 +339,119 @@ export function KoruChat() {
         </div>
       )}
 
-      {/* Estilos locais (pulso suave + entrada do painel). Tailwind 4: keyframes
-          via @keyframes em escopo global no globals.css seria mais limpo, mas
-          mantemos local para não tocar no CSS global. */}
+      {/* Estilos locais */}
       <style jsx global>{`
-        @keyframes koru-chat-pulse {
-          0%, 100% {
-            box-shadow:
-              0 0 24px color-mix(in oklch, var(--accent) 40%, transparent),
-              0 0 60px color-mix(in oklch, var(--gold) 14%, transparent),
-              0 6px 22px color-mix(in oklch, black 35%, transparent);
-          }
-          50% {
-            box-shadow:
-              0 0 32px color-mix(in oklch, var(--accent) 55%, transparent),
-              0 0 80px color-mix(in oklch, var(--gold) 22%, transparent),
-              0 8px 28px color-mix(in oklch, black 40%, transparent);
-          }
-        }
         .koru-chat-button {
-          animation: koru-chat-pulse 3.6s ease-in-out infinite;
+          background: color-mix(in oklch, var(--background) 70%, var(--accent) 30%);
+          border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
+          color: var(--foreground);
+          box-shadow:
+            0 0 18px color-mix(in oklch, var(--accent) 22%, transparent),
+            0 6px 18px color-mix(in oklch, black 30%, transparent);
+        }
+        .koru-chat-button:hover {
+          box-shadow:
+            0 0 26px color-mix(in oklch, var(--accent) 32%, transparent),
+            0 8px 22px color-mix(in oklch, black 35%, transparent);
+          border-color: color-mix(in oklch, var(--accent) 45%, transparent);
+        }
+        @keyframes koru-glyph-pulse {
+          0%, 100% { opacity: 0.55; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.04); }
+        }
+        .koru-glyph-outer {
+          transform-origin: 12px 12px;
+          animation: koru-glyph-pulse 3.6s ease-in-out infinite;
         }
         @keyframes koru-chat-in {
-          from {
-            opacity: 0;
-            transform: translateY(8px) scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+          from { opacity: 0; transform: translateY(8px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes koru-cursor-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.2; }
+        }
+        .koru-cursor {
+          display: inline-block;
+          width: 2px;
+          height: 0.95em;
+          margin-left: 2px;
+          vertical-align: -0.1em;
+          background: var(--foreground);
+          animation: koru-cursor-blink 0.9s ease-in-out infinite;
+          border-radius: 1px;
         }
         @media (prefers-reduced-motion: reduce) {
-          .koru-chat-button {
-            animation: none;
-          }
+          .koru-glyph-outer { animation: none; }
+          .koru-cursor { animation: none; opacity: 0.7; }
         }
       `}</style>
     </>
   )
 }
 
-function MessageBubble({ message }: { message: Message }) {
+/**
+ * Glifo de luz inspirado no Akwu: três anéis concêntricos sugerindo as
+ * três camadas (Lar Central, Ali Central, Ariku Externo) vistas de cima,
+ * com núcleo de luz no centro. Pulso muito sutil só no anel externo.
+ */
+function KoruGlyph() {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      {/* anel externo (pulsa) — Ariku Externo */}
+      <circle
+        className="koru-glyph-outer"
+        cx="12"
+        cy="12"
+        r="9"
+        strokeWidth="1.2"
+        opacity="0.7"
+      />
+      {/* anel médio — Ali Central */}
+      <circle
+        cx="12"
+        cy="12"
+        r="5.6"
+        strokeWidth="1.3"
+        opacity="0.9"
+      />
+      {/* anel interno — Lar Central */}
+      <circle
+        cx="12"
+        cy="12"
+        r="2.6"
+        strokeWidth="1.4"
+        opacity="1"
+      />
+      {/* núcleo de luz */}
+      <circle
+        cx="12"
+        cy="12"
+        r="0.9"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  )
+}
+
+function MessageBubble({
+  message,
+  showCursor = false,
+}: {
+  message: Message
+  showCursor?: boolean
+}) {
   const isUser = message.role === "user"
   return (
-    <div
-      className={cn(
-        "flex",
-        isUser ? "justify-end" : "justify-start"
-      )}
-    >
+    <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
           "max-w-[85%] rounded-2xl px-3.5 py-2 text-[13.5px] leading-relaxed font-sans whitespace-pre-wrap",
@@ -327,6 +461,7 @@ function MessageBubble({ message }: { message: Message }) {
         )}
       >
         {message.content}
+        {showCursor && <span className="koru-cursor" aria-hidden="true" />}
       </div>
     </div>
   )

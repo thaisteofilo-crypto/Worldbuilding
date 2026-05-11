@@ -1,39 +1,55 @@
 import fs from "fs"
 import path from "path"
+import { randomUUID } from "crypto"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 /**
  * Endpoint público do chatbot do mundo de Korú.
- * Usa a API do Google AI Studio (Gemma).
+ * Usa a API do Google AI Studio (Gemma) com streaming SSE.
  *
- * Modelos Gemma disponíveis na chave atual (verificados via ListModels):
- *   - `gemma-4-26b-a4b-it` (MoE, ativo: 4B — mais rápido) ← em uso
- *   - `gemma-4-31b-it` (denso, 31B — mais lento, pode dar 500 intermitente)
- * Ambos são "thinking models": geram tokens internos de raciocínio antes
- * da resposta visível. O código abaixo filtra `thought: true` e usa
- * maxOutputTokens generoso para acomodar o pensamento.
+ * Modelo: gemma-4-26b-a4b-it (MoE, thinking model — não desligável).
+ * Estratégia de velocidade:
+ *   1) Sistema prompt carregado do koru-bible-core.md (~6KB / ~1800 tok)
+ *      em vez da bíblia completa (~56KB / ~16K tok).
+ *   2) streamGenerateContent (SSE) para devolver tokens ao cliente conforme
+ *      saem do modelo. Os tokens de thinking (thought: true) são filtrados
+ *      e nunca enviados pro cliente.
  *
- * Não confundir com /api/chat (que é o assistente do admin, Anthropic).
+ * Persistência: cada sessão tem um cookie httpOnly (koru-chat-session, UUID,
+ * 90 dias). As conversas são gravadas em public.koru_chat_conversations.
+ * Anônimo: salva session_id + user_agent (200 chars), nada de IP.
+ *
+ * Não confundir com /api/chat (assistente Anthropic do admin).
  */
 
 const MODEL = "gemma-4-26b-a4b-it"
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`
 
 const CONTENT_ROOT = path.resolve(path.join(process.cwd(), "content"))
+const SESSION_COOKIE = "koru-chat-session"
+const SESSION_MAX_AGE = 60 * 60 * 24 * 90 // 90 dias
 
 let bibleCache: { content: string; timestamp: number } | null = null
 const BIBLE_CACHE_TTL = 10 * 60 * 1000 // 10 min
 
-function loadBible(): string {
+function loadBibleCore(): string {
   const now = Date.now()
   if (bibleCache && now - bibleCache.timestamp < BIBLE_CACHE_TTL) {
     return bibleCache.content
   }
-  const biblePath = path.join(CONTENT_ROOT, "koru-ecosystem-briefing.md")
-  if (!fs.existsSync(biblePath)) {
+  const corePath = path.join(CONTENT_ROOT, "koru-bible-core.md")
+  if (!fs.existsSync(corePath)) {
+    // Fallback defensivo: se o core sumir, ainda servimos a bíblia completa.
+    const fallback = path.join(CONTENT_ROOT, "koru-ecosystem-briefing.md")
+    if (fs.existsSync(fallback)) {
+      const raw = fs.readFileSync(fallback, "utf-8")
+      bibleCache = { content: raw, timestamp: now }
+      return raw
+    }
     bibleCache = { content: "", timestamp: now }
     return ""
   }
-  const raw = fs.readFileSync(biblePath, "utf-8")
+  const raw = fs.readFileSync(corePath, "utf-8")
   bibleCache = { content: raw, timestamp: now }
   return raw
 }
@@ -105,12 +121,13 @@ Sistema de luz:
 - Bomi Veh: fosforescência suave, eco horizontal.
 - Três tipos de luz: Oru (teto dourado), Temu (teto lilás-frio), Luz Limiar (Azuri, altera frequência, não ilumina).
 
-Bomi Veh, cinco estados:
+Bomi Veh, seis estados:
 1. Vivo (lilás, processando)
 2. Solidificado (denso, escuro, os Onkweri são este estado)
 3. Preto (Ubomi-chi mortos, irreversível sem intervenção)
-4. Cinza permanente (Jobi-Koro, violação do ciclo)
-5. Azul-frio (caso documentado: dissolução de Amara)
+4. Saturado sem rota (cinza denso, ciclo travado, reversível)
+5. Cinza permanente (Jobi-Koro, instância máxima do 4º)
+6. Azul-frio (caso documentado: dissolução de Amara)
 
 Acordos com o mundo:
 - As 13 regras não são leis de uma autoridade. São acordos. As consequências são respostas físicas do ambiente, não punições.
@@ -122,7 +139,7 @@ FORMATO:
 - Não comece com "Sim,", "Claro,", "Olá". Comece pela informação.
 - Não termine com "espero ter ajudado" nem ofereça mais ajuda.
 
-REFERÊNCIA, A BÍBLIA DO MUNDO:
+REFERÊNCIA, NÚCLEO DA BÍBLIA DO MUNDO:
 
 ${bible}`
 }
@@ -133,13 +150,92 @@ interface InMessage {
 }
 
 interface GeminiPart {
-  text: string
+  text?: string
+  thought?: boolean
 }
 
 interface GeminiContent {
   role: "user" | "model"
-  parts: GeminiPart[]
+  parts: { text: string }[]
 }
+
+interface SavedMessage {
+  role: "user" | "assistant"
+  content: string
+  ts: string
+}
+
+/* ─── Cookie helpers ─── */
+
+function parseCookies(header: string | null): Record<string, string> {
+  if (!header) return {}
+  const out: Record<string, string> = {}
+  for (const part of header.split(";")) {
+    const idx = part.indexOf("=")
+    if (idx === -1) continue
+    const k = part.slice(0, idx).trim()
+    const v = part.slice(idx + 1).trim()
+    if (k) out[k] = decodeURIComponent(v)
+  }
+  return out
+}
+
+function buildSessionCookie(sessionId: string): string {
+  return [
+    `${SESSION_COOKIE}=${sessionId}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    `Max-Age=${SESSION_MAX_AGE}`,
+    process.env.NODE_ENV === "production" ? "Secure" : "",
+  ]
+    .filter(Boolean)
+    .join("; ")
+}
+
+/* ─── Persistência ─── */
+
+async function persistConversation(
+  sessionId: string,
+  newMessages: SavedMessage[],
+  userAgent: string | null
+) {
+  try {
+    const supabase = createAdminClient()
+    const ua = (userAgent ?? "").slice(0, 200)
+
+    const { data: existing } = await supabase
+      .from("koru_chat_conversations")
+      .select("id, messages")
+      .eq("session_id", sessionId)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (existing) {
+      const prev = (existing.messages as SavedMessage[] | null) ?? []
+      const merged = [...prev, ...newMessages]
+      await supabase
+        .from("koru_chat_conversations")
+        .update({
+          messages: merged,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existing.id)
+    } else {
+      await supabase.from("koru_chat_conversations").insert({
+        session_id: sessionId,
+        messages: newMessages,
+        user_agent: ua,
+      })
+    }
+  } catch (err) {
+    // Falha de persistência nunca quebra o chat — apenas loga.
+    console.error("koru-chat: falha ao persistir", err)
+  }
+}
+
+/* ─── Handler ─── */
 
 export async function POST(req: Request) {
   try {
@@ -161,20 +257,49 @@ export async function POST(req: Request) {
       )
     }
 
-    // Guarda de conteúdo do livro: avalia a última mensagem do usuário.
+    // Sessão (cookie httpOnly).
+    const cookies = parseCookies(req.headers.get("cookie"))
+    let sessionId = cookies[SESSION_COOKIE]
+    let issuedCookie = false
+    if (!sessionId) {
+      sessionId = randomUUID()
+      issuedCookie = true
+    }
+    const userAgent = req.headers.get("user-agent")
+
     const lastUser = [...messages].reverse().find((m) => m.role === "user")
+    const userText = lastUser?.content ?? ""
+
+    // Guarda de conteúdo do livro: resposta canned, sem streaming.
     if (lastUser && isAboutBook(lastUser.content)) {
-      return new Response(
-        JSON.stringify({ reply: bookGuardReply() }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      )
+      const reply = bookGuardReply()
+      // Persistir mesmo a resposta canned. Aguardado para garantir gravação
+      // em ambiente serverless.
+      const now = new Date().toISOString()
+      await persistConversation(
+        sessionId,
+        [
+          { role: "user", content: userText, ts: now },
+          { role: "assistant", content: reply, ts: now },
+        ],
+        userAgent
+      ).catch(() => {})
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      }
+      if (issuedCookie) headers["Set-Cookie"] = buildSessionCookie(sessionId)
+      return new Response(JSON.stringify({ reply }), {
+        status: 200,
+        headers,
+      })
     }
 
-    const bible = loadBible()
+    const bible = loadBibleCore()
     const systemPrompt = buildSystemPrompt(bible)
 
-    // Modelos Gemma do Google AI Studio não aceitam `systemInstruction` separado.
-    // Estratégia: prefixar o system prompt na primeira mensagem do usuário.
+    // Modelos Gemma não aceitam systemInstruction separado.
+    // Prefixamos o system prompt na primeira mensagem do usuário.
     const contents: GeminiContent[] = []
     let systemInjected = false
     for (const m of messages) {
@@ -187,7 +312,7 @@ export async function POST(req: Request) {
       contents.push({ role, parts: [{ text }] })
     }
 
-    const upstream = await fetch(`${ENDPOINT}?key=${apiKey}`, {
+    const upstream = await fetch(`${ENDPOINT}&key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -195,15 +320,12 @@ export async function POST(req: Request) {
         generationConfig: {
           temperature: 0.7,
           topP: 0.9,
-          // Gemma 4 é "thinking model": consome ~500–1500 tokens de raciocínio
-          // interno antes da resposta visível. Orçamento generoso para que a
-          // resposta final não seja truncada por MAX_TOKENS.
           maxOutputTokens: 3500,
         },
       }),
     })
 
-    if (!upstream.ok) {
+    if (!upstream.ok || !upstream.body) {
       const detail = await upstream.text().catch(() => "")
       console.error("Gemma API erro", upstream.status, detail)
       return new Response(
@@ -214,36 +336,102 @@ export async function POST(req: Request) {
       )
     }
 
-    const data = (await upstream.json()) as {
-      candidates?: Array<{
-        content?: { parts?: Array<{ text?: string; thought?: boolean }> }
-        finishReason?: string
-      }>
-    }
+    // Transformar o SSE do Gemini num SSE próprio, mais simples,
+    // e filtrar tokens de thinking.
+    const encoder = new TextEncoder()
+    const decoder = new TextDecoder()
+    let buffer = ""
+    let assistantText = ""
 
-    // Gemma 4 thinking models retornam DUAS partes: uma com `thought: true`
-    // (raciocínio interno, não exibir) e outra com a resposta final ao usuário.
-    // Filtramos a parte de pensamento e usamos só a resposta visível.
-    const reply =
-      data.candidates?.[0]?.content?.parts
-        ?.filter((p) => !p.thought)
-        ?.map((p) => p.text ?? "")
-        .join("")
-        .trim() ?? ""
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = upstream.body!.getReader()
 
-    if (!reply) {
-      return new Response(
-        JSON.stringify({
-          error: "O modelo não retornou conteúdo. Tente novamente.",
-        }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      )
-    }
+        function emit(payload: object) {
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify(payload)}\n\n`)
+          )
+        }
 
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+        function processLine(line: string) {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith("data:")) return
+          const json = trimmed.slice(5).trim()
+          if (!json || json === "[DONE]") return
+          let parsed: {
+            candidates?: Array<{
+              content?: { parts?: GeminiPart[] }
+            }>
+          }
+          try {
+            parsed = JSON.parse(json)
+          } catch {
+            return
+          }
+          const parts = parsed.candidates?.[0]?.content?.parts ?? []
+          for (const p of parts) {
+            if (p.thought) continue
+            if (typeof p.text === "string" && p.text.length > 0) {
+              assistantText += p.text
+              emit({ delta: p.text })
+            }
+          }
+        }
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+            buffer += decoder.decode(value, { stream: true })
+            // Mensagens SSE são separadas por \n\n.
+            let sep
+            while ((sep = buffer.indexOf("\n\n")) !== -1) {
+              const chunk = buffer.slice(0, sep)
+              buffer = buffer.slice(sep + 2)
+              for (const line of chunk.split("\n")) processLine(line)
+            }
+          }
+          // Resíduo
+          if (buffer.trim()) {
+            for (const line of buffer.split("\n")) processLine(line)
+          }
+
+          // Persistir antes de fechar o stream, para garantir que o handler
+          // (em ambiente serverless) não seja terminado antes da gravação.
+          // O cliente já recebeu todos os tokens; só fica esperando o [DONE].
+          const now = new Date().toISOString()
+          const trimmedReply = assistantText.trim()
+          if (trimmedReply) {
+            await persistConversation(
+              sessionId!,
+              [
+                { role: "user", content: userText, ts: now },
+                { role: "assistant", content: trimmedReply, ts: now },
+              ],
+              userAgent
+            ).catch(() => {})
+          }
+
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+          controller.close()
+        } catch (err) {
+          console.error("koru-chat stream erro", err)
+          emit({ error: "Falha durante a geração." })
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`))
+          controller.close()
+        }
+      },
     })
+
+    const headers: Record<string, string> = {
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    }
+    if (issuedCookie) headers["Set-Cookie"] = buildSessionCookie(sessionId)
+
+    return new Response(stream, { status: 200, headers })
   } catch (err) {
     console.error("koru-chat erro", err)
     return new Response(
