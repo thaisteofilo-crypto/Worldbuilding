@@ -5,15 +5,17 @@ import path from "path"
  * Endpoint público do chatbot do mundo de Korú.
  * Usa a API do Google AI Studio (Gemma).
  *
- * Se o modelo `gemma-3-27b-it` retornar 404 ou indisponível, trocar para:
- *   - `gemma-3-12b-it`
- *   - `gemma-2-27b-it`
- * Basta alterar a constante MODEL abaixo.
+ * Modelos Gemma disponíveis na chave atual (verificados via ListModels):
+ *   - `gemma-4-26b-a4b-it` (MoE, ativo: 4B — mais rápido) ← em uso
+ *   - `gemma-4-31b-it` (denso, 31B — mais lento, pode dar 500 intermitente)
+ * Ambos são "thinking models": geram tokens internos de raciocínio antes
+ * da resposta visível. O código abaixo filtra `thought: true` e usa
+ * maxOutputTokens generoso para acomodar o pensamento.
  *
  * Não confundir com /api/chat (que é o assistente do admin, Anthropic).
  */
 
-const MODEL = "gemma-3-27b-it"
+const MODEL = "gemma-4-26b-a4b-it"
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`
 
 const CONTENT_ROOT = path.resolve(path.join(process.cwd(), "content"))
@@ -193,7 +195,10 @@ export async function POST(req: Request) {
         generationConfig: {
           temperature: 0.7,
           topP: 0.9,
-          maxOutputTokens: 800,
+          // Gemma 4 é "thinking model": consome ~500–1500 tokens de raciocínio
+          // interno antes da resposta visível. Orçamento generoso para que a
+          // resposta final não seja truncada por MAX_TOKENS.
+          maxOutputTokens: 3500,
         },
       }),
     })
@@ -211,13 +216,17 @@ export async function POST(req: Request) {
 
     const data = (await upstream.json()) as {
       candidates?: Array<{
-        content?: { parts?: Array<{ text?: string }> }
+        content?: { parts?: Array<{ text?: string; thought?: boolean }> }
         finishReason?: string
       }>
     }
 
+    // Gemma 4 thinking models retornam DUAS partes: uma com `thought: true`
+    // (raciocínio interno, não exibir) e outra com a resposta final ao usuário.
+    // Filtramos a parte de pensamento e usamos só a resposta visível.
     const reply =
       data.candidates?.[0]?.content?.parts
+        ?.filter((p) => !p.thought)
         ?.map((p) => p.text ?? "")
         .join("")
         .trim() ?? ""
