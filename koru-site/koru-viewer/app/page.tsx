@@ -290,7 +290,7 @@ export default async function HomePage() {
             Korú
           </h1>
           <p
-            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans"
+            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans mb-8"
             style={{
               color: hasHero ? "oklch(1 0 0 / 0.9)" : "var(--muted-foreground)",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
@@ -299,22 +299,17 @@ export default async function HomePage() {
           >
             {get(siteContent, "hero.tagline")}
           </p>
-        </div>
-      </section>
-
-      {/* CTA principal — convite à jornada */}
-      <section className="px-4 md:px-16 pt-12 md:pt-16 pb-4 md:pb-6">
-        <div className="flex flex-col items-start gap-3 max-w-2xl">
           <Link
             href={bibliaHref}
-            className="inline-flex items-center justify-center rounded-full px-7 py-3.5 font-sans text-base transition-colors"
-            style={{ backgroundColor: "var(--foreground)", color: "var(--background)" }}
+            className="koru-content-enter inline-flex items-center justify-center rounded-full px-7 py-3.5 font-sans text-base transition-colors"
+            style={{
+              backgroundColor: hasHero ? "white" : "var(--foreground)",
+              color: hasHero ? "black" : "var(--background)",
+              animationDelay: "0.7s",
+            }}
           >
             Começar pela bíblia
           </Link>
-          <p className="text-sm font-sans text-muted-foreground">
-            Quatro caminhos, um mundo. Comece pelo que sustenta o resto.
-          </p>
         </div>
       </section>
 
