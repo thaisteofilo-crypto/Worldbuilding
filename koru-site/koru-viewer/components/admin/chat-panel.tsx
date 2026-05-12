@@ -24,6 +24,16 @@ interface ChatPanelProps {
 // --- localStorage persistence ---
 
 const CHAT_STORAGE_KEY = 'koru-chat-history'
+const SESSION_STORAGE_KEY = 'koru-assistant-sessions'
+const MAX_SESSIONS = 60
+
+interface ChatSession {
+  id: string
+  docPath: string
+  docLabel: string
+  startedAt: number
+  messages: Message[]
+}
 
 function loadHistory(path: string): Message[] {
   try {
@@ -40,6 +50,37 @@ function saveHistory(path: string, messages: Message[]) {
     all[path] = messages.slice(-20)
     localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(all))
   } catch {}
+}
+
+function loadSessions(): ChatSession[] {
+  try { return JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) ?? '[]') }
+  catch { return [] }
+}
+
+function archiveSession(docPath: string, docLabel: string, messages: Message[]) {
+  if (messages.length === 0) return
+  const sessions = loadSessions()
+  sessions.unshift({
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    docPath,
+    docLabel: docLabel || docPath,
+    startedAt: messages[0]?.timestamp ?? Date.now(),
+    messages,
+  })
+  try {
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessions.slice(0, MAX_SESSIONS)))
+  } catch {}
+}
+
+function formatSessionDate(ts: number): string {
+  const d = new Date(ts)
+  const now = new Date()
+  const isToday = d.toDateString() === now.toDateString()
+  const isYesterday = new Date(now.setDate(now.getDate() - 1)).toDateString() === d.toDateString()
+  const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+  if (isToday) return `Hoje, ${time}`
+  if (isYesterday) return `Ontem, ${time}`
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) + `, ${time}`
 }
 
 function formatTime(ts: number): string {
@@ -488,6 +529,9 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
   const [isStreaming, setIsStreaming] = useState(false)
   const [responseMode, setResponseMode] = useState<'concise' | 'detailed'>('detailed')
   const [mounted, setMounted] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
+  const [viewingSession, setViewingSession] = useState<ChatSession | null>(null)
+  const [sessions, setSessions] = useState<ChatSession[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -496,6 +540,11 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
   const abortControllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => setMounted(true), [])
+
+  // Load sessions when history panel opens
+  useEffect(() => {
+    if (showHistory) setSessions(loadSessions())
+  }, [showHistory])
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
@@ -773,6 +822,9 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
   }
 
   function handleClear() {
+    if (documentPath && messages.length > 0) {
+      archiveSession(documentPath, documentLabel ?? documentPath, messages)
+    }
     setMessages([])
     if (documentPath) saveHistory(documentPath, [])
   }
@@ -847,14 +899,28 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         </div>
 
         <div className="flex items-center gap-1">
-          {messages.length > 0 && (
+          <button
+            onClick={() => { setShowHistory((v) => !v); setViewingSession(null) }}
+            className="transition-colors rounded p-1"
+            style={{ color: showHistory ? 'var(--foreground)' : 'var(--muted-foreground)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = showHistory ? 'var(--foreground)' : 'var(--muted-foreground)')}
+            title="Histórico de conversas"
+            aria-label="Histórico"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </button>
+          {messages.length > 0 && !showHistory && (
             <button
               onClick={handleClear}
               className="text-[10px] transition-colors rounded px-1.5 py-1"
               style={{ color: 'var(--muted-foreground)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
               onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
-              title="Limpar conversa"
+              title="Arquivar e limpar conversa"
             >
               Limpar
             </button>
@@ -876,8 +942,97 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         </div>
       </div>
 
+      {/* History panel */}
+      {showHistory && (
+        <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
+          {viewingSession ? (
+            <>
+              <div className="flex items-center gap-2 px-3 py-2 shrink-0 border-b" style={{ borderColor: 'var(--border)' }}>
+                <button
+                  onClick={() => setViewingSession(null)}
+                  className="flex items-center gap-1 text-[11px] transition-colors rounded px-1.5 py-1"
+                  style={{ color: 'var(--muted-foreground)' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--foreground)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  Voltar
+                </button>
+                <span className="text-[11px] truncate" style={{ color: 'var(--muted-foreground)' }}>
+                  {formatSessionDate(viewingSession.startedAt)} · {viewingSession.docLabel}
+                </span>
+              </div>
+              <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                {viewingSession.messages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div
+                      className="max-w-[88%] rounded-xl px-3 py-2 text-sm leading-relaxed"
+                      style={
+                        msg.role === 'user'
+                          ? { background: 'var(--foreground)', color: 'var(--background)', wordBreak: 'break-word' }
+                          : { background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--foreground)', wordBreak: 'break-word' }
+                      }
+                    >
+                      {msg.role === 'assistant'
+                        ? renderMarkdownSafe(msg.content, undefined, undefined)
+                        : <p className="text-sm">{msg.content}</p>}
+                      <p className="text-[9px] mt-1 opacity-40">{formatTime(msg.timestamp)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 overflow-y-auto">
+              {sessions.length === 0 ? (
+                <div className="flex flex-col items-center justify-center text-center px-6 py-12">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--muted-foreground)', marginBottom: 12 }}>
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <p className="text-[12px]" style={{ color: 'var(--muted-foreground)' }}>
+                    Nenhuma conversa arquivada ainda.
+                  </p>
+                  <p className="text-[11px] mt-1" style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}>
+                    Use &ldquo;Limpar&rdquo; para arquivar e começar uma nova.
+                  </p>
+                </div>
+              ) : (
+                <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                  {sessions.map((session) => (
+                    <button
+                      key={session.id}
+                      onClick={() => setViewingSession(session)}
+                      className="w-full text-left px-3 py-2.5 transition-colors flex flex-col gap-0.5"
+                      onMouseEnter={(e) => (e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 4%, transparent)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-medium truncate" style={{ color: 'var(--foreground)' }}>
+                          {session.docLabel}
+                        </span>
+                        <span className="text-[10px] shrink-0" style={{ color: 'var(--muted-foreground)' }}>
+                          {session.messages.length} msg
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] truncate" style={{ color: 'var(--muted-foreground)' }}>
+                          {session.messages.find(m => m.role === 'user')?.content.slice(0, 60) ?? '—'}
+                        </span>
+                        <span className="text-[10px] shrink-0" style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}>
+                          {formatSessionDate(session.startedAt)}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 min-h-0" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+      {!showHistory && <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 min-h-0" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center px-6 py-8">
             <div
@@ -954,9 +1109,18 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
         })}
 
         <div ref={messagesEndRef} />
-      </div>
+      </div>}
 
-      {/* Input area */}
+      {/* Input area — hidden when viewing history */}
+      {!showHistory && <div className="shrink-0">
+        {hasSelection && (
+          <div className="px-3 pt-2 pb-1 flex items-center gap-2">
+            <button
+              onClick={handleRewriteSelection}
+              disabled={isStreaming}
+              className="rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-80 disabled:opacity-40 shrink-0"
+              style={{
+                fontSize: '10px',
       <div className="shrink-0">
         {hasSelection && (
           <div className="px-3 pt-2 pb-1 flex items-center gap-2">

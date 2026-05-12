@@ -153,6 +153,8 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
       />
 
       <aside
+        aria-label="Navegação principal"
+        aria-modal={open || undefined}
         className={cn(
           'flex w-56 flex-col bg-background',
           // Mobile: off-canvas drawer
@@ -176,7 +178,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
             className="lg:hidden flex items-center justify-center rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-admin-hover hover:text-foreground"
             aria-label="Fechar menu"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -184,7 +186,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex flex-col gap-0.5 p-3 pt-4 flex-1 overflow-y-auto">
+        <nav aria-label="Menu" className="flex flex-col gap-0.5 p-3 pt-4 flex-1 overflow-y-auto">
           {navItems.map((item) => {
             const active = item.exact
               ? pathname === item.href
@@ -194,6 +196,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
+                aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
                   active
@@ -201,7 +204,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
                     : 'text-muted-foreground hover:bg-admin-hover hover:text-foreground',
                 )}
               >
-                <span className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
+                <span aria-hidden="true" className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
                 {item.label}
               </Link>
             )
@@ -229,7 +232,7 @@ function LogoutButton() {
       onClick={handleLogout}
       className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-xs text-muted-foreground transition-all duration-150 hover:bg-admin-hover hover:text-foreground"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
         <polyline points="16 17 21 12 16 7" />
         <line x1="21" y1="12" x2="9" y2="12" />

@@ -13,7 +13,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     >
       <AdminSidebar open={open} onClose={() => setOpen(false)} />
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="flex h-14 items-center gap-3 px-4 lg:hidden">
+        <header aria-label="Cabeçalho mobile" className="flex h-14 items-center gap-3 px-4 lg:hidden">
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -44,7 +44,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             Admin
           </span>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        <main id="main-content" className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   )

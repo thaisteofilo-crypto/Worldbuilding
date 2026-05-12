@@ -21,7 +21,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
   }))
 
   return (
-    <section className="rounded-xl glass-card overflow-hidden">
+    <section className="rounded-xl glass-card overflow-hidden" aria-labelledby="status-docs-heading">
       <div className="px-5 pt-5 pb-4">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4">
           <div className="min-w-0 md:flex-1">
@@ -35,7 +35,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
               >
                 Progresso
               </span>
-              <h2 className="font-serif text-xl leading-tight" style={{ color: "var(--foreground)" }}>
+              <h2 id="status-docs-heading" className="font-serif text-xl leading-tight" style={{ color: "var(--foreground)" }}>
                 Status dos documentos
               </h2>
             </div>
@@ -50,7 +50,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
             style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
           >
             Ir para o editor
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </Link>
@@ -62,6 +62,8 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
         <div
           className="w-full h-2 rounded-full overflow-hidden flex"
           style={{ background: "color-mix(in oklch, var(--foreground) 6%, transparent)" }}
+          role="img"
+          aria-label={`Progresso: ${classifiedPercent}% dos ${totalTracked} documentos classificados`}
         >
           {segments.map((s) => s.count > 0 && (
             <div
@@ -92,6 +94,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
             >
               <div className="flex items-center gap-1.5 mb-1.5">
                 <span
+                  aria-hidden="true"
                   className="rounded-full shrink-0"
                   style={{ width: 7, height: 7, background: s.dotColor }}
                 />
