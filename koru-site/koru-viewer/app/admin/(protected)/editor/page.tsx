@@ -944,7 +944,7 @@ export default function EditorPage() {
                           <button
                             onClick={() => loadFile(doc.path, doc.label)}
                             onDoubleClick={() => { setRenamingDoc({ section: group.section, path: doc.path }); setRenameLabel(doc.label) }}
-                            className="flex-1 text-left rounded-lg px-3 py-1.5 text-sm transition-all duration-150 flex items-center"
+                            className="flex-1 min-w-0 text-left rounded-lg px-3 py-1.5 text-sm transition-all duration-150 flex items-center"
                             style={
                               selectedPath === doc.path
                                 ? {
@@ -969,7 +969,7 @@ export default function EditorPage() {
                               }
                             }}
                           >
-                            <span className="flex-1 truncate">{doc.label}</span>
+                            <span className="flex-1 min-w-0 truncate">{doc.label}</span>
                             {selectedPath === doc.path && wordCount > 0 && (
                               <span
                                 className="ml-2 text-[10px] font-sans tabular-nums shrink-0"
@@ -982,35 +982,30 @@ export default function EditorPage() {
                         )}
                         {renamingDoc?.path !== doc.path && (
                           <div
-                            className="shrink-0"
+                            className="flex items-center gap-1 shrink-0 w-[52px] justify-end"
                             onClick={(e) => e.stopPropagation()}
-                            data-row-status
                           >
-                            <DocumentStatusBadge
-                              value={docStatuses[doc.path] ?? null}
-                              onChange={(next) => setDocStatus(doc.path, next)}
-                              compact
-                              showLabel={selectedPath === doc.path}
-                            />
-                          </div>
-                        )}
-                        {renamingDoc?.path !== doc.path && (
-                          <div
-                            className="shrink-0"
-                            onClick={(e) => e.stopPropagation()}
-                            data-row-publish
-                          >
-                            <DocumentPublishControl
-                              value={getPublishConfig(doc.path)}
-                              onChange={(next) => setPublishConfig(doc.path, next)}
-                              showLabel={selectedPath === doc.path}
-                            />
+                            <div data-row-status>
+                              <DocumentStatusBadge
+                                value={docStatuses[doc.path] ?? null}
+                                onChange={(next) => setDocStatus(doc.path, next)}
+                                compact
+                                showLabel={selectedPath === doc.path}
+                              />
+                            </div>
+                            <div data-row-publish>
+                              <DocumentPublishControl
+                                value={getPublishConfig(doc.path)}
+                                onChange={(next) => setPublishConfig(doc.path, next)}
+                                showLabel={selectedPath === doc.path}
+                              />
+                            </div>
                           </div>
                         )}
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => { setRenamingDoc({ section: group.section, path: doc.path }); setRenameLabel(doc.label) }}
-                            className="opacity-0 group-hover:opacity-50 hover:!opacity-100 shrink-0 p-1 rounded transition-opacity"
+                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity"
                             style={{ color: 'var(--muted-foreground)' }}
                             title="Renomear"
                           >
@@ -1023,7 +1018,7 @@ export default function EditorPage() {
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => removeDocument(group.section, doc.path)}
-                            className="opacity-0 group-hover:opacity-50 hover:!opacity-100 shrink-0 p-1 rounded transition-opacity"
+                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity"
                             style={{ color: 'var(--muted-foreground)' }}
                             title="Remover"
                           >
