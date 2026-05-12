@@ -301,19 +301,18 @@ export default async function HomePage() {
           </p>
           <Link
             href={bibliaHref}
-            className="koru-content-enter koru-hero-cta inline-flex items-center justify-center rounded-full px-7 py-3.5 font-sans text-base transition-all"
+            className="koru-content-enter koru-hero-cta inline-flex items-center justify-center rounded-full px-6 py-2.5 font-sans text-sm transition-colors"
             style={{
               animationDelay: "0.7s",
               color: hasHero ? "white" : "var(--foreground)",
               background: hasHero
-                ? "oklch(1 0 0 / 0.10)"
-                : "color-mix(in oklch, var(--foreground) 8%, transparent)",
+                ? "oklch(1 0 0 / 0.08)"
+                : "color-mix(in oklch, var(--foreground) 6%, transparent)",
               border: hasHero
-                ? "1px solid oklch(1 0 0 / 0.28)"
+                ? "1px solid oklch(1 0 0 / 0.18)"
                 : "1px solid var(--border)",
-              backdropFilter: "blur(16px) saturate(1.4)",
-              WebkitBackdropFilter: "blur(16px) saturate(1.4)",
-              boxShadow: hasHero ? "0 1px 0 oklch(1 0 0 / 0.08) inset, 0 8px 24px oklch(0 0 0 / 0.18)" : undefined,
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
             }}
           >
             Começar pela bíblia
