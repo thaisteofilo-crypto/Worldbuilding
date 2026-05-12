@@ -105,12 +105,14 @@ function SectionBanner({ url }: { url?: string }) {
 function FullSection({
   label,
   title,
+  description,
   bannerUrl,
   videoUrl,
   children,
 }: {
   label: string
   title: string
+  description?: string
   bannerUrl?: string
   videoUrl?: string
   children: React.ReactNode
@@ -139,7 +141,7 @@ function FullSection({
           {label}
         </p>
         <h2
-          className="font-serif text-3xl md:text-5xl leading-none mb-6 md:mb-8"
+          className="font-serif text-3xl md:text-5xl leading-none mb-4 md:mb-5"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
             color: hasBanner ? "white" : "var(--foreground)",
@@ -148,6 +150,17 @@ function FullSection({
         >
           {title}
         </h2>
+        {description && (
+          <p
+            className="font-sans text-base md:text-lg leading-relaxed max-w-2xl mb-6 md:mb-8"
+            style={{
+              color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
+              textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
+            }}
+          >
+            {description}
+          </p>
+        )}
         {children}
       </div>
     </section>
@@ -228,6 +241,11 @@ export default async function HomePage() {
 
   const hasHero = !!(banners.hero || banners["hero-video"])
 
+  // Hero CTA target — first publicly available bíblia entry, with sensible fallback.
+  const firstBibliaPath = finalBibliaDocs.find((d) => visible(d.path)) ?? finalBibliaDocs[0]
+  const firstBibliaSlug = firstBibliaPath ? pathFilename(firstBibliaPath.path) : "parte-00-manifesto"
+  const bibliaHref = `/biblia/${firstBibliaSlug}`
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="fixed top-4 right-6 z-50 flex items-center gap-1">
@@ -273,7 +291,7 @@ export default async function HomePage() {
             Korú
           </h1>
           <p
-            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans"
+            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans mb-8"
             style={{
               color: hasHero ? "oklch(1 0 0 / 0.9)" : "var(--muted-foreground)",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
@@ -282,11 +300,29 @@ export default async function HomePage() {
           >
             {get(siteContent, "hero.tagline")}
           </p>
+          <Link
+            href={bibliaHref}
+            className="koru-content-enter inline-flex items-center justify-center rounded-full px-6 py-2.5 font-sans text-sm transition-colors hover:bg-white/15"
+            style={{
+              animationDelay: "0.7s",
+              color: hasHero ? "white" : "var(--foreground)",
+              background: hasHero
+                ? "oklch(1 0 0 / 0.08)"
+                : "color-mix(in oklch, var(--foreground) 6%, transparent)",
+              border: hasHero
+                ? "1px solid oklch(1 0 0 / 0.18)"
+                : "1px solid var(--border)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+          >
+            Começar pela bíblia
+          </Link>
         </div>
       </section>
 
       {/* Bíblia */}
-      <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
+      <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} description={get(siteContent, "section.biblia.description")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
         <CardCarousel>
           {finalBibliaDocs.map((doc) => {
             const filename = pathFilename(doc.path)
@@ -332,7 +368,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Personagens */}
-      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
+      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} description={get(siteContent, "section.personagens.description")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
         <CardCarousel>
           {characterOrder.map((key) => {
             const char = characters[key]
@@ -371,7 +407,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Contos */}
-      <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
+      <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} description={get(siteContent, "section.contos.description")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
         <CardCarousel>
           {characterOrder.filter((key) => contosAvailable.has(key) && !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
@@ -410,7 +446,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Livro */}
-      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
+      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} description={get(siteContent, "section.livro.description")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
         <CardCarousel>
           {finalLivroDocs.map((doc) => {
             const filename = pathFilename(doc.path)
