@@ -103,7 +103,7 @@ export default function AdminDashboardPage() {
         <StatCard label="Palavras" value={formatNumber(analytics.totalWords)} sub="no universo" icon={<WordsIcon />} color="var(--accent)" href="/admin/editor" />
         <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="var(--gold)" href="/admin/editor" />
         <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" href="/admin/tasks" />
-        <StatCard label="Galeria" value={analytics.totalGallery.toString()} sub={`${analytics.totalBanners} banners`} icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" href="/admin/gallery" />
+        <StatCard label="Galeria de Cenas" value={analytics.totalGallery.toString()} sub="cenas cadastradas" icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" href="/admin/gallery" />
       </div>
 
       {/* Status Progress */}
