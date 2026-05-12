@@ -11,7 +11,7 @@ export const BIBLIA_ITEMS = [
   { slug: "parte-05", title: "Personagens · Quem Habita" },
   { slug: "parte-06", title: "Regras · Os 13 Acordos" },
   { slug: "parte-07", title: "Cultura · Como se Vive" },
-  { slug: "parte-08", title: "Linha do Tempo · As Cinco Eras" },
+  { slug: "parte-08", title: "Linha do Tempo · As Seis Eras" },
   { slug: "glossario-de-koru", title: "Glossário de Korú" },
   { slug: "glossario-de-lugares", title: "Glossário de Lugares" },
 ]
