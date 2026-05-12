@@ -9,12 +9,14 @@ function generateNonce(): string {
   return btoa(binary)
 }
 
-function buildCsp(nonce: string): string {
-  // style-src mantém 'unsafe-inline' porque Tailwind/Next injetam estilos inline;
-  // remover quebra a renderização (não há suporte estável a nonce em style do Next).
+function buildCsp(_nonce: string): string {
+  // script-src mantém 'unsafe-inline' porque Next 16 + Turbopack não propagam
+  // nonce automaticamente para chunks RSC, e 'strict-dynamic' bloqueia tudo.
+  // 'unsafe-eval' continua removido — esse era o ganho principal do Sprint 5.
+  // style-src mantém 'unsafe-inline' porque Tailwind/Next injetam estilos inline.
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in",
     "font-src 'self' https://fonts.gstatic.com data:",
