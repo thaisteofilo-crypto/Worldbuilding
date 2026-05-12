@@ -74,9 +74,18 @@ export default function TasksPage() {
   }, [])
 
   useEffect(() => {
-    fetchTasks()
+    const timeout = setTimeout(() => {
+      if (loading) {
+        setLoading(false)
+        setMoveError('O servidor demorou mais de 10s para responder.')
+      }
+    }, 10000)
+    fetchTasks().then(() => clearTimeout(timeout))
     const interval = setInterval(fetchTasks, 5000)
-    return () => clearInterval(interval)
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
   }, [fetchTasks])
 
   // Tarefa 4 — limpar erro após 3s
@@ -220,8 +229,34 @@ export default function TasksPage() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <p className="font-sans text-sm text-muted-foreground">Carregando...</p>
+      <div>
+        <div className="mb-4 animate-pulse">
+          <div className="h-8 rounded w-32 mb-2" style={{ background: "var(--border)" }} />
+          <div className="h-3 rounded w-48" style={{ background: "var(--border)", opacity: 0.6 }} />
+        </div>
+        {/* Kanban columns skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          {COLUMNS.map((col) => (
+            <div key={col.key} className="rounded-lg overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)" }}>
+              <div className="px-4 py-3 flex items-center justify-between" style={{ background: "var(--surface)" }}>
+                <div className="h-3 rounded w-24" style={{ background: "var(--border)" }} />
+                <div className="h-4 rounded-full w-5" style={{ background: "var(--border)", opacity: 0.6 }} />
+              </div>
+              <div className="p-3 flex flex-col gap-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="rounded-lg px-3 py-2.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                    <div className="h-3 rounded w-3/4 mb-1.5" style={{ background: "white", opacity: 0.08 }} />
+                    <div className="h-2.5 rounded w-1/2" style={{ background: "white", opacity: 0.05 }} />
+                    <div className="mt-2 flex gap-1.5">
+                      <div className="h-4 rounded-full w-12" style={{ background: "white", opacity: 0.06 }} />
+                      <div className="h-4 rounded-full w-10" style={{ background: "white", opacity: 0.06 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }

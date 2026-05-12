@@ -79,16 +79,28 @@ export default function PublicacaoPage() {
   const { configs, loaded: cfgLoaded, getConfig, setConfig } = useDocumentPublishing()
   const [savingPath, setSavingPath] = useState<string | null>(null)
   const [errorPath, setErrorPath] = useState<{ path: string; msg: string } | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDocsLoaded(true)
+      setLoadError("O servidor demorou mais de 10s para responder. Os documentos podem não ter carregado.")
+    }, 10000)
+
     fetch("/api/docs")
       .then((r) => r.json())
       .then((data) => {
+        clearTimeout(timeout)
         setGroups(data.groups ?? [])
         setPersonagens(data.personagens ?? [])
         setDocsLoaded(true)
       })
-      .catch(() => setDocsLoaded(true))
+      .catch(() => {
+        clearTimeout(timeout)
+        setDocsLoaded(true)
+      })
+
+    return () => clearTimeout(timeout)
   }, [])
 
   // Personagens use a virtual path "personagens/<slug>" since they aren't MD files.
@@ -136,7 +148,59 @@ export default function PublicacaoPage() {
   }
 
   if (!docsLoaded || !cfgLoaded) {
-    return <div className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Carregando…</div>
+    return (
+      <div className="max-w-5xl mx-auto">
+        {/* Header skeleton */}
+        <div className="mb-8 animate-pulse">
+          <div className="h-8 rounded w-40 mb-2" style={{ background: "var(--border)" }} />
+          <div className="h-3 rounded w-96" style={{ background: "var(--border)", opacity: 0.6 }} />
+        </div>
+
+        {/* Stats cards skeleton */}
+        <div className="flex gap-3 mb-8">
+          {[
+            "oklch(0.70 0.09 155 / 0.10)",
+            "oklch(0.72 0.08 75 / 0.10)",
+            "oklch(0.58 0.01 280 / 0.15)",
+          ].map((bg, i) => (
+            <div
+              key={i}
+              className="px-4 py-3 rounded-lg animate-pulse"
+              style={{ background: bg, border: "1px solid var(--border)", minWidth: "96px" }}
+            >
+              <div className="h-2 rounded w-16 mb-2" style={{ background: "white", opacity: 0.15 }} />
+              <div className="h-7 rounded w-8" style={{ background: "white", opacity: 0.15 }} />
+            </div>
+          ))}
+        </div>
+
+        {/* Group list skeletons — 4 sections */}
+        {[12, 7, 8, 13].map((count, gi) => (
+          <section key={gi} className="mb-10">
+            <div className="h-2 rounded w-24 mb-3 animate-pulse" style={{ background: "var(--border)" }} />
+            <div className="rounded-lg overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              {Array.from({ length: Math.min(count, 5) }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 px-4 py-3"
+                  style={{ borderTop: i === 0 ? "none" : "1px solid var(--border)" }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="h-3.5 rounded w-48 mb-1" style={{ background: "white", opacity: 0.08 }} />
+                    <div className="h-2.5 rounded w-32" style={{ background: "white", opacity: 0.05 }} />
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="h-7 rounded-md w-20" style={{ background: "white", opacity: 0.06 }} />
+                    <div className="h-7 rounded-md w-16" style={{ background: "white", opacity: 0.06 }} />
+                    <div className="h-7 rounded-md w-20" style={{ background: "white", opacity: 0.06 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -149,6 +213,18 @@ export default function PublicacaoPage() {
           Controla quais cards aparecem destrancados na home. Default = publicado.
           Cards em rascunho ou agendado-pra-frente aparecem com cadeado e não abrem.
         </p>
+        {loadError && (
+          <p
+            className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
+            style={{
+              color: "oklch(0.55 0.18 27)",
+              background: "oklch(0.55 0.18 27 / 0.08)",
+              border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+            }}
+          >
+            {loadError}
+          </p>
+        )}
       </div>
 
       <div className="flex gap-3 mb-8">

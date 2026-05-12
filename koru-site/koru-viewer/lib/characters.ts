@@ -172,6 +172,23 @@ export const characters: Record<string, Character> = {
     quote: "Tudo o que toca o chão, o chão guarda. Não por escolha. Por natureza.",
     relations: [],
   },
+  kairo: {
+    name: "Kairo",
+    role: "",
+    gradient:
+      "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.24 0.06 60) 50%, oklch(0.14 0.01 280) 100%)",
+    accentColor: "var(--foreground)",
+    morphology: "",
+    ability: "",
+    status: "",
+    origin: "",
+    description: "",
+    species: "Limiar",
+    location: "",
+    mark: "",
+    quote: "",
+    relations: [],
+  },
 }
 
 export const characterOrder = [
@@ -182,6 +199,7 @@ export const characterOrder = [
   "obaru",
   "kemdi",
   "orike",
+  "kairo",
 ] as const
 
 export type CharacterKey = (typeof characterOrder)[number]
