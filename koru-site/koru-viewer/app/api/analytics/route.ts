@@ -85,24 +85,6 @@ export async function GET() {
     if (ch) wordCounts[ch.slug] = ch.words
   }
 
-  // ─── Character mentions in livro (from filesystem) ───
-  const characterNames = ["temiku", "amara", "oruku", "beku", "obaru", "kemdi", "orike", "temi", "kemi"]
-  const charMentions: Record<string, Record<string, number>> = {}
-  for (const ch of chapters) {
-    if (!ch) continue
-    const slug = ch.slug === "epilogo" ? "epilogo" : `capitulo-${ch.slug}`
-    const doc = readMarkdown(`livro/${slug}.md`)
-    const lower = (doc.content ?? "").toLowerCase()
-    for (const name of characterNames) {
-      const regex = new RegExp(`\\b${name}\\b`, "gi")
-      const count = (lower.match(regex) ?? []).length
-      if (count > 0) {
-        if (!charMentions[ch.slug]) charMentions[ch.slug] = {}
-        charMentions[ch.slug][name] = count
-      }
-    }
-  }
-
   // ─── Supabase data (tasks + storage) with 3s timeout ───
   const supabaseTimeout = <T,>(promise: Promise<T>, fallback: T): Promise<T> =>
     Promise.race([promise, new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 3000))])
@@ -199,7 +181,6 @@ export async function GET() {
     sectionWords,
     wordCounts,
     chapters,
-    charMentions,
     taskStats,
     contosWritten,
     totalContos: contosList.length,
@@ -207,7 +188,6 @@ export async function GET() {
     totalBibliaItems,
     livroChapters: chapterSlugs.length,
     totalDocuments,
-    totalCharacters: characterNames.length,
     totalPersonagens,
     totalBanners,
     totalGallery,

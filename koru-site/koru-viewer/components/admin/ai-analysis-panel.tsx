@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 /* ─── Tipos ─── */
 
-type AnalysisType = "all" | "inconsistencies" | "feedback" | "report"
+type AnalysisType = "all" | "inconsistencies" | "feedback" | "report" | "arc" | "rhythm"
 
 interface SavedAnalysis {
   type: AnalysisType
@@ -71,6 +71,28 @@ const TABS: TabDef[] = [
       </svg>
     ),
   },
+  {
+    id: "arc",
+    label: "Arco de Temiku",
+    description: "Como Temiku evolui capítulo a capítulo e conto a conto — estado físico, emocional, descontinuidades, o que o arco ainda pede.",
+    accentVar: "var(--accent)",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4" />
+      </svg>
+    ),
+  },
+  {
+    id: "rhythm",
+    label: "Ritmo",
+    description: "Análise de abertura, alternância longa/curta, frases nominais, parênteses e fechamento em contenção — ouvindo os textos em voz alta.",
+    accentVar: "var(--gold)",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+  },
 ]
 
 const STORAGE_KEY = "koru-admin-ai-analysis-v2"
@@ -90,7 +112,7 @@ function loadSaved(): Record<AnalysisType, SavedAnalysis | null> {
 }
 
 function emptyCache(): Record<AnalysisType, SavedAnalysis | null> {
-  return { all: null, inconsistencies: null, feedback: null, report: null }
+  return { all: null, inconsistencies: null, feedback: null, report: null, arc: null, rhythm: null }
 }
 
 function saveToCache(cache: Record<AnalysisType, SavedAnalysis | null>) {
@@ -219,6 +241,11 @@ export function AIAnalysisPanel() {
   const [copied, setCopied] = useState(false)
   const abortRef = useRef<AbortController | null>(null)
 
+  const [followUpInput, setFollowUpInput] = useState("")
+  const [followUpThread, setFollowUpThread] = useState<Array<{ question: string; answer: string }>>([])
+  const [followUpStreaming, setFollowUpStreaming] = useState(false)
+  const [followUpLive, setFollowUpLive] = useState("")
+
   useEffect(() => {
     setCache(loadSaved())
   }, [])
@@ -310,6 +337,60 @@ export function AIAnalysisPanel() {
     }
   }, [displayText])
 
+  const sendFollowUp = useCallback(async () => {
+    if (!followUpInput.trim() || followUpStreaming) return
+    const question = followUpInput.trim()
+    setFollowUpInput("")
+    setFollowUpLive("")
+    setFollowUpStreaming(true)
+
+    const conversationHistory = followUpThread.flatMap(item => [
+      { role: "user" as const, content: item.question },
+      { role: "assistant" as const, content: item.answer },
+    ])
+
+    try {
+      const res = await fetch("/api/analyze-universe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: activeType,
+          conversationHistory: [
+            ...conversationHistory,
+            { role: "assistant", content: current?.text ?? "" },
+          ],
+          followUpQuestion: question,
+        }),
+      })
+      if (!res.ok || !res.body) throw new Error("Falha no follow-up")
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+      let accumulated = ""
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const parts = buffer.split("\n\n")
+        buffer = parts.pop() ?? ""
+        for (const part of parts) {
+          const line = part.trim()
+          if (!line.startsWith("data:")) continue
+          const payload = line.slice(5).trim()
+          if (payload === "[DONE]") continue
+          try {
+            const obj = JSON.parse(payload)
+            if (obj.text) { accumulated += obj.text; setFollowUpLive(accumulated) }
+          } catch { /* ignore */ }
+        }
+      }
+      setFollowUpThread(prev => [...prev, { question, answer: accumulated }])
+    } catch { /* ignore */ } finally {
+      setFollowUpStreaming(false)
+      setFollowUpLive("")
+    }
+  }, [followUpInput, followUpStreaming, followUpThread, activeType, current])
+
   const hasContent = Boolean(displayText)
 
   return (
@@ -384,6 +465,9 @@ export function AIAnalysisPanel() {
                 if (streaming) return
                 setActiveType(tab.id)
                 setError(null)
+                setFollowUpThread([])
+                setFollowUpInput("")
+                setFollowUpLive("")
               }}
               disabled={streaming && !active}
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-xs transition-all disabled:cursor-not-allowed disabled:opacity-40"
@@ -480,6 +564,61 @@ export function AIAnalysisPanel() {
                   )}
                 </button>
               </div>
+            )}
+
+            {!streaming && (
+              <>
+                {/* Follow-up thread */}
+                {followUpThread.length > 0 && (
+                  <div className="mt-6 flex flex-col gap-4">
+                    {followUpThread.map((item, i) => (
+                      <div key={i} className="flex flex-col gap-2">
+                        <div className="flex items-start gap-2">
+                          <span className="font-sans text-[10px] uppercase tracking-[0.12em] shrink-0 mt-0.5" style={{ color: "var(--accent)" }}>Pergunta</span>
+                          <p className="font-sans text-sm" style={{ color: "var(--foreground)" }}>{item.question}</p>
+                        </div>
+                        <div className="pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)" }}>
+                          <MarkdownView source={item.answer} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Live follow-up streaming */}
+                {followUpStreaming && followUpLive && (
+                  <div className="mt-4 pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)" }}>
+                    <MarkdownView source={followUpLive} />
+                    <span className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse" style={{ background: "var(--foreground)" }} />
+                  </div>
+                )}
+
+                {/* Follow-up input */}
+                <div className="mt-6 flex gap-2">
+                  <input
+                    type="text"
+                    value={followUpInput}
+                    onChange={e => setFollowUpInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFollowUp() } }}
+                    placeholder="Perguntar sobre esta análise..."
+                    disabled={followUpStreaming}
+                    className="flex-1 rounded-full px-4 py-2 font-sans text-sm outline-none disabled:opacity-50"
+                    style={{
+                      background: "color-mix(in oklch, var(--foreground) 5%, transparent)",
+                      border: "1px solid var(--border)",
+                      color: "var(--foreground)",
+                    }}
+                  />
+                  <button
+                    onClick={sendFollowUp}
+                    disabled={!followUpInput.trim() || followUpStreaming}
+                    className="rounded-full px-4 py-2 font-sans text-xs transition-opacity hover:opacity-80 disabled:opacity-40"
+                    style={{ background: "var(--foreground)", color: "var(--background)" }}
+                  >
+                    {followUpStreaming ? "..." : "Enviar"}
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}

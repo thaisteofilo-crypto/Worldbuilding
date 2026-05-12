@@ -22,6 +22,13 @@ let docsCache: { docs: DocSection[]; context: string; timestamp: number } | null
 function loadAllDocs(): DocSection[] {
   const docs: DocSection[] = []
 
+  // Briefing (root level, loaded first)
+  const briefingPath = path.join(REPO_ROOT, "koru-ecosystem-briefing.md")
+  if (fs.existsSync(briefingPath)) {
+    const raw = fs.readFileSync(briefingPath, "utf-8")
+    docs.push({ section: "Briefing", title: "koru-ecosystem-briefing", content: raw.slice(0, 20000) })
+  }
+
   // Biblia parts
   const bibliaDir = path.join(REPO_ROOT, "biblia")
   if (fs.existsSync(bibliaDir)) {
@@ -31,7 +38,7 @@ function loadAllDocs(): DocSection[] {
       .sort()
     for (const file of files) {
       const raw = fs.readFileSync(path.join(bibliaDir, file), "utf-8")
-      docs.push({ section: "Biblia", title: file.replace(".md", ""), content: raw.slice(0, 6000) })
+      docs.push({ section: "Biblia", title: file.replace(".md", ""), content: raw.slice(0, 8000) })
     }
   }
 
@@ -44,7 +51,7 @@ function loadAllDocs(): DocSection[] {
       .sort()
     for (const file of files) {
       const raw = fs.readFileSync(path.join(livroDir, file), "utf-8")
-      docs.push({ section: "Livro", title: file.replace(".md", ""), content: raw.slice(0, 10000) })
+      docs.push({ section: "Livro", title: file.replace(".md", ""), content: raw.slice(0, 15000) })
     }
   }
 
@@ -57,7 +64,7 @@ function loadAllDocs(): DocSection[] {
       .sort()
     for (const file of files) {
       const raw = fs.readFileSync(path.join(contosDir, file), "utf-8")
-      docs.push({ section: "Contos", title: file.replace(".md", ""), content: raw.slice(0, 8000) })
+      docs.push({ section: "Contos", title: file.replace(".md", ""), content: raw.slice(0, 10000) })
     }
   }
 
@@ -160,11 +167,47 @@ Quais já existem, quais faltam, qual é a ordem que faz mais sentido (origens p
 Termine com um parágrafo curto chamado **Por onde eu começaria agora** — não uma lista, uma recomendação pensada, explicando por que esse é o próximo passo que destrava mais coisa.
 
 Seja específica, use números quando ajudarem, mas escreva com voz. Nada de "Status: em andamento" ou bullets formais. Frases completas.`,
+
+  arc: `Trace o arco de Temiku como personagem através de todos os capítulos do livro e dos contos. Escreva em prosa — como uma leitora que está seguindo a personagem de perto.
+
+Abra com um parágrafo de síntese: qual é o arco central de Temiku, o que ela carrega no início e o que (se é que algo) se transforma.
+
+Depois, capítulo por capítulo ou conto por conto onde ela aparece:
+- O que está acontecendo com ela aqui (estado físico, emocional — mas sempre via corpo e espaço, nunca via diagnóstico)
+- Uma frase ou imagem que captura esse momento
+- Se há descontinuidade com o que veio antes (tom, estado, coerência da física dela)
+
+Termine com um parágrafo chamado **O que ainda está por acontecer** — não um spoiler, mas uma leitura do que o arco ainda pede, o que está em aberto, que tensão não se resolveu.
+
+Cite sempre o arquivo de onde veio cada observação. Tom literário, nunca clínico.`,
+
+  rhythm: `Leia os textos narrativos (livro e contos) com foco exclusivo em ritmo, sintaxe e abertura. Escreva como uma leitora que ouve o texto em voz alta.
+
+Para cada texto, observe:
+- Como começa. A abertura é abrupta ou prepara o leitor? Cai no meio de algo ou explica antes?
+- O padrão de alternância: frases longas respirando depois frases curtas cortando. Está acontecendo? Onde quebra?
+- Uso de frases nominais como pausas estruturais ("O campo. O silêncio."). Existem? Funcionam?
+- Parênteses como pensamentos tangenciais. Como estão sendo usados?
+- O fechamento. O texto termina em contenção (gesto pequeno, emoção grande encurtada) ou resolve demais?
+
+Cite 2-3 trechos curtos por texto — um que funciona, um que pede ajuste, se houver.
+
+Depois um parágrafo final: **O que é consistente no ritmo da autora em todo o conjunto**, e uma coisa que está ainda se formando.
+
+Tom: leitor de poesia lendo prosa. Específico, auditivo, nunca abstrato.`,
 }
 
 export async function POST(req: Request) {
   try {
-    const { type = "all" } = await req.json()
+    const {
+      type = "all",
+      conversationHistory = [],
+      followUpQuestion,
+    }: {
+      type: string
+      conversationHistory?: Array<{ role: "user" | "assistant"; content: string }>
+      followUpQuestion?: string
+    } = await req.json()
 
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (!apiKey) {
@@ -209,16 +252,58 @@ COMO VOCÊ AGE
 - Quando algo estiver funcionando, diga *o que* está funcionando e *por que*. "A contenção aqui é física — ela endurece antes de sentir." é útil. "Lindo trecho!" não é.
 - Diferencie bíblia (documento técnico, tom de referência) de livro/contos (narrativa literária com voz específica). Não julgue bíblia por padrões literários nem textos literários por padrões técnicos.`
 
-    const userMessage = `Aqui estao todos os documentos do universo de Koru:\n\n${docContext}\n\n${analysisPrompt}`
+    const anthropic = new Anthropic({
+      apiKey,
+      defaultHeaders: {
+        "anthropic-beta": "prompt-caching-2024-07-31",
+      },
+    })
 
-    const anthropic = new Anthropic({ apiKey })
+    // Build messages array depending on whether this is a follow-up or first analysis
+    let messages: any[]
+
+    if (followUpQuestion) {
+      // Follow-up: first message has only the doc context (cached), then history, then the new question
+      messages = [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `Aqui estao todos os documentos do universo de Koru:\n\n${docContext}`,
+              cache_control: { type: "ephemeral" },
+            },
+          ],
+        },
+        ...conversationHistory,
+        { role: "user", content: followUpQuestion },
+      ]
+    } else {
+      // Normal first analysis
+      messages = [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `Aqui estao todos os documentos do universo de Koru:\n\n${docContext}`,
+              cache_control: { type: "ephemeral" },
+            },
+            { type: "text", text: analysisPrompt },
+          ],
+        },
+        ...conversationHistory,
+      ]
+    }
 
     const stream = anthropic.messages.stream({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 12000,
       temperature: 0.7,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userMessage }],
+      system: [
+        { type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } },
+      ] as any,
+      messages,
     })
 
     const encoder = new TextEncoder()
