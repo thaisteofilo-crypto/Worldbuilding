@@ -16,8 +16,11 @@ interface Props {
   params: Promise<{ nome: string }>
 }
 
-// ISR: regenera personagens a cada hora para refletir edições no Supabase.
-export const revalidate = 3600
+// Force-dynamic: o conteúdo do personagem (campos como `mark`/Características,
+// status, descrição) vem do Supabase e o admin edita ao vivo. SSG estava
+// servindo "not found" cacheado quando o Supabase falhava no build. Com
+// dynamic garantimos consistência com o admin sem depender de revalidate.
+export const dynamic = "force-dynamic"
 
 export async function generateStaticParams() {
   // characterOrder é a fonte canônica em código; o Supabase pode adicionar
