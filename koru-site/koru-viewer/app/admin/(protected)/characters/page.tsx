@@ -357,14 +357,26 @@ export default function CharactersPage() {
   const [uploading, setUploading] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
 
+  const [loadError, setLoadError] = useState<string | null>(null)
+
   const fetchCharacters = () => {
+    const timeout = setTimeout(() => {
+      setLoading(false)
+      setLoadError("O servidor demorou mais de 10s para responder. A lista pode estar incompleta.")
+    }, 10000)
+
     Promise.all([
       fetch("/api/characters").then((r) => r.json()),
       fetch("/api/characters/image").then((r) => r.json()),
     ]).then(([charData, imageData]) => {
+      clearTimeout(timeout)
       setCharacters(charData.characters || [])
       setCharImages(imageData.images || {})
       setLoading(false)
+    }).catch(() => {
+      clearTimeout(timeout)
+      setLoading(false)
+      setLoadError("Não foi possível carregar os personagens.")
     })
   }
 
@@ -483,7 +495,27 @@ export default function CharactersPage() {
     return (
       <div>
         <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
-        <p className="mt-4 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Carregando...</p>
+        {/* Character card skeletons */}
+        <div className="mt-6 flex flex-col gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-xl overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              <div className="flex items-center gap-4 px-5 py-4">
+                {/* Avatar placeholder */}
+                <div className="w-14 h-14 rounded-full shrink-0" style={{ background: "white", opacity: 0.07 }} />
+                <div className="flex-1 min-w-0">
+                  <div className="h-4 rounded w-32 mb-2" style={{ background: "white", opacity: 0.1 }} />
+                  <div className="h-3 rounded w-24 mb-1.5" style={{ background: "white", opacity: 0.06 }} />
+                  <div className="h-3 rounded w-48" style={{ background: "white", opacity: 0.05 }} />
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="w-20 h-20 rounded-lg" style={{ background: "white", opacity: 0.06 }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -500,6 +532,18 @@ export default function CharactersPage() {
           <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
             {characters.length} personagens — use ↑↓ para reordenar — clique nos campos para editar
           </p>
+          {loadError && (
+            <p
+              className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
+              style={{
+                color: "oklch(0.55 0.18 27)",
+                background: "oklch(0.55 0.18 27 / 0.08)",
+                border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+              }}
+            >
+              {loadError}
+            </p>
+          )}
         </div>
         <NewCharacterForm onCreated={handleCharacterCreated} />
       </div>
@@ -548,6 +592,21 @@ export default function CharactersPage() {
                 </div>
                 <h2 className="font-serif text-xl flex-1" style={{ color: "var(--foreground)" }}>{char.name}</h2>
                 <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>{char.slug}</span>
+                {/* Incomplete badge — shown when any required narrative field is empty */}
+                {(["morphology", "ability", "mark", "origin", "location", "quote", "description"] as const).some(
+                  (field) => !char[field] || (char[field] as string).trim() === ""
+                ) && (
+                  <span
+                    className="font-sans text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide shrink-0"
+                    style={{
+                      color: "oklch(0.65 0.20 25)",
+                      background: "oklch(0.65 0.20 25 / 0.12)",
+                      border: "1px solid oklch(0.65 0.20 25 / 0.3)",
+                    }}
+                  >
+                    Incompleto
+                  </span>
+                )}
                 {/* Delete button */}
                 <button
                   onClick={() => deleteCharacter(char.id, char.name)}

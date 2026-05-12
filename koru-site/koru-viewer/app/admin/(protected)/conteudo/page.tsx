@@ -354,9 +354,16 @@ export default function ConteudoPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setContent({ ...DEFAULTS })
+      setError("O servidor demorou mais de 10s para responder. Usando valores padrão.")
+      setLoading(false)
+    }, 10000)
+
     fetch("/api/site-content")
       .then((r) => r.json())
       .then((data) => {
+        clearTimeout(timeout)
         // Convert array of {key, value} rows into a map
         const map: Record<string, string> = { ...DEFAULTS }
         for (const row of data.content ?? []) {
@@ -368,11 +375,14 @@ export default function ConteudoPage() {
         setLoading(false)
       })
       .catch(() => {
+        clearTimeout(timeout)
         // Fall back to defaults on network error
         setContent({ ...DEFAULTS })
         setError("Não foi possível carregar do banco. Usando valores padrão.")
         setLoading(false)
       })
+
+    return () => clearTimeout(timeout)
   }, [])
 
   async function handleSave(key: string, value: string): Promise<{ ok: boolean }> {
@@ -409,17 +419,43 @@ export default function ConteudoPage() {
   if (loading) {
     return (
       <div>
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
-          Conteúdo do Site
-        </h1>
-        <div className="mt-8 flex items-center gap-3">
-          <div
-            className="w-4 h-4 rounded-full border-2 animate-spin"
-            style={{ borderColor: "var(--border)", borderTopColor: "var(--foreground)" }}
-          />
-          <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
-            Carregando...
-          </p>
+        {/* Page header skeleton */}
+        <div className="mb-8">
+          <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
+            Conteúdo do Site
+          </h1>
+          <div className="mt-1 animate-pulse">
+            <div className="h-3 rounded w-64" style={{ background: "var(--border)" }} />
+          </div>
+        </div>
+
+        {/* Group skeletons — one per GROUPS entry */}
+        <div className="flex flex-col gap-4">
+          {GROUPS.map((group) => (
+            <div key={group.id} className="rounded-xl overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)" }}>
+              {/* Header bar */}
+              <div
+                className="flex items-center gap-3 px-5 py-4"
+                style={{ background: "color-mix(in oklch, var(--surface) 80%, transparent)" }}
+              >
+                <div className="w-2 h-2 rounded-full" style={{ background: group.color, opacity: 0.5 }} />
+                <div className="h-3 rounded w-32" style={{ background: "var(--border)" }} />
+                <div className="h-3 rounded w-12" style={{ background: "var(--border)", opacity: 0.5 }} />
+              </div>
+              {/* Fields placeholder */}
+              <div
+                className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3"
+                style={{ borderTop: "1px solid var(--border)" }}
+              >
+                {group.fields.slice(0, Math.min(group.fields.length, 4)).map((f) => (
+                  <div key={f.key}>
+                    <div className="h-2 rounded w-24 mb-1.5" style={{ background: "var(--border)", opacity: 0.6 }} />
+                    <div className="h-3 rounded w-3/4" style={{ background: "var(--border)" }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     )

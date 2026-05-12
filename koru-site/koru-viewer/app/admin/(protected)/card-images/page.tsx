@@ -236,9 +236,16 @@ export default function CardImagesPage() {
     setTimeout(() => setToast(null), 3500)
   }
 
+  const [loadError, setLoadError] = useState<string | null>(null)
+
   useEffect(() => {
     async function loadAll() {
       setLoading(true)
+      const timeout = setTimeout(() => {
+        setLoading(false)
+        setLoadError("O servidor demorou mais de 10s para responder. As imagens podem não ter carregado.")
+      }, 10000)
+
       try {
         const [imagesRes, siteRes, charsRes] = await Promise.all([
           fetch('/api/card-images'),
@@ -276,7 +283,10 @@ export default function CardImagesPage() {
           if (slugs.length) setCharSlugs(slugs)
         }
       } catch { /* ignore */ }
-      finally { setLoading(false) }
+      finally {
+        clearTimeout(timeout)
+        setLoading(false)
+      }
     }
     loadAll()
   }, [])
@@ -359,8 +369,29 @@ export default function CardImagesPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center px-6 py-4">
-        <p className="text-sm font-sans" style={{ color: 'var(--muted-foreground)' }}>Carregando...</p>
+      <div className="flex-1 flex flex-col min-h-0 px-6 py-4 font-sans overflow-y-auto">
+        {/* Header skeleton */}
+        <div className="mb-8 animate-pulse">
+          <div className="h-8 rounded w-48 mb-2" style={{ background: "var(--border)" }} />
+          <div className="h-3 rounded w-64" style={{ background: "var(--border)", opacity: 0.6 }} />
+        </div>
+        {/* Section skeletons — 3 sections (Bíblia, Livro, Personagens) */}
+        {[12, 13, 7].map((count, si) => (
+          <div key={si} className="mb-10 animate-pulse">
+            <div className="h-5 rounded w-32 mb-4" style={{ background: "var(--border)" }} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+              {Array.from({ length: Math.min(count, 6) }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-1.5 w-full">
+                  <div
+                    className="rounded-xl w-full"
+                    style={{ aspectRatio: "2/3", background: "var(--card)", border: "1px solid var(--border)" }}
+                  />
+                  <div className="h-2.5 rounded w-3/4" style={{ background: "var(--border)", opacity: 0.6 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     )
   }
@@ -378,6 +409,18 @@ export default function CardImagesPage() {
         <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
           Clique em um card para alterar a imagem.
         </p>
+        {loadError && (
+          <p
+            className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
+            style={{
+              color: "oklch(0.55 0.18 27)",
+              background: "oklch(0.55 0.18 27 / 0.08)",
+              border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+            }}
+          >
+            {loadError}
+          </p>
+        )}
       </div>
 
       {/* Toast */}
