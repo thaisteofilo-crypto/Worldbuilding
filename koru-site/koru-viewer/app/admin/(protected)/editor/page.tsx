@@ -983,7 +983,7 @@ export default function EditorPage() {
                         )}
                         {renamingDoc?.path !== doc.path && (
                           <div
-                            className="flex items-center gap-1 shrink-0 w-[52px] justify-end overflow-hidden"
+                            className="flex items-center gap-1 shrink-0 w-[58px] overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <div data-row-status className="shrink-0">
