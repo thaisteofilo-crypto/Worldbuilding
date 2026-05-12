@@ -103,14 +103,13 @@ function SectionBanner({ url }: { url?: string }) {
 }
 
 function FullSection({
-  label,
   title,
   description,
   bannerUrl,
   videoUrl,
   children,
 }: {
-  label: string
+  label?: string
   title: string
   description?: string
   bannerUrl?: string
@@ -131,17 +130,8 @@ function FullSection({
         <div className="absolute inset-0 bg-background" />
       )}
       <div className="relative z-10">
-        <p
-          className="text-xs uppercase tracking-[0.25em] mb-3 font-sans"
-          style={{
-            color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
-            textShadow: hasBanner ? "0 1px 4px oklch(0 0 0 / 0.5)" : undefined,
-          }}
-        >
-          {label}
-        </p>
         <h2
-          className="font-serif text-3xl md:text-5xl leading-none mb-4 md:mb-5"
+          className="font-serif text-5xl md:text-7xl leading-[1.05] tracking-tight mb-4 md:mb-6"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
             color: hasBanner ? "white" : "var(--foreground)",
