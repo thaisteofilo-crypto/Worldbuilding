@@ -9,80 +9,47 @@ const ENV_FILE = path.resolve(process.cwd(), '.env.local')
 
 // Cache the .env.local presence check. POST invalidates it on save.
 const ENV_CHECK_TTL = 30 * 1000
-let envCheckCache: { anthropic: boolean; gemma: boolean; timestamp: number } | null = null
+let envCheckCache: { fileHasKey: boolean; timestamp: number } | null = null
 
-const GEMMA_ENV_KEYS = ['GOOGLE_API_KEY', 'GEMINI_API_KEY', 'GEMMA_API_KEY']
-
-function checkEnvFileForKeys(): { anthropic: boolean; gemma: boolean } {
+function checkEnvFileForKey(): boolean {
   const now = Date.now()
   if (envCheckCache && now - envCheckCache.timestamp < ENV_CHECK_TTL) {
-    return { anthropic: envCheckCache.anthropic, gemma: envCheckCache.gemma }
+    return envCheckCache.fileHasKey
   }
-  let anthropic = false
-  let gemma = false
+  let fileHasKey = false
   if (fs.existsSync(ENV_FILE)) {
     const content = fs.readFileSync(ENV_FILE, 'utf-8')
-    anthropic = /^ANTHROPIC_API_KEY=/m.test(content)
-    gemma = GEMMA_ENV_KEYS.some((k) => new RegExp(`^${k}=`, 'm').test(content))
+    fileHasKey = content.includes('ANTHROPIC_API_KEY=')
   }
-  envCheckCache = { anthropic, gemma, timestamp: now }
-  return { anthropic, gemma }
-}
-
-function envHasGemma(): boolean {
-  return GEMMA_ENV_KEYS.some((k) => !!process.env[k])
+  envCheckCache = { fileHasKey, timestamp: now }
+  return fileHasKey
 }
 
 export async function GET() {
   try {
-    const file = checkEnvFileForKeys()
-    const anthropic = !!process.env.ANTHROPIC_API_KEY || file.anthropic
-    const gemma = envHasGemma() || file.gemma
+    const hasKey = !!process.env.ANTHROPIC_API_KEY
+    const fileHasKey = checkEnvFileForKey()
     return NextResponse.json(
-      {
-        // legacy field, mantido para compat
-        configured: anthropic,
-        anthropic,
-        gemma,
-      },
+      { configured: hasKey || fileHasKey },
       { headers: { 'Cache-Control': 'private, max-age=15' } },
     )
   } catch {
-    return NextResponse.json({ configured: false, anthropic: false, gemma: false })
+    return NextResponse.json({ configured: false })
   }
-}
-
-interface SaveBody {
-  apiKey?: string
-  provider?: 'anthropic' | 'gemma'
 }
 
 export async function POST(request: Request) {
   const blocked = blockInProduction()
   if (blocked) return blocked
   try {
-    const body = (await request.json()) as SaveBody
-    const apiKey = body.apiKey
-    const provider = body.provider ?? 'anthropic'
+    const { apiKey } = await request.json()
 
     if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json({ error: 'API key is required' }, { status: 400 })
     }
 
-    let envKeyName: string
-    if (provider === 'anthropic') {
-      if (!apiKey.startsWith('sk-ant-')) {
-        return NextResponse.json({ error: 'Chave Anthropic inválida. Deve começar com sk-ant-.' }, { status: 400 })
-      }
-      envKeyName = 'ANTHROPIC_API_KEY'
-    } else if (provider === 'gemma') {
-      // Google AI Studio keys começam com AIza e têm ~39 chars.
-      if (!/^AIza[0-9A-Za-z_-]{20,}$/.test(apiKey)) {
-        return NextResponse.json({ error: 'Chave Gemma/Google inválida. Pegue em aistudio.google.com/apikey (formato AIza...).' }, { status: 400 })
-      }
-      envKeyName = 'GOOGLE_API_KEY'
-    } else {
-      return NextResponse.json({ error: 'provider inválido (use anthropic ou gemma).' }, { status: 400 })
+    if (!apiKey.startsWith('sk-ant-')) {
+      return NextResponse.json({ error: 'Invalid API key format. Must start with sk-ant-' }, { status: 400 })
     }
 
     let existingContent = ''
@@ -90,23 +57,20 @@ export async function POST(request: Request) {
       existingContent = fs.readFileSync(ENV_FILE, 'utf-8')
     }
 
-    const keyLine = `${envKeyName}=${apiKey}`
-    const pattern = new RegExp(`^${envKeyName}=.*$`, 'm')
-    if (pattern.test(existingContent)) {
-      existingContent = existingContent.replace(pattern, keyLine)
+    // Replace existing key or append
+    const keyLine = `ANTHROPIC_API_KEY=${apiKey}`
+    if (existingContent.includes('ANTHROPIC_API_KEY=')) {
+      existingContent = existingContent.replace(/ANTHROPIC_API_KEY=.*/g, keyLine)
     } else {
       existingContent = existingContent.trim()
       existingContent = existingContent ? `${existingContent}\n${keyLine}\n` : `${keyLine}\n`
     }
 
     fs.writeFileSync(ENV_FILE, existingContent, 'utf-8')
-    envCheckCache = null
+    envCheckCache = null // invalidate cached presence check
 
-    return NextResponse.json({
-      success: true,
-      message: `Chave ${provider} salva. Reinicie o servidor para ativar.`,
-    })
+    return NextResponse.json({ success: true, message: 'API key saved. Restart the server for changes to take effect.' })
   } catch {
-    return NextResponse.json({ error: 'Falha ao salvar a chave.' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to save API key' }, { status: 500 })
   }
 }
