@@ -24,9 +24,11 @@ interface Analytics {
   contosWritten: number
   totalContos: number
   bibliaComplete: number
+  totalBibliaItems: number
   livroChapters: number
   totalDocuments: number
   totalCharacters: number
+  totalPersonagens: number
   totalBanners: number
   totalGallery: number
   statusCounts?: Record<DocumentStatus, number>
@@ -101,7 +103,7 @@ export default function AdminDashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard label="Palavras" value={formatNumber(analytics.totalWords)} sub="no universo" icon={<WordsIcon />} color="var(--accent)" href="/admin/editor" />
-        <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.bibliaComplete} biblia · ${analytics.livroChapters} livro`} icon={<DocsIcon />} color="var(--gold)" href="/admin/editor" />
+        <StatCard label="Documentos" value={analytics.totalDocuments.toString()} sub={`${analytics.totalBibliaItems ?? analytics.bibliaComplete} bíblia · ${analytics.livroChapters} livro · ${analytics.totalPersonagens ?? analytics.totalCharacters} person. · ${analytics.totalContos} contos`} icon={<DocsIcon />} color="var(--gold)" href="/admin/editor" />
         <StatCard label="Tarefas" value={`${completionPercent}%`} sub={`${taskStats.done}/${taskStats.total} concluidas`} icon={<TasksIcon />} color="var(--blue-cold)" href="/admin/tasks" />
         <StatCard label="Galeria de Cenas" value={analytics.totalGallery.toString()} sub="cenas cadastradas" icon={<GalleryIcon />} color="oklch(0.55 0.12 150)" href="/admin/gallery" />
       </div>
