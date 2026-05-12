@@ -23,7 +23,7 @@ const ITEM_LABELS: Record<string, string> = {
   "parte-07": "Cultura",
   "parte-08": "Linha do Tempo",
   // Livro
-  "01": "Capítulo 1",
+  "01": "I, O que ela é",
   "02": "Capítulo 2",
   "03": "Capítulo 3",
   "04": "Capítulo 4",

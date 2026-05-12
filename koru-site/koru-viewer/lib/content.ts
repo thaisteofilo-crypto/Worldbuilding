@@ -220,8 +220,13 @@ export function getLivroItems(): { slug: string; title: string }[] {
     const filePath = path.join(REPO_ROOT, "livro", filename)
     try {
       const raw = fs.readFileSync(filePath, "utf-8")
+      // Frontmatter title takes priority
+      const { data, content } = matter(raw)
+      if (typeof data.title === "string" && data.title.trim()) {
+        return { slug: capitulo, title: data.title.trim() }
+      }
       // Match "# TITLE" or bare first line like "I, O QUE ELA É"
-      const titleMatch = raw.match(/^#\s+(.+)$/m) || raw.match(/^([IVX]+,.+)$/m)
+      const titleMatch = content.match(/^#\s+(.+)$/m) || content.match(/^([IVX]+,.+)$/m)
       if (titleMatch) {
         const rawTitle = titleMatch[1].trim()
         const title = rawTitle.replace(/^([IVX]+,?\s*)(.+)$/, (_, prefix, rest) =>

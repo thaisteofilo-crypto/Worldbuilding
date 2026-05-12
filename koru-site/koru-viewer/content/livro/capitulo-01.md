@@ -1,3 +1,7 @@
+---
+title: "I, O que ela é"
+---
+
 O círculo não tem nome. Nunca precisou.
 
 Está lá desde que Temiku tem memória de olhar para baixo, um ponto no solo do Rimba Ngozi onde o Bomi Veh não é lilás. Nunca foi. Enquanto o chão ao redor pulsa em frequências cor-de-ameixa, suaves, vivas, processando memórias que ninguém mais lembra de ter deixado, aquele círculo emite outra coisa. Azul-fria. Esbranquiçada. Estranha entre os lilases que cobrem tudo o mais na floresta da bênção.
