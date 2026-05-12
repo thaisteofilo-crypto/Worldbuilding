@@ -47,7 +47,7 @@ const DEFAULT_LIVRO_DOCS: DocEntry[] = [
   { label: 'Capítulo X — A noite antes', path: 'livro/capitulo-10.md' },
   { label: 'Capítulo XI — O que ela paga', path: 'livro/capitulo-11.md' },
   { label: 'Capítulo XII — O retorno', path: 'livro/capitulo-12.md' },
-  { label: 'Epílogo — Depois', path: 'livro/epilogo.md' },
+  { label: 'Epílogo', path: 'livro/epilogo.md' },
 ]
 
 function pathFilename(path: string): string {
