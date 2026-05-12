@@ -4,6 +4,10 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AIAnalysisPanel } from "@/components/admin/ai-analysis-panel"
 import { StatusProgressCard } from "@/components/admin/status-progress-card"
+import { WordDistribution } from "@/components/admin/word-distribution"
+import { CharacterMatrix } from "@/components/admin/character-matrix"
+import { TasksBreakdown } from "@/components/admin/tasks-breakdown"
+import { StatusList } from "@/components/admin/status-list"
 import { DocumentStatus } from "@/lib/document-status"
 
 /* ─── Analytics types ─── */
@@ -12,7 +16,12 @@ interface Analytics {
   totalWords: number
   sectionWords: Record<string, number>
   wordCounts: Record<string, number>
-  chapters: { slug: string; title: string; words: number }[]
+  chapters: { slug: string; title: string; words: number; tensionScore: number }[]
+  charMentions?: Record<string, Record<string, number>>
+  contoWordCounts?: Record<string, number>
+  bibliaWordCounts?: Record<string, number>
+  mainBibleWords?: number
+  statusByDoc?: Record<string, string>
   taskStats: {
     total: number
     todo: number
@@ -118,6 +127,40 @@ export default function AdminDashboardPage() {
           />
         </div>
       )}
+
+      {/* Word Distribution */}
+      {analytics.contoWordCounts && analytics.bibliaWordCounts && analytics.mainBibleWords !== undefined && (
+        <div className="mt-8">
+          <WordDistribution
+            chapters={analytics.chapters as Array<{ slug: string; title: string; words: number; tensionScore: number }>}
+            contoWordCounts={analytics.contoWordCounts}
+            bibliaWordCounts={analytics.bibliaWordCounts}
+            mainBibleWords={analytics.mainBibleWords}
+            sectionWords={analytics.sectionWords as { biblia: number; livro: number; contos: number }}
+          />
+        </div>
+      )}
+
+      {/* Character × Chapter Matrix */}
+      {analytics.charMentions && analytics.chapters.length > 0 && (
+        <div className="mt-8">
+          <CharacterMatrix
+            charMentions={analytics.charMentions}
+            chapters={analytics.chapters}
+          />
+        </div>
+      )}
+
+      {/* Tasks + Status List */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TasksBreakdown taskStats={analytics.taskStats} />
+        {analytics.statusByDoc && analytics.statusCounts && (
+          <StatusList
+            statusByDoc={analytics.statusByDoc}
+            counts={analytics.statusCounts as Record<string, number>}
+          />
+        )}
+      </div>
 
       {/* AI Analysis Panel */}
       <div className="mt-8">

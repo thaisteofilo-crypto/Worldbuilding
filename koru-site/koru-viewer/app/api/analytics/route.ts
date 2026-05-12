@@ -214,5 +214,9 @@ export async function GET() {
     statusCounts,
     statusTotalTracked,
     statusWithoutStatus,
+    statusByDoc,
+    contoWordCounts,
+    bibliaWordCounts,
+    mainBibleWords,
   })
 }
