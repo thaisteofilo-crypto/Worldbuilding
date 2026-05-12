@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 const REQUIRED_BUCKETS = ["characters", "card-images", "gallery"]
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  // Mesma verificação que o middleware faz em /admin: exige cookie koru-admin
+  // batendo com ADMIN_TOKEN. Sem auth, 401.
+  const adminToken = req.cookies.get("koru-admin")?.value
+  const adminExpected = process.env.ADMIN_TOKEN
+  if (!adminExpected || adminToken !== adminExpected) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 })
+  }
+
   const admin = createAdminClient()
 
   const { data: existing } = await admin.storage.listBuckets()

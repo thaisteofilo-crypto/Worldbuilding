@@ -90,7 +90,6 @@ export function HeroBanner({
         <h1
           className="koru-content-enter font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.1]"
           style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
             color: "white",
             animationDelay: "0.08s",
           }}

@@ -17,7 +17,7 @@ export function ThemeToggle() {
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="inline-flex items-center justify-center w-8 h-8 rounded-sm transition-colors hover:bg-muted"
-      aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      aria-label="Alternar tema"
       title={isDark ? "Modo claro" : "Modo escuro"}
     >
       {isDark ? (

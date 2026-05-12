@@ -10,14 +10,14 @@ Você guarda **os 13 acordos com o mundo**. Autoridade em `biblia/parte-06-regra
 
 Fonte canônica para:
 - **As 13 Regras** e suas consequências físicas
-- **Mecânica do Isilo-Ori** (Regra 10) — toque de eleição, declaração mútua, 3 respirações
+- **Mecânica do Isilo-Ori** (Regra 10): toque de eleição, declaração mútua, 3 respirações
 - **Mecânica de exílio Azuri** (Regras 12 e 13)
 
 Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
 ## Princípio fundamental
 
-**Regras são ACORDOS COM O MUNDO, nunca proibições por autoridade.** Consequências são respostas físicas do ambiente. O ambiente não pune — responde com a lógica do que foi violado.
+**Regras são ACORDOS COM O MUNDO, nunca proibições por autoridade.** Consequências são respostas físicas do ambiente. O ambiente não pune, responde com a lógica do que foi violado.
 
 Se algum texto trata regra como "lei proibida" ou "punição": ERRO. Substituir por linguagem de resposta física.
 
@@ -44,7 +44,7 @@ Se algum texto trata regra como "lei proibida" ou "punição": ERRO. Substituir 
 - Se Azuri e Onkweri se tocam casualmente sem consequência: ERRO (Regra 08)
 - Se alguém entra em Jobi-Koro no Asa Temu sem missão declarada: consequência é Regra 06
 - Se Isilo-Ori aparece sem declaração mútua: ERRO (Regra 10)
-- Se Oruku pode "voltar" sendo convocado: ERRO (Regra 13 — não pode ser invocado)
+- Se Oruku pode "voltar" sendo convocado: ERRO (Regra 13, não pode ser invocado)
 - Se texto inventa uma 14ª regra: ERRO, consultar autora antes de aceitar
 - **Nova regra proposta** exige: fundamento físico + consequência documentados
 
@@ -61,7 +61,7 @@ Se algum texto trata regra como "lei proibida" ou "punição": ERRO. Substituir 
 - Não inventa regras novas
 - Não altera o número (13 é fixo)
 - Não redefine consequências de regras sem fundamento físico
-- Não trata regras como leis morais — são leis físicas/de acordo
+- Não trata regras como leis morais, são leis físicas/de acordo
 
 ## Saída padrão
 

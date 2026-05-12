@@ -299,7 +299,7 @@ export function KoruChat() {
           {/* Header */}
           <div
             className={cn(
-              "flex items-center justify-between border-b border-[var(--border)]",
+              "flex items-center justify-between",
               "px-3 py-3 gap-2"
             )}
           >
@@ -428,6 +428,19 @@ export function KoruChat() {
 
           {view === "chat" ? (
             <>
+              {/* Aviso beta */}
+              <div
+                className={cn(
+                  "px-4 pt-2 pb-1",
+                  "text-[10px] font-sans text-[var(--muted-foreground)]",
+                  "text-center"
+                )}
+                role="note"
+              >
+                <strong className="font-medium">Beta:</strong>{" "}
+                Modelo Gemma, pode apresentar erros e lentidão.
+              </div>
+
               {/* Mensagens */}
               <div
                 ref={scrollRef}
@@ -461,12 +474,14 @@ export function KoruChat() {
               </div>
 
               {/* Input */}
-              <div className="border-t border-[var(--border)] p-3 space-y-2">
+              <div className="p-3 space-y-2">
                 <div
                   className={cn(
-                    "flex items-center gap-2 rounded-xl border border-[var(--border)]",
-                    "bg-[var(--background)] pl-3 pr-2 py-1",
-                    "focus-within:border-[var(--accent)] transition-colors"
+                    "flex items-center gap-2 rounded-2xl",
+                    "bg-[color-mix(in_oklch,var(--foreground)_10%,transparent)] pl-4 pr-2 py-2",
+                    "ring-1 ring-[color-mix(in_oklch,var(--foreground)_8%,transparent)]",
+                    "focus-within:ring-2 focus-within:ring-[color-mix(in_oklch,var(--accent)_60%,transparent)]",
+                    "transition-all"
                   )}
                 >
                   <input
@@ -510,9 +525,6 @@ export function KoruChat() {
                     </svg>
                   </button>
                 </div>
-                <p className="text-center text-[10px] leading-snug font-sans text-[var(--muted-foreground)] opacity-80">
-                  Suas perguntas aparecem em Perguntas ao Mundo, anônimas.
-                </p>
               </div>
             </>
           ) : (

@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server"
+import type { FileObject } from "@supabase/storage-js"
 import { readMarkdown, livroChapters, contoSlugs, bibliaParts } from "@/lib/content"
 import { createAdminClient } from "@/lib/supabase/admin"
+import type { Task } from "@/lib/database.types"
 import { DocumentStatus, isValidStatus, parseStatusKey } from "@/lib/document-status"
 import { readLocalState } from "@/lib/local-state"
+
+type TaskRow = Pick<Task, "status" | "priority" | "category">
+type ListRow = Pick<FileObject, "name">
+
+type AnalyticsBundle = [
+  { data: TaskRow[] | null },
+  { data: ListRow[] | null },
+  { data: ListRow[] | null },
+  { data: Array<{ key: string; value: string }> | null },
+]
 
 export async function GET() {
   // ─── Read chapters from filesystem ───
@@ -119,17 +131,18 @@ export async function GET() {
 
   try {
     const admin = createAdminClient()
-    const [tasksResult, bannersResult, galleryResult, siteContentResult] = await supabaseTimeout(
+    const fallback: AnalyticsBundle = [{ data: null }, { data: null }, { data: null }, { data: null }]
+    const [tasksResult, bannersResult, galleryResult, siteContentResult] = await supabaseTimeout<AnalyticsBundle>(
       Promise.all([
-        admin.from("tasks").select("*"),
+        admin.from("tasks").select("status, priority, category"),
         admin.storage.from("banners").list(""),
         admin.storage.from("gallery").list(""),
         admin.from("site_content").select("key, value"),
-      ]),
-      [{ data: null }, { data: null }, { data: null }, { data: null }] as any
+      ]) as Promise<AnalyticsBundle>,
+      fallback
     )
 
-    const siteRows = (siteContentResult?.data ?? []) as Array<{ key: string; value: string }>
+    const siteRows = siteContentResult?.data ?? []
     for (const row of siteRows) {
       const path = parseStatusKey(row.key)
       if (!path) continue
@@ -143,18 +156,18 @@ export async function GET() {
     if (tasks) {
       taskStats = {
         total: tasks.length,
-        todo: tasks.filter((t: any) => t.status === "todo").length,
-        inProgress: tasks.filter((t: any) => t.status === "in_progress").length,
-        done: tasks.filter((t: any) => t.status === "done").length,
-        highPriority: tasks.filter((t: any) => t.priority === "high" && t.status !== "done").length,
+        todo: tasks.filter((t) => t.status === "todo").length,
+        inProgress: tasks.filter((t) => t.status === "in_progress").length,
+        done: tasks.filter((t) => t.status === "done").length,
+        highPriority: tasks.filter((t) => t.priority === "high" && t.status !== "done").length,
         byCategory: {} as Record<string, number>,
       }
       for (const t of tasks) {
-        taskStats.byCategory[(t as any).category] = (taskStats.byCategory[(t as any).category] ?? 0) + 1
+        taskStats.byCategory[t.category] = (taskStats.byCategory[t.category] ?? 0) + 1
       }
     }
-    totalBanners = (bannersResult.data ?? []).filter((f: any) => !f.name.startsWith(".")).length
-    totalGallery = (galleryResult.data ?? []).filter((f: any) => !f.name.startsWith(".")).length
+    totalBanners = (bannersResult.data ?? []).filter((f) => !f.name.startsWith(".")).length
+    totalGallery = (galleryResult.data ?? []).filter((f) => !f.name.startsWith(".")).length
   } catch {
     // Supabase unavailable — continue with filesystem data only
   }

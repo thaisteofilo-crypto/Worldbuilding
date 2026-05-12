@@ -121,7 +121,7 @@ export default function BannersPage() {
           Galeria de Cenas
         </h1>
         <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
-          Banners do mundo de Koru — cada secao da home recebe imagem e video
+          Banners do mundo de Koru: cada secao da home recebe imagem e video
         </p>
       </div>
 

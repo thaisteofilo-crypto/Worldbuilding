@@ -452,8 +452,8 @@ const MODE_PROMPTS: Record<string, string> = {
   feedback: 'Dê feedback sobre o estilo literário deste texto, avaliando a voz da autora de Korú.',
   consistency: 'Verifique a consistência deste texto com as regras e a bíblia do mundo de Korú.',
   report: 'Gere um relatório completo de escrita sobre este documento.',
-  expand: 'Expanda o trecho selecionado (ou o último parágrafo) mantendo a voz da autora. Adicione detalhe sensorial — o que se vê, ouve, sente no corpo. Retorne APENAS o texto expandido, sem explicações.',
-  describe: 'Reescreva o trecho selecionado (ou o último parágrafo) focando em descrição sensorial — texturas, luz, som, peso corporal. Retorne APENAS o texto reescrito, sem explicações.',
+  expand: 'Expanda o trecho selecionado (ou o último parágrafo) mantendo a voz da autora. Adicione detalhe sensorial: o que se vê, ouve, sente no corpo. Retorne APENAS o texto expandido, sem explicações.',
+  describe: 'Reescreva o trecho selecionado (ou o último parágrafo) focando em descrição sensorial: texturas, luz, som, peso corporal. Retorne APENAS o texto reescrito, sem explicações.',
   continue: 'Continue escrevendo as próximas 200 palavras no tom e ritmo do texto atual. Retorne APENAS o texto novo, sem explicações.',
 }
 

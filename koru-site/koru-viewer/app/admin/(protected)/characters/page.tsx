@@ -88,7 +88,7 @@ function ViewImageSlot({
             <ImagePositioner
               imageKey={`char-${character.slug}-${view.key}`}
               src={url}
-              alt={`${character.name} — ${view.label}`}
+              alt={`${character.name}: ${view.label}`}
               aspectRatio="16/9"
             />
           ) : (
@@ -97,7 +97,7 @@ function ViewImageSlot({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={previewUrl!}
-                alt={`preview — ${view.label}`}
+                alt={`preview: ${view.label}`}
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
             </div>
@@ -498,7 +498,7 @@ export default function CharactersPage() {
         <div>
           <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
           <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-            {characters.length} personagens — use ↑↓ para reordenar — clique nos campos para editar
+            {characters.length} personagens, use ↑↓ para reordenar, clique nos campos para editar
           </p>
         </div>
         <NewCharacterForm onCreated={handleCharacterCreated} />
@@ -605,7 +605,7 @@ export default function CharactersPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
                 <EditableField label="Morfologia" value={char.morphology ?? ""} onSave={(v) => saveField(char.id, "morphology", v)} multiline />
                 <EditableField label="Habilidade" value={char.ability ?? ""} onSave={(v) => saveField(char.id, "ability", v)} multiline />
-                <EditableField label="Marca (Isilo-Ori)" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
+                <EditableField label="Sinal" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
               </div>
 
               {/* Character details — world */}

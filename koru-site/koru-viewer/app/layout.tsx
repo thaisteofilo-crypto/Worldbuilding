@@ -8,7 +8,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { KoruChat } from "@/components/koru/koru-chat"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",

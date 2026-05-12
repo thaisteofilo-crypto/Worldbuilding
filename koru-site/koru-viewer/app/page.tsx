@@ -3,8 +3,7 @@ export const dynamic = "force-dynamic"
 import Link from "next/link"
 import Image from "next/image"
 import { getCharactersForViewer } from "@/lib/characters-db"
-import { ThemeToggle } from "@/components/koru/theme-toggle"
-import { CardCarousel } from "@/components/koru/card-carousel"
+import { CardCarousel, CAROUSEL_IMAGE_SIZES } from "@/components/koru/card-carousel"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
@@ -76,79 +75,82 @@ function LockedCardOverlay({ releaseAt, kicker }: LockedCardOpts) {
   )
 }
 
-function SectionBanner({ url }: { url?: string }) {
-  if (!url) return null
-
-  const isVideo = url.includes("hero-video") || url.endsWith(".mp4") || url.endsWith(".webm")
-
-  if (isVideo) {
-    return (
-      <>
-        <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          src={url}
-        />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 50%, oklch(0 0 0 / 0.15) 100%)" }} />
-      </>
-    )
-  }
-
-  return (
-    <>
-      <Image src={url} alt="" fill className="object-cover" priority={false} />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 50%, oklch(0 0 0 / 0.15) 100%)" }} />
-    </>
-  )
-}
-
-function FullSection({
-  label,
+function JourneyStage({
   title,
-  bannerUrl,
-  videoUrl,
+  description,
+  startHref,
+  startLabel = "Começar",
+  bannerImage,
+  bannerVideo,
   children,
 }: {
-  label: string
+  number?: string
   title: string
-  bannerUrl?: string
-  videoUrl?: string
+  description: string
+  startHref: string
+  startLabel?: string
+  isLast?: boolean
+  bannerImage?: string
+  bannerVideo?: string
   children: React.ReactNode
 }) {
-  const hasBanner = !!(videoUrl || bannerUrl)
+  const hasBanner = !!(bannerImage || bannerVideo)
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden py-10 md:py-16 px-4 md:px-16">
-      {videoUrl ? (
-        <>
-          <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.7) 0%, oklch(0 0 0 / 0.3) 50%, oklch(0 0 0 / 0.15) 100%)" }} />
-        </>
-      ) : hasBanner ? (
-        <SectionBanner url={bannerUrl!} />
-      ) : (
-        <div className="absolute inset-0 bg-background" />
-      )}
-      <div className="relative z-10">
-        <p
-          className="text-xs uppercase tracking-[0.25em] mb-3 font-sans"
+    <section className="relative px-4 md:px-16 py-14 md:py-20">
+      {/* Subtle banner background, blurred, low-opacity */}
+      {hasBanner && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-0 hidden md:block"
           style={{
-            color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
-            textShadow: hasBanner ? "0 1px 4px oklch(0 0 0 / 0.5)" : undefined,
+            width: "22rem",
+            height: "22rem",
+            opacity: 0.22,
+            filter: "blur(14px)",
+            maskImage: "radial-gradient(circle at center, oklch(0 0 0) 0%, oklch(0 0 0 / 0.6) 45%, transparent 75%)",
+            WebkitMaskImage: "radial-gradient(circle at center, oklch(0 0 0) 0%, oklch(0 0 0 / 0.6) 45%, transparent 75%)",
+            zIndex: 0,
           }}
         >
-          {label}
-        </p>
+          {bannerVideo ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover rounded-full"
+              src={bannerVideo}
+              poster={bannerImage}
+            />
+          ) : bannerImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={bannerImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover rounded-full"
+            />
+          ) : null}
+        </div>
+      )}
+
+      <div className="relative min-w-0" style={{ zIndex: 1 }}>
         <h2
-          className="font-serif text-3xl md:text-5xl leading-none mb-6 md:mb-8"
-          style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
-            color: hasBanner ? "white" : "var(--foreground)",
-            textShadow: hasBanner ? "0 2px 12px oklch(0 0 0 / 0.4)" : undefined,
-          }}
+          className="font-serif text-5xl md:text-7xl leading-[1.05] mb-5 tracking-tight"
+          style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--foreground)" }}
         >
           {title}
         </h2>
-        {children}
+        <p className="text-base text-muted-foreground max-w-2xl mb-8 leading-relaxed font-sans">
+          {description}
+        </p>
+        <div className="mb-6">{children}</div>
+        <Link
+          href={startHref}
+          className="inline-flex items-center gap-2 text-sm font-sans text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {startLabel}
+          <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </section>
   )
@@ -228,6 +230,22 @@ export default async function HomePage() {
 
   const hasHero = !!(banners.hero || banners["hero-video"])
 
+  // Journey CTA targets — pick the first publicly available entry per section, with sensible fallbacks.
+  const firstBibliaPath = finalBibliaDocs.find((d) => visible(d.path)) ?? finalBibliaDocs[0]
+  const firstBibliaSlug = firstBibliaPath ? pathFilename(firstBibliaPath.path) : "parte-00-manifesto"
+  const bibliaHref = `/biblia/${firstBibliaSlug}`
+
+  const firstContoKey = characterOrder.find(
+    (k) => contosAvailable.has(k) && !excluded.has(`contos/conto-${k}.md`) && visible(`contos/conto-${k}.md`),
+  )
+  const contosHref = firstContoKey ? `/contos/${firstContoKey}` : "/contos/amara"
+
+  const firstLivroDoc = finalLivroDocs.find((d) => visible(d.path)) ?? finalLivroDocs[0]
+  const firstLivroSlug = firstLivroDoc ? livroUrlSlug(pathFilename(firstLivroDoc.path)) : "01"
+  const livroHref = `/livro/${firstLivroSlug}`
+
+  const personagensHref = "/personagens"
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="fixed top-4 right-6 z-50 flex items-center gap-1">
@@ -242,7 +260,6 @@ export default async function HomePage() {
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
         </Link>
-        <ThemeToggle />
       </div>
 
       {/* Hero */}
@@ -273,7 +290,7 @@ export default async function HomePage() {
             Korú
           </h1>
           <p
-            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans"
+            className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans mb-8"
             style={{
               color: hasHero ? "oklch(1 0 0 / 0.9)" : "var(--muted-foreground)",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
@@ -282,11 +299,37 @@ export default async function HomePage() {
           >
             {get(siteContent, "hero.tagline")}
           </p>
+          <Link
+            href={bibliaHref}
+            className="koru-content-enter koru-hero-cta inline-flex items-center justify-center rounded-full px-6 py-2.5 font-sans text-sm transition-colors"
+            style={{
+              animationDelay: "0.7s",
+              color: hasHero ? "white" : "var(--foreground)",
+              background: hasHero
+                ? "oklch(1 0 0 / 0.08)"
+                : "color-mix(in oklch, var(--foreground) 6%, transparent)",
+              border: hasHero
+                ? "1px solid oklch(1 0 0 / 0.18)"
+                : "1px solid var(--border)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+          >
+            Começar pela bíblia
+          </Link>
         </div>
       </section>
 
-      {/* Bíblia */}
-      <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
+      {/* Jornada vertical — 4 etapas numeradas */}
+      <JourneyStage
+        number="01"
+        title={get(siteContent, "section.biblia.title", "O arquivo vivo")}
+        description={get(siteContent, "section.biblia.description", "A bíblia é a fundação. Aqui o mundo se explica por dentro: a física da memória, os ciclos de luz, as criaturas que habitam o Akwu. Comece por aqui se quiser saber em que terreno está pisando.")}
+        startHref={bibliaHref}
+        startLabel="Começar pela bíblia"
+        bannerImage={banners.biblia}
+        bannerVideo={banners["biblia-video"]}
+      >
         <CardCarousel>
           {finalBibliaDocs.map((doc) => {
             const filename = pathFilename(doc.path)
@@ -297,21 +340,26 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[cardKey]} alt={title} fill sizes={CAROUSEL_IMAGE_SIZES} loading="lazy" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                  {doc.label.includes(" · ") ? (
-                    <>
-                      <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
-                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
-                    </>
-                  ) : (
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
-                  )}
+                  {(() => {
+                    // Prefer siteContent title when it carries the kicker · title format,
+                    // otherwise fall back to the source doc.label which usually has it.
+                    const displayLabel = title.includes(" · ") ? title : doc.label.includes(" · ") ? doc.label : title
+                    return displayLabel.includes(" · ") ? (
+                      <>
+                        <p className="text-xs md:text-sm font-sans text-white/50">{displayLabel.split(" · ")[0]}</p>
+                        <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{displayLabel.split(" · ")[1]}</p>
+                      </>
+                    ) : (
+                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{displayLabel}</p>
+                    )
+                  })()}
                 </div>
               </div>
             )
@@ -329,10 +377,17 @@ export default async function HomePage() {
             )
           })}
         </CardCarousel>
-      </FullSection>
+      </JourneyStage>
 
-      {/* Personagens */}
-      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
+      <JourneyStage
+        number="02"
+        title={get(siteContent, "section.personagens.title", "Os seres do Akwu")}
+        description={get(siteContent, "section.personagens.description", "Os personagens são as ressonâncias do mundo. Amara, Oruku, Temiku, Beku: cada um carrega uma frequência, uma falha, um eco. Conheça-os antes de entrar nas histórias.")}
+        startHref={personagensHref}
+        startLabel="Conhecer os personagens"
+        bannerImage={banners.personagens}
+        bannerVideo={banners["personagens-video"]}
+      >
         <CardCarousel>
           {characterOrder.map((key) => {
             const char = characters[key]
@@ -342,7 +397,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[`char-${key}`] ? (
-                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill sizes={CAROUSEL_IMAGE_SIZES} loading="lazy" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -368,10 +423,17 @@ export default async function HomePage() {
             )
           })}
         </CardCarousel>
-      </FullSection>
+      </JourneyStage>
 
-      {/* Contos */}
-      <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
+      <JourneyStage
+        number="03"
+        title={get(siteContent, "section.contos.title", "Vozes do Akwu")}
+        description={get(siteContent, "section.contos.description", "Cada conto é um corte rente: uma cena, uma decisão, uma perda. Pequenos textos literários que mostram o mundo por dentro de quem o vive. Comece por Amara e siga na ordem, ou escolha o nome que te chamar.")}
+        startHref={contosHref}
+        startLabel="Ler os contos"
+        bannerImage={banners.contos}
+        bannerVideo={banners["contos-video"]}
+      >
         <CardCarousel>
           {characterOrder.filter((key) => contosAvailable.has(key) && !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
@@ -381,7 +443,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[`conto-${key}`] ? (
-                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill sizes={CAROUSEL_IMAGE_SIZES} loading="lazy" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -407,10 +469,18 @@ export default async function HomePage() {
             )
           })}
         </CardCarousel>
-      </FullSection>
+      </JourneyStage>
 
-      {/* Livro */}
-      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
+      <JourneyStage
+        number="04"
+        title={get(siteContent, "section.livro.title", "O Peso da Luz")}
+        description={get(siteContent, "section.livro.description", "A história de Temiku, em capítulos. O fio longo do mundo, do início ao fim, sem atalho. Leia depois dos contos, ou antes, se preferir o caminho largo primeiro.")}
+        startHref={livroHref}
+        startLabel="Mergulhar no livro"
+        isLast
+        bannerImage={banners.livro}
+        bannerVideo={banners["livro-video"]}
+      >
         <CardCarousel>
           {finalLivroDocs.map((doc) => {
             const filename = pathFilename(doc.path)
@@ -422,7 +492,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
                 {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[cardKey]} alt={title} fill sizes={CAROUSEL_IMAGE_SIZES} loading="lazy" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -448,7 +518,14 @@ export default async function HomePage() {
             )
           })}
         </CardCarousel>
-      </FullSection>
+      </JourneyStage>
+
+      {/* Nota de fechamento da jornada */}
+      <section className="px-4 md:px-16 py-12 md:py-16">
+        <p className="text-center text-sm font-sans text-muted-foreground italic max-w-xl mx-auto">
+          Você não precisa ler na ordem. Mas pode.
+        </p>
+      </section>
 
       {/* Banner Final — Vídeo */}
       <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">

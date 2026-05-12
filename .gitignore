@@ -18,6 +18,12 @@ out/
 
 # Playwright / browser automation
 .playwright-mcp/
+# Screenshot artifacts no nível raiz (preview/playwright). PNGs legítimos
+# em cards/, design de personagem/ e koru-site/koru-viewer/public/ continuam versionados.
+/*.png
+
+# Vercel CLI (project link, contém credenciais)
+.vercel/
 
 # OS
 .DS_Store

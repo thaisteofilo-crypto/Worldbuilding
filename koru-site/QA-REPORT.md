@@ -1,4 +1,4 @@
-# Korú Viewer — QA Report + Análise UX/UI
+# Korú Viewer: QA Report + Análise UX/UI
 
 **Data:** 2026-04-16
 **Escopo:** Site viewer + admin após batches de melhorias
@@ -47,9 +47,9 @@
 | Focus indicators | PASS | `focus-visible:outline-2` em links |
 
 ### Pontos de Atenção
-1. **Glossary tooltips**: CSS-only (hover) — não acessível via keyboard. Considerar `tabIndex={0}` + `focus-within` para exibir tooltip via tab
-2. **Hero banner text**: Títulos longos cortam em mobile ("Ecossistema · O Ciclo da Mem...")  — considerar truncamento com tooltip ou quebra de linha
-3. **Admin login**: campo sem `autocomplete="current-password"` — browsers não oferecem preenchimento automático
+1. **Glossary tooltips**: CSS-only (hover), não acessível via keyboard. Considerar `tabIndex={0}` + `focus-within` para exibir tooltip via tab
+2. **Hero banner text**: Títulos longos cortam em mobile ("Ecossistema · O Ciclo da Mem..."), considerar truncamento com tooltip ou quebra de linha
+3. **Admin login**: campo sem `autocomplete="current-password"`, browsers não oferecem preenchimento automático
 
 ---
 
@@ -72,7 +72,7 @@
 ### O que funciona bem
 1. **Hierarquia de headings**: h2 com borda inferior cria separação visual clara entre seções
 2. **Referências sutis**: `→ Ver Parte X` em text-xs não compete com o texto principal
-3. **Glossary tooltips**: 44 termos cobrem o vocabulário completo — hover revela definição instantânea
+3. **Glossary tooltips**: 44 termos cobrem o vocabulário completo, hover revela definição instantânea
 4. **Doc-nav minimalista**: setas + título sem borda é limpo e não distrai
 5. **Nomes proprietários**: sidebar com "Regras · Os 13 Acordos" transmite identidade do mundo
 6. **Admin simplificado**: greeting + 4 stats é tudo que precisa para um painel de controle

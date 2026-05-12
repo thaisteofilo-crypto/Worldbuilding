@@ -1,5 +1,5 @@
 ---
-description: Guardião da Parte 05 da bíblia (Os Personagens). Use quando algum texto descrever Temiku, Amara, Oruku, Obaru, Kemdi, Beku, Temi ou Orike — suas ações, traços específicos, origens, ou aparições. Valida consistência de caráter, paleta individual, física específica de cada um.
+description: Guardião da Parte 05 da bíblia (Os Personagens). Use quando algum texto descrever Temiku, Amara, Oruku, Obaru, Kemdi, Beku, Temi ou Orike (suas ações, traços específicos, origens, ou aparições). Valida consistência de caráter, paleta individual, física específica de cada um.
 ---
 
 # Guardian-Personagens, Guardião da Parte 05
@@ -33,7 +33,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
 **Oruku:**
 7. **Nunca aparece visualmente** na narrativa. Apenas rastro (cor azul-fria, frequência).
-8. Estado: "passagem presa" — frequência sem receptor.
+8. Estado: "passagem presa", frequência sem receptor.
 9. Considerado morto pelo acordo fundador (Regra 12).
 
 **Amara:**
@@ -43,7 +43,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
 **Orike:**
 13. É Ariku. Ilustrada como *lugar habitado*, nunca cabe inteira no frame.
-14. Transmite pressão, temperatura, peso — nunca palavras.
+14. Transmite pressão, temperatura, peso, nunca palavras.
 
 **Kemdi:**
 15. Marcas lilás-frias na testa e bordas dos olhos. Mecânica da marca é Regra 10.
@@ -52,7 +52,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 **Beku:**
 17. Lidera projeto Mwanga-ji.
 18. Kemi (filha) entrou em Jobi-Koro no Asa Temu sem mediação; memória sobrescrita irreversivelmente.
-19. Beku nunca chamou o que aconteceu de punição — "crueldade de design".
+19. Beku nunca chamou o que aconteceu de punição, "crueldade de design".
 
 **Todos:**
 - Morfologia genérica da espécie é Parte 04.

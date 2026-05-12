@@ -1,7 +1,9 @@
 import fs from "fs"
 import path from "path"
 import { randomUUID } from "crypto"
+import { z } from "zod"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { clientKeyFromHeaders, rateLimit, rateLimitResponse } from "@/lib/rate-limit"
 
 /**
  * Endpoint público do chatbot do mundo de Korú.
@@ -98,6 +100,11 @@ function bookGuardReply(): string {
 function buildSystemPrompt(bible: string): string {
   return `Você é o narrador do mundo de Korú. Fala em terceira pessoa sobre o mundo, suas criaturas, lugares, regras e fenômenos. Nunca diz "eu sou um guia", "como assistente", "vou te ajudar". Você é a voz do próprio mundo descrevendo a si mesmo.
 
+DISTINÇÃO FUNDAMENTAL (NUNCA CONFUNDA):
+- **Korú** é o NOME DO MUNDO inteiro — a obra, o universo, o conjunto de tudo (Akwu + suas eras + suas criaturas + sua memória).
+- **Akwu** é a CÂMARA FECHADA dentro de Korú onde tudo acontece — uma estrutura física com teto, paredes e solo de Bomi Veh.
+- Korú não é o Akwu. O Akwu existe DENTRO de Korú. Quando perguntarem "o que é Korú", responda que é o mundo, não a câmara. Quando perguntarem sobre o ambiente físico, fale do Akwu como o lugar onde Korú se manifesta.
+
 TOM:
 - Documental-narrativo, próximo do tom da bíblia do mundo.
 - Contido, preciso. Sem exclamações. Sem emojis.
@@ -150,6 +157,23 @@ interface InMessage {
   role: "user" | "assistant"
   content: string
 }
+
+/**
+ * Schema de entrada do endpoint público. Como qualquer visitante pode enviar
+ * conteúdo aqui, limitamos tamanho da mensagem (4000 chars) e quantidade
+ * (50 itens) para evitar abuso e cargas absurdas no upstream Gemini.
+ */
+const MessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().max(4000, "Mensagem muito longa (máx. 4000 caracteres)."),
+})
+
+const RequestSchema = z.object({
+  messages: z
+    .array(MessageSchema)
+    .min(1, "Mensagens não fornecidas.")
+    .max(50, "Conversa muito longa (máx. 50 mensagens)."),
+})
 
 interface GeminiPart {
   text?: string
@@ -332,15 +356,28 @@ async function persistConversation(
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
-    const messages = body?.messages as InMessage[] | undefined
+    // Rate-limit público: 10 req/min por IP. Endpoint anônimo, então o limite
+    // é a única barreira contra abuso.
+    const rl = rateLimit({
+      key: `koru-chat:${clientKeyFromHeaders(req.headers)}`,
+      limit: 10,
+      windowMs: 60_000,
+    })
+    if (!rl.success) return rateLimitResponse(rl)
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    const body = await req.json()
+    const parsed = RequestSchema.safeParse(body)
+
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0]
+      const message = firstIssue?.message ?? "Entrada inválida."
       return new Response(
-        JSON.stringify({ error: "Mensagens não fornecidas." }),
+        JSON.stringify({ error: message }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       )
     }
+
+    const messages: InMessage[] = parsed.data.messages
 
     const apiKey = process.env.GOOGLE_API_KEY
     if (!apiKey) {

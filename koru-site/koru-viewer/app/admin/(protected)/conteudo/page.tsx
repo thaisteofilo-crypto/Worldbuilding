@@ -75,10 +75,10 @@ const GROUPS: GroupDef[] = [
     color: "oklch(0.45 0.12 290)",
     fields: [
       { key: "hero.tagline", label: "Tagline principal" },
-      { key: "hero.cta_primary_text", label: "Botão primário — Texto" },
-      { key: "hero.cta_primary_href", label: "Botão primário — Link" },
-      { key: "hero.cta_secondary_text", label: "Botão secundário — Texto" },
-      { key: "hero.cta_secondary_href", label: "Botão secundário — Link" },
+      { key: "hero.cta_primary_text", label: "Botão primário: Texto" },
+      { key: "hero.cta_primary_href", label: "Botão primário: Link" },
+      { key: "hero.cta_secondary_text", label: "Botão secundário: Texto" },
+      { key: "hero.cta_secondary_href", label: "Botão secundário: Link" },
     ],
   },
   {
@@ -86,14 +86,14 @@ const GROUPS: GroupDef[] = [
     title: "Seções da Homepage",
     color: "oklch(0.48 0.12 65)",
     fields: [
-      { key: "section.personagens.label", label: "Personagens — Label" },
-      { key: "section.personagens.title", label: "Personagens — Título" },
-      { key: "section.biblia.label", label: "Bíblia — Label" },
-      { key: "section.biblia.title", label: "Bíblia — Título" },
-      { key: "section.livro.label", label: "Livro — Label" },
-      { key: "section.livro.title", label: "Livro — Título" },
-      { key: "section.contos.label", label: "Contos — Label" },
-      { key: "section.contos.title", label: "Contos — Título" },
+      { key: "section.personagens.label", label: "Personagens: Label" },
+      { key: "section.personagens.title", label: "Personagens: Título" },
+      { key: "section.biblia.label", label: "Bíblia: Label" },
+      { key: "section.biblia.title", label: "Bíblia: Título" },
+      { key: "section.livro.label", label: "Livro: Label" },
+      { key: "section.livro.title", label: "Livro: Título" },
+      { key: "section.contos.label", label: "Contos: Label" },
+      { key: "section.contos.title", label: "Contos: Título" },
     ],
   },
   {
@@ -106,7 +106,7 @@ const GROUPS: GroupDef[] = [
   },
   {
     id: "biblia",
-    title: "Bíblia — Títulos dos Cards",
+    title: "Bíblia: Títulos dos Cards",
     color: "oklch(0.48 0.12 65)",
     fields: [
       { key: "biblia.manifesto.title", label: "Manifesto" },
@@ -125,7 +125,7 @@ const GROUPS: GroupDef[] = [
   },
   {
     id: "livro",
-    title: "Livro — Títulos dos Cards",
+    title: "Livro: Títulos dos Cards",
     color: "oklch(0.42 0.10 230)",
     fields: [
       { key: "livro.01.title", label: "Capítulo 1" },
@@ -392,7 +392,7 @@ export default function ConteudoPage() {
       // produção não fique com valor desatualizado.
       if (json && json.supabaseOk === false) {
         setError(
-          "Salvo localmente, mas o banco rejeitou a escrita. Verifique a tabela `site_content` e a SUPABASE_SERVICE_ROLE_KEY — o site público pode mostrar valor antigo."
+          "Salvo localmente, mas o banco rejeitou a escrita. Verifique a tabela `site_content` e a SUPABASE_SERVICE_ROLE_KEY (o site público pode mostrar valor antigo)."
         )
       } else {
         setError(null)

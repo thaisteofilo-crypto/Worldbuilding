@@ -101,10 +101,21 @@ function Section({
 }) {
   const pathname = usePathname()
   const isActiveSection = pathname.startsWith(basePath)
+  // Open by default whenever the current route belongs to this section.
+  // We don't force it back open on every pathname change inside the section,
+  // so users can still collapse the active section if they want; but every
+  // time they re-enter the section from elsewhere, it expands again.
   const [open, setOpen] = React.useState(isActiveSection)
+  const wasActiveRef = React.useRef(isActiveSection)
 
   React.useEffect(() => {
-    if (isActiveSection) setOpen(true)
+    // Only auto-open on the *transition* into this section, not on every
+    // navigation that keeps us inside it. This preserves the user's manual
+    // collapse while the active section persists across sibling navigations.
+    if (isActiveSection && !wasActiveRef.current) {
+      setOpen(true)
+    }
+    wasActiveRef.current = isActiveSection
   }, [isActiveSection])
 
   const hasItems = items.length > 0
@@ -210,7 +221,7 @@ export function NavSidebar() {
           <Link
             href="/"
             className="font-serif text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
-            style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "none", filter: "none", fontWeight: 400 }}
+            style={{ textShadow: "none", filter: "none", fontWeight: 400 }}
           >
             Korú
           </Link>

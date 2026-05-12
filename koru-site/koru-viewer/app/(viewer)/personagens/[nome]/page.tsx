@@ -1,7 +1,9 @@
 import { getCharactersForViewer } from "@/lib/characters-db"
+import { characterOrder } from "@/lib/characters"
 import { contoSlugs } from "@/lib/content"
 import { getSiteContent } from "@/lib/site-content"
 import { getPublishConfig, isPublic } from "@/lib/document-publish"
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -14,7 +16,38 @@ interface Props {
   params: Promise<{ nome: string }>
 }
 
+// Force-dynamic: o conteúdo do personagem (campos como `mark`/Características,
+// status, descrição) vem do Supabase e o admin edita ao vivo. SSG estava
+// servindo "not found" cacheado quando o Supabase falhava no build. Com
+// dynamic garantimos consistência com o admin sem depender de revalidate.
 export const dynamic = "force-dynamic"
+
+export async function generateStaticParams() {
+  // characterOrder é a fonte canônica em código; o Supabase pode adicionar
+  // novos slugs em runtime e o fallback dynamic params trata isso.
+  return characterOrder.map((nome) => ({ nome }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { nome } = await params
+  const { chars } = await getCharactersForViewer()
+  const char = chars[nome]
+  const displayName = char?.name ?? nome.charAt(0).toUpperCase() + nome.slice(1)
+  const title = `${displayName} · Personagens · Korú`
+  const description =
+    char?.description?.slice(0, 160) ??
+    `Perfil de ${displayName}, ser do Akwu, no universo de Korú.`
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      locale: "pt_BR",
+    },
+  }
+}
 
 function findImage(nome: string, view: string): string | null {
   const extensions = ["jpg", "jpeg", "png", "webp"]
@@ -142,7 +175,7 @@ export default async function PersonagemPage({ params }: Props) {
     { label: "Morfologia", value: char.morphology },
     { label: "Capacidade", value: char.ability },
     { label: "Origem", value: char.origin },
-    { label: "Marca (Isilo-Ori)", value: char.mark },
+    { label: "Sinal", value: char.mark },
   ].filter(({ value }) => value && value.trim() !== "" && value !== "A definir")
 
   const statusTone = char.status ? resolveStatusTone(char.status) : null
@@ -292,7 +325,7 @@ export default async function PersonagemPage({ params }: Props) {
                             backgroundColor: relStyle.bg,
                           }}
                         >
-                          {rel.type.split(" — ")[0]}
+                          {rel.type.split(":")[0]}
                         </span>
                       </div>
 

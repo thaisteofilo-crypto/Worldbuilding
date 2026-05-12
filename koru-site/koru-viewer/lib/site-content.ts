@@ -8,14 +8,18 @@ const DEFAULTS: Record<string, string> = {
   "hero.cta_primary_href": "/biblia/parte-00",
   "hero.cta_secondary_text": "O Livro",
   "hero.cta_secondary_href": "/livro/01",
-  "section.personagens.label": "Personagens",
+  "section.personagens.label": "Conhecer quem habita",
   "section.personagens.title": "Os seres do Akwu",
-  "section.biblia.label": "Bíblia do Mundo",
+  "section.biblia.label": "Entender o mundo",
   "section.biblia.title": "O arquivo vivo",
-  "section.livro.label": "Livro",
+  "section.livro.label": "Mergulhar no livro",
   "section.livro.title": "O Peso da Luz",
-  "section.contos.label": "Contos",
+  "section.contos.label": "Ler as histórias",
   "section.contos.title": "Vozes do Akwu",
+  "section.biblia.description": "A bíblia é a fundação. Aqui o mundo se explica por dentro: a física da memória, os ciclos de luz, as criaturas que habitam o Akwu. Comece por aqui se quiser saber em que terreno está pisando.",
+  "section.personagens.description": "Os personagens são as ressonâncias do mundo. Amara, Oruku, Temiku, Beku: cada um carrega uma frequência, uma falha, um eco. Conheça-os antes de entrar nas histórias.",
+  "section.contos.description": "Cada conto é um corte rente: uma cena, uma decisão, uma perda. Pequenos textos literários que mostram o mundo por dentro de quem o vive. Comece por Amara e siga na ordem, ou escolha o nome que te chamar.",
+  "section.livro.description": "A história de Temiku, em capítulos. O fio longo do mundo, do início ao fim, sem atalho. Leia depois dos contos, ou antes, se preferir o caminho largo primeiro.",
   "footer.copyright": "Todos os direitos reservados a Thaís Teófilo",
   "biblia.manifesto.title": "Propósito · Manifesto",
   "biblia.parte-00.title": "Introdução · A Língua de Korú",
@@ -27,8 +31,8 @@ const DEFAULTS: Record<string, string> = {
   "biblia.parte-06.title": "Regras · Os 13 Acordos",
   "biblia.parte-07.title": "Cultura · Como se Vive",
   "biblia.parte-08.title": "Linha do Tempo · As Seis Eras",
-  "biblia.glossario-de-koru.title": "Glossário de Korú",
-  "biblia.glossario-de-lugares.title": "Glossário de Lugares",
+  "biblia.glossario-de-koru.title": "Glossário · Korú",
+  "biblia.glossario-de-lugares.title": "Glossário · Lugares",
   "livro.01.title": "O que ela é",
   "livro.02.title": "Manhãs",
   "livro.03.title": "A cidade",
@@ -76,6 +80,6 @@ export async function getSiteContent(): Promise<Record<string, string>> {
   return result
 }
 
-export function get(content: Record<string, string>, key: string): string {
-  return content[key] ?? DEFAULTS[key] ?? ""
+export function get(content: Record<string, string>, key: string, fallback?: string): string {
+  return content[key] ?? DEFAULTS[key] ?? fallback ?? ""
 }

@@ -38,7 +38,7 @@ const TABS: TabDef[] = [
   {
     id: "inconsistencies",
     label: "Atritos",
-    description: "Onde os textos não estão fechando entre si — morfologia, luz, Bomi Veh, Oruku — com o trecho, o porquê e uma sugestão de reescrita.",
+    description: "Onde os textos não estão fechando entre si (morfologia, luz, Bomi Veh, Oruku), com o trecho, o porquê e uma sugestão de reescrita.",
     accentVar: "var(--destructive)",
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -509,7 +509,7 @@ function EmptyState({ onRun }: { onRun: () => void }) {
           A IA lê bíblia, livro e contos e devolve um relatório estruturado.
         </p>
         <p className="font-sans text-xs mt-1" style={{ color: "var(--muted-foreground)" }}>
-          Leva de 20 a 60 segundos. A resposta é salva localmente — você pode voltar depois sem regenerar.
+          Leva de 20 a 60 segundos. A resposta é salva localmente, você pode voltar depois sem regenerar.
         </p>
       </div>
       <button

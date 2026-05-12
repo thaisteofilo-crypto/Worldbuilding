@@ -57,7 +57,7 @@ export default function DocumentsPage() {
       const data = await res.json()
 
       if (res.ok) {
-        setUploadResult(`"${data.title}" (${data.section}) — ${data.words.toLocaleString()} palavras ${data.updated ? "(atualizado)" : "(novo)"}`)
+        setUploadResult(`"${data.title}" (${data.section}): ${data.words.toLocaleString()} palavras ${data.updated ? "(atualizado)" : "(novo)"}`)
         setCustomTitle("")
         setSelectedSection("")
         fetchDocs()
@@ -180,7 +180,7 @@ export default function DocumentsPage() {
               </div>
             </div>
             <p className="font-sans text-[10px] mt-2" style={{ color: "var(--muted-foreground)" }}>
-              Formatos: .docx, .md, .txt, .rtf — arraste e solte ou clique em Enviar
+              Formatos: .docx, .md, .txt, .rtf, arraste e solte ou clique em Enviar
             </p>
           </div>
         </div>
