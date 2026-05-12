@@ -983,22 +983,20 @@ export default function EditorPage() {
                         )}
                         {renamingDoc?.path !== doc.path && (
                           <div
-                            className="flex items-center gap-1 shrink-0 w-[52px] justify-end"
+                            className="flex items-center gap-1 shrink-0 w-[52px] justify-end overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <div data-row-status>
+                            <div data-row-status className="shrink-0">
                               <DocumentStatusBadge
                                 value={docStatuses[doc.path] ?? null}
                                 onChange={(next) => setDocStatus(doc.path, next)}
                                 compact
-                                showLabel={selectedPath === doc.path}
                               />
                             </div>
-                            <div data-row-publish>
+                            <div data-row-publish className="shrink-0">
                               <DocumentPublishControl
                                 value={getPublishConfig(doc.path)}
                                 onChange={(next) => setPublishConfig(doc.path, next)}
-                                showLabel={selectedPath === doc.path}
                               />
                             </div>
                           </div>
