@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
-import { readMarkdown, livroChapters, contoSlugs, bibliaParts } from "@/lib/content"
+import { readMarkdown, livroChapters, contoSlugs, bibliaParts, getBibliaItems } from "@/lib/content"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { DocumentStatus, isValidStatus, parseStatusKey } from "@/lib/document-status"
 import { readLocalState } from "@/lib/local-state"
+import { characterOrder } from "@/lib/characters"
 
 export async function GET() {
   // ─── Read chapters from filesystem ───
@@ -174,16 +175,24 @@ export async function GET() {
 
   // Derive total documents tracked in each section (for sem-status count)
   // Union of core docs + any doc that already has a status assigned.
+  // Biblia: all items returned by getBibliaItems (partes + manifesto + glossários)
+  const bibliaAllItems = getBibliaItems()
+  const totalBibliaItems = bibliaAllItems.length
+
+  // Personagens: characters defined in the hardcoded list
+  const totalPersonagens = characterOrder.length
+
   const coreTrackedPaths: string[] = [
-    ...bibliaList.map(({ parte }) => `biblia/parte-${parte}.md`),
+    ...bibliaAllItems.map(({ slug }) => `biblia/${slug}.md`),
     ...chapterSlugs.map(({ capitulo }) => capitulo === "epilogo" ? "livro/epilogo.md" : `livro/capitulo-${capitulo}.md`),
     ...contosList.map(({ personagem }) => `contos/conto-${personagem}.md`),
+    ...characterOrder.map((slug) => `personagens/${slug}`),
   ]
   const trackedSet = new Set([...coreTrackedPaths, ...Object.keys(statusByDoc)])
   const statusTotalTracked = trackedSet.size
   const statusWithoutStatus = Array.from(trackedSet).filter((p) => !statusByDoc[p]).length
 
-  const totalDocuments = bibliaComplete + chapters.length + contosWritten
+  const totalDocuments = totalBibliaItems + chapterSlugs.length + contosList.length + totalPersonagens
 
   return NextResponse.json({
     totalWords,
@@ -195,9 +204,11 @@ export async function GET() {
     contosWritten,
     totalContos: contosList.length,
     bibliaComplete,
-    livroChapters: chapters.length,
+    totalBibliaItems,
+    livroChapters: chapterSlugs.length,
     totalDocuments,
     totalCharacters: characterNames.length,
+    totalPersonagens,
     totalBanners,
     totalGallery,
     statusCounts,
