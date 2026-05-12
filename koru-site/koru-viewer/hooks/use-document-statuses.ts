@@ -53,9 +53,9 @@ export function useDocumentStatuses() {
           if (!path) continue
           if (isValidStatus(row.value)) fromApi[path] = row.value
         }
-        // API wins over localStorage when it returns a value
+        // localStorage wins over API — local change is always the user's latest intent
         setStatuses((prev) => {
-          const merged = { ...prev, ...fromApi }
+          const merged = { ...fromApi, ...prev }
           lsSave(merged)
           return merged
         })

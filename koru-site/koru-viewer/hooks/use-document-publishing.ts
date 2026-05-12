@@ -19,33 +19,50 @@ interface SiteContentRow {
 }
 
 const DEFAULT: PublishConfig = { state: "published", at: null }
+const LS_KEY = "koru-doc-publishing"
+
+function lsLoad(): Record<string, PublishConfig> {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    if (!raw) return {}
+    return JSON.parse(raw)
+  } catch { return {} }
+}
+
+function lsSave(configs: Record<string, PublishConfig>) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(configs)) } catch {}
+}
 
 export function useDocumentPublishing() {
   const [configs, setConfigs] = useState<Record<string, PublishConfig>>({})
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
+    // Load localStorage immediately
+    const local = lsLoad()
+    if (Object.keys(local).length > 0) setConfigs(local)
+
     let cancelled = false
     fetch("/api/site-content")
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return
         const rows: SiteContentRow[] = data.content ?? []
-        const next: Record<string, PublishConfig> = {}
+        const fromApi: Record<string, PublishConfig> = {}
         // Pass 1: legacy split-key format.
         for (const row of rows) {
           const statePath = parsePublishStateKey(row.key)
           if (statePath) {
-            const cfg = next[statePath] ?? { ...DEFAULT }
+            const cfg = fromApi[statePath] ?? { ...DEFAULT }
             if (isValidPublishState(row.value)) cfg.state = row.value as PublishState
-            next[statePath] = cfg
+            fromApi[statePath] = cfg
             continue
           }
           const atPath = parsePublishAtKey(row.key)
           if (atPath) {
-            const cfg = next[atPath] ?? { ...DEFAULT }
+            const cfg = fromApi[atPath] ?? { ...DEFAULT }
             cfg.at = row.value || null
-            next[atPath] = cfg
+            fromApi[atPath] = cfg
           }
         }
         // Pass 2: new single-key format wins over legacy.
@@ -53,9 +70,14 @@ export function useDocumentPublishing() {
           const path = parsePublishKey(row.key)
           if (!path) continue
           const parsed = parsePublishValue(row.value)
-          if (parsed) next[path] = parsed
+          if (parsed) fromApi[path] = parsed
         }
-        setConfigs(next)
+        // localStorage wins — local change is always the user's latest intent
+        setConfigs((prev) => {
+          const merged = { ...fromApi, ...prev }
+          lsSave(merged)
+          return merged
+        })
         setLoaded(true)
       })
       .catch((err) => {
@@ -66,7 +88,11 @@ export function useDocumentPublishing() {
   }, [])
 
   const setConfig = useCallback(async (docPath: string, next: PublishConfig) => {
-    setConfigs((prev) => ({ ...prev, [docPath]: next }))
+    setConfigs((prev) => {
+      const updated = { ...prev, [docPath]: next }
+      lsSave(updated)
+      return updated
+    })
 
     const key = publishKey(docPath)
     const value = serializePublishConfig(next)
