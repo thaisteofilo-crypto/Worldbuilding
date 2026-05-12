@@ -548,6 +548,21 @@ export default function CharactersPage() {
                 </div>
                 <h2 className="font-serif text-xl flex-1" style={{ color: "var(--foreground)" }}>{char.name}</h2>
                 <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>{char.slug}</span>
+                {/* Incomplete badge — shown when any required narrative field is empty */}
+                {(["morphology", "ability", "mark", "origin", "location", "quote", "description"] as const).some(
+                  (field) => !char[field] || (char[field] as string).trim() === ""
+                ) && (
+                  <span
+                    className="font-sans text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide shrink-0"
+                    style={{
+                      color: "oklch(0.65 0.20 25)",
+                      background: "oklch(0.65 0.20 25 / 0.12)",
+                      border: "1px solid oklch(0.65 0.20 25 / 0.3)",
+                    }}
+                  >
+                    Incompleto
+                  </span>
+                )}
                 {/* Delete button */}
                 <button
                   onClick={() => deleteCharacter(char.id, char.name)}
