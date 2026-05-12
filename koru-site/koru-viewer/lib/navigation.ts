@@ -33,6 +33,7 @@ export const CONTOS_ITEMS = [
   { slug: "beku", title: "Beku · Conto de Contexto" },
   { slug: "obaru", title: "Obaru · Conto de Contexto" },
   { slug: "kemdi", title: "Kemdi · Conto de Contexto" },
+  { slug: "temi", title: "Temi · Conto de Contexto" },
   { slug: "orike", title: "Orike · Conto Especial" },
   { slug: "kairo", title: "Kairo · Conto de Origem" },
 ]
@@ -45,6 +46,7 @@ export const PERSONAGENS_ITEMS = [
   { slug: "obaru", title: "Obaru" },
   { slug: "kemdi", title: "Kemdi" },
   { slug: "orike", title: "Orike" },
+  { slug: "kairo", title: "Kairo" },
 ]
 
 // Banner config for hero banners — fallbackHue drives the gradient when no image exists

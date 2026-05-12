@@ -54,7 +54,7 @@ const DEFAULT_DOC_GROUPS: DocGroup[] = [
     section: 'Livro',
     color: 'var(--foreground)',
     docs: [
-      { label: 'Capítulo 01', path: 'livro/capitulo-01.md' },
+      { label: 'I, O que ela é', path: 'livro/capitulo-01.md' },
       { label: 'Capítulo 02', path: 'livro/capitulo-02.md' },
       { label: 'Capítulo 03', path: 'livro/capitulo-03.md' },
       { label: 'Capítulo 04', path: 'livro/capitulo-04.md' },
@@ -73,6 +73,7 @@ const DEFAULT_DOC_GROUPS: DocGroup[] = [
       { label: 'Conto — Beku', path: 'contos/conto-beku.md' },
       { label: 'Conto — Obaru', path: 'contos/conto-obaru.md' },
       { label: 'Conto — Kemdi', path: 'contos/conto-kemdi.md' },
+      { label: 'Conto — Temi', path: 'contos/conto-temi.md' },
       { label: 'Conto — Orike', path: 'contos/conto-orike.md' },
     ],
   },
