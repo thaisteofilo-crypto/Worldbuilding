@@ -5,9 +5,14 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 /**
  * Endpoint público do chatbot do mundo de Korú.
- * Usa a API do Google AI Studio (Gemma) com streaming SSE.
+ * Usa a API do Google AI Studio (Gemini) com streaming SSE.
  *
- * Modelo: gemma-4-26b-a4b-it (MoE, thinking model — não desligável).
+ * Modelo: gemini-2.5-flash (rápido, estável, multi-turn nativo).
+ * Histórico: gemma-3-27b-it foi descontinuado; gemma-4 (thinking) dava
+ * 500 INTERNAL em conversas com histórico. Mudamos pra gemini-2.5-flash
+ * que suporta systemInstruction nativamente e role alternado user/model
+ * sem quirks.
+ *
  * Estratégia de velocidade:
  *   1) Sistema prompt carregado do koru-bible-core.md (~6KB / ~1800 tok)
  *      em vez da bíblia completa (~56KB / ~16K tok).
@@ -22,7 +27,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
  * Não confundir com /api/chat (assistente Anthropic do admin).
  */
 
-const MODEL = "gemma-4-26b-a4b-it"
+const MODEL = "gemini-2.5-flash"
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`
 
 const CONTENT_ROOT = path.resolve(path.join(process.cwd(), "content"))
@@ -404,40 +409,51 @@ export async function POST(req: Request) {
     const bible = loadBibleCore()
     const systemPrompt = buildSystemPrompt(bible)
 
-    // Modelos Gemma não aceitam systemInstruction separado.
-    // Prefixamos o system prompt na primeira mensagem do usuário.
-    const contents: GeminiContent[] = []
-    let systemInjected = false
-    for (const m of messages) {
-      const role: "user" | "model" = m.role === "assistant" ? "model" : "user"
-      let text = m.content
-      if (!systemInjected && role === "user") {
-        text = `${systemPrompt}\n\n---\n\nPergunta do visitante:\n${text}`
-        systemInjected = true
-      }
-      contents.push({ role, parts: [{ text }] })
-    }
+    // Gemini 2.5 suporta systemInstruction separado + multi-turn alternado.
+    const contents: GeminiContent[] = messages.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }))
 
-    const upstream = await fetch(`${ENDPOINT}&key=${apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents,
-        generationConfig: {
-          temperature: 0.7,
-          topP: 0.9,
-          maxOutputTokens: 3500,
-        },
-      }),
+    // Google AI raramente devolve 500 INTERNAL transiente. Retry 2x com
+    // backoff curto absorve o ruído sem prejudicar latência no caminho feliz.
+    const requestBody = JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents,
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.9,
+        maxOutputTokens: 3500,
+      },
     })
 
-    if (!upstream.ok || !upstream.body) {
-      const detail = await upstream.text().catch(() => "")
-      console.error("Gemma API erro", upstream.status, detail)
+    let upstream: Response | null = null
+    let lastDetail = ""
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const r = await fetch(`${ENDPOINT}&key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+      })
+      if (r.ok && r.body) {
+        upstream = r
+        break
+      }
+      lastDetail = await r.text().catch(() => "")
+      console.error(`Gemini API erro (tentativa ${attempt + 1})`, r.status, lastDetail.slice(0, 200))
+      // Só faz retry em 500/502/503/504 — 4xx é erro do cliente.
+      if (r.status < 500 || attempt === 2) {
+        return new Response(
+          JSON.stringify({ error: `Falha na API do modelo (${r.status}).` }),
+          { status: 500, headers: { "Content-Type": "application/json" } }
+        )
+      }
+      await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)))
+    }
+
+    if (!upstream || !upstream.body) {
       return new Response(
-        JSON.stringify({
-          error: `Falha na API do modelo (${upstream.status}).`,
-        }),
+        JSON.stringify({ error: "Falha na API do modelo (sem resposta)." }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       )
     }
