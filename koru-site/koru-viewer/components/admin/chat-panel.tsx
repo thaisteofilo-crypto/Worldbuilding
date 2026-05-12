@@ -523,7 +523,7 @@ function TypingIndicator() {
 
 // --- Main component (floating) ---
 
-export function ChatPanel({ documentPath, documentContent, selectedText, onInsertText, onReplaceSelection, open, onClose }: ChatPanelProps) {
+export function ChatPanel({ documentPath, documentContent, documentLabel, selectedText, onInsertText, onReplaceSelection, open, onClose }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -1121,15 +1121,6 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
               className="rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-80 disabled:opacity-40 shrink-0"
               style={{
                 fontSize: '10px',
-      <div className="shrink-0">
-        {hasSelection && (
-          <div className="px-3 pt-2 pb-1 flex items-center gap-2">
-            <button
-              onClick={handleRewriteSelection}
-              disabled={isStreaming}
-              className="rounded-full px-3 py-1 font-sans transition-opacity hover:opacity-80 disabled:opacity-40 shrink-0"
-              style={{
-                fontSize: '10px',
                 background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
                 color: 'var(--foreground)',
                 border: '1px solid var(--border)',
@@ -1197,7 +1188,7 @@ export function ChatPanel({ documentPath, documentContent, selectedText, onInser
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </div>,
     document.body
   )
