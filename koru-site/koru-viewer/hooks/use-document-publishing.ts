@@ -86,7 +86,7 @@ export function useDocumentPublishing() {
     if (!res.ok) {
       let detail = "HTTP " + res.status
       if (body.error) detail = body.error
-      if (body.supabaseError) detail += " — supabase: " + body.supabaseError
+      if (body.supabaseError) detail += ", supabase: " + body.supabaseError
       throw new Error(detail)
     }
 

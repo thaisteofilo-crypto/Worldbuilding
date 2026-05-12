@@ -27,9 +27,9 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
 1. **Topologia:** Bomi-Weh envolve o Rimba Ngozi; Orunjó está atrás da floresta (só se chega atravessando).
 2. **Bomi Veh ≠ Bomi-Weh.** Solo-memória (sem hífen) vs planície (com hífen). Nunca confundir.
-3. **Ariku** não são árvores — são arquivos vivos. Ao descrever a floresta, mantenha categoria.
+3. **Ariku** não são árvores, são arquivos vivos. Ao descrever a floresta, mantenha categoria.
 4. **Jobi-Ariku** (habitação, paredes vivas) ≠ **Jobi-Koro** (ruínas). Jobi é raiz, contexto distingue.
-5. **Círculo Azul-Frio** não tem nome oficial — "o círculo". Único caso de Bomi Veh azul-frio estável.
+5. **Círculo Azul-Frio** não tem nome oficial: "o círculo". Único caso de Bomi Veh azul-frio estável.
 6. **Orike** é uma Ariku específica (personagem em Parte 05); a **Base de Orike** é o lugar ao redor dela.
 7. **Njia-Kwe** são invisíveis, mapeadas oralmente, nunca marcadas fisicamente.
 
@@ -55,7 +55,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 - Não define mecânica ecológica (é Parte 03)
 - Não descreve criaturas como personagens (é Parte 05)
 - Não cria lugares novos sem fundamento na lógica topológica existente
-- Não redefine Asa em termos de lugar — Asa é ciclo do Akwu (Parte 03)
+- Não redefine Asa em termos de lugar, Asa é ciclo do Akwu (Parte 03)
 
 ## Saída padrão
 

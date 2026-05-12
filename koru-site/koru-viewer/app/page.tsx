@@ -411,7 +411,7 @@ export default async function HomePage() {
       <JourneyStage
         number="02"
         title={get(siteContent, "section.personagens.label", "Conhecer quem habita")}
-        description={get(siteContent, "section.personagens.description", "Os personagens são as ressonâncias do mundo. Amara, Oruku, Temiku, Beku — cada um carrega uma frequência, uma falha, um eco. Conheça-os antes de entrar nas histórias.")}
+        description={get(siteContent, "section.personagens.description", "Os personagens são as ressonâncias do mundo. Amara, Oruku, Temiku, Beku: cada um carrega uma frequência, uma falha, um eco. Conheça-os antes de entrar nas histórias.")}
         startHref={personagensHref}
         startLabel="Conhecer os personagens"
         bannerImage={banners.personagens}
@@ -503,7 +503,7 @@ export default async function HomePage() {
       <JourneyStage
         number="04"
         title={get(siteContent, "section.livro.label", "Mergulhar no livro")}
-        description={get(siteContent, "section.livro.description", "A história de Temiku, em capítulos. O fio longo do mundo — do início ao fim, sem atalho. Leia depois dos contos, ou antes, se preferir o caminho largo primeiro.")}
+        description={get(siteContent, "section.livro.description", "A história de Temiku, em capítulos. O fio longo do mundo, do início ao fim, sem atalho. Leia depois dos contos, ou antes, se preferir o caminho largo primeiro.")}
         startHref={livroHref}
         startLabel="Mergulhar no livro"
         isLast

@@ -255,7 +255,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       {/* Title row */}
                       <div className="flex items-center gap-2 mb-1">
                         <span
-                          className="font-sans text-sm"
+                          className="font-serif text-sm"
                           style={{ color: "var(--foreground)", flex: 1, lineHeight: 1.4 }}
                         >
                           {highlightTerm(result.title, query)}

@@ -26,7 +26,7 @@
 ## Briefing para character design
 
 ### Frente
-Quadrúpede Onkweri padrão em tamanho, mas com proporções que sugerem movimento mais que assentamento. Quatro patas firmes, cascos médios. Tórax com **estratificação irregular**: as camadas não são horizontais regulares como em Onkweri de cidade — algumas vão de baixo para cima, algumas quase horizontais, algumas mais densas que outras, **direções que não combinam**. Cor: marrom-terra mais claro, tons de campo aberto. Pescoço normal. Cabeça em postura alerta, focinho à frente. Olhos atentos. Chifres saindo da testa: **menores e mais flexíveis** que adultos sedentários, sem peso descendente extremo, sem ser eretos como jovens — proporção intermediária, adaptada. Sem marcas na testa nem nas bordas dos olhos.
+Quadrúpede Onkweri padrão em tamanho, mas com proporções que sugerem movimento mais que assentamento. Quatro patas firmes, cascos médios. Tórax com **estratificação irregular**: as camadas não são horizontais regulares como em Onkweri de cidade (algumas vão de baixo para cima, algumas quase horizontais, algumas mais densas que outras), **direções que não combinam**. Cor: marrom-terra mais claro, tons de campo aberto. Pescoço normal. Cabeça em postura alerta, focinho à frente. Olhos atentos. Chifres saindo da testa: **menores e mais flexíveis** que adultos sedentários, sem peso descendente extremo, sem ser eretos como jovens, proporção intermediária, adaptada. Sem marcas na testa nem nas bordas dos olhos.
 
 ### Perfil
 Vista lateral revela mais claramente a irregularidade da estratificação: ângulos diferentes nas camadas dos flancos, cada faixa com inclinação própria (algumas subindo da pata para o dorso, outras horizontais finas, outras mais comprimidas). A textura do corpo muda de tom conforme o ângulo da luz porque as camadas têm orientações diferentes. Pernas firmes, cascos médios. A postura lateral é fluida, com o peso distribuído de forma que o corpo se ajusta ao Ngurui. Cauda curta de Onkweri.
@@ -38,7 +38,7 @@ Ancas regulares, quarto traseiro com a mesma estratificação irregular dos flan
 1. **Estratificação irregular nos flancos**: camadas em ângulos diferentes (cada lugar deixou frequência em orientação própria).
 2. **Textura do corpo muda de tom conforme o ângulo da luz** (resultado das camadas em direções diferentes captarem luz diferente).
 3. **Chifres menores e mais flexíveis** que adultos, sem peso descendente extremo, sem ser eretos como jovens.
-4. **Cor mais clara** que Onkweri de cidade — marrom-terra de campo aberto.
+4. **Cor mais clara** que Onkweri de cidade, marrom-terra de campo aberto.
 5. **Postura fluida** sincronizada com o pulso do mundo (movimento mais leve que o padrão).
 6. **Rastro raso no chão** que some rápido (em pontos de pausa fica mais fundo, mas ainda some em dias).
 7. **Sem marcas de eleição, sem halo, sem luminescência**.
@@ -50,7 +50,7 @@ Ancas regulares, quarto traseiro com a mesma estratificação irregular dos flan
 **Lacunas:**
 - Idade não documentada com precisão.
 - Cor exata dos olhos não especificada.
-- Padrão exato dos ângulos das camadas (quais ângulos predominam) é livre — basta que sejam visivelmente diferentes entre si.
+- Padrão exato dos ângulos das camadas (quais ângulos predominam) é livre, basta que sejam visivelmente diferentes entre si.
 
 **Atenção especial (regras invioláveis):**
 - **Quadrúpede com chifres**, sem mãos, sem palmas.
@@ -63,7 +63,7 @@ Ancas regulares, quarto traseiro com a mesma estratificação irregular dos flan
 
 ## Prompt sugerido para geração de imagem
 
-Character design sheet of Temi, a nomadic adult Onkweri quadruped creature with horns from a memory-based world. Standard Onkweri body size but with proportions suggesting movement more than settlement. Coat: lighter earth-brown than city-dwelling Onkweri, the tones of open plains. CRITICAL TEXTURE DETAIL: the flanks show IRREGULAR stratification — layers running in different directions, some rising from leg to back, some thin horizontal, some compressed denser than others, never aligning into a single regular geological pattern. The body's tone shifts subtly when seen from different angles because the multi-directional layers catch light differently. Four firm legs, medium hooves leaving shallow prints. Horns growing from the forehead: smaller and more flexible than sedentary adults, without extreme downward weight, without juvenile uprightness — intermediate proportion adapted to constant motion. Alert posture, head forward, attentive eyes. No marks on forehead or eye borders. No halo, no luminescence.
+Character design sheet of Temi, a nomadic adult Onkweri quadruped creature with horns from a memory-based world. Standard Onkweri body size but with proportions suggesting movement more than settlement. Coat: lighter earth-brown than city-dwelling Onkweri, the tones of open plains. CRITICAL TEXTURE DETAIL: the flanks show IRREGULAR stratification, layers running in different directions, some rising from leg to back, some thin horizontal, some compressed denser than others, never aligning into a single regular geological pattern. The body's tone shifts subtly when seen from different angles because the multi-directional layers catch light differently. Four firm legs, medium hooves leaving shallow prints. Horns growing from the forehead: smaller and more flexible than sedentary adults, without extreme downward weight, without juvenile uprightness, intermediate proportion adapted to constant motion. Alert posture, head forward, attentive eyes. No marks on forehead or eye borders. No halo, no luminescence.
 
 Show three views: front view, side profile, back view. Add numbered annotations (1, 2, 3, 4, 5, 6, 7) labeling: 1) irregular multi-directional stratification on flanks (layers in different angles); 2) coat tone subtly shifting with viewing angle due to multi-directional layers; 3) smaller flexible horns, intermediate between juvenile and elder; 4) lighter earth-brown coat (open-plains tones); 5) fluid posture synchronized with the world's pulse; 6) shallow hoofprints that fade quickly; 7) absence of Isilo-Ori marks and no luminescence.
 

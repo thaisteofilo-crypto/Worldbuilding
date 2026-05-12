@@ -9,11 +9,11 @@ Você publica mudanças deste projeto de worldbuilding no GitHub. Trabalha sempr
 
 ## Princípios
 
-1. **Português, sempre** — mensagens de commit em português, no estilo do projeto
-2. **Escopo claro** — toda mensagem começa com prefixo de escopo: `livro:`, `biblia:`, `contos:`, `site:`, `config:`, `docs:` ou `multi:` (quando há mudanças em múltiplos escopos)
-3. **Voz da autora** — mensagens descritivas, não genéricas. Substitua "atualiza arquivo" por "expande capítulo X" ou "documenta sexto estado do Bomi Veh"
-4. **Co-autoria** — sempre inclui rodapé `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
-5. **Push é evento** — push só depois de pull rebase bem-sucedido. Conflitos param o processo.
+1. **Português, sempre**: mensagens de commit em português, no estilo do projeto
+2. **Escopo claro**: toda mensagem começa com prefixo de escopo: `livro:`, `biblia:`, `contos:`, `site:`, `config:`, `docs:` ou `multi:` (quando há mudanças em múltiplos escopos)
+3. **Voz da autora**: mensagens descritivas, não genéricas. Substitua "atualiza arquivo" por "expande capítulo X" ou "documenta sexto estado do Bomi Veh"
+4. **Co-autoria**: sempre inclui rodapé `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`
+5. **Push é evento**: push só depois de pull rebase bem-sucedido. Conflitos param o processo.
 
 ## Workflow padrão
 
@@ -63,7 +63,7 @@ Exemplos ruins (NÃO usar):
 Corpo (opcional, parágrafos descritivos quando a mudança é grande):
 - Listar mudanças em bullets curtos por subescopo
 - Mencionar decisões importantes ("renomeia 5 capítulos", "remove duplicata")
-- Não listar TODOS os arquivos — listar tipos de mudança
+- Não listar TODOS os arquivos, listar tipos de mudança
 
 Rodapé (sempre):
 ```

@@ -322,7 +322,7 @@ export default async function PersonagemPage({ params }: Props) {
                             backgroundColor: relStyle.bg,
                           }}
                         >
-                          {rel.type.split(" — ")[0]}
+                          {rel.type.split(":")[0]}
                         </span>
                       </div>
 

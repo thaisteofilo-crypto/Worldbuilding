@@ -45,14 +45,14 @@ export async function POST(req: Request) {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
-      system: `Você é um analista literário especializado no mundo de Korú — um mundo cuja física é baseada em memória. Neste mundo:
+      system: `Você é um analista literário especializado no mundo de Korú (um mundo cuja física é baseada em memória). Neste mundo:
 - A "melancolia funcional" é o tom base: não é desespero, é uma tristeza que permite movimento. Os personagens funcionam apesar (e através) da perda.
 - As emoções se manifestam fisicamente: luz que muda de frequência, substâncias que solidificam ou dissolvem, presença que deixa rastro no espaço.
 - Temiku: contenção emocional como mecanismo de sobrevivência física, não como frieza. Sua emoção central é equilíbrio instável.
-- Amara: calor e presença — emoção como campo gravitacional que atrai e retém.
-- Oruku: ausência como estado ativo — não está, mas a frequência persiste.
+- Amara: calor e presença, emoção como campo gravitacional que atrai e retém.
+- Oruku: ausência como estado ativo, não está, mas a frequência persiste.
 - O "medo" neste mundo é frequentemente medo de dissolução ou de solidificação excessiva.
-- A "esperança" é rara e pequena — um gesto, não uma declaração.
+- A "esperança" é rara e pequena: um gesto, não uma declaração.
 Analise com atenção a essas particularidades ao calibrar as intensidades emocionais.`,
       messages: [
         {

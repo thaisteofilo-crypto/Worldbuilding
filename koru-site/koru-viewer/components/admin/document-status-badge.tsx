@@ -209,10 +209,10 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
           opacity: def ? 1 : 0.55,
           gap: 6,
         }}
-        title={def ? def.label + " — " + def.description : "Definir status"}
+        title={def ? def.label + ": " + def.description : "Definir status"}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={def ? "Status: " + def.label : "Sem status — definir"}
+        aria-label={def ? "Status: " + def.label : "Sem status, definir"}
       >
         <span
           className="rounded-full shrink-0"

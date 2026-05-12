@@ -220,7 +220,7 @@ export function NavSidebar() {
         <div className="flex h-14 items-center px-5 pt-3">
           <Link
             href="/"
-            className="font-sans text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
+            className="font-serif text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
             style={{ textShadow: "none", filter: "none", fontWeight: 400 }}
           >
             Korú

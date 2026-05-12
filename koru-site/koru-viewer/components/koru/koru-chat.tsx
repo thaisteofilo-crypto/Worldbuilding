@@ -360,7 +360,7 @@ export function KoruChat() {
 
             <div className="flex min-w-0 flex-1 flex-col items-center">
               <span
-                className="font-sans text-lg leading-none text-[var(--foreground)]"
+                className="font-serif text-lg leading-none text-[var(--foreground)]"
                 style={{ letterSpacing: "0.01em" }}
               >
                 {view === "chat" ? "Korú" : "Histórico"}
@@ -438,7 +438,7 @@ export function KoruChat() {
                 role="note"
               >
                 <strong className="font-medium">Beta:</strong>{" "}
-                Modelo Gemma — pode apresentar erros e lentidão.
+                Modelo Gemma, pode apresentar erros e lentidão.
               </div>
 
               {/* Mensagens */}
@@ -477,9 +477,11 @@ export function KoruChat() {
               <div className="p-3 space-y-2">
                 <div
                   className={cn(
-                    "flex items-center gap-2 rounded-xl",
-                    "bg-[color-mix(in_oklch,var(--foreground)_5%,transparent)] pl-3 pr-2 py-1",
-                    "transition-colors"
+                    "flex items-center gap-2 rounded-2xl",
+                    "bg-[color-mix(in_oklch,var(--foreground)_10%,transparent)] pl-4 pr-2 py-2",
+                    "ring-1 ring-[color-mix(in_oklch,var(--foreground)_8%,transparent)]",
+                    "focus-within:ring-2 focus-within:ring-[color-mix(in_oklch,var(--accent)_60%,transparent)]",
+                    "transition-all"
                   )}
                 >
                   <input
@@ -523,9 +525,6 @@ export function KoruChat() {
                     </svg>
                   </button>
                 </div>
-                <p className="text-center text-[10px] leading-snug font-sans text-[var(--muted-foreground)] opacity-80">
-                  Suas perguntas aparecem em Perguntas ao Mundo, anônimas.
-                </p>
               </div>
             </>
           ) : (

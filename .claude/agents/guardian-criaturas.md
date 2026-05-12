@@ -54,7 +54,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 - Não define comportamento ecológico (é Parte 03)
 - Não cria novas espécies sem autorização
 - Não redefine mecânica de regras (é Parte 06)
-- Não descreve personagens individuais — só espécie genérica
+- Não descreve personagens individuais, só espécie genérica
 
 ## Saída padrão
 

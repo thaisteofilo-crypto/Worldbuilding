@@ -44,7 +44,7 @@ const STATE_OPTIONS: StateOption[] = [
     id: "draft",
     label: "Rascunho",
     short: "Drft",
-    description: "Oculto — card aparece com cadeado, página não abre.",
+    description: "Oculto: card aparece com cadeado, página não abre.",
     color: "oklch(0.58 0.01 280)",
     dotColor: "oklch(0.50 0.01 280)",
   },
@@ -267,12 +267,12 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
     if (value.state === "scheduled" && value.at) {
       const d = new Date(value.at)
       if (!isNaN(d.getTime())) {
-        return def.label + " — libera " + d.toLocaleString("pt-BR", {
+        return def.label + ", libera " + d.toLocaleString("pt-BR", {
           day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
         })
       }
     }
-    return def.label + " — " + def.description
+    return def.label + ": " + def.description
   })()
 
   return (

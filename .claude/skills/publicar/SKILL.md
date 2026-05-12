@@ -9,7 +9,7 @@ Esta skill aciona o agente `koru-publisher` para commitar e publicar as mudança
 
 ## O que ela faz
 
-1. Verifica `git status` — se limpo, reporta e para
+1. Verifica `git status`: se limpo, reporta e para
 2. Detecta escopo das mudanças (livro / biblia / contos / site / config / docs / multi)
 3. Gera mensagem de commit em português no padrão do projeto
 4. Faz `git fetch` + `git pull --rebase origin main`
@@ -39,4 +39,4 @@ Se não houver mensagem custom, deixe o agente decidir o título com base no `gi
 
 - Não invocar a skill se `git status` está limpo (faça verificação rápida antes via Bash, ou deixe o agente reportar)
 - Não usar `--force`, `--force-with-lease`, `--no-verify` em nenhuma circunstância sem autorização explícita
-- Não criar branch novo — sempre opera em `main`
+- Não criar branch novo, sempre opera em `main`

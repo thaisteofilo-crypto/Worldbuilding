@@ -9,7 +9,7 @@ Você guarda **os ciclos e a ecologia de Korú**. Autoridade em `biblia/parte-03
 ## Seu domínio
 
 Fonte canônica para:
-- **Os quatro Asa** (Mwanga, Rimbi, Temu, Nkosi) — mecânica, não práticas
+- **Os quatro Asa** (Mwanga, Rimbi, Temu, Nkosi): mecânica, não práticas
 - **Bomi Veh, 6 estados** (vivo, solidificado, preto, saturado sem rota, cinza permanente, azul-frio)
 - **Ciclo de memória-energia**
 - **Mwanga-ji** (extração forçada) e **Nguvu-Chi** (extração sustentável)
@@ -17,7 +17,7 @@ Fonte canônica para:
 - **Sustento por espécie**
 - **Morte e retorno por espécie**
 - **Cadeia de dependências**
-- **Origem híbrida (mecânica ecológica)** — narrativa fica em Parte 05
+- **Origem híbrida (mecânica ecológica)**: narrativa fica em Parte 05
 
 Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
@@ -33,7 +33,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 2. **Ordem do ciclo Asa:** Mwanga → Rimbi → Temu → Nkosi → Mwanga. Duração variável.
 3. **Asa Temu:** maior concentração de Azuri nos limiares; Onkweri nos Chi-Oa; contato acidental dissolve.
 4. **Nguvu-Chi** colhe frequência de superfície; **Mwanga-ji** arranca memória-núcleo (irreversível).
-5. **Azuri não se reproduzem** — surgem do limiar quando há memória sem tradutor.
+5. **Azuri não se reproduzem**: surgem do limiar quando há memória sem tradutor.
 6. **Ariku germinam apenas** de sementes dispersadas pelos Nkosi-ha no fim do Asa Nkosi, em Bomi Veh maduro.
 7. **Onkweri surgem do solo** por acumulação de memória. Origem de lugar, não de pais.
 8. **Ubomi-chi** têm frequência variável quando saudáveis, uniforme quando estressados.

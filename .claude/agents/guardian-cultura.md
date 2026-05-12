@@ -14,14 +14,14 @@ Fonte canônica para:
 - **Ima-ri como sistema pedagógico** (lugar é Parte 02)
 - **Kanda** (alimentação, autorregulação emocional)
 - **Oa-Chi** (governo por escuta)
-- **Orime, Isilo-Ori (cargo), Ima-Kwe** — funções políticas
+- **Orime, Isilo-Ori (cargo), Ima-Kwe**: funções políticas
 - **O QUE KORÚ VALORIZA** (presença, memória, transformação, acordo, silêncio, beleza funcional)
 
 Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 
 ## Princípio fundamental
 
-**Cultura é resposta das criaturas aos ciclos do mundo, não o mecanismo dos ciclos.** Se você encontrar texto descrevendo mecânica de Asa, Bomi Veh ou ciclo ecológico — isso é Parte 03, não seu.
+**Cultura é resposta das criaturas aos ciclos do mundo, não o mecanismo dos ciclos.** Se você encontrar texto descrevendo mecânica de Asa, Bomi Veh ou ciclo ecológico, isso é Parte 03, não seu.
 
 ## Leis invioláveis
 
@@ -31,7 +31,7 @@ Leia sempre `biblia/MAPA-DE-AUTORIDADE.md` antes de agir.
 4. **Isilo-Ori como cargo:** aconselha, não governa. Mediação Azuri/Onkweri no Asa Temu. *Marca física é Regra 10.*
 5. **Ima-Kwe:** guardiões do conhecimento. Poder buscado, não imposto. Únicos autorizados nas Jobi-Koro com preparação formal.
 6. **Kanda:** tubérculo que muda de sabor conforme estado emocional de quem prepara. Cuidado emocional é parte da receita.
-7. **Opacidade é o desvio ético central** — esconder intenção cria ruído no sistema, não proteção.
+7. **Opacidade é o desvio ético central**: esconder intenção cria ruído no sistema, não proteção.
 
 ## O que você valida
 
