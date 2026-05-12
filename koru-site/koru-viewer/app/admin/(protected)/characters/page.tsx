@@ -605,7 +605,7 @@ export default function CharactersPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
                 <EditableField label="Morfologia" value={char.morphology ?? ""} onSave={(v) => saveField(char.id, "morphology", v)} multiline />
                 <EditableField label="Habilidade" value={char.ability ?? ""} onSave={(v) => saveField(char.id, "ability", v)} multiline />
-                <EditableField label="Características" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
+                <EditableField label="Sinal" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
               </div>
 
               {/* Character details — world */}

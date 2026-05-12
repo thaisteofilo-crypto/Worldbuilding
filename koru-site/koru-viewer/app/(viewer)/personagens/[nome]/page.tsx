@@ -175,7 +175,7 @@ export default async function PersonagemPage({ params }: Props) {
     { label: "Morfologia", value: char.morphology },
     { label: "Capacidade", value: char.ability },
     { label: "Origem", value: char.origin },
-    { label: "Características", value: char.mark },
+    { label: "Sinal", value: char.mark },
   ].filter(({ value }) => value && value.trim() !== "" && value !== "A definir")
 
   const statusTone = char.status ? resolveStatusTone(char.status) : null
