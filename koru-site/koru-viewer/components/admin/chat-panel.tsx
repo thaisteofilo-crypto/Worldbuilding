@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
+import { usePathname } from 'next/navigation'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -1047,9 +1048,11 @@ interface ChatToggleProps {
 }
 
 export function ChatToggleButton({ open, onClick, unread }: ChatToggleProps) {
+  const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted) return null
+  if (pathname !== '/admin/editor') return null
 
   return createPortal(
     <button

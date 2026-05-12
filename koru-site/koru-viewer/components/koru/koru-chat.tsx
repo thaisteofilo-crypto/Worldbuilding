@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 type Message = {
@@ -34,6 +35,7 @@ function formatHistoryDate(iso: string): string {
 }
 
 export function KoruChat() {
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<View>("chat")
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
@@ -262,6 +264,8 @@ export function KoruChat() {
   }
 
   const busy = pending || streaming
+
+  if (pathname?.startsWith('/admin')) return null
 
   return (
     <>
