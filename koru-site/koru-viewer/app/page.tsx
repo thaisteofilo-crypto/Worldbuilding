@@ -76,17 +76,15 @@ function LockedCardOverlay({ releaseAt, kicker }: LockedCardOpts) {
 }
 
 function JourneyStage({
-  number,
   title,
   description,
   startHref,
   startLabel = "Começar",
-  isLast = false,
   bannerImage,
   bannerVideo,
   children,
 }: {
-  number: string
+  number?: string
   title: string
   description: string
   startHref: string
@@ -99,11 +97,11 @@ function JourneyStage({
   const hasBanner = !!(bannerImage || bannerVideo)
   return (
     <section className="relative px-4 md:px-16 py-14 md:py-20">
-      {/* Subtle banner anchored behind the number — blurred, low-opacity, contained */}
+      {/* Subtle banner background, blurred, low-opacity */}
       {hasBanner && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-0 md:left-4 hidden md:block"
+          className="pointer-events-none absolute top-1/2 -translate-y-1/2 left-0 hidden md:block"
           style={{
             width: "22rem",
             height: "22rem",
@@ -135,59 +133,25 @@ function JourneyStage({
         </div>
       )}
 
-      <div className="relative grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 md:gap-10" style={{ zIndex: 1 }}>
-        {/* Number column with vertical connector */}
-        <div className="relative flex md:flex-col items-start md:items-center md:pt-2">
-          <span
-            className="font-serif leading-none select-none"
-            style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
-              fontSize: "clamp(3.5rem, 8vw, 6rem)",
-              color: "var(--foreground)",
-              opacity: 0.18,
-            }}
-          >
-            {number}
-          </span>
-          {!isLast && (
-            <div
-              aria-hidden="true"
-              className="hidden md:block mt-6 w-px flex-1 self-stretch"
-              style={{ backgroundColor: "var(--border)", minHeight: "4rem" }}
-            />
-          )}
-        </div>
-
-        {/* Content column */}
-        <div className="min-w-0">
-          <h2
-            className="font-serif text-3xl md:text-4xl leading-tight mb-3"
-            style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--foreground)" }}
-          >
-            {title}
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mb-8 leading-relaxed font-sans">
-            {description}
-          </p>
-          <div className="mb-6">{children}</div>
-          <Link
-            href={startHref}
-            className="inline-flex items-center gap-2 text-sm font-sans text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {startLabel}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+      <div className="relative min-w-0" style={{ zIndex: 1 }}>
+        <h2
+          className="font-serif text-5xl md:text-7xl leading-[1.05] mb-5 tracking-tight"
+          style={{ fontFamily: "var(--font-serif), Georgia, serif", color: "var(--foreground)" }}
+        >
+          {title}
+        </h2>
+        <p className="text-base text-muted-foreground max-w-2xl mb-8 leading-relaxed font-sans">
+          {description}
+        </p>
+        <div className="mb-6">{children}</div>
+        <Link
+          href={startHref}
+          className="inline-flex items-center gap-2 text-sm font-sans text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {startLabel}
+          <span aria-hidden="true">→</span>
+        </Link>
       </div>
-
-      {/* Mobile connector below stage */}
-      {!isLast && (
-        <div
-          aria-hidden="true"
-          className="md:hidden mx-auto mt-10 w-px h-12"
-          style={{ backgroundColor: "var(--border)" }}
-        />
-      )}
     </section>
   )
 }
@@ -357,7 +321,7 @@ export default async function HomePage() {
       {/* Jornada vertical — 4 etapas numeradas */}
       <JourneyStage
         number="01"
-        title={get(siteContent, "section.biblia.label", "Entender o mundo")}
+        title={get(siteContent, "section.biblia.title", "O arquivo vivo")}
         description={get(siteContent, "section.biblia.description", "A bíblia é a fundação. Aqui o mundo se explica por dentro: a física da memória, os ciclos de luz, as criaturas que habitam o Akwu. Comece por aqui se quiser saber em que terreno está pisando.")}
         startHref={bibliaHref}
         startLabel="Começar pela bíblia"
@@ -381,14 +345,19 @@ export default async function HomePage() {
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                  {doc.label.includes(" · ") ? (
-                    <>
-                      <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
-                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
-                    </>
-                  ) : (
-                    <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
-                  )}
+                  {(() => {
+                    // Prefer siteContent title when it carries the kicker · title format,
+                    // otherwise fall back to the source doc.label which usually has it.
+                    const displayLabel = title.includes(" · ") ? title : doc.label.includes(" · ") ? doc.label : title
+                    return displayLabel.includes(" · ") ? (
+                      <>
+                        <p className="text-xs md:text-sm font-sans text-white/50">{displayLabel.split(" · ")[0]}</p>
+                        <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{displayLabel.split(" · ")[1]}</p>
+                      </>
+                    ) : (
+                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{displayLabel}</p>
+                    )
+                  })()}
                 </div>
               </div>
             )
@@ -410,7 +379,7 @@ export default async function HomePage() {
 
       <JourneyStage
         number="02"
-        title={get(siteContent, "section.personagens.label", "Conhecer quem habita")}
+        title={get(siteContent, "section.personagens.title", "Os seres do Akwu")}
         description={get(siteContent, "section.personagens.description", "Os personagens são as ressonâncias do mundo. Amara, Oruku, Temiku, Beku: cada um carrega uma frequência, uma falha, um eco. Conheça-os antes de entrar nas histórias.")}
         startHref={personagensHref}
         startLabel="Conhecer os personagens"
@@ -456,7 +425,7 @@ export default async function HomePage() {
 
       <JourneyStage
         number="03"
-        title={get(siteContent, "section.contos.label", "Ler as histórias")}
+        title={get(siteContent, "section.contos.title", "Vozes do Akwu")}
         description={get(siteContent, "section.contos.description", "Cada conto é um corte rente: uma cena, uma decisão, uma perda. Pequenos textos literários que mostram o mundo por dentro de quem o vive. Comece por Amara e siga na ordem, ou escolha o nome que te chamar.")}
         startHref={contosHref}
         startLabel="Ler os contos"
@@ -502,7 +471,7 @@ export default async function HomePage() {
 
       <JourneyStage
         number="04"
-        title={get(siteContent, "section.livro.label", "Mergulhar no livro")}
+        title={get(siteContent, "section.livro.title", "O Peso da Luz")}
         description={get(siteContent, "section.livro.description", "A história de Temiku, em capítulos. O fio longo do mundo, do início ao fim, sem atalho. Leia depois dos contos, ou antes, se preferir o caminho largo primeiro.")}
         startHref={livroHref}
         startLabel="Mergulhar no livro"
