@@ -19,6 +19,7 @@ import {
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 /* ─── Tipos ─── */
 
@@ -581,19 +582,14 @@ export function AIAnalysisPanel() {
 
                 {/* Follow-up input */}
                 <div className="mt-6 flex gap-2">
-                  <input
+                  <Input
                     type="text"
                     value={followUpInput}
                     onChange={e => setFollowUpInput(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFollowUp() } }}
                     placeholder="Perguntar sobre esta análise..."
                     disabled={followUpStreaming}
-                    className="flex-1 rounded-full px-4 py-2 font-sans text-sm outline-none disabled:opacity-50"
-                    style={{
-                      background: "color-mix(in oklch, var(--foreground) 5%, transparent)",
-                      border: "1px solid var(--border)",
-                      color: "var(--foreground)",
-                    }}
+                    className="flex-1 rounded-full font-sans text-sm h-9"
                   />
                   <Button
                     onClick={sendFollowUp}

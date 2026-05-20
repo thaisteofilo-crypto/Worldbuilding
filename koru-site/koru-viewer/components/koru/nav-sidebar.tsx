@@ -5,6 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookOpen, BookMarked, FileText, Users, Images, MessageCircle, ChevronRight, Search } from "lucide-react"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
 interface NavItem { slug: string; title: string }
@@ -67,10 +69,11 @@ function Section({
 
   return (
     <div>
-      <button
+      <Button
+        variant="ghost"
         onClick={() => hasItems && setOpen(!open)}
         className={cn(
-          "flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm koru-nav-item",
+          "flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm koru-nav-item h-auto justify-start",
           isActiveSection
             ? "bg-admin-active text-foreground font-medium"
             : "text-muted-foreground hover:bg-admin-hover hover:text-foreground",
@@ -86,7 +89,7 @@ function Section({
             <ChevronRight size={12} />
           </span>
         )}
-      </button>
+      </Button>
       {open && hasItems && (
         <div className="mt-0.5 mb-0.5 flex flex-col gap-0.5">
           {items.map((item) => (
@@ -174,10 +177,11 @@ export function NavSidebar() {
 
         {/* Search */}
         <div className="px-3 pt-2">
-          <button
+          <Button
+            variant="ghost"
             onClick={() => window.dispatchEvent(new CustomEvent("koru:open-search"))}
             aria-label="Buscar (Ctrl+K)"
-            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground koru-nav-item hover:bg-admin-hover hover:text-foreground"
+            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground koru-nav-item hover:bg-admin-hover hover:text-foreground h-auto justify-start"
             style={{ border: "1px solid var(--border)" }}
           >
             <Search size={14} aria-hidden="true" className="opacity-45" />
@@ -185,24 +189,26 @@ export function NavSidebar() {
             <kbd className="text-[10px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid var(--border)" }}>
               ⌘K
             </kbd>
-          </button>
+          </Button>
         </div>
 
         {/* Nav */}
-        <nav className="flex flex-col gap-0.5 p-3 pt-2 flex-1">
-          {loadError && (
-            <p className="font-sans text-xs italic px-3 py-2 text-muted-foreground">
-              Documentos indisponíveis
-            </p>
-          )}
+        <ScrollArea className="flex-1">
+          <nav className="flex flex-col gap-0.5 p-3 pt-2">
+            {loadError && (
+              <p className="font-sans text-xs italic px-3 py-2 text-muted-foreground">
+                Documentos indisponíveis
+              </p>
+            )}
 
-          <Section title="Bíblia" icon={<BookOpen size={16} />} items={bibliaItems} basePath="/biblia" />
-          <Section title="Personagens" icon={<Users size={16} />} items={personagensItems} basePath="/personagens" />
-          <Section title="Contos" icon={<FileText size={16} />} items={contosItems} basePath="/contos" />
-          <Section title="Livro" icon={<BookMarked size={16} />} items={livroItems} basePath="/livro" />
-          <FlatLink href="/galeria" icon={<Images size={16} />} label="Galeria" />
-          <FlatLink href="/perguntas-ao-mundo" icon={<MessageCircle size={16} />} label="Perguntas ao mundo" />
-        </nav>
+            <Section title="Bíblia" icon={<BookOpen size={16} />} items={bibliaItems} basePath="/biblia" />
+            <Section title="Personagens" icon={<Users size={16} />} items={personagensItems} basePath="/personagens" />
+            <Section title="Contos" icon={<FileText size={16} />} items={contosItems} basePath="/contos" />
+            <Section title="Livro" icon={<BookMarked size={16} />} items={livroItems} basePath="/livro" />
+            <FlatLink href="/galeria" icon={<Images size={16} />} label="Galeria" />
+            <FlatLink href="/perguntas-ao-mundo" icon={<MessageCircle size={16} />} label="Perguntas ao mundo" />
+          </nav>
+        </ScrollArea>
       </SidebarContent>
     </Sidebar>
   )

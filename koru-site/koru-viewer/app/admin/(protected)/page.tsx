@@ -129,7 +129,7 @@ export default function AdminDashboardPage() {
             Painel de controle do mundo de Korú
           </p>
         </div>
-        <Button variant="outline" size="sm" asChild className="rounded-full gap-2">
+        <Button variant="outline" size="sm" asChild className="gap-2">
           <Link href="/" target="_blank" rel="noopener noreferrer">
             <ExternalLink size={13} aria-hidden="true" />
             Ver site

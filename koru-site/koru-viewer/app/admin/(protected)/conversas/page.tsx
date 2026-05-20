@@ -168,14 +168,14 @@ export default async function ConversasPage({ searchParams }: PageProps) {
           </p>
           <div className="flex items-center gap-2">
             {page > 1 && (
-              <Button asChild variant="outline" size="sm" className="rounded-full">
+              <Button asChild variant="outline" size="sm">
                 <Link href={`/admin/conversas?page=${page - 1}`}>
                   Anterior
                 </Link>
               </Button>
             )}
             {page < totalPages && (
-              <Button asChild variant="outline" size="sm" className="rounded-full">
+              <Button asChild variant="outline" size="sm">
                 <Link href={`/admin/conversas?page=${page + 1}`}>
                   Próxima
                 </Link>

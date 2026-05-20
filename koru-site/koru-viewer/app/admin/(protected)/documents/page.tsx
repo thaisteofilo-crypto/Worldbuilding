@@ -174,7 +174,7 @@ export default function DocumentsPage() {
                 <Button
                   onClick={() => inputRef.current?.click()}
                   disabled={uploading}
-                  className="w-full rounded-full"
+                  className="w-full"
                 >
                   <Upload size={14} />
                   {uploading ? "Processando..." : "Enviar"}

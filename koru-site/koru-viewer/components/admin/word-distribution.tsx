@@ -1,6 +1,8 @@
 "use client"
 
 import { GlassCard } from "@/components/ui/glass-card"
+import { Badge } from "@/components/ui/badge"
+import { Progress, ProgressTrack, ProgressIndicator } from "@/components/ui/progress"
 
 interface Props {
   chapters: Array<{ slug: string; title: string; words: number; tensionScore: number }>
@@ -52,7 +54,7 @@ interface BarRowProps {
 }
 
 function BarRow({ label, words, maxWords, barColor, extra }: BarRowProps) {
-  const pct = maxWords > 0 ? (words / maxWords) * 100 : 0
+  const pct = maxWords > 0 ? Math.round((words / maxWords) * 100) : 0
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-2">
@@ -72,23 +74,11 @@ function BarRow({ label, words, maxWords, barColor, extra }: BarRowProps) {
           </span>
         </div>
       </div>
-      <div
-        className="w-full rounded-full overflow-hidden"
-        style={{
-          height: 6,
-          background: "color-mix(in oklch, var(--foreground) 6%, transparent)",
-        }}
-      >
-        <div
-          style={{
-            width: `${pct}%`,
-            height: "100%",
-            background: barColor,
-            borderRadius: "9999px",
-            transition: "width 0.4s ease",
-          }}
-        />
-      </div>
+      <Progress value={pct} aria-label={`${label}: ${formatWords(words)} palavras`} className="w-full">
+        <ProgressTrack className="h-[6px]" style={{ background: "color-mix(in oklch, var(--foreground) 6%, transparent)" }}>
+          <ProgressIndicator style={{ background: barColor, transition: "width 0.4s ease" }} />
+        </ProgressTrack>
+      </Progress>
     </div>
   )
 }
@@ -138,15 +128,9 @@ export function WordDistribution({
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span
-                className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
-                style={{
-                  background: "color-mix(in oklch, var(--foreground) 7%, transparent)",
-                  color: "var(--muted-foreground)",
-                }}
-              >
+              <Badge variant="outline" className="font-sans text-[10px] uppercase tracking-[0.15em] shrink-0">
                 Palavras
-              </span>
+              </Badge>
               <h2
                 id="word-dist-heading"
                 className="font-serif text-xl leading-tight"

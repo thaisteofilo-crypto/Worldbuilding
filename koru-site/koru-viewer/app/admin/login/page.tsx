@@ -142,7 +142,7 @@ export default function AdminLoginPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full h-10 mt-2"
+            className="w-full h-10 mt-2"
           >
             {loading ? "Entrando..." : "Entrar"}
           </Button>

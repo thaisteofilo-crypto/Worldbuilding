@@ -124,7 +124,7 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
               <Button
                 onClick={handleClick}
                 size="sm"
-                className="rounded-full font-sans font-medium"
+                className="font-sans font-medium"
                 style={{ background: 'white', color: 'oklch(0 0 0)' }}
                 title="Alterar imagem"
               >
@@ -136,7 +136,7 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
                   onClick={() => onDelete(slot.key)}
                   variant="destructive"
                   size="sm"
-                  className="rounded-full font-sans font-medium"
+                  className="font-sans font-medium"
                   title="Remover imagem"
                 >
                   <Trash2 size={11} />

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import type { Task } from '@/lib/database.types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -517,18 +518,18 @@ function TaskCard({
           }}
           className="font-sans text-sm h-8"
         />
-        <textarea
+        <Textarea
           value={editData.description}
           onChange={(e) => setEditData((d) => ({ ...d, description: e.target.value }))}
           rows={2}
           placeholder="Descrição (opcional)"
-          className="mt-2 w-full resize-none rounded border border-border bg-background px-2 py-1.5 font-sans text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-[var(--foreground)]"
+          className="mt-2 min-h-0 text-xs py-1.5"
         />
         <div className="mt-2 flex gap-2">
           <select
             value={editData.category}
             onChange={(e) => setEditData((d) => ({ ...d, category: e.target.value as Task['category'] }))}
-            className="flex-1 rounded border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)]"
+            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
           >
             <option value="outro">outro</option>
             <option value="conto">conto</option>
@@ -539,7 +540,7 @@ function TaskCard({
           <select
             value={editData.priority}
             onChange={(e) => setEditData((d) => ({ ...d, priority: e.target.value as Task['priority'] }))}
-            className="flex-1 rounded border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)]"
+            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
           >
             <option value="low">↓ baixa</option>
             <option value="normal">– normal</option>
@@ -551,7 +552,7 @@ function TaskCard({
             onClick={handleSave}
             disabled={!editData.title.trim()}
             size="xs"
-            className="flex-1 rounded-full"
+            className="flex-1"
           >
             Salvar
           </Button>
@@ -559,7 +560,6 @@ function TaskCard({
             onClick={() => setEditing(false)}
             variant="ghost"
             size="xs"
-            className="rounded-full"
           >
             Cancelar
           </Button>
@@ -567,7 +567,6 @@ function TaskCard({
             onClick={() => onDelete(task.id)}
             variant="destructive"
             size="xs"
-            className="rounded-full"
           >
             Excluir
           </Button>
@@ -697,18 +696,18 @@ function AddTaskForm({
         }}
         className="font-sans text-sm h-8"
       />
-      <textarea
+      <Textarea
         placeholder="Descrição (opcional)"
         value={newTask.description}
         onChange={(e) => onChange({ ...newTask, description: e.target.value })}
         rows={2}
-        className="mt-2 w-full resize-none rounded border border-border bg-background px-2 py-1.5 font-sans text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-[var(--foreground)]"
+        className="mt-2 min-h-0 text-xs py-1.5"
       />
       <div className="mt-2 flex gap-2">
         <select
           value={newTask.category}
           onChange={(e) => onChange({ ...newTask, category: e.target.value as Task['category'] })}
-          className="flex-1 rounded border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)]"
+          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
         >
           <option value="outro">outro</option>
           <option value="conto">conto</option>
@@ -719,7 +718,7 @@ function AddTaskForm({
         <select
           value={newTask.priority}
           onChange={(e) => onChange({ ...newTask, priority: e.target.value as Task['priority'] })}
-          className="flex-1 rounded border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)]"
+          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
         >
           <option value="low">↓ baixa</option>
           <option value="normal">– normal</option>
@@ -731,7 +730,7 @@ function AddTaskForm({
           onClick={onSave}
           disabled={saving || !newTask.title.trim()}
           size="xs"
-          className="flex-1 rounded-full"
+          className="flex-1"
         >
           {saving ? 'Salvando...' : 'Adicionar'}
         </Button>
@@ -739,7 +738,6 @@ function AddTaskForm({
           onClick={onCancel}
           variant="ghost"
           size="xs"
-          className="rounded-full"
         >
           Cancelar
         </Button>

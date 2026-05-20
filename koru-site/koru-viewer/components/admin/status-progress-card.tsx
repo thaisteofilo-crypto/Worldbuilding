@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react"
 import { DOCUMENT_STATUSES, DocumentStatus } from "@/lib/document-status"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 interface Props {
   counts: Record<DocumentStatus, number>
@@ -29,15 +30,9 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4">
           <div className="min-w-0 md:flex-1">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
-                style={{
-                  background: "color-mix(in oklch, var(--foreground) 7%, transparent)",
-                  color: "var(--muted-foreground)",
-                }}
-              >
+              <Badge variant="outline" className="font-sans text-[10px] uppercase tracking-[0.15em] shrink-0">
                 Progresso
-              </span>
+              </Badge>
               <h2 id="status-docs-heading" className="font-serif text-xl leading-tight" style={{ color: "var(--foreground)" }}>
                 Status dos documentos
               </h2>
@@ -47,7 +42,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
               {withoutStatus > 0 && ` ${withoutStatus} sem classificação.`}
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild className="rounded-full gap-1.5 shrink-0">
+          <Button variant="outline" size="sm" asChild className="gap-1.5 shrink-0">
             <Link href="/admin/editor">
               Ir para o editor
               <ChevronRight size={11} aria-hidden="true" />

@@ -71,15 +71,9 @@ export function StatusList({ statusByDoc, counts }: Props) {
   return (
     <GlassCard variant="frosted" className="overflow-hidden" aria-labelledby="status-list-heading" role="region">
       <div className="px-5 pt-5 pb-4 flex items-center gap-2 flex-wrap">
-        <span
-          className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
-          style={{
-            background: "color-mix(in oklch, var(--foreground) 7%, transparent)",
-            color: "var(--muted-foreground)",
-          }}
-        >
+        <Badge variant="outline" className="font-sans text-[10px] uppercase tracking-[0.15em] shrink-0">
           Status
-        </span>
+        </Badge>
         <h2
           id="status-list-heading"
           className="font-serif text-xl leading-tight"

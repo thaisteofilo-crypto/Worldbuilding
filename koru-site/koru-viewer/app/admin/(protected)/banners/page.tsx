@@ -366,7 +366,6 @@ function BannerSlot({
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
               size="sm"
-              className="rounded-full"
             >
               {imageUrl ? "Trocar" : "Upload"}
             </Button>
@@ -376,7 +375,6 @@ function BannerSlot({
                 disabled={uploading}
                 variant="outline"
                 size="sm"
-                className="rounded-full"
               >
                 Remover
               </Button>

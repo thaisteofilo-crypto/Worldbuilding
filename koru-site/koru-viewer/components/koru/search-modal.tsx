@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 export interface SearchResult {
   title: string
@@ -175,13 +177,13 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
 
-            <input
+            <Input
               ref={inputRef}
               type="search"
               placeholder="Buscar em Korú..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 py-4 bg-transparent font-sans text-sm outline-none"
+              className="flex-1 py-4 bg-transparent font-sans text-sm outline-none border-0 ring-0 focus-visible:ring-0 focus-visible:border-0 h-auto rounded-none px-0"
               style={{ color: "var(--foreground)" }}
               spellCheck={false}
               autoComplete="off"
@@ -240,8 +242,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                     aria-selected={isActive}
                     data-active={isActive ? "true" : undefined}
                   >
-                    <button
-                      className="w-full text-left px-4 py-3 transition-colors"
+                    <Button
+                      variant="ghost"
+                      className="w-full text-left px-4 py-3 transition-colors h-auto rounded-none justify-start"
                       style={{
                         background: isActive ? "color-mix(in oklch, var(--accent) 8%, transparent)" : "transparent",
                         cursor: "pointer",
@@ -279,7 +282,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       >
                         {highlightTerm(result.excerpt, query)}
                       </p>
-                    </button>
+                    </Button>
 
                     {/* Separator (between items, not after last) */}
                     {i < results.length - 1 && (

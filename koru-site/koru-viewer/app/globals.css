@@ -45,6 +45,35 @@
     --color-admin-hover: var(--admin-hover);
     --color-admin-active: var(--admin-active);
     --color-admin-badge-border: var(--admin-badge-border);
+    /* Design System brand colors */
+    --color-iara: #0B6377;
+    --color-una: #090E17;
+    --color-alva: #77C5D5;
+    --color-orvalho: #DEF7F9;
+    --color-mare: #92DCE2;
+    --color-jala: #35BDC8;
+    --color-mara: #2CA0AB;
+    --color-omi: #1A6872;
+    --color-pego: #114F56;
+    --color-ibu: #0B363C;
+    --color-barro: #8B3D17;
+    --color-mel: #9B6C22;
+    --color-mata: #707C36;
+    --color-jambo: #BF505C;
+    --color-brasa: #DD560D;
+    --color-urucum: #C72211;
+    --color-gray-0: #000000;
+    --color-gray-950: #101010;
+    --color-gray-900: #202020;
+    --color-gray-800: #303030;
+    --color-gray-700: #484848;
+    --color-gray-600: #5E5E5E;
+    --color-gray-400: #A4A4A4;
+    --color-gray-300: #BCBCBC;
+    --color-gray-200: #D4D4D4;
+    --color-gray-100: #E7E7E7;
+    --color-gray-50: #F2F2F2;
+    --font-mono: 'Space Mono', ui-monospace, Consolas, monospace;
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -56,7 +85,7 @@
 
 /* ─── Light mode (Korú — creme DS) ─── */
 :root {
-    --background: oklch(0.953 0.016 85);
+    --background: #F7F2E6;
     --surface: oklch(0.92 0.013 85);
     --foreground: oklch(0.15 0.01 280);
     --card: oklch(0.985 0.008 85);
@@ -507,4 +536,20 @@
 .koru-editor table tbody tr:nth-child(even) td,
 .ProseMirror table tbody tr:nth-child(even) td {
   background: color-mix(in oklch, var(--foreground) 3%, transparent);
+}
+
+/* Design System accordion animations */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--accordion-panel-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--accordion-panel-height); }
+  to { height: 0; }
+}
+
+@theme {
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Menu } from 'lucide-react'
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -27,9 +28,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <span className="font-serif text-lg tracking-tight text-foreground">
             Korú
           </span>
-          <span className="rounded-full border border-admin-badge-border px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase text-muted-foreground">
+          <Badge variant="outline" className="font-mono text-[9px] uppercase tracking-[0.15em]">
             Admin
-          </span>
+          </Badge>
         </header>
         <main id="main-content" className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>

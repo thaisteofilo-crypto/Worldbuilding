@@ -275,7 +275,6 @@ export default function GalleryPage() {
                   disabled={selectedIds.size === 0}
                   variant="destructive"
                   size="sm"
-                  className="rounded-full"
                 >
                   Excluir selecionadas
                 </Button>
@@ -283,7 +282,6 @@ export default function GalleryPage() {
                   onClick={exitSelectMode}
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
                 >
                   Cancelar
                 </Button>
@@ -294,7 +292,6 @@ export default function GalleryPage() {
                   onClick={enterSelectMode}
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
                 >
                   Selecionar
                 </Button>
@@ -329,7 +326,6 @@ export default function GalleryPage() {
             <Button
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="rounded-full"
             >
               <Plus size={14} />
               {uploading ? "Enviando..." : "Enviar"}
@@ -527,7 +523,7 @@ export default function GalleryPage() {
                         }}
                         variant="ghost"
                         size="icon-sm"
-                        className="shrink-0 rounded-full"
+                        className="shrink-0"
                         style={{ background: "oklch(0 0 0 / 0.4)" }}
                         title="Excluir"
                       >
@@ -554,7 +550,7 @@ export default function GalleryPage() {
             onClick={(e) => { e.stopPropagation(); goPrev() }}
             variant="ghost"
             size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full z-10"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
             <ChevronLeft size={20} stroke="white" />
@@ -563,7 +559,7 @@ export default function GalleryPage() {
             onClick={(e) => { e.stopPropagation(); goNext() }}
             variant="ghost"
             size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full z-10"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
             <ChevronRight size={20} stroke="white" />
@@ -588,7 +584,7 @@ export default function GalleryPage() {
                 onClick={() => handleDelete(selected.name)}
                 variant="ghost"
                 size="sm"
-                className="font-sans text-xs rounded-full"
+                className="font-sans text-xs"
                 style={{ color: "var(--muted-foreground)" }}
               >
                 Excluir
@@ -597,7 +593,7 @@ export default function GalleryPage() {
                 onClick={closeLightbox}
                 variant="ghost"
                 size="sm"
-                className="ml-2 font-sans text-sm rounded-full"
+                className="ml-2 font-sans text-sm"
                 style={{ color: "oklch(1 0 0 / 0.5)" }}
               >
                 Fechar
@@ -678,7 +674,6 @@ export default function GalleryPage() {
                   onClick={handleSavePrompt}
                   disabled={savingPrompt || !hasChanges}
                   size="sm"
-                  className="rounded-full"
                   style={{ background: "oklch(1 0 0 / 0.15)", color: "oklch(1 0 0 / 0.7)" }}
                 >
                   {savingPrompt ? "Salvando..." : "Salvar"}
@@ -697,7 +692,7 @@ export default function GalleryPage() {
             onClick={closeLightbox}
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 rounded-full"
+            className="absolute top-4 right-4"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
             <X size={18} stroke="white" />

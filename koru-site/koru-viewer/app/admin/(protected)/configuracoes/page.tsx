@@ -213,7 +213,6 @@ export default function ConfiguracoesPage() {
               <Button
                 type="submit"
                 disabled={saving}
-                className="rounded-full"
               >
                 {saving ? 'Salvando...' : configured ? 'Substituir chave' : 'Salvar chave'}
               </Button>
@@ -224,7 +223,6 @@ export default function ConfiguracoesPage() {
                   variant="outline"
                   onClick={handleTest}
                   disabled={testing}
-                  className="rounded-full"
                 >
                   {testing ? 'Testando...' : 'Testar conexao'}
                 </Button>

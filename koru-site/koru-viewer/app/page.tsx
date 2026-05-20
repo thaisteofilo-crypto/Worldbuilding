@@ -10,6 +10,7 @@ import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
 import { Button } from "@/components/ui/button"
+import { Settings, Lock } from "lucide-react"
 
 interface DocEntry { label: string; path: string }
 
@@ -60,10 +61,7 @@ function LockedCardOverlay({ releaseAt, kicker }: LockedCardOpts) {
     <>
       <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.55)", backdropFilter: "blur(2px)" }} />
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 px-4 text-center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "oklch(1 0 0 / 0.7)" }}>
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
+        <Lock size={22} style={{ color: "oklch(1 0 0 / 0.7)" }} />
         <p className="font-sans text-[10px] uppercase tracking-[0.18em]" style={{ color: "oklch(1 0 0 / 0.55)" }}>
           {kicker ?? "Em breve"}
         </p>
@@ -246,10 +244,7 @@ export default async function HomePage() {
           aria-label="Admin"
           title="Admin"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-foreground">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
+          <Settings size={14} className="text-foreground" />
         </Link>
         <ThemeToggle />
       </div>
@@ -295,7 +290,7 @@ export default async function HomePage() {
             variant="outline"
             size="default"
             asChild
-            className="koru-content-enter rounded-full backdrop-blur-sm"
+            className="koru-content-enter border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-md dark:border-white/30 dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
             style={{ animationDelay: "0.7s" }}
           >
             <Link href={bibliaHref}>

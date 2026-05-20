@@ -2,6 +2,7 @@
 
 import { GlassCard } from "@/components/ui/glass-card"
 import { Badge } from "@/components/ui/badge"
+import { Progress, ProgressTrack, ProgressIndicator } from "@/components/ui/progress"
 
 interface Props {
   taskStats: {
@@ -34,15 +35,9 @@ export function TasksBreakdown({ taskStats }: Props) {
     <GlassCard variant="frosted" className="p-5" aria-labelledby="tasks-breakdown-heading" role="region">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
-            style={{
-              background: "color-mix(in oklch, var(--foreground) 7%, transparent)",
-              color: "var(--muted-foreground)",
-            }}
-          >
+          <Badge variant="outline" className="font-sans text-[10px] uppercase tracking-[0.15em] shrink-0">
             Tarefas
-          </span>
+          </Badge>
           <h2
             id="tasks-breakdown-heading"
             className="font-serif text-xl leading-tight"
@@ -78,7 +73,7 @@ export function TasksBreakdown({ taskStats }: Props) {
       {categoryEntries.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {categoryEntries.map(([category, count]) => {
-            const barWidth = Math.round((count / maxCount) * 100)
+            const barValue = Math.round((count / maxCount) * 100)
             const label = category.charAt(0).toUpperCase() + category.slice(1)
             return (
               <div
@@ -103,18 +98,11 @@ export function TasksBreakdown({ taskStats }: Props) {
                     {count}
                   </span>
                 </div>
-                <div
-                  className="w-full h-1 rounded-full overflow-hidden"
-                  style={{ background: "color-mix(in oklch, var(--foreground) 8%, transparent)" }}
-                >
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: barWidth + "%",
-                      background: "var(--accent)",
-                    }}
-                  />
-                </div>
+                <Progress value={barValue} aria-label={`${label}: ${count}`} className="w-full">
+                  <ProgressTrack className="h-1">
+                    <ProgressIndicator />
+                  </ProgressTrack>
+                </Progress>
               </div>
             )
           })}

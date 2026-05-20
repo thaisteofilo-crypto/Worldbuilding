@@ -5,6 +5,7 @@ import { ImagePositioner } from "@/components/admin/image-positioner"
 import type { Character } from "@/lib/database.types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton, SkeletonContainer } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
@@ -141,7 +142,6 @@ function ViewImageSlot({
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
             size="xs"
-            className="rounded-full"
           >
             {url ? "Trocar" : "Enviar"}
           </Button>
@@ -151,7 +151,6 @@ function ViewImageSlot({
               disabled={uploading}
               variant="outline"
               size="xs"
-              className="rounded-full"
             >
               Remover
             </Button>
@@ -197,9 +196,8 @@ function EditableField({
       <div>
         <p className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>{label}</p>
         {multiline ? (
-          <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} autoFocus
-            className="mt-1 w-full rounded px-2 py-1 font-sans text-xs leading-relaxed outline-none text-foreground"
-            style={{ background: "var(--background)", border: "1px solid var(--foreground)", resize: "vertical" }}
+          <Textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} autoFocus
+            className="mt-1 min-h-0 font-sans text-xs leading-relaxed resize-vertical py-1"
           />
         ) : (
           <Input value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus
@@ -208,10 +206,10 @@ function EditableField({
           />
         )}
         <div className="mt-1 flex gap-1">
-          <Button onClick={save} disabled={saving} size="xs" className="rounded-full uppercase">
+          <Button onClick={save} disabled={saving} size="xs" className="uppercase">
             {saving ? "..." : "Salvar"}
           </Button>
-          <Button onClick={cancel} variant="outline" size="xs" className="rounded-full uppercase">
+          <Button onClick={cancel} variant="outline" size="xs" className="uppercase">
             Cancelar
           </Button>
         </div>
@@ -274,7 +272,6 @@ function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void 
     return (
       <Button
         onClick={() => setOpen(true)}
-        className="rounded-full"
       >
         <Plus size={14} />
         Novo personagem
@@ -291,7 +288,6 @@ function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void 
           onClick={() => setOpen(false)}
           variant="outline"
           size="icon-xs"
-          className="rounded-full"
         >
           <X size={12} />
         </Button>
@@ -319,16 +315,15 @@ function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void 
         </div>
         <div className="md:col-span-2">
           <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Morfologia</Label>
-          <textarea value={form.morphology} onChange={(e) => setForm((p) => ({ ...p, morphology: e.target.value }))} rows={2}
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none resize-y text-foreground"
-            style={{ background: "var(--background)", border: "1px solid var(--border)" }}
+          <Textarea value={form.morphology} onChange={(e) => setForm((p) => ({ ...p, morphology: e.target.value }))} rows={2}
+            className="mt-1 min-h-0 font-sans text-sm resize-y py-2"
             placeholder="Quadrupede com chifres, pelagem..." />
         </div>
         <div className="md:col-span-2 flex gap-2 justify-end pt-1">
-          <Button type="button" onClick={() => setOpen(false)} variant="outline" size="sm" className="rounded-full">
+          <Button type="button" onClick={() => setOpen(false)} variant="outline" size="sm">
             Cancelar
           </Button>
-          <Button type="submit" disabled={saving || !form.name.trim()} size="sm" className="rounded-full">
+          <Button type="submit" disabled={saving || !form.name.trim()} size="sm">
             {saving ? "Criando..." : "Criar personagem"}
           </Button>
         </div>
@@ -594,7 +589,7 @@ export default function CharactersPage() {
                   disabled={deleting === char.id}
                   variant="outline"
                   size="icon-xs"
-                  className="ml-2 rounded-full"
+                  className="ml-2"
                   title="Remover personagem"
                 >
                   {deleting === char.id ? (

@@ -60,5 +60,7 @@
   "publish.livro/capitulo-10.md": "{\"state\":\"published\",\"at\":null}",
   "publish.livro/capitulo-11.md": "{\"state\":\"published\",\"at\":null}",
   "publish.livro/capitulo-12.md": "{\"state\":\"published\",\"at\":null}",
-  "publish.livro/epilogo.md": "{\"state\":\"published\",\"at\":null}"
+  "publish.livro/epilogo.md": "{\"state\":\"published\",\"at\":null}",
+  "publish.biblia/parte-01.md": "{\"state\":\"published\",\"at\":null}",
+  "publish.biblia/manifesto.md": "{\"state\":\"scheduled\",\"at\":\"2026-05-21T01:02:24.471Z\"}"
 }
