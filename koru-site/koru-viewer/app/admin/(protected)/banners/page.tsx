@@ -5,6 +5,7 @@ import { ImagePositioner } from "@/components/admin/image-positioner"
 import { BIBLIA_ITEMS } from "@/lib/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { GlassCard } from "@/components/ui/glass-card"
 import { Image as ImageIcon, Video } from "lucide-react"
 
 const SLOT_COLORS: Record<string, string> = {
@@ -129,12 +130,12 @@ export default function BannersPage() {
       </div>
 
       {message && (
-        <div
-          className="mb-6 rounded-xl px-4 py-3 font-sans text-sm glass-card"
+        <GlassCard
+          className="mb-6 px-4 py-3 font-sans text-sm"
           style={{ color: "var(--foreground)" }}
         >
           {message}
-        </div>
+        </GlassCard>
       )}
 
       {/* Image banners section */}
@@ -266,7 +267,7 @@ function BannerSlot({
   const isVideo = slot.accept === "video/*"
 
   return (
-    <div className="rounded-xl overflow-hidden glass-card">
+    <GlassCard className="overflow-hidden">
       {/* Media area */}
       <div className="relative" style={{ backgroundColor: "var(--background)" }}>
         {imageUrl && (isVideo || /\.(mp4|webm|mov)(\?|$)/i.test(imageUrl)) ? (
@@ -328,15 +329,17 @@ function BannerSlot({
               <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>
                 {slot.label}
               </p>
-              <span
-                className="rounded-full px-2 py-0.5 font-sans text-[9px] uppercase tracking-[0.12em] shrink-0"
+              <Badge
+                variant="outline"
+                className="rounded-full font-sans text-[9px] uppercase tracking-[0.12em] shrink-0"
                 style={{
                   color: accentColor,
+                  borderColor: `color-mix(in oklch, ${accentColor} 40%, transparent)`,
                   background: `color-mix(in oklch, ${accentColor} 14%, transparent)`,
                 }}
               >
                 {isVideo ? "video" : "imagem"}
-              </span>
+              </Badge>
             </div>
             <p className="font-sans text-xs truncate" style={{ color: "var(--muted-foreground)" }}>
               {slot.description}
@@ -381,6 +384,6 @@ function BannerSlot({
           </div>
         </div>
       </div>
-    </div>
+    </GlassCard>
   )
 }

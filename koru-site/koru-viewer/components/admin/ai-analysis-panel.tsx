@@ -1,6 +1,24 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  Globe,
+  AlertTriangle,
+  BookOpen,
+  BarChart2,
+  ArrowLeftRight,
+  Activity,
+  Star,
+  RefreshCw,
+  StopCircle,
+  Copy,
+  Check,
+  Play,
+  Send,
+} from "lucide-react"
+import { GlassCard } from "@/components/ui/glass-card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 /* ─── Tipos ─── */
 
@@ -28,70 +46,42 @@ const TABS: TabDef[] = [
     label: "Visão geral",
     description: "Leitura atenta do mundo inteiro: o que está respirando, o que ainda procura forma, a voz da autora e por onde começar agora.",
     accentVar: "var(--accent)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 3v18M3 12h18" />
-      </svg>
-    ),
+    icon: <Globe size={14} />,
   },
   {
     id: "inconsistencies",
     label: "Atritos",
     description: "Onde os textos não estão fechando entre si — morfologia, luz, Bomi Veh, Oruku — com o trecho, o porquê e uma sugestão de reescrita.",
     accentVar: "var(--destructive)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-        <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-      </svg>
-    ),
+    icon: <AlertTriangle size={14} />,
   },
   {
     id: "feedback",
     label: "Voz narrativa",
     description: "Leitura literária do livro e dos contos. Temperatura, ritmo, onde a voz vacila, trechos que ilustram.",
     accentVar: "var(--gold)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-      </svg>
-    ),
+    icon: <BookOpen size={14} />,
   },
   {
     id: "report",
     label: "Estado do projeto",
     description: "Onde o projeto está hoje, o que tem densidade, o que ainda é esqueleto, por onde começar agora.",
     accentVar: "var(--blue-cold)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3v18h18" />
-        <path d="M7 14l3-3 4 4 5-6" />
-      </svg>
-    ),
+    icon: <BarChart2 size={14} />,
   },
   {
     id: "arc",
     label: "Arco de Temiku",
     description: "Como Temiku evolui capítulo a capítulo e conto a conto — estado físico, emocional, descontinuidades, o que o arco ainda pede.",
     accentVar: "var(--accent)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4" />
-      </svg>
-    ),
+    icon: <ArrowLeftRight size={14} />,
   },
   {
     id: "rhythm",
     label: "Ritmo",
     description: "Análise de abertura, alternância longa/curta, frases nominais, parênteses e fechamento em contenção — ouvindo os textos em voz alta.",
     accentVar: "var(--gold)",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-      </svg>
-    ),
+    icon: <Activity size={14} />,
   },
 ]
 
@@ -394,24 +384,24 @@ export function AIAnalysisPanel() {
   const hasContent = Boolean(displayText)
 
   return (
-    <section className="rounded-xl glass-card overflow-hidden">
+    <GlassCard variant="frosted" className="overflow-hidden" role="region">
       {/* Header */}
       <div className="px-5 pt-5 pb-4">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4">
           <div className="min-w-0 md:flex-1">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
+              <Badge
+                variant="outline"
+                className="gap-1.5 rounded-full font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
                 style={{
                   background: "color-mix(in oklch, var(--accent) 14%, transparent)",
+                  borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)",
                   color: "var(--accent)",
                 }}
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
-                </svg>
+                <Star size={10} aria-hidden="true" />
                 IA
-              </span>
+              </Badge>
               <h2 className="font-serif text-xl leading-tight" style={{ color: "var(--foreground)" }}>
                 Análise do universo
               </h2>
@@ -428,24 +418,24 @@ export function AIAnalysisPanel() {
               </span>
             )}
             {streaming ? (
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={stop}
-                className="rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80"
-                style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
+                className="rounded-full gap-1.5"
               >
+                <StopCircle size={11} aria-hidden="true" />
                 Parar
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
+                size="sm"
                 onClick={run}
-                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs transition-opacity hover:opacity-85"
-                style={{ background: "var(--foreground)", color: "var(--background)" }}
+                className="rounded-full gap-1.5"
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                </svg>
+                <RefreshCw size={11} aria-hidden="true" />
                 {current ? "Regenerar" : "Gerar análise"}
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -541,28 +531,24 @@ export function AIAnalysisPanel() {
                 <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
                   {current ? `Gerado ${timeAgo(current.generatedAt)}` : "Rascunho"} · modelo Claude Sonnet
                 </span>
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={copy}
-                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-sans text-[11px] transition-opacity hover:opacity-80"
-                  style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
+                  className="rounded-full gap-1.5 font-sans text-[11px]"
                 >
                   {copied ? (
                     <>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                      <Check size={10} aria-hidden="true" />
                       Copiado
                     </>
                   ) : (
                     <>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
+                      <Copy size={10} aria-hidden="true" />
                       Copiar
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             )}
 
@@ -609,21 +595,22 @@ export function AIAnalysisPanel() {
                       color: "var(--foreground)",
                     }}
                   />
-                  <button
+                  <Button
                     onClick={sendFollowUp}
                     disabled={!followUpInput.trim() || followUpStreaming}
-                    className="rounded-full px-4 py-2 font-sans text-xs transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{ background: "var(--foreground)", color: "var(--background)" }}
+                    size="sm"
+                    className="rounded-full gap-1.5"
                   >
+                    <Send size={11} aria-hidden="true" />
                     {followUpStreaming ? "..." : "Enviar"}
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
           </div>
         )}
       </div>
-    </section>
+    </GlassCard>
   )
 }
 
@@ -639,9 +626,7 @@ function EmptyState({ onRun }: { onRun: () => void }) {
           color: "var(--accent)",
         }}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
-        </svg>
+        <Star size={18} aria-hidden="true" />
       </div>
       <div>
         <p className="font-serif text-base" style={{ color: "var(--foreground)" }}>
@@ -651,16 +636,14 @@ function EmptyState({ onRun }: { onRun: () => void }) {
           Leva de 20 a 60 segundos. A resposta é salva localmente — você pode voltar depois sem regenerar.
         </p>
       </div>
-      <button
+      <Button
+        size="sm"
         onClick={onRun}
-        className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs transition-opacity hover:opacity-85"
-        style={{ background: "var(--foreground)", color: "var(--background)" }}
+        className="rounded-full gap-1.5"
       >
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="5 3 19 12 5 21 5 3" />
-        </svg>
+        <Play size={11} aria-hidden="true" />
         Gerar análise
-      </button>
+      </Button>
     </div>
   )
 }

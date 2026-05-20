@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
 import { ChevronDown, Pencil } from "lucide-react"
 
 /* ─── Types ─── */
@@ -277,11 +278,12 @@ function CollapsibleGroup({
   const [open, setOpen] = useState(true)
 
   return (
-    <div className="rounded-xl glass-card overflow-hidden">
+    <GlassCard className="overflow-hidden">
       {/* Header */}
-      <button
+      <Button
+        variant="ghost"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 py-4 transition-colors"
+        className="w-full flex items-center justify-between px-5 py-4 h-auto rounded-none transition-colors"
         style={{ background: "color-mix(in oklch, var(--surface) 80%, transparent)" }}
       >
         <div className="flex items-center gap-3">
@@ -301,11 +303,11 @@ function CollapsibleGroup({
           className="text-muted-foreground transition-transform duration-200"
           style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
         />
-      </button>
+      </Button>
 
       {/* Fields */}
       {open && (
-        <div
+        <GlassCardContent
           className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3"
           style={{ borderTop: "1px solid var(--border)" }}
         >
@@ -317,9 +319,9 @@ function CollapsibleGroup({
               onSave={(val) => onSave(field.key, val)}
             />
           ))}
-        </div>
+        </GlassCardContent>
       )}
-    </div>
+    </GlassCard>
   )
 }
 
@@ -409,29 +411,29 @@ export default function ConteudoPage() {
         {/* Group skeletons — one per GROUPS entry */}
         <div className="flex flex-col gap-4">
           {GROUPS.map((group) => (
-            <div key={group.id} className="rounded-xl overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)" }}>
+            <GlassCard key={group.id} className="overflow-hidden animate-pulse">
               {/* Header bar */}
               <div
                 className="flex items-center gap-3 px-5 py-4"
                 style={{ background: "color-mix(in oklch, var(--surface) 80%, transparent)" }}
               >
                 <div className="w-2 h-2 rounded-full" style={{ background: group.color, opacity: 0.5 }} />
-                <div className="h-3 rounded w-32" style={{ background: "var(--border)" }} />
-                <div className="h-3 rounded w-12" style={{ background: "var(--border)", opacity: 0.5 }} />
+                <Skeleton className="h-3 w-32" />
+                <Skeleton className="h-3 w-12 opacity-50" />
               </div>
               {/* Fields placeholder */}
-              <div
+              <GlassCardContent
                 className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3"
                 style={{ borderTop: "1px solid var(--border)" }}
               >
                 {group.fields.slice(0, Math.min(group.fields.length, 4)).map((f) => (
                   <div key={f.key}>
-                    <div className="h-2 rounded w-24 mb-1.5" style={{ background: "var(--border)", opacity: 0.6 }} />
-                    <div className="h-3 rounded w-3/4" style={{ background: "var(--border)" }} />
+                    <Skeleton className="h-2 w-24 mb-1.5 opacity-60" />
+                    <Skeleton className="h-3 w-3/4" />
                   </div>
                 ))}
-              </div>
-            </div>
+              </GlassCardContent>
+            </GlassCard>
           ))}
         </div>
       </div>

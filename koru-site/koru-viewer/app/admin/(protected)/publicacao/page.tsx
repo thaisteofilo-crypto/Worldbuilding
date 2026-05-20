@@ -6,8 +6,7 @@ import { PublishConfig, PublishState, isPublic } from "@/lib/document-publish"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
 
 interface DocEntry { label: string; path: string }
 interface DocGroup { section: string; color: string; docs: DocEntry[] }
@@ -236,18 +235,18 @@ export default function PublicacaoPage() {
       </div>
 
       <div className="flex gap-3 mb-8">
-        <div className="px-4 py-3 rounded-lg" style={{ background: "oklch(0.70 0.09 155 / 0.10)", border: "1px solid oklch(0.70 0.09 155 / 0.3)" }}>
+        <Card className="px-4 py-3" style={{ background: "oklch(0.70 0.09 155 / 0.10)", borderColor: "oklch(0.70 0.09 155 / 0.3)" }}>
           <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.70 0.09 155)" }}>Publicados</div>
           <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.pub}</div>
-        </div>
-        <div className="px-4 py-3 rounded-lg" style={{ background: "oklch(0.72 0.08 75 / 0.10)", border: "1px solid oklch(0.72 0.08 75 / 0.3)" }}>
+        </Card>
+        <Card className="px-4 py-3" style={{ background: "oklch(0.72 0.08 75 / 0.10)", borderColor: "oklch(0.72 0.08 75 / 0.3)" }}>
           <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.72 0.08 75)" }}>Agendados</div>
           <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.sch}</div>
-        </div>
-        <div className="px-4 py-3 rounded-lg" style={{ background: "oklch(0.58 0.01 280 / 0.15)", border: "1px solid oklch(0.58 0.01 280 / 0.4)" }}>
+        </Card>
+        <Card className="px-4 py-3" style={{ background: "oklch(0.58 0.01 280 / 0.15)", borderColor: "oklch(0.58 0.01 280 / 0.4)" }}>
           <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.78 0.01 280)" }}>Rascunho</div>
           <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.dft}</div>
-        </div>
+        </Card>
       </div>
 
       {allGroups.map((group) => (
@@ -255,7 +254,7 @@ export default function PublicacaoPage() {
           <h2 className="font-sans text-xs uppercase tracking-[0.2em] mb-3" style={{ color: "var(--muted-foreground)" }}>
             {group.section} <span style={{ opacity: 0.5 }}>· {group.docs.length}</span>
           </h2>
-          <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+          <Card className="overflow-hidden">
             {group.docs.map((doc, idx) => {
               const cfg = getConfig(doc.path)
               const saving = savingPath === doc.path
@@ -333,7 +332,7 @@ export default function PublicacaoPage() {
                 </div>
               )
             })}
-          </div>
+          </Card>
         </section>
       ))}
     </div>

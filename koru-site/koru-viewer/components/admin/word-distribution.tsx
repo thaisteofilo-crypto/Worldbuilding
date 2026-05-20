@@ -1,5 +1,7 @@
 "use client"
 
+import { GlassCard } from "@/components/ui/glass-card"
+
 interface Props {
   chapters: Array<{ slug: string; title: string; words: number; tensionScore: number }>
   contoWordCounts: Record<string, number>
@@ -131,7 +133,7 @@ export function WordDistribution({
   ]
 
   return (
-    <section className="glass-card rounded-xl overflow-hidden" aria-labelledby="word-dist-heading">
+    <GlassCard variant="frosted" className="overflow-hidden" aria-labelledby="word-dist-heading" role="region">
       <div className="px-5 pt-5 pb-4 flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div className="min-w-0">
@@ -276,6 +278,6 @@ export function WordDistribution({
           )}
         </div>
       </div>
-    </section>
+    </GlassCard>
   )
 }

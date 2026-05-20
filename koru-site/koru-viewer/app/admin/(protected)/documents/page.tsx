@@ -5,6 +5,9 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Label } from "@/components/ui/label"
+import { GlassCard } from "@/components/ui/glass-card"
+import { Badge } from "@/components/ui/badge"
 import { Upload, FileText } from "lucide-react"
 
 interface Doc {
@@ -116,8 +119,9 @@ export default function DocumentsPage() {
       </div>
 
       {/* Upload zone */}
-      <div
-        className={`rounded-xl p-6 mb-6 transition-colors ${dragOver ? "" : "glass-card"}`}
+      <GlassCard
+        variant="frosted"
+        className="p-6 mb-6 transition-colors"
         style={dragOver ? {
           background: "color-mix(in oklch, var(--foreground) 3%, transparent)",
           border: "2px dashed var(--foreground)",
@@ -133,9 +137,9 @@ export default function DocumentsPage() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
-                <label className="font-sans text-[10px] uppercase tracking-[0.12em] block mb-1" style={{ color: "var(--muted-foreground)" }}>
+                <Label className="font-sans text-[10px] uppercase tracking-[0.12em] block mb-1" style={{ color: "var(--muted-foreground)" }}>
                   Titulo (opcional)
-                </label>
+                </Label>
                 <Input
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
@@ -144,9 +148,9 @@ export default function DocumentsPage() {
                 />
               </div>
               <div>
-                <label className="font-sans text-[10px] uppercase tracking-[0.12em] block mb-1" style={{ color: "var(--muted-foreground)" }}>
+                <Label className="font-sans text-[10px] uppercase tracking-[0.12em] block mb-1" style={{ color: "var(--muted-foreground)" }}>
                   Secao (opcional)
-                </label>
+                </Label>
                 <select
                   value={selectedSection}
                   onChange={(e) => setSelectedSection(e.target.value)}
@@ -201,7 +205,7 @@ export default function DocumentsPage() {
             {uploadResult}
           </div>
         )}
-      </div>
+      </GlassCard>
 
       {/* Documents list */}
       {loading ? (
@@ -224,11 +228,11 @@ export default function DocumentsPage() {
           ))}
         </div>
       ) : docs.length === 0 ? (
-        <div className="rounded-xl py-16 text-center glass-card">
+        <GlassCard variant="frosted" className="py-16 text-center">
           <FileText size={48} className="mx-auto mb-4 opacity-30 text-muted-foreground" strokeWidth={0.8} />
           <p className="font-sans text-sm text-muted-foreground">Nenhum documento.</p>
           <p className="font-sans text-xs mt-1 text-muted-foreground">Envie arquivos .docx, .md ou .txt acima.</p>
-        </div>
+        </GlassCard>
       ) : (
         <div className="flex flex-col gap-6">
           {grouped.map(({ section, docs: sectionDocs }) => (
@@ -236,16 +240,16 @@ export default function DocumentsPage() {
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="w-2 h-2 rounded-full"
-                  style={{ background: "var(--muted-foreground)" }}
+                  style={{ background: SECTION_COLORS[section] ?? "var(--muted-foreground)" }}
                 />
                 <h2 className="font-sans text-xs uppercase tracking-[0.15em]" style={{ color: "var(--muted-foreground)" }}>
                   {section}
                 </h2>
-                <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
+                <Badge variant="ghost" className="text-[10px] h-auto px-1.5 py-0">
                   {sectionDocs.length}
-                </span>
+                </Badge>
               </div>
-              <div className="rounded-xl overflow-hidden glass-card">
+              <GlassCard variant="frosted" className="overflow-hidden">
                 {sectionDocs.map((doc, i) => (
                   <div
                     key={doc.id}
@@ -273,17 +277,18 @@ export default function DocumentsPage() {
                       >
                         Editar
                       </Link>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="xs"
                         onClick={() => handleDelete(doc.id, doc.title)}
-                        className="font-sans text-xs transition-opacity opacity-0 group-hover:opacity-100"
-                        style={{ color: "var(--muted-foreground)" }}
+                        className="font-sans text-xs transition-opacity opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive"
                       >
                         Excluir
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))}
-              </div>
+              </GlassCard>
             </div>
           ))}
         </div>

@@ -540,15 +540,15 @@ export default function CharactersPage() {
 
       <div className="mt-8 flex flex-col gap-8">
         {characters.length === 0 ? (
-          <div className="rounded-xl px-5 py-10 text-center glass-card">
+          <GlassCard className="px-5 py-10 text-center">
             <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Nenhum personagem encontrado.</p>
             <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
               Execute <code className="font-mono" style={{ color: "var(--foreground)" }}>node scripts/seed-characters.mjs</code> para popular.
             </p>
-          </div>
+          </GlassCard>
         ) : (
           characters.map((char) => (
-            <div key={char.id} className="rounded-xl p-5 glass-card">
+            <GlassCard key={char.id} className="p-5">
               {/* Character name header */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-8 w-8 shrink-0 rounded" style={{
@@ -654,7 +654,7 @@ export default function CharactersPage() {
               <div className="pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
                 <EditableField label="Descrição" value={char.description ?? ""} onSave={(v) => saveField(char.id, "description", v)} multiline />
               </div>
-            </div>
+            </GlassCard>
           ))
         )}
       </div>

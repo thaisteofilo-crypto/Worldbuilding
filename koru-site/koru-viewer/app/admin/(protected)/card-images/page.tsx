@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { GlassCard } from '@/components/ui/glass-card'
 import { Upload, Trash2, Check, AlertCircle, Loader2 } from 'lucide-react'
 
 interface DocEntry {
@@ -119,25 +121,27 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
             <Loader2 size={20} className="animate-spin text-white" />
           ) : (
             <>
-              <button
+              <Button
                 onClick={handleClick}
-                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-sans font-medium transition-opacity hover:opacity-80"
+                size="sm"
+                className="rounded-full font-sans font-medium"
                 style={{ background: 'white', color: 'oklch(0 0 0)' }}
                 title="Alterar imagem"
               >
                 <Upload size={11} />
                 Upload
-              </button>
+              </Button>
               {imageUrl && (
-                <button
+                <Button
                   onClick={() => onDelete(slot.key)}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-sans font-medium transition-opacity hover:opacity-80"
-                  style={{ background: 'var(--destructive)', color: 'white' }}
+                  variant="destructive"
+                  size="sm"
+                  className="rounded-full font-sans font-medium"
                   title="Remover imagem"
                 >
                   <Trash2 size={11} />
                   Remover
-                </button>
+                </Button>
               )}
             </>
           )}
@@ -410,13 +414,13 @@ export default function CardImagesPage() {
 
       {/* Toast */}
       {toast && (
-        <div
-          className="fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg text-foreground"
+        <GlassCard
+          variant={toast.type === 'success' ? 'teal' : 'dark'}
+          className="fixed bottom-6 right-6 z-50 px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg text-foreground"
           style={{
-            background: toast.type === 'success'
-              ? 'color-mix(in oklch, var(--accent) 15%, var(--card))'
-              : 'color-mix(in oklch, var(--destructive) 15%, var(--card))',
-            border: `1px solid ${toast.type === 'success' ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'color-mix(in oklch, var(--destructive) 35%, transparent)'}`,
+            borderColor: toast.type === 'success'
+              ? 'color-mix(in oklch, var(--accent) 35%, transparent)'
+              : 'color-mix(in oklch, var(--destructive) 35%, transparent)',
           }}
         >
           {toast.type === 'success' ? (
@@ -425,7 +429,7 @@ export default function CardImagesPage() {
             <AlertCircle size={13} className="shrink-0 text-destructive" />
           )}
           {toast.text}
-        </div>
+        </GlassCard>
       )}
 
       <CardSection

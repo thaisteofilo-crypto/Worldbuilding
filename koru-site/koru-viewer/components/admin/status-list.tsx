@@ -4,7 +4,6 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { GlassCard } from "@/components/ui/glass-card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 
 interface Props {
   statusByDoc: Record<string, string>
@@ -70,7 +69,7 @@ export function StatusList({ statusByDoc, counts }: Props) {
   const visibleStatuses = STATUS_ORDER.filter((s) => (counts[s] ?? 0) > 0)
 
   return (
-    <section className="glass-card rounded-xl overflow-hidden" aria-labelledby="status-list-heading">
+    <GlassCard variant="frosted" className="overflow-hidden" aria-labelledby="status-list-heading" role="region">
       <div className="px-5 pt-5 pb-4 flex items-center gap-2 flex-wrap">
         <span
           className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
@@ -130,34 +129,27 @@ export function StatusList({ statusByDoc, counts }: Props) {
                 >
                   {meta.label}
                 </span>
-                <span
-                  className="inline-flex items-center rounded-full px-2 py-0.5 font-sans text-[10px] shrink-0"
+                <Badge
+                  variant="outline"
+                  className="shrink-0 font-sans text-[10px] px-2 py-0.5"
                   style={{
                     background: "color-mix(in oklch, " + meta.color + " 14%, transparent)",
+                    borderColor: "color-mix(in oklch, " + meta.color + " 30%, transparent)",
                     color: meta.color,
                   }}
                 >
                   {count}
-                </span>
-                <svg
+                </Badge>
+                <ChevronDown
                   aria-hidden
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  size={14}
                   style={{
                     color: "var(--muted-foreground)",
                     transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                     transition: "transform 200ms",
                     flexShrink: 0,
                   }}
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
+                />
               </button>
 
               {isOpen && docs.length > 0 && (
@@ -181,6 +173,6 @@ export function StatusList({ statusByDoc, counts }: Props) {
           )
         })}
       </div>
-    </section>
+    </GlassCard>
   )
 }

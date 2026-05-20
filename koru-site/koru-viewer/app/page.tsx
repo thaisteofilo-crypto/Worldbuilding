@@ -9,6 +9,7 @@ import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
+import { Button } from "@/components/ui/button"
 
 interface DocEntry { label: string; path: string }
 
@@ -142,7 +143,7 @@ function FullSection({
         </h2>
         {description && (
           <p
-            className="font-sans text-xl md:text-2xl leading-relaxed max-w-2xl mb-6 md:mb-8"
+            className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-8"
             style={{
               color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
@@ -290,24 +291,17 @@ export default async function HomePage() {
           >
             {get(siteContent, "hero.tagline")}
           </p>
-          <Link
-            href={bibliaHref}
-            className="koru-content-enter inline-flex items-center justify-center rounded-full px-6 py-2.5 font-sans text-sm transition-colors hover:bg-white/15"
-            style={{
-              animationDelay: "0.7s",
-              color: hasHero ? "white" : "var(--foreground)",
-              background: hasHero
-                ? "oklch(1 0 0 / 0.08)"
-                : "color-mix(in oklch, var(--foreground) 6%, transparent)",
-              border: hasHero
-                ? "1px solid oklch(1 0 0 / 0.18)"
-                : "1px solid var(--border)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
+          <Button
+            variant="outline"
+            size="default"
+            asChild
+            className="koru-content-enter rounded-full backdrop-blur-sm"
+            style={{ animationDelay: "0.7s" }}
           >
-            Começar pela bíblia
-          </Link>
+            <Link href={bibliaHref}>
+              Começar pela bíblia
+            </Link>
+          </Button>
         </div>
       </section>
 
