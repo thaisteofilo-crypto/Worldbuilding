@@ -3,6 +3,9 @@
 import { useEffect, useState, useRef } from "react"
 import { ImagePositioner } from "@/components/admin/image-positioner"
 import { BIBLIA_ITEMS } from "@/lib/navigation"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Image as ImageIcon, Video } from "lucide-react"
 
 const SLOT_COLORS: Record<string, string> = {
   hero: "var(--gold)",
@@ -141,15 +144,9 @@ export default function BannersPage() {
             Imagens
           </p>
           <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <span
-            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-            style={{
-              color: "var(--gold)",
-              background: "color-mix(in oklch, var(--gold) 12%, transparent)",
-            }}
-          >
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--gold)", borderColor: "color-mix(in oklch, var(--gold) 40%, transparent)", background: "color-mix(in oklch, var(--gold) 12%, transparent)" }}>
             {IMAGE_SLOTS.filter((s) => banners[s.key]).length}/{IMAGE_SLOTS.length} configurados
-          </span>
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -174,15 +171,9 @@ export default function BannersPage() {
             Videos
           </p>
           <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <span
-            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-            style={{
-              color: "var(--blue-cold)",
-              background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)",
-            }}
-          >
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--blue-cold)", borderColor: "color-mix(in oklch, var(--blue-cold) 40%, transparent)", background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)" }}>
             {VIDEO_SLOTS.filter((s) => banners[s.key]).length}/{VIDEO_SLOTS.length} configurados
-          </span>
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -207,15 +198,9 @@ export default function BannersPage() {
             Bíblia · Páginas Internas (Imagens)
           </p>
           <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <span
-            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-            style={{
-              color: "var(--gold)",
-              background: "color-mix(in oklch, var(--gold) 12%, transparent)",
-            }}
-          >
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--gold)", borderColor: "color-mix(in oklch, var(--gold) 40%, transparent)", background: "color-mix(in oklch, var(--gold) 12%, transparent)" }}>
             {BIBLIA_DOC_IMAGE_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_IMAGE_SLOTS.length} configurados
-          </span>
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -239,15 +224,9 @@ export default function BannersPage() {
             Bíblia · Páginas Internas (Vídeos)
           </p>
           <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <span
-            className="rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-            style={{
-              color: "var(--blue-cold)",
-              background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)",
-            }}
-          >
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--blue-cold)", borderColor: "color-mix(in oklch, var(--blue-cold) 40%, transparent)", background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)" }}>
             {BIBLIA_DOC_VIDEO_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_VIDEO_SLOTS.length} configurados
-          </span>
+          </Badge>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -313,16 +292,9 @@ function BannerSlot({
             title="Clique para fazer upload"
           >
             {isVideo ? (
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="opacity-20" style={{ color: "var(--muted-foreground)" }}>
-                <polygon points="23 7 16 12 23 17 23 7" />
-                <rect x="1" y="5" width="15" height="14" rx="2" />
-              </svg>
+              <Video size={36} className="opacity-20 text-muted-foreground" strokeWidth={0.8} />
             ) : (
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="opacity-20" style={{ color: "var(--muted-foreground)" }}>
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <polyline points="21,15 16,10 5,21" />
-              </svg>
+              <ImageIcon size={36} className="opacity-20 text-muted-foreground" strokeWidth={0.8} />
             )}
             <div className="text-center">
               <p className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
@@ -338,7 +310,7 @@ function BannerSlot({
         {uploading && (
           <div
             className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: "oklch(0 0 0 / 0.55)" }}
+            style={{ backgroundColor: "var(--overlay, oklch(0 0 0 / 0.55))" }}
           >
             <div className="flex flex-col items-center gap-2">
               <div className="w-5 h-5 rounded-full border-2 animate-spin" style={{ borderColor: "rgba(255,255,255,0.3)", borderTopColor: "white" }} />
@@ -387,30 +359,24 @@ function BannerSlot({
                 e.target.value = ""
               }}
             />
-            <button
+            <Button
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="px-4 py-2 rounded-full font-sans text-xs font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-              style={{
-                backgroundColor: "var(--foreground)",
-                color: "var(--background)",
-              }}
+              size="sm"
+              className="rounded-full"
             >
               {imageUrl ? "Trocar" : "Upload"}
-            </button>
+            </Button>
             {imageUrl && (
-              <button
+              <Button
                 onClick={onDelete}
                 disabled={uploading}
-                className="px-4 py-2 rounded-full font-sans text-xs font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{
-                  backgroundColor: "transparent",
-                  color: "var(--foreground)",
-                  border: "1px solid var(--border)",
-                }}
+                variant="outline"
+                size="sm"
+                className="rounded-full"
               >
                 Remover
-              </button>
+              </Button>
             )}
           </div>
         </div>

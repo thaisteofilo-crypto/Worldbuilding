@@ -3,6 +3,13 @@
 import { useEffect, useState, useRef } from "react"
 import { ImagePositioner } from "@/components/admin/image-positioner"
 import type { Character } from "@/lib/database.types"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton, SkeletonContainer } from "@/components/ui/skeleton"
+import { Label } from "@/components/ui/label"
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
+import { Plus, X, ChevronUp, ChevronDown, Trash2, Pencil } from "lucide-react"
 
 const VIEWS = [
   { key: "front", label: "Frente" },
@@ -104,12 +111,8 @@ function ViewImageSlot({
           )
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" style={{ color: "var(--muted-foreground)" }}>
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="M21 15l-5-5L5 21" />
-            </svg>
-            <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
+            <Pencil size={36} className="text-muted-foreground opacity-30" strokeWidth={0.8} />
+            <span className="font-sans text-xs text-muted-foreground">
               {view.label}
             </span>
           </div>
@@ -123,10 +126,7 @@ function ViewImageSlot({
 
       {/* Dimension warning */}
       {sizeWarning && (
-        <p
-          className="mt-1 font-sans text-xs leading-snug"
-          style={{ color: "oklch(0.72 0.13 75)" }}
-        >
+        <p className="mt-1 font-sans text-xs leading-snug text-muted-foreground">
           {sizeWarning}
         </p>
       )}
@@ -137,23 +137,24 @@ function ViewImageSlot({
         </span>
         <div className="flex gap-1">
           <input ref={inputRef} type="file" accept="image/*" onChange={handleFileChange} className="absolute w-0 h-0 opacity-0 overflow-hidden" />
-          <button
+          <Button
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="rounded-full px-3 py-1 font-sans text-[11px] transition-opacity disabled:opacity-50"
-            style={{ background: "var(--foreground)", color: "var(--background)" }}
+            size="xs"
+            className="rounded-full"
           >
             {url ? "Trocar" : "Enviar"}
-          </button>
+          </Button>
           {url && (
-            <button
+            <Button
               onClick={onRemove}
               disabled={uploading}
-              className="rounded-full px-3 py-1 font-sans text-[11px] transition-opacity disabled:opacity-50"
-              style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+              variant="outline"
+              size="xs"
+              className="rounded-full"
             >
               Remover
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -197,27 +198,22 @@ function EditableField({
         <p className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>{label}</p>
         {multiline ? (
           <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} autoFocus
-            className="mt-1 w-full rounded px-2 py-1 font-sans text-xs leading-relaxed outline-none"
-            style={{ background: "var(--background)", border: "1px solid var(--foreground)", color: "var(--foreground)", resize: "vertical" }}
+            className="mt-1 w-full rounded px-2 py-1 font-sans text-xs leading-relaxed outline-none text-foreground"
+            style={{ background: "var(--background)", border: "1px solid var(--foreground)", resize: "vertical" }}
           />
         ) : (
-          <input value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus
-            className="mt-1 w-full rounded px-2 py-1 font-sans text-xs outline-none"
-            style={{ background: "var(--background)", border: "1px solid var(--foreground)", color: "var(--foreground)" }}
+          <Input value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus
+            className="mt-1 font-sans text-xs h-7"
             onKeyDown={(e) => { if (e.key === "Enter") save(); if (e.key === "Escape") cancel() }}
           />
         )}
         <div className="mt-1 flex gap-1">
-          <button onClick={save} disabled={saving}
-            className="rounded px-2 py-0.5 font-sans text-[10px] uppercase"
-            style={{ background: "var(--foreground)", color: "var(--background)" }}>
+          <Button onClick={save} disabled={saving} size="xs" className="rounded-full uppercase">
             {saving ? "..." : "Salvar"}
-          </button>
-          <button onClick={cancel}
-            className="rounded px-2 py-0.5 font-sans text-[10px] uppercase"
-            style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}>
+          </Button>
+          <Button onClick={cancel} variant="outline" size="xs" className="rounded-full uppercase">
             Cancelar
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -229,7 +225,7 @@ function EditableField({
       <p className="mt-0.5 font-sans text-xs leading-relaxed" style={{ color: "var(--foreground)" }}>
         {value}
         <span className="ml-1 inline-block opacity-0 transition-opacity group-hover:opacity-50">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>
+          <Pencil size={10} className="inline" />
         </span>
       </p>
     </div>
@@ -276,77 +272,69 @@ function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void 
 
   if (!open) {
     return (
-      <button
+      <Button
         onClick={() => setOpen(true)}
-        className="rounded-full px-5 py-2 font-sans text-sm transition-opacity hover:opacity-80 flex items-center gap-2"
-        style={{ background: "var(--foreground)", color: "var(--background)" }}
+        className="rounded-full"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
+        <Plus size={14} />
         Novo personagem
-      </button>
+      </Button>
     )
   }
 
-  const fieldStyle = {
-    background: "var(--background)",
-    border: "1px solid var(--border)",
-    color: "var(--foreground)",
-  }
-
   return (
-    <div className="rounded-xl p-5 glass-card">
+    <GlassCard>
+      <GlassCardContent className="pt-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-serif text-lg" style={{ color: "var(--foreground)" }}>Novo personagem</h3>
-        <button
+        <Button
           onClick={() => setOpen(false)}
-          className="rounded-full w-7 h-7 flex items-center justify-center transition-opacity hover:opacity-70"
-          style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+          variant="outline"
+          size="icon-xs"
+          className="rounded-full"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-        </button>
+          <X size={12} />
+        </Button>
       </div>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Nome *</label>
-          <input value={form.name} onChange={(e) => handleChange("name", e.target.value)} required
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Ex: Temiku" />
+          <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Nome *</Label>
+          <Input value={form.name} onChange={(e) => handleChange("name", e.target.value)} required
+            className="mt-1 font-sans text-sm" placeholder="Ex: Temiku" />
         </div>
         <div>
-          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Slug *</label>
-          <input value={form.slug} onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))} required
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="temiku" />
+          <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Slug *</Label>
+          <Input value={form.slug} onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value }))} required
+            className="mt-1 font-sans text-sm" placeholder="temiku" />
         </div>
         <div>
-          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Papel</label>
-          <input value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Protagonista, Antagonista..." />
+          <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Papel</Label>
+          <Input value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
+            className="mt-1 font-sans text-sm" placeholder="Protagonista, Antagonista..." />
         </div>
         <div>
-          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Especie</label>
-          <input value={form.species} onChange={(e) => setForm((p) => ({ ...p, species: e.target.value }))}
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none" style={fieldStyle} placeholder="Azuri, Onkweri, Hibrido..." />
+          <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Especie</Label>
+          <Input value={form.species} onChange={(e) => setForm((p) => ({ ...p, species: e.target.value }))}
+            className="mt-1 font-sans text-sm" placeholder="Azuri, Onkweri, Hibrido..." />
         </div>
         <div className="md:col-span-2">
-          <label className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>Morfologia</label>
+          <Label className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">Morfologia</Label>
           <textarea value={form.morphology} onChange={(e) => setForm((p) => ({ ...p, morphology: e.target.value }))} rows={2}
-            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none resize-y" style={fieldStyle}
+            className="mt-1 w-full rounded-lg px-3 py-2 font-sans text-sm outline-none resize-y text-foreground"
+            style={{ background: "var(--background)", border: "1px solid var(--border)" }}
             placeholder="Quadrupede com chifres, pelagem..." />
         </div>
         <div className="md:col-span-2 flex gap-2 justify-end pt-1">
-          <button type="button" onClick={() => setOpen(false)}
-            className="rounded-full px-4 py-1.5 font-sans text-xs" style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}>
+          <Button type="button" onClick={() => setOpen(false)} variant="outline" size="sm" className="rounded-full">
             Cancelar
-          </button>
-          <button type="submit" disabled={saving || !form.name.trim()}
-            className="rounded-full px-5 py-1.5 font-sans text-xs transition-opacity disabled:opacity-50"
-            style={{ background: "var(--foreground)", color: "var(--background)" }}>
+          </Button>
+          <Button type="submit" disabled={saving || !form.name.trim()} size="sm" className="rounded-full">
             {saving ? "Criando..." : "Criar personagem"}
-          </button>
+          </Button>
         </div>
       </form>
-    </div>
+      </GlassCardContent>
+    </GlassCard>
   )
 }
 
@@ -496,26 +484,28 @@ export default function CharactersPage() {
       <div>
         <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
         {/* Character card skeletons */}
-        <div className="mt-6 flex flex-col gap-4">
+        <SkeletonContainer className="mt-6 flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-              <div className="flex items-center gap-4 px-5 py-4">
-                {/* Avatar placeholder */}
-                <div className="w-14 h-14 rounded-full shrink-0" style={{ background: "white", opacity: 0.07 }} />
-                <div className="flex-1 min-w-0">
-                  <div className="h-4 rounded w-32 mb-2" style={{ background: "white", opacity: 0.1 }} />
-                  <div className="h-3 rounded w-24 mb-1.5" style={{ background: "white", opacity: 0.06 }} />
-                  <div className="h-3 rounded w-48" style={{ background: "white", opacity: 0.05 }} />
+            <GlassCard key={i} className="overflow-hidden">
+              <GlassCardContent className="pt-4">
+                <div className="flex items-center gap-4">
+                  {/* Avatar placeholder */}
+                  <Skeleton className="w-14 h-14 rounded-full shrink-0" />
+                  <div className="flex-1 min-w-0 flex flex-col gap-2">
+                    <Skeleton className="h-4 rounded w-32" />
+                    <Skeleton className="h-3 rounded w-24" />
+                    <Skeleton className="h-3 rounded w-48" />
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    {[1, 2, 3].map((j) => (
+                      <Skeleton key={j} className="w-20 h-20 rounded-lg" />
+                    ))}
+                  </div>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  {[1, 2, 3].map((j) => (
-                    <div key={j} className="w-20 h-20 rounded-lg" style={{ background: "white", opacity: 0.06 }} />
-                  ))}
-                </div>
-              </div>
-            </div>
+              </GlassCardContent>
+            </GlassCard>
           ))}
-        </div>
+        </SkeletonContainer>
       </div>
     )
   }
@@ -536,9 +526,9 @@ export default function CharactersPage() {
             <p
               className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
               style={{
-                color: "oklch(0.55 0.18 27)",
-                background: "oklch(0.55 0.18 27 / 0.08)",
-                border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+                color: "var(--destructive)",
+                background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
+                border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
               }}
             >
               {loadError}
@@ -567,28 +557,26 @@ export default function CharactersPage() {
                 }} />
                 {/* Reorder buttons */}
                 <div className="flex flex-col gap-0.5">
-                  <button
+                  <Button
                     onClick={() => moveCharacter(char.id, "up")}
                     disabled={characters.indexOf(char) === 0}
-                    className="w-6 h-6 flex items-center justify-center rounded transition-opacity hover:opacity-100 disabled:opacity-20"
-                    style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                    variant="outline"
+                    size="icon-xs"
+                    className="rounded"
                     title="Mover para cima"
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18 15l-6-6-6 6" />
-                    </svg>
-                  </button>
-                  <button
+                    <ChevronUp size={10} />
+                  </Button>
+                  <Button
                     onClick={() => moveCharacter(char.id, "down")}
                     disabled={characters.indexOf(char) === characters.length - 1}
-                    className="w-6 h-6 flex items-center justify-center rounded transition-opacity hover:opacity-100 disabled:opacity-20"
-                    style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                    variant="outline"
+                    size="icon-xs"
+                    className="rounded"
                     title="Mover para baixo"
                   >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </button>
+                    <ChevronDown size={10} />
+                  </Button>
                 </div>
                 <h2 className="font-serif text-xl flex-1" style={{ color: "var(--foreground)" }}>{char.name}</h2>
                 <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>{char.slug}</span>
@@ -596,37 +584,25 @@ export default function CharactersPage() {
                 {(["morphology", "ability", "mark", "origin", "location", "quote", "description"] as const).some(
                   (field) => !char[field] || (char[field] as string).trim() === ""
                 ) && (
-                  <span
-                    className="font-sans text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wide shrink-0"
-                    style={{
-                      color: "oklch(0.65 0.20 25)",
-                      background: "oklch(0.65 0.20 25 / 0.12)",
-                      border: "1px solid oklch(0.65 0.20 25 / 0.3)",
-                    }}
-                  >
+                  <Badge variant="destructive" className="text-[10px] uppercase tracking-wide shrink-0">
                     Incompleto
-                  </span>
+                  </Badge>
                 )}
                 {/* Delete button */}
-                <button
+                <Button
                   onClick={() => deleteCharacter(char.id, char.name)}
                   disabled={deleting === char.id}
-                  className="group ml-2 w-7 h-7 flex items-center justify-center rounded-full transition-colors disabled:opacity-50"
-                  style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+                  variant="outline"
+                  size="icon-xs"
+                  className="ml-2 rounded-full"
                   title="Remover personagem"
                 >
                   {deleting === char.id ? (
                     <span className="font-sans text-[10px]">...</span>
                   ) : (
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                      className="transition-colors group-hover:stroke-red-400">
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6l-1 14H6L5 6" />
-                      <path d="M10 11v6M14 11v6" />
-                      <path d="M9 6V4h6v2" />
-                    </svg>
+                    <Trash2 size={12} />
                   )}
-                </button>
+                </Button>
               </div>
 
               {/* 3 image views */}

@@ -1,6 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Lock } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
@@ -46,7 +49,6 @@ export default function AdminLoginPage() {
       className="relative flex min-h-screen items-center justify-center overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      {/* Background — video ou imagem com desfoque */}
       {heroVideo ? (
         <video
           src={heroVideo}
@@ -67,16 +69,21 @@ export default function AdminLoginPage() {
         />
       ) : null}
 
-      {/* Overlay escuro suave */}
       <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.45)" }} />
+
       <div className="relative z-10 w-full max-w-sm px-4">
         <div className="mb-10 text-center">
+          <div className="flex justify-center mb-4" aria-hidden="true">
+            <span
+              className="inline-flex items-center justify-center w-12 h-12 rounded-full"
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+            >
+              <Lock size={20} />
+            </span>
+          </div>
           <h1
             className="font-serif text-4xl"
-            style={{
-              color: "var(--foreground)",
-              fontFamily: "var(--font-serif), Georgia, serif",
-            }}
+            style={{ color: "var(--foreground)", fontFamily: "var(--font-serif), Georgia, serif" }}
           >
             Korú
           </h1>
@@ -90,11 +97,12 @@ export default function AdminLoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 rounded-xl p-6"
+          aria-label="Formulário de acesso ao painel admin"
+          className="flex flex-col gap-4 rounded-2xl p-6"
           style={{
-            background: "oklch(0.16 0.009 280)",
-            border: "1px solid oklch(0.28 0.009 280)",
-            boxShadow: "0 4px 20px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.06)",
+            background: "var(--card)",
+            border: "1px solid var(--border)",
+            boxShadow: "0 8px 32px color-mix(in oklch, var(--background) 60%, transparent)",
           }}
         >
           <div className="flex flex-col gap-1.5">
@@ -105,7 +113,7 @@ export default function AdminLoginPage() {
             >
               Senha
             </label>
-            <input
+            <Input
               id="password"
               name="password"
               type="password"
@@ -114,32 +122,30 @@ export default function AdminLoginPage() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-lg px-3 py-2 font-sans text-sm outline-none transition-colors"
-              style={{
-                backgroundColor: "oklch(0.12 0.007 280)",
-                color: "oklch(0.93 0.01 280)",
-                border: `1px solid ${error ? "oklch(0.55 0.18 27)" : "oklch(0.28 0.009 280)"}`,
-              }}
+              aria-invalid={error || undefined}
+              aria-describedby={error ? "admin-password-error" : undefined}
+              className="h-10"
             />
           </div>
 
           {error && (
-            <p className="font-sans text-xs" style={{ color: "var(--destructive)" }}>
+            <p
+              id="admin-password-error"
+              role="alert"
+              className="font-sans text-xs"
+              style={{ color: "var(--destructive)" }}
+            >
               Senha incorreta
             </p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-full py-2.5 font-sans text-sm font-medium transition-opacity disabled:opacity-60"
-            style={{
-              background: "oklch(0.93 0.01 280)",
-              color: "oklch(0.10 0.01 280)",
-            }}
+            className="w-full rounded-full h-10 mt-2"
           >
             {loading ? "Entrando..." : "Entrar"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

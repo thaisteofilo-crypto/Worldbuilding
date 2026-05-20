@@ -3,6 +3,11 @@
 import { useEffect, useMemo, useState } from "react"
 import { useDocumentPublishing } from "@/hooks/use-document-publishing"
 import { PublishConfig, PublishState, isPublic } from "@/lib/document-publish"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 interface DocEntry { label: string; path: string }
 interface DocGroup { section: string; color: string; docs: DocEntry[] }
@@ -38,6 +43,12 @@ function fromDatetimeLocal(value: string): string | null {
   return d.toISOString()
 }
 
+const STATE_COLORS: Record<PublishState, { bg: string; border: string; fg: string }> = {
+  published: { bg: "oklch(0.70 0.09 155 / 0.12)", border: "oklch(0.70 0.09 155 / 0.4)", fg: "oklch(0.70 0.09 155)" },
+  scheduled: { bg: "oklch(0.72 0.08 75 / 0.12)", border: "oklch(0.72 0.08 75 / 0.4)", fg: "oklch(0.72 0.08 75)" },
+  draft:     { bg: "oklch(0.58 0.01 280 / 0.18)", border: "oklch(0.58 0.01 280 / 0.5)", fg: "oklch(0.78 0.01 280)" },
+}
+
 function StateButton({
   state,
   active,
@@ -49,26 +60,23 @@ function StateButton({
   label: string
   onClick: () => void
 }) {
-  const colors: Record<PublishState, { bg: string; border: string; fg: string }> = {
-    published: { bg: "oklch(0.70 0.09 155 / 0.12)", border: "oklch(0.70 0.09 155 / 0.4)", fg: "oklch(0.70 0.09 155)" },
-    scheduled: { bg: "oklch(0.72 0.08 75 / 0.12)", border: "oklch(0.72 0.08 75 / 0.4)", fg: "oklch(0.72 0.08 75)" },
-    draft:     { bg: "oklch(0.58 0.01 280 / 0.18)", border: "oklch(0.58 0.01 280 / 0.5)", fg: "oklch(0.78 0.01 280)" },
-  }
-  const c = colors[state]
+  const c = STATE_COLORS[state]
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      className="px-3 py-1.5 rounded-md font-sans text-xs transition-all"
-      style={{
-        background: active ? c.bg : "transparent",
-        border: "1px solid " + (active ? c.border : "var(--border)"),
-        color: active ? c.fg : "var(--muted-foreground)",
-        fontWeight: active ? 600 : 400,
-      }}
+      variant="outline"
+      size="xs"
+      className="rounded-md font-sans"
+      style={active ? {
+        background: c.bg,
+        borderColor: c.border,
+        color: c.fg,
+        fontWeight: 600,
+      } : undefined}
     >
       {label}
-    </button>
+    </Button>
   )
 }
 
@@ -151,9 +159,9 @@ export default function PublicacaoPage() {
     return (
       <div className="max-w-5xl mx-auto">
         {/* Header skeleton */}
-        <div className="mb-8 animate-pulse">
-          <div className="h-8 rounded w-40 mb-2" style={{ background: "var(--border)" }} />
-          <div className="h-3 rounded w-96" style={{ background: "var(--border)", opacity: 0.6 }} />
+        <div className="mb-8">
+          <Skeleton className="h-8 w-40 mb-2" />
+          <Skeleton className="h-3 w-96 opacity-60" />
         </div>
 
         {/* Stats cards skeleton */}
@@ -163,22 +171,22 @@ export default function PublicacaoPage() {
             "oklch(0.72 0.08 75 / 0.10)",
             "oklch(0.58 0.01 280 / 0.15)",
           ].map((bg, i) => (
-            <div
+            <Card
               key={i}
-              className="px-4 py-3 rounded-lg animate-pulse"
-              style={{ background: bg, border: "1px solid var(--border)", minWidth: "96px" }}
+              className="px-4 py-3"
+              style={{ background: bg, minWidth: "96px" }}
             >
-              <div className="h-2 rounded w-16 mb-2" style={{ background: "white", opacity: 0.15 }} />
-              <div className="h-7 rounded w-8" style={{ background: "white", opacity: 0.15 }} />
-            </div>
+              <Skeleton className="h-2 w-16 mb-2 opacity-15" />
+              <Skeleton className="h-7 w-8 opacity-15" />
+            </Card>
           ))}
         </div>
 
         {/* Group list skeletons — 4 sections */}
         {[12, 7, 8, 13].map((count, gi) => (
           <section key={gi} className="mb-10">
-            <div className="h-2 rounded w-24 mb-3 animate-pulse" style={{ background: "var(--border)" }} />
-            <div className="rounded-lg overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+            <Skeleton className="h-2 w-24 mb-3" />
+            <Card className="overflow-hidden">
               {Array.from({ length: Math.min(count, 5) }).map((_, i) => (
                 <div
                   key={i}
@@ -186,17 +194,17 @@ export default function PublicacaoPage() {
                   style={{ borderTop: i === 0 ? "none" : "1px solid var(--border)" }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="h-3.5 rounded w-48 mb-1" style={{ background: "white", opacity: 0.08 }} />
-                    <div className="h-2.5 rounded w-32" style={{ background: "white", opacity: 0.05 }} />
+                    <Skeleton className="h-3.5 w-48 mb-1 opacity-8" />
+                    <Skeleton className="h-2.5 w-32 opacity-5" />
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="h-7 rounded-md w-20" style={{ background: "white", opacity: 0.06 }} />
-                    <div className="h-7 rounded-md w-16" style={{ background: "white", opacity: 0.06 }} />
-                    <div className="h-7 rounded-md w-20" style={{ background: "white", opacity: 0.06 }} />
+                    <Skeleton className="h-6 w-20 rounded-md opacity-6" />
+                    <Skeleton className="h-6 w-16 rounded-md opacity-6" />
+                    <Skeleton className="h-6 w-20 rounded-md opacity-6" />
                   </div>
                 </div>
               ))}
-            </div>
+            </Card>
           </section>
         ))}
       </div>
@@ -217,9 +225,9 @@ export default function PublicacaoPage() {
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
             style={{
-              color: "oklch(0.55 0.18 27)",
-              background: "oklch(0.55 0.18 27 / 0.08)",
-              border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+              color: "var(--destructive)",
+              background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
+              border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
             }}
           >
             {loadError}
@@ -302,22 +310,17 @@ export default function PublicacaoPage() {
 
                   {cfg.state === "scheduled" && (
                     <div className="shrink-0">
-                      <input
+                      <Input
                         type="datetime-local"
                         value={toDatetimeLocal(cfg.at)}
                         onChange={(e) => {
                           const iso = fromDatetimeLocal(e.target.value)
                           applyConfig(doc.path, { state: "scheduled", at: iso })
                         }}
-                        className="rounded px-2 py-1 font-sans text-xs"
-                        style={{
-                          background: "var(--surface)",
-                          border: "1px solid var(--border)",
-                          color: "var(--foreground)",
-                        }}
+                        className="font-sans text-xs h-7 w-auto"
                       />
                       {cfg.at && (
-                        <div className="font-sans text-[10px] mt-0.5 text-right" style={{ color: "oklch(0.72 0.08 75)" }}>
+                        <div className="font-sans text-[10px] mt-0.5 text-right" style={{ color: STATE_COLORS.scheduled.fg }}>
                           libera em {formatRelease(cfg.at)}
                         </div>
                       )}

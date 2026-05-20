@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 
 /**
  * Chip clicável de moderação. Mostra "Pública" / "Escondida" e, ao clicar,
@@ -55,26 +56,30 @@ export function ToggleHiddenButton({
     : "Conversa visível em /perguntas-ao-mundo. Clique para esconder."
 
   return (
-    <button
-      type="button"
+    <Badge
+      role="button"
+      tabIndex={0}
       onClick={toggle}
-      disabled={busy}
       title={title}
       aria-label={title}
-      className="shrink-0 rounded-full px-2.5 py-1 font-sans text-[10px] uppercase tracking-[0.15em] transition-opacity hover:opacity-80 disabled:opacity-50"
-      style={{
-        background: hidden
-          ? "color-mix(in oklch, red 30%, var(--background))"
-          : "color-mix(in oklch, var(--foreground) 8%, transparent)",
-        color: hidden
-          ? "var(--foreground)"
-          : "var(--muted-foreground)",
-        border: hidden
-          ? "1px solid color-mix(in oklch, red 50%, transparent)"
-          : "1px solid var(--border)",
-      }}
+      variant="outline"
+      className="shrink-0 cursor-pointer select-none uppercase tracking-[0.15em] text-[10px] transition-opacity hover:opacity-80 disabled:opacity-50"
+      style={
+        hidden
+          ? {
+              background: "color-mix(in oklch, var(--destructive) 15%, transparent)",
+              color: "var(--destructive)",
+              borderColor: "color-mix(in oklch, var(--destructive) 40%, transparent)",
+            }
+          : {
+              background: "color-mix(in oklch, var(--foreground) 8%, transparent)",
+              color: "var(--muted-foreground)",
+              borderColor: "var(--border)",
+            }
+      }
+      aria-disabled={busy}
     >
       {busy ? "…" : label}
-    </button>
+    </Badge>
   )
 }

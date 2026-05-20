@@ -1,6 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ChevronDown, Pencil } from "lucide-react"
 
 /* ─── Types ─── */
 
@@ -195,43 +199,36 @@ function EditableField({
   if (editing) {
     return (
       <div>
-        <p
-          className="font-sans text-[10px] tracking-[0.12em] uppercase"
-          style={{ color: "var(--muted-foreground)" }}
-        >
+        <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">
           {label}
         </p>
-        <input
+        <Input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           autoFocus
-          className="mt-1 w-full rounded px-2 py-1 font-sans text-xs outline-none"
-          style={{
-            background: "var(--background)",
-            border: "1px solid var(--foreground)",
-            color: "var(--foreground)",
-          }}
+          className="mt-1 font-sans text-xs h-7"
           onKeyDown={(e) => {
             if (e.key === "Enter") save()
             if (e.key === "Escape") cancel()
           }}
         />
         <div className="mt-1 flex gap-1">
-          <button
+          <Button
             onClick={save}
             disabled={saving}
-            className="rounded px-2 py-0.5 font-sans text-[10px] uppercase"
-            style={{ background: "var(--foreground)", color: "var(--background)" }}
+            size="xs"
+            className="rounded-full uppercase"
           >
             {saving ? "..." : "Salvar"}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={cancel}
-            className="rounded px-2 py-0.5 font-sans text-[10px] uppercase"
-            style={{ color: "var(--muted-foreground)", border: "1px solid var(--border)" }}
+            variant="outline"
+            size="xs"
+            className="rounded-full uppercase"
           >
             Cancelar
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -254,14 +251,12 @@ function EditableField({
       >
         <span>{value || <span style={{ color: "var(--muted-foreground)", fontStyle: "italic" }}>vazio</span>}</span>
         {saved && (
-          <span className="font-sans text-[10px]" style={{ color: "oklch(0.45 0.12 150)" }}>
+          <span className="font-sans text-[10px]" style={{ color: "oklch(0.65 0.15 150)" }}>
             salvo
           </span>
         )}
         <span className="inline-block opacity-0 transition-opacity group-hover:opacity-50">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-          </svg>
+          <Pencil size={10} className="inline" />
         </span>
       </p>
     </div>
@@ -294,36 +289,18 @@ function CollapsibleGroup({
             className="w-2 h-2 rounded-full"
             style={{ background: group.color }}
           />
-          <span
-            className="font-sans text-xs tracking-[0.15em] uppercase font-medium"
-            style={{ color: "var(--foreground)" }}
-          >
+          <span className="font-sans text-xs tracking-[0.15em] uppercase font-medium text-foreground">
             {group.title}
           </span>
-          <span
-            className="font-sans text-[10px]"
-            style={{ color: "var(--muted-foreground)" }}
-          >
+          <span className="font-sans text-[10px] text-muted-foreground">
             {group.fields.length} campo{group.fields.length !== 1 ? "s" : ""}
           </span>
         </div>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{
-            color: "var(--muted-foreground)",
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 200ms",
-          }}
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
+        <ChevronDown
+          size={14}
+          className="text-muted-foreground transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
       </button>
 
       {/* Fields */}
@@ -424,8 +401,8 @@ export default function ConteudoPage() {
           <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
             Conteúdo do Site
           </h1>
-          <div className="mt-1 animate-pulse">
-            <div className="h-3 rounded w-64" style={{ background: "var(--border)" }} />
+          <div className="mt-1">
+            <Skeleton className="h-3 w-64" />
           </div>
         </div>
 
@@ -475,9 +452,9 @@ export default function ConteudoPage() {
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
             style={{
-              color: "oklch(0.55 0.18 27)",
-              background: "oklch(0.55 0.18 27 / 0.08)",
-              border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+              color: "var(--destructive)",
+              background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
+              border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
             }}
           >
             {error}

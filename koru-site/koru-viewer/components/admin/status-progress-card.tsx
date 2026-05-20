@@ -1,7 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 import { DOCUMENT_STATUSES, DocumentStatus } from "@/lib/document-status"
+import { GlassCard } from "@/components/ui/glass-card"
+import { Button } from "@/components/ui/button"
 
 interface Props {
   counts: Record<DocumentStatus, number>
@@ -21,7 +24,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
   }))
 
   return (
-    <section className="rounded-xl glass-card overflow-hidden" aria-labelledby="status-docs-heading">
+    <GlassCard variant="frosted" className="overflow-hidden" aria-labelledby="status-docs-heading" role="region">
       <div className="px-5 pt-5 pb-4">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4">
           <div className="min-w-0 md:flex-1">
@@ -44,16 +47,12 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
               {withoutStatus > 0 && ` ${withoutStatus} sem classificação.`}
             </p>
           </div>
-          <Link
-            href="/admin/editor"
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80 shrink-0"
-            style={{ border: "1px solid var(--border)", color: "var(--foreground)" }}
-          >
-            Ir para o editor
-            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </Link>
+          <Button variant="outline" size="sm" asChild className="rounded-full gap-1.5 shrink-0">
+            <Link href="/admin/editor">
+              Ir para o editor
+              <ChevronRight size={11} aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -120,6 +119,6 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
           )
         })}
       </div>
-    </section>
+    </GlassCard>
   )
 }

@@ -1,6 +1,20 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@/components/ui/separator'
+import {
+  GlassCard,
+  GlassCardHeader,
+  GlassCardTitle,
+  GlassCardDescription,
+  GlassCardContent,
+} from '@/components/ui/glass-card'
+import { Lock, Check, X } from 'lucide-react'
 
 export default function ConfiguracoesPage() {
   const [apiKey, setApiKey] = useState('')
@@ -87,227 +101,179 @@ export default function ConfiguracoesPage() {
     <div className="max-w-2xl">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="font-serif text-3xl" style={{ color: 'var(--foreground)' }}>
+        <h1 className="font-serif text-3xl text-foreground">
           Configuracoes
         </h1>
-        <p className="mt-1 font-sans text-sm" style={{ color: 'var(--muted-foreground)' }}>
+        <p className="mt-1 font-sans text-sm text-muted-foreground">
           Gerencie as integracoes e chaves do projeto
         </p>
       </div>
 
       {/* API Key card */}
-      <div className="rounded-xl p-6 glass-card">
-        {/* Card header */}
-        <div className="flex items-start justify-between mb-5">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <h2 className="font-serif text-xl" style={{ color: 'var(--foreground)' }}>
-                Chave de API
-              </h2>
-              {/* Status indicator */}
-              {configured === null ? (
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-                  style={{
-                    color: 'var(--muted-foreground)',
-                    background: 'color-mix(in oklch, var(--muted-foreground) 10%, transparent)',
-                  }}
+      <GlassCard>
+        <GlassCardHeader>
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2.5 mb-1">
+                <GlassCardTitle className="font-serif text-xl text-foreground">
+                  Chave de API
+                </GlassCardTitle>
+                {/* Status indicator */}
+                {configured === null ? (
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                ) : configured ? (
+                  <Badge variant="outline" className="gap-1.5 text-[10px]" style={{ color: 'oklch(0.65 0.15 150)', borderColor: 'oklch(0.65 0.15 150 / 0.4)', background: 'oklch(0.65 0.15 150 / 0.12)' }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'oklch(0.65 0.15 150)' }} />
+                    Configurada
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="gap-1.5 text-[10px]" style={{ color: 'var(--destructive)', borderColor: 'color-mix(in oklch, var(--destructive) 40%, transparent)', background: 'color-mix(in oklch, var(--destructive) 10%, transparent)' }}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
+                    Nao configurada
+                  </Badge>
+                )}
+              </div>
+              <GlassCardDescription className="font-sans text-xs">
+                Anthropic API Key
+              </GlassCardDescription>
+            </div>
+            {/* API logo mark */}
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+              style={{ background: 'color-mix(in oklch, var(--accent) 14%, transparent)' }}
+            >
+              <Lock size={16} style={{ color: 'var(--accent)' }} />
+            </div>
+          </div>
+        </GlassCardHeader>
+
+        <GlassCardContent className="flex flex-col gap-4">
+          {/* Saved preview */}
+          {configured && savedPreview && (
+            <div
+              className="rounded-lg px-3 py-2 font-mono text-xs"
+              style={{
+                background: 'color-mix(in oklch, var(--accent) 8%, transparent)',
+                color: 'var(--accent)',
+                border: '1px solid color-mix(in oklch, var(--accent) 20%, transparent)',
+              }}
+            >
+              {savedPreview}
+            </div>
+          )}
+
+          <Separator />
+
+          {/* Form */}
+          <form onSubmit={handleSave} className="flex flex-col gap-4">
+            <div>
+              <Label
+                htmlFor="api-key"
+                className="font-sans text-xs font-medium mb-2 uppercase tracking-[0.1em] text-muted-foreground"
+              >
+                {configured ? 'Substituir chave' : 'Inserir chave'}
+              </Label>
+              <Input
+                ref={inputRef}
+                id="api-key"
+                type="text"
+                defaultValue=""
+                onChange={(e) => setApiKey(e.target.value)}
+                onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
+                onPaste={(e) => {
+                  const pasted = e.clipboardData.getData('text')
+                  if (pasted) {
+                    e.preventDefault()
+                    const trimmed = pasted.trim()
+                    setApiKey(trimmed)
+                    if (inputRef.current) inputRef.current.value = trimmed
+                  }
+                }}
+                placeholder="sk-ant-api03-..."
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
+                data-1p-ignore
+                data-lpignore="true"
+                className="mt-1 font-mono text-sm"
+              />
+              <p className="mt-2 font-sans text-[11px] leading-relaxed text-muted-foreground">
+                Necessaria para o chat IA no editor. Use uma chave que comece com{' '}
+                <code
+                  className="rounded px-1 py-0.5 font-mono text-[10px]"
+                  style={{ background: 'color-mix(in oklch, var(--foreground) 8%, transparent)', color: 'var(--foreground)' }}
                 >
-                  <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: 'var(--muted-foreground)' }} />
-                  Verificando
-                </span>
-              ) : configured ? (
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-                  style={{
-                    color: 'oklch(0.65 0.15 150)',
-                    background: 'color-mix(in oklch, oklch(0.65 0.15 150) 12%, transparent)',
-                  }}
+                  sk-ant-api03-
+                </code>
+                . A chave sera salva no .env.local e exige reinicio do servidor.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 flex-wrap">
+              <Button
+                type="submit"
+                disabled={saving}
+                className="rounded-full"
+              >
+                {saving ? 'Salvando...' : configured ? 'Substituir chave' : 'Salvar chave'}
+              </Button>
+
+              {configured && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleTest}
+                  disabled={testing}
+                  className="rounded-full"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'oklch(0.65 0.15 150)' }} />
-                  Configurada
-                </span>
-              ) : (
+                  {testing ? 'Testando...' : 'Testar conexao'}
+                </Button>
+              )}
+
+              {testResult !== null && (
                 <span
-                  className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-sans text-[10px]"
-                  style={{
-                    color: 'oklch(0.62 0.18 27)',
-                    background: 'color-mix(in oklch, oklch(0.62 0.18 27) 12%, transparent)',
-                  }}
+                  className="flex items-center gap-1.5 font-sans text-sm"
+                  style={{ color: testResult.ok ? 'oklch(0.65 0.15 150)' : 'var(--destructive)' }}
                 >
-                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'oklch(0.62 0.18 27)' }} />
-                  Nao configurada
+                  {testResult.ok ? (
+                    <>
+                      <Check size={14} />
+                      Conexao OK
+                    </>
+                  ) : (
+                    <>
+                      <X size={14} />
+                      {testResult.error ?? 'Erro desconhecido'}
+                    </>
+                  )}
                 </span>
               )}
             </div>
-            <p className="font-sans text-xs" style={{ color: 'var(--muted-foreground)' }}>
-              Anthropic API Key
-            </p>
-          </div>
-          {/* API logo mark */}
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: 'color-mix(in oklch, var(--accent) 14%, transparent)' }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-          </div>
-        </div>
+          </form>
 
-        {/* Saved preview */}
-        {configured && savedPreview && (
-          <div
-            className="rounded-lg px-3 py-2 mb-5 font-mono text-xs"
-            style={{
-              background: 'color-mix(in oklch, var(--accent) 8%, transparent)',
-              color: 'var(--accent)',
-              border: '1px solid color-mix(in oklch, var(--accent) 20%, transparent)',
-            }}
-          >
-            {savedPreview}
-          </div>
-        )}
-
-        {/* Divider */}
-        <div className="mb-5" style={{ borderTop: '1px solid var(--border)' }} />
-
-        {/* Form */}
-        <form onSubmit={handleSave} className="flex flex-col gap-4">
-          <div>
-            <label
-              htmlFor="api-key"
-              className="block font-sans text-xs font-medium mb-2 uppercase tracking-[0.1em]"
-              style={{ color: 'var(--muted-foreground)' }}
+          {/* Message */}
+          {message && (
+            <div
+              className="rounded-lg px-4 py-3 font-sans text-sm"
+              style={
+                message.type === 'success'
+                  ? {
+                      color: 'oklch(0.70 0.14 150)',
+                      background: 'color-mix(in oklch, oklch(0.65 0.15 150) 10%, transparent)',
+                      border: '1px solid color-mix(in oklch, oklch(0.65 0.15 150) 25%, transparent)',
+                    }
+                  : {
+                      color: 'var(--destructive)',
+                      background: 'color-mix(in oklch, var(--destructive) 10%, transparent)',
+                      border: '1px solid color-mix(in oklch, var(--destructive) 25%, transparent)',
+                    }
+              }
             >
-              {configured ? 'Substituir chave' : 'Inserir chave'}
-            </label>
-            <input
-              ref={inputRef}
-              id="api-key"
-              type="text"
-              defaultValue=""
-              onChange={(e) => setApiKey(e.target.value)}
-              onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
-              onPaste={(e) => {
-                const pasted = e.clipboardData.getData('text')
-                if (pasted) {
-                  e.preventDefault()
-                  const trimmed = pasted.trim()
-                  setApiKey(trimmed)
-                  if (inputRef.current) inputRef.current.value = trimmed
-                }
-              }}
-              placeholder="sk-ant-api03-..."
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              data-1p-ignore
-              data-lpignore="true"
-              className="w-full rounded-lg px-4 py-2.5 font-mono text-sm transition-colors focus:outline-none"
-              style={{
-                background: 'var(--surface)',
-                color: 'var(--foreground)',
-                border: '1px solid var(--border)',
-                caretColor: 'var(--accent)',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.border = '1px solid color-mix(in oklch, var(--accent) 50%, transparent)'
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.border = '1px solid var(--border)'
-              }}
-            />
-            <p className="mt-2 font-sans text-[11px] leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-              Necessaria para o chat IA no editor. Use uma chave que comece com{' '}
-              <code
-                className="rounded px-1 py-0.5 font-mono text-[10px]"
-                style={{ background: 'color-mix(in oklch, var(--foreground) 8%, transparent)', color: 'var(--foreground)' }}
-              >
-                sk-ant-api03-
-              </code>
-              . A chave sera salva no .env.local e exige reinicio do servidor.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 flex-wrap">
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-full px-6 py-2.5 font-sans text-sm font-medium transition-opacity hover:opacity-85 disabled:opacity-40"
-              style={{
-                background: 'var(--foreground)',
-                color: 'var(--background)',
-              }}
-            >
-              {saving ? 'Salvando...' : configured ? 'Substituir chave' : 'Salvar chave'}
-            </button>
-
-            {configured && (
-              <button
-                type="button"
-                onClick={handleTest}
-                disabled={testing}
-                className="rounded-full px-6 py-2.5 font-sans text-sm font-medium transition-opacity hover:opacity-85 disabled:opacity-40"
-                style={{
-                  background: 'color-mix(in oklch, var(--foreground) 10%, transparent)',
-                  color: 'var(--foreground)',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                {testing ? 'Testando...' : 'Testar conexao'}
-              </button>
-            )}
-
-            {testResult !== null && (
-              <span
-                className="flex items-center gap-1.5 font-sans text-sm"
-                style={{ color: testResult.ok ? 'oklch(0.65 0.15 150)' : 'oklch(0.70 0.16 27)' }}
-              >
-                {testResult.ok ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="2 7 6 11 12 3" />
-                    </svg>
-                    Conexao OK
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="2" y1="2" x2="12" y2="12" />
-                      <line x1="12" y1="2" x2="2" y2="12" />
-                    </svg>
-                    {testResult.error ?? 'Erro desconhecido'}
-                  </>
-                )}
-              </span>
-            )}
-          </div>
-        </form>
-
-        {/* Message */}
-        {message && (
-          <div
-            className="mt-5 rounded-lg px-4 py-3 font-sans text-sm"
-            style={
-              message.type === 'success'
-                ? {
-                    color: 'oklch(0.70 0.14 150)',
-                    background: 'color-mix(in oklch, oklch(0.65 0.15 150) 10%, transparent)',
-                    border: '1px solid color-mix(in oklch, oklch(0.65 0.15 150) 25%, transparent)',
-                  }
-                : {
-                    color: 'oklch(0.70 0.16 27)',
-                    background: 'color-mix(in oklch, oklch(0.62 0.18 27) 10%, transparent)',
-                    border: '1px solid color-mix(in oklch, oklch(0.62 0.18 27) 25%, transparent)',
-                  }
-            }
-          >
-            {message.text}
-          </div>
-        )}
-      </div>
+              {message.text}
+            </div>
+          )}
+        </GlassCardContent>
+      </GlassCard>
     </div>
   )
 }

@@ -1,6 +1,9 @@
 import Link from "next/link"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { ToggleHiddenButton } from "./toggle-hidden-button"
+import { Button } from "@/components/ui/button"
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
+import { ChevronRight } from "lucide-react"
 
 interface SavedMessage {
   role: "user" | "assistant"
@@ -125,31 +128,27 @@ export default async function ConversasPage({ searchParams }: PageProps) {
       </div>
 
       {loadError && (
-        <div
+        <GlassCard
           role="alert"
-          className="mb-6 rounded-lg border px-3 py-2 font-sans text-sm"
+          className="mb-6"
           style={{
-            background:
-              "color-mix(in oklch, var(--destructive) 12%, transparent)",
-            borderColor:
-              "color-mix(in oklch, var(--destructive) 40%, transparent)",
-            color: "var(--foreground)",
+            background: "color-mix(in oklch, var(--destructive) 12%, transparent)",
+            borderColor: "color-mix(in oklch, var(--destructive) 40%, transparent)",
           }}
         >
-          Erro ao carregar conversas: {loadError}
-        </div>
+          <GlassCardContent className="py-2 px-3 font-sans text-sm text-foreground">
+            Erro ao carregar conversas: {loadError}
+          </GlassCardContent>
+        </GlassCard>
       )}
 
       {/* Lista */}
       {conversations.length === 0 && !loadError ? (
-        <div
-          className="rounded-xl p-8 text-center glass-card"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          <p className="font-sans text-sm">
+        <GlassCard className="p-8 text-center">
+          <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
             O Bomi Veh ainda não recebeu perguntas.
           </p>
-        </div>
+        </GlassCard>
       ) : (
         <div className="flex flex-col gap-2">
           {conversations.map((c) => (
@@ -169,30 +168,18 @@ export default async function ConversasPage({ searchParams }: PageProps) {
           </p>
           <div className="flex items-center gap-2">
             {page > 1 && (
-              <Link
-                href={`/admin/conversas?page=${page - 1}`}
-                className="rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80"
-                style={{
-                  color: "var(--foreground)",
-                  border: "1px solid var(--border)",
-                  background: "var(--surface)",
-                }}
-              >
-                Anterior
-              </Link>
+              <Button asChild variant="outline" size="sm" className="rounded-full">
+                <Link href={`/admin/conversas?page=${page - 1}`}>
+                  Anterior
+                </Link>
+              </Button>
             )}
             {page < totalPages && (
-              <Link
-                href={`/admin/conversas?page=${page + 1}`}
-                className="rounded-full px-3 py-1.5 font-sans text-xs transition-opacity hover:opacity-80"
-                style={{
-                  color: "var(--foreground)",
-                  border: "1px solid var(--border)",
-                  background: "var(--surface)",
-                }}
-              >
-                Próxima
-              </Link>
+              <Button asChild variant="outline" size="sm" className="rounded-full">
+                <Link href={`/admin/conversas?page=${page + 1}`}>
+                  Próxima
+                </Link>
+              </Button>
             )}
           </div>
         </div>
@@ -219,21 +206,11 @@ function ConversationItem({ conv }: { conv: ConversationRow }) {
         className="flex cursor-pointer items-center gap-4 px-4 py-3 transition-colors hover:bg-admin-hover list-none"
         style={{ color: "var(--foreground)" }}
       >
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="shrink-0 transition-transform group-open:rotate-90"
-          style={{ color: "var(--muted-foreground)" }}
+        <ChevronRight
+          size={12}
+          className="shrink-0 transition-transform group-open:rotate-90 text-muted-foreground"
           aria-hidden="true"
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
+        />
         <div className="min-w-0 flex-1">
           <p
             className="font-sans text-sm truncate"

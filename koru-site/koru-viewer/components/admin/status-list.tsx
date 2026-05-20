@@ -1,6 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { ChevronDown } from "lucide-react"
+import { GlassCard } from "@/components/ui/glass-card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 interface Props {
   statusByDoc: Record<string, string>

@@ -4,117 +4,24 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  LayoutDashboard, Users, Image, Monitor, Images,
+  Pencil, FileEdit, Lock, MessageCircle, Settings, X, LogOut,
+} from 'lucide-react'
 
 const navItems = [
-  {
-    href: '/admin',
-    label: 'Dashboard',
-    exact: true,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1" />
-        <rect x="14" y="3" width="7" height="7" rx="1" />
-        <rect x="3" y="14" width="7" height="7" rx="1" />
-        <rect x="14" y="14" width="7" height="7" rx="1" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/characters',
-    label: 'Personagens',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/banners',
-    label: 'Banners',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <path d="M21 15l-5-5L5 21" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/card-images',
-    label: 'Cards',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2"/>
-        <path d="M8 21h8M12 17v4"/>
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/gallery',
-    label: 'Galeria',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="2.18" />
-        <line x1="7" y1="2" x2="7" y2="22" />
-        <line x1="17" y1="2" x2="17" y2="22" />
-        <line x1="2" y1="12" x2="22" y2="12" />
-        <line x1="2" y1="7" x2="7" y2="7" />
-        <line x1="2" y1="17" x2="7" y2="17" />
-        <line x1="17" y1="7" x2="22" y2="7" />
-        <line x1="17" y1="17" x2="22" y2="17" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/conteudo',
-    label: 'Conteúdo',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-        <path d="m15 5 4 4"/>
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/editor',
-    label: 'Editor',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/publicacao',
-    label: 'Publicação',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/conversas',
-    label: 'Conversas',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    href: '/admin/configuracoes',
-    label: 'Configurações',
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      </svg>
-    ),
-  },
+  { href: '/admin', label: 'Dashboard', exact: true, icon: <LayoutDashboard size={16} /> },
+  { href: '/admin/characters', label: 'Personagens', icon: <Users size={16} /> },
+  { href: '/admin/banners', label: 'Banners', icon: <Image size={16} /> },
+  { href: '/admin/card-images', label: 'Cards', icon: <Monitor size={16} /> },
+  { href: '/admin/gallery', label: 'Galeria', icon: <Images size={16} /> },
+  { href: '/admin/conteudo', label: 'Conteúdo', icon: <Pencil size={16} /> },
+  { href: '/admin/editor', label: 'Editor', icon: <FileEdit size={16} /> },
+  { href: '/admin/publicacao', label: 'Publicação', icon: <Lock size={16} /> },
+  { href: '/admin/conversas', label: 'Conversas', icon: <MessageCircle size={16} /> },
+  { href: '/admin/configuracoes', label: 'Configurações', icon: <Settings size={16} /> },
 ]
 
 interface AdminSidebarProps {
@@ -164,25 +71,24 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
       >
         {/* Logo */}
         <div className="flex h-14 items-center justify-between px-5">
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <span className="font-serif text-2xl tracking-tight text-foreground">
               Korú
             </span>
-            <span className="ml-2.5 rounded-full border border-admin-badge-border px-1.5 py-0.5 font-sans text-[9px] tracking-[0.15em] uppercase text-muted-foreground">
+            <Badge variant="outline" className="rounded-full font-sans text-[9px] tracking-[0.15em] uppercase">
               Admin
-            </span>
+            </Badge>
           </div>
           {/* Mobile close */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={onClose}
-            className="lg:hidden flex items-center justify-center rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-admin-hover hover:text-foreground"
+            className="lg:hidden"
             aria-label="Fechar menu"
           >
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+            <X size={16} aria-hidden="true" />
+          </Button>
         </div>
 
         {/* Nav */}
@@ -211,9 +117,8 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
           })}
         </nav>
 
-        {/* Divider + Logout */}
-        <div className="p-3">
-          <hr className="mb-3 border-t border-border" />
+        {/* Logout */}
+        <div className="p-3 border-t border-border">
           <LogoutButton />
         </div>
       </aside>
@@ -228,16 +133,14 @@ function LogoutButton() {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleLogout}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 font-sans text-xs text-muted-foreground transition-all duration-150 hover:bg-admin-hover hover:text-foreground"
+      className="w-full justify-start gap-2.5 rounded-lg font-sans text-xs text-muted-foreground"
     >
-      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        <polyline points="16 17 21 12 16 7" />
-        <line x1="21" y1="12" x2="9" y2="12" />
-      </svg>
+      <LogOut size={14} aria-hidden="true" />
       Sair
-    </button>
+    </Button>
   )
 }

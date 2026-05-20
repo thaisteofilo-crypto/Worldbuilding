@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Upload, Trash2, Check, AlertCircle, Loader2 } from 'lucide-react'
 
 interface DocEntry {
   label: string
@@ -61,11 +63,7 @@ function livroUrlSlug(filename: string): string {
 function PlaceholderIcon() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" style={{ color: 'var(--muted-foreground)', opacity: 0.25 }}>
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21,15 16,10 5,21" />
-      </svg>
+      <Upload size={24} className="text-muted-foreground opacity-25" strokeWidth={0.8} />
     </div>
   )
 }
@@ -118,9 +116,7 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
           onClick={(e) => e.stopPropagation()}
         >
           {uploading ? (
-            <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'white' }}>
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-            </svg>
+            <Loader2 size={20} className="animate-spin text-white" />
           ) : (
             <>
               <button
@@ -129,25 +125,17 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
                 style={{ background: 'white', color: 'oklch(0 0 0)' }}
                 title="Alterar imagem"
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
+                <Upload size={11} />
                 Upload
               </button>
               {imageUrl && (
                 <button
                   onClick={() => onDelete(slot.key)}
                   className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-sans font-medium transition-opacity hover:opacity-80"
-                  style={{ background: 'oklch(0.55 0.18 25)', color: 'white' }}
+                  style={{ background: 'var(--destructive)', color: 'white' }}
                   title="Remover imagem"
                 >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                    <path d="M10 11v6M14 11v6" />
-                  </svg>
+                  <Trash2 size={11} />
                   Remover
                 </button>
               )}
@@ -371,22 +359,19 @@ export default function CardImagesPage() {
     return (
       <div className="flex-1 flex flex-col min-h-0 px-6 py-4 font-sans overflow-y-auto">
         {/* Header skeleton */}
-        <div className="mb-8 animate-pulse">
-          <div className="h-8 rounded w-48 mb-2" style={{ background: "var(--border)" }} />
-          <div className="h-3 rounded w-64" style={{ background: "var(--border)", opacity: 0.6 }} />
+        <div className="mb-8">
+          <Skeleton className="h-8 w-48 mb-2" />
+          <Skeleton className="h-3 w-64 opacity-60" />
         </div>
         {/* Section skeletons — 3 sections (Bíblia, Livro, Personagens) */}
         {[12, 13, 7].map((count, si) => (
-          <div key={si} className="mb-10 animate-pulse">
-            <div className="h-5 rounded w-32 mb-4" style={{ background: "var(--border)" }} />
+          <div key={si} className="mb-10">
+            <Skeleton className="h-5 w-32 mb-4" />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
               {Array.from({ length: Math.min(count, 6) }).map((_, i) => (
                 <div key={i} className="flex flex-col items-center gap-1.5 w-full">
-                  <div
-                    className="rounded-xl w-full"
-                    style={{ aspectRatio: "2/3", background: "var(--card)", border: "1px solid var(--border)" }}
-                  />
-                  <div className="h-2.5 rounded w-3/4" style={{ background: "var(--border)", opacity: 0.6 }} />
+                  <Skeleton className="rounded-xl w-full" style={{ aspectRatio: "2/3" }} />
+                  <Skeleton className="h-2.5 w-3/4" />
                 </div>
               ))}
             </div>
@@ -413,9 +398,9 @@ export default function CardImagesPage() {
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
             style={{
-              color: "oklch(0.55 0.18 27)",
-              background: "oklch(0.55 0.18 27 / 0.08)",
-              border: "1px solid oklch(0.55 0.18 27 / 0.2)",
+              color: "var(--destructive)",
+              background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
+              border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
             }}
           >
             {loadError}
@@ -426,25 +411,18 @@ export default function CardImagesPage() {
       {/* Toast */}
       {toast && (
         <div
-          className="fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg"
+          className="fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg text-foreground"
           style={{
             background: toast.type === 'success'
               ? 'color-mix(in oklch, var(--accent) 15%, var(--card))'
-              : 'color-mix(in oklch, oklch(0.55 0.18 25) 15%, var(--card))',
-            border: `1px solid ${toast.type === 'success' ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'color-mix(in oklch, oklch(0.55 0.18 25) 35%, transparent)'}`,
-            color: 'var(--foreground)',
+              : 'color-mix(in oklch, var(--destructive) 15%, var(--card))',
+            border: `1px solid ${toast.type === 'success' ? 'color-mix(in oklch, var(--accent) 35%, transparent)' : 'color-mix(in oklch, var(--destructive) 35%, transparent)'}`,
           }}
         >
           {toast.type === 'success' ? (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent)', flexShrink: 0 }}>
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+            <Check size={13} className="shrink-0" style={{ color: 'var(--accent)' }} />
           ) : (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'oklch(0.65 0.2 25)', flexShrink: 0 }}>
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
+            <AlertCircle size={13} className="shrink-0 text-destructive" />
           )}
           {toast.text}
         </div>

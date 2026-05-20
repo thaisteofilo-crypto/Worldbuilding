@@ -2,6 +2,14 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import type { Task } from '@/lib/database.types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { GlassCard } from '@/components/ui/glass-card'
+import { Separator } from '@/components/ui/separator'
+import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react'
 
 const COLUMNS: { key: Task['status']; label: string }[] = [
   { key: 'todo', label: 'A fazer' },
@@ -230,31 +238,31 @@ export default function TasksPage() {
   if (loading) {
     return (
       <div>
-        <div className="mb-4 animate-pulse">
-          <div className="h-8 rounded w-32 mb-2" style={{ background: "var(--border)" }} />
-          <div className="h-3 rounded w-48" style={{ background: "var(--border)", opacity: 0.6 }} />
+        <div className="mb-4">
+          <Skeleton className="h-8 w-32 mb-2" />
+          <Skeleton className="h-3 w-48 opacity-60" />
         </div>
         {/* Kanban columns skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           {COLUMNS.map((col) => (
-            <div key={col.key} className="rounded-lg overflow-hidden animate-pulse" style={{ border: "1px solid var(--border)" }}>
+            <Card key={col.key} className="overflow-hidden">
               <div className="px-4 py-3 flex items-center justify-between" style={{ background: "var(--surface)" }}>
-                <div className="h-3 rounded w-24" style={{ background: "var(--border)" }} />
-                <div className="h-4 rounded-full w-5" style={{ background: "var(--border)", opacity: 0.6 }} />
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-4 w-5 rounded-full opacity-60" />
               </div>
-              <div className="p-3 flex flex-col gap-2">
+              <CardContent className="p-3 flex flex-col gap-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="rounded-lg px-3 py-2.5" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-                    <div className="h-3 rounded w-3/4 mb-1.5" style={{ background: "white", opacity: 0.08 }} />
-                    <div className="h-2.5 rounded w-1/2" style={{ background: "white", opacity: 0.05 }} />
+                  <Card key={i} size="sm" className="px-3 py-2.5">
+                    <Skeleton className="h-3 w-3/4 mb-1.5 opacity-8" />
+                    <Skeleton className="h-2.5 w-1/2 opacity-5" />
                     <div className="mt-2 flex gap-1.5">
-                      <div className="h-4 rounded-full w-12" style={{ background: "white", opacity: 0.06 }} />
-                      <div className="h-4 rounded-full w-10" style={{ background: "white", opacity: 0.06 }} />
+                      <Skeleton className="h-4 w-12 rounded-full opacity-6" />
+                      <Skeleton className="h-4 w-10 rounded-full opacity-6" />
                     </div>
-                  </div>
+                  </Card>
                 ))}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
@@ -274,67 +282,61 @@ export default function TasksPage() {
       <div className="mb-6 flex flex-wrap gap-4">
         {/* Filtro por categoria */}
         <div className="flex flex-wrap gap-1.5">
-          <button
+          <Badge
+            role="button"
+            tabIndex={0}
             onClick={() => setFilterCategory('all')}
-            className="rounded-full border px-3 py-1 font-sans text-xs transition-colors"
-            style={
-              filterCategory === 'all'
-                ? { borderColor: 'var(--foreground)', color: 'var(--foreground)' }
-                : { borderColor: 'var(--border)', color: 'var(--muted-foreground)' }
-            }
+            variant={filterCategory === 'all' ? 'default' : 'outline'}
+            className="cursor-pointer text-xs"
           >
             todos
-          </button>
+          </Badge>
           {(Object.keys(CATEGORY_COLORS) as Task['category'][]).map((cat) => {
             const active = filterCategory === cat
             return (
-              <button
+              <Badge
                 key={cat}
+                role="button"
+                tabIndex={0}
                 onClick={() => setFilterCategory(active ? 'all' : cat)}
-                className="rounded-full border px-3 py-1 font-sans text-xs transition-colors"
-                style={
-                  active
-                    ? { borderColor: CATEGORY_COLORS[cat], color: CATEGORY_COLORS[cat] }
-                    : { borderColor: 'var(--border)', color: 'var(--muted-foreground)' }
-                }
+                variant="outline"
+                className="cursor-pointer text-xs transition-colors"
+                style={active ? { borderColor: CATEGORY_COLORS[cat], color: CATEGORY_COLORS[cat] } : undefined}
               >
                 {CATEGORY_LABELS[cat]}
-              </button>
+              </Badge>
             )
           })}
         </div>
 
         {/* Separador */}
-        <div className="h-6 w-px self-center" style={{ background: 'var(--border)' }} />
+        <Separator orientation="vertical" className="h-6 self-center" />
 
         {/* Filtro por prioridade */}
         <div className="flex flex-wrap gap-1.5">
-          <button
+          <Badge
+            role="button"
+            tabIndex={0}
             onClick={() => setFilterPriority('all')}
-            className="rounded-full border px-3 py-1 font-sans text-xs transition-colors"
-            style={
-              filterPriority === 'all'
-                ? { borderColor: 'var(--foreground)', color: 'var(--foreground)' }
-                : { borderColor: 'var(--border)', color: 'var(--muted-foreground)' }
-            }
+            variant={filterPriority === 'all' ? 'default' : 'outline'}
+            className="cursor-pointer text-xs"
           >
             todas
-          </button>
+          </Badge>
           {(Object.keys(PRIORITY_COLORS) as Task['priority'][]).map((pri) => {
             const active = filterPriority === pri
             return (
-              <button
+              <Badge
                 key={pri}
+                role="button"
+                tabIndex={0}
                 onClick={() => setFilterPriority(active ? 'all' : pri)}
-                className="rounded-full border px-3 py-1 font-sans text-xs transition-colors"
-                style={
-                  active
-                    ? { borderColor: PRIORITY_COLORS[pri], color: PRIORITY_COLORS[pri] }
-                    : { borderColor: 'var(--border)', color: 'var(--muted-foreground)' }
-                }
+                variant="outline"
+                className="cursor-pointer text-xs transition-colors"
+                style={active ? { borderColor: PRIORITY_COLORS[pri], color: PRIORITY_COLORS[pri] } : undefined}
               >
                 {PRIORITY_LABELS[pri]}
-              </button>
+              </Badge>
             )
           })}
         </div>
@@ -374,12 +376,14 @@ export default function TasksPage() {
                     saving={saving}
                   />
                 ) : (
-                  <button
+                  <Button
                     onClick={() => { setAddingToColumn(col.key); setNewTask(emptyNewTask) }}
-                    className="w-full rounded-md border border-dashed border-border py-1.5 font-sans text-xs text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                    variant="outline"
+                    size="xs"
+                    className="w-full rounded-md border-dashed"
                   >
                     + tarefa
-                  </button>
+                  </Button>
                 )
               )}
 
@@ -431,12 +435,13 @@ export default function TasksPage() {
 
       {/* Tarefa 4 — toast de erro */}
       {moveError && (
-        <div
-          className="fixed bottom-4 right-4 glass-card rounded-lg border px-4 py-3 font-sans text-xs"
+        <GlassCard
+          variant="dark"
+          className="fixed bottom-4 right-4 px-4 py-3 font-sans text-xs"
           style={{ borderColor: 'var(--destructive)', color: 'var(--destructive)', maxWidth: '320px' }}
         >
           {moveError}
-        </div>
+        </GlassCard>
       )}
     </div>
   )
@@ -500,8 +505,8 @@ function TaskCard({
 
   if (editing) {
     return (
-      <div className="rounded-lg border p-3 glass-card" style={{ borderColor: 'var(--border)' }}>
-        <input
+      <GlassCard variant="frosted" className="rounded-lg p-3">
+        <Input
           autoFocus
           type="text"
           value={editData.title}
@@ -510,7 +515,7 @@ function TaskCard({
             if (e.key === 'Enter') handleSave()
             if (e.key === 'Escape') setEditing(false)
           }}
-          className="w-full rounded border border-border bg-background px-2 py-1.5 font-sans text-sm text-foreground outline-none focus:border-[var(--foreground)]"
+          className="font-sans text-sm h-8"
         />
         <textarea
           value={editData.description}
@@ -542,33 +547,38 @@ function TaskCard({
           </select>
         </div>
         <div className="mt-3 flex gap-2">
-          <button
+          <Button
             onClick={handleSave}
             disabled={!editData.title.trim()}
-            className="flex-1 rounded py-1.5 font-sans text-xs disabled:opacity-50"
-            style={{ background: 'var(--foreground)', color: 'var(--background)' }}
+            size="xs"
+            className="flex-1 rounded-full"
           >
             Salvar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setEditing(false)}
-            className="rounded px-3 py-1.5 font-sans text-xs text-muted-foreground hover:text-foreground"
+            variant="ghost"
+            size="xs"
+            className="rounded-full"
           >
             Cancelar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => onDelete(task.id)}
-            className="rounded border border-border px-2 py-1.5 font-sans text-[10px] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+            variant="destructive"
+            size="xs"
+            className="rounded-full"
           >
             Excluir
-          </button>
+          </Button>
         </div>
-      </div>
+      </GlassCard>
     )
   }
 
   return (
-    <div
+    <GlassCard
+      variant="frosted"
       draggable
       onDragStart={(e) => {
         e.dataTransfer.setData('taskId', task.id)
@@ -578,9 +588,9 @@ function TaskCard({
       onDragEnd={onDragEnd}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className="rounded-md border px-2.5 py-2 glass-card transition-all"
+      className="rounded-md px-2.5 py-2 transition-all"
       style={{
-        borderColor: isDragOver ? 'var(--accent)' : 'var(--border)',
+        borderColor: isDragOver ? 'var(--accent)' : undefined,
         opacity: isDragging ? 0.4 : 1,
         background: isDragOver
           ? 'color-mix(in oklch, var(--accent) 8%, transparent)'
@@ -602,56 +612,61 @@ function TaskCard({
 
       {/* Badges + actions */}
       <div className="mt-1.5 flex items-center gap-1">
-        <span
-          className="rounded px-1.5 py-0.5 font-sans text-[10px] uppercase tracking-wide"
+        <Badge
+          variant="outline"
+          className="rounded px-1.5 py-0.5 font-sans text-[10px] uppercase tracking-wide h-auto"
           style={{
             color: CATEGORY_COLORS[task.category],
             background: `color-mix(in oklch, ${CATEGORY_COLORS[task.category]} 12%, transparent)`,
-            border: `1px solid color-mix(in oklch, ${CATEGORY_COLORS[task.category]} 30%, transparent)`,
+            borderColor: `color-mix(in oklch, ${CATEGORY_COLORS[task.category]} 30%, transparent)`,
           }}
         >
           {task.category}
-        </span>
-        <span
-          className="rounded px-1.5 py-0.5 font-sans text-[10px] uppercase tracking-wide"
+        </Badge>
+        <Badge
+          variant="outline"
+          className="rounded px-1.5 py-0.5 font-sans text-[10px] uppercase tracking-wide h-auto"
           style={{
             color: PRIORITY_COLORS[task.priority],
             background: `color-mix(in oklch, ${PRIORITY_COLORS[task.priority]} 12%, transparent)`,
-            border: `1px solid color-mix(in oklch, ${PRIORITY_COLORS[task.priority]} 30%, transparent)`,
+            borderColor: `color-mix(in oklch, ${PRIORITY_COLORS[task.priority]} 30%, transparent)`,
           }}
         >
           {PRIORITY_LABELS[task.priority]}
-        </span>
+        </Badge>
 
         <div className="ml-auto flex items-center gap-0.5">
           {colIndex > 0 && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={() => onMove(task.id, COLUMNS[colIndex - 1].key)}
               title={`Mover para ${COLUMNS[colIndex - 1].label}`}
-              className="rounded px-1 py-0.5 font-sans text-xs text-muted-foreground transition-colors hover:text-foreground hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
             >
-              ←
-            </button>
+              <ChevronLeft size={12} />
+            </Button>
           )}
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={() => setEditing(true)}
             title="Editar"
-            className="rounded px-1 py-0.5 font-sans text-xs text-muted-foreground transition-colors hover:text-foreground hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
           >
-            ✎
-          </button>
+            <Pencil size={11} />
+          </Button>
           {colIndex < COLUMNS.length - 1 && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={() => onMove(task.id, COLUMNS[colIndex + 1].key)}
               title={`Mover para ${COLUMNS[colIndex + 1].label}`}
-              className="rounded px-1 py-0.5 font-sans text-xs text-muted-foreground transition-colors hover:text-foreground hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
             >
-              →
-            </button>
+              <ChevronRight size={12} />
+            </Button>
           )}
         </div>
       </div>
-    </div>
+    </GlassCard>
   )
 }
 
@@ -669,8 +684,8 @@ function AddTaskForm({
   saving: boolean
 }) {
   return (
-    <div className="rounded-lg border border-border p-3 glass-card">
-      <input
+    <GlassCard variant="frosted" className="rounded-lg p-3">
+      <Input
         autoFocus
         type="text"
         placeholder="Título da tarefa"
@@ -680,7 +695,7 @@ function AddTaskForm({
           if (e.key === 'Enter') onSave()
           if (e.key === 'Escape') onCancel()
         }}
-        className="w-full rounded border border-border bg-background px-2 py-1.5 font-sans text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-[var(--foreground)]"
+        className="font-sans text-sm h-8"
       />
       <textarea
         placeholder="Descrição (opcional)"
@@ -712,21 +727,23 @@ function AddTaskForm({
         </select>
       </div>
       <div className="mt-3 flex gap-2">
-        <button
+        <Button
           onClick={onSave}
           disabled={saving || !newTask.title.trim()}
-          className="flex-1 rounded py-1.5 font-sans text-xs disabled:opacity-50"
-          style={{ background: 'var(--foreground)', color: 'var(--background)' }}
+          size="xs"
+          className="flex-1 rounded-full"
         >
           {saving ? 'Salvando...' : 'Adicionar'}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="rounded px-3 py-1.5 font-sans text-xs text-muted-foreground hover:text-foreground"
+          variant="ghost"
+          size="xs"
+          className="rounded-full"
         >
           Cancelar
-        </button>
+        </Button>
       </div>
-    </div>
+    </GlassCard>
   )
 }

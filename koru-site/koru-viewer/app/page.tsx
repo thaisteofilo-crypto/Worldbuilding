@@ -118,7 +118,7 @@ function FullSection({
 }) {
   const hasBanner = !!(videoUrl || bannerUrl)
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden py-10 md:py-16 px-4 md:px-16">
+    <section className="relative flex flex-col justify-center overflow-hidden min-h-screen py-10 md:py-16 px-4 md:px-16">
       {videoUrl ? (
         <>
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
@@ -142,7 +142,7 @@ function FullSection({
         </h2>
         {description && (
           <p
-            className="font-sans text-base md:text-lg leading-relaxed max-w-2xl mb-6 md:mb-8"
+            className="font-sans text-xl md:text-2xl leading-relaxed max-w-2xl mb-6 md:mb-8"
             style={{
               color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,

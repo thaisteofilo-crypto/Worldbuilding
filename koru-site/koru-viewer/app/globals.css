@@ -312,12 +312,12 @@
 }
 @media (min-width: 1024px) {
   .carousel-card {
-    width: calc((100% - 32px) / 4);  /* lg: 4 cards */
+    width: calc((100% - 24px) / 3);  /* lg: 3 cards */
   }
 }
 @media (min-width: 1280px) {
   .carousel-card {
-    width: calc((100% - 40px) / 6);  /* xl: 6 cards */
+    width: calc((100% - 32px) / 5);  /* xl: 5 cards */
   }
 }
 

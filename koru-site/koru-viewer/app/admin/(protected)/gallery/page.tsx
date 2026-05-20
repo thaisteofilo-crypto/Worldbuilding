@@ -1,6 +1,13 @@
 "use client"
 
 import { useEffect, useState, useRef, useCallback } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton, SkeletonContainer } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
+import { Plus, Trash2, X, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react"
 
 interface GalleryImage {
   name: string
@@ -260,61 +267,56 @@ export default function GalleryPage() {
             )}
             {selectMode ? (
               <>
-                <span className="font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
+                <span className="font-sans text-xs tabular-nums text-muted-foreground">
                   {selectedIds.size} {selectedIds.size === 1 ? "selecionada" : "selecionadas"}
                 </span>
-                <button
+                <Button
                   onClick={handleBulkDelete}
                   disabled={selectedIds.size === 0}
-                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity disabled:opacity-30"
-                  style={{
-                    border: "1px solid oklch(0.55 0.18 20)",
-                    color: "oklch(0.65 0.18 20)",
-                  }}
+                  variant="destructive"
+                  size="sm"
+                  className="rounded-full"
                 >
                   Excluir selecionadas
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={exitSelectMode}
-                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-70"
-                  style={{ border: "1px solid var(--border)", color: "var(--muted-foreground)" }}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
                 >
                   Cancelar
-                </button>
+                </Button>
               </>
             ) : (
               images.length > 0 && (
-                <button
+                <Button
                   onClick={enterSelectMode}
-                  className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-70"
-                  style={{ border: "1px solid var(--border)", color: "var(--muted-foreground)" }}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full"
                 >
                   Selecionar
-                </button>
+                </Button>
               )
             )}
           </div>
         </div>
 
-        <div className="rounded-xl p-4 glass-card">
+        <GlassCard>
+          <GlassCardContent className="pt-4">
           <div className="flex items-end gap-3">
             <div className="flex-1">
-              <label
-                className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5"
-                style={{ color: "var(--muted-foreground)" }}
+              <Label
+                className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5 text-muted-foreground"
               >
                 Nome da cena (opcional)
-              </label>
-              <input
+              </Label>
+              <Input
                 value={imageName}
                 onChange={(e) => setImageName(e.target.value)}
                 placeholder="Ex: floresta-akwu, templo-noturno..."
-                className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none"
-                style={{
-                  background: "var(--background)",
-                  border: "1px solid var(--border)",
-                  color: "var(--foreground)",
-                }}
+                className="font-sans text-sm"
               />
             </div>
             <input
@@ -324,29 +326,21 @@ export default function GalleryPage() {
               onChange={handleUpload}
               className="absolute w-0 h-0 opacity-0 overflow-hidden"
             />
-            <button
+            <Button
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
-              className="flex items-center gap-2 rounded-full px-5 py-2.5 font-sans text-sm transition-opacity disabled:opacity-50"
-              style={{
-                background: "var(--foreground)",
-                color: "var(--background)",
-              }}
+              className="rounded-full"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+              <Plus size={14} />
               {uploading ? "Enviando..." : "Enviar"}
-            </button>
+            </Button>
           </div>
           <div className="mt-3">
-            <label
-              className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5"
-              style={{ color: "var(--muted-foreground)" }}
+            <Label
+              className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5 text-muted-foreground"
             >
               Prompt usado (opcional)
-            </label>
+            </Label>
             <textarea
               value={imagePrompt}
               onChange={(e) => setImagePrompt(e.target.value)}
@@ -361,60 +355,44 @@ export default function GalleryPage() {
             />
           </div>
           <div className="mt-3">
-            <label
-              className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5"
-              style={{ color: "var(--muted-foreground)" }}
+            <Label
+              className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5 text-muted-foreground"
             >
               Tags (opcional)
-            </label>
-            <input
+            </Label>
+            <Input
               value={imageTags}
               onChange={(e) => setImageTags(e.target.value)}
               placeholder="Ex: akwu, noturno, floresta, temiku..."
-              className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none"
-              style={{
-                background: "var(--background)",
-                border: "1px solid var(--border)",
-                color: "var(--foreground)",
-              }}
+              className="font-sans text-sm"
             />
           </div>
-        </div>
+          </GlassCardContent>
+        </GlassCard>
       </div>
 
       {/* Search + tag filter */}
       {images.length > 0 && (
         <div className="mb-4 flex flex-col gap-2">
-          <input
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nome..."
-            className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none"
-            style={{
-              background: "var(--background)",
-              border: "1px solid var(--border)",
-              color: "var(--foreground)",
-            }}
+            className="font-sans text-sm"
           />
           {allTags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {allTags.map((tag) => (
-                <button
+                <Badge
                   key={tag}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                  className="rounded-full px-3 py-1 font-sans text-xs transition-colors"
-                  style={
-                    activeTag === tag
-                      ? { background: "var(--foreground)", color: "var(--background)" }
-                      : {
-                          background: "var(--surface)",
-                          color: "var(--muted-foreground)",
-                          border: "1px solid var(--border)",
-                        }
-                  }
+                  variant={activeTag === tag ? "default" : "outline"}
+                  className="cursor-pointer text-xs transition-colors"
                 >
                   {tag}
-                </button>
+                </Badge>
               ))}
             </div>
           )}
@@ -423,23 +401,18 @@ export default function GalleryPage() {
 
       {/* Masonry gallery */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div
-            className="w-6 h-6 rounded-full border-2 animate-spin"
-            style={{ borderColor: "var(--border)", borderTopColor: "var(--foreground)" }}
-          />
-        </div>
+        <SkeletonContainer className="grid" style={{ columns: "400px", columnGap: "8px" }}>
+          {[1,2,3,4,5,6].map((i) => (
+            <Skeleton key={i} className="mb-2 rounded-xl" style={{ height: `${140 + (i % 3) * 60}px` }} />
+          ))}
+        </SkeletonContainer>
       ) : images.length === 0 ? (
         <div
           className="rounded-xl py-16 text-center"
           style={{ border: "1px solid var(--border)" }}
         >
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="mx-auto mb-4" style={{ color: "var(--muted-foreground)", opacity: 0.3 }}>
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <path d="M21 15l-5-5L5 21" />
-          </svg>
-          <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+          <ImageIcon size={48} className="mx-auto mb-4 opacity-30 text-muted-foreground" strokeWidth={0.8} />
+          <p className="font-sans text-sm text-muted-foreground">
             Nenhuma cena na galeria ainda.
           </p>
         </div>
@@ -547,20 +520,19 @@ export default function GalleryPage() {
                           </div>
                         )}
                       </div>
-                      <button
+                      <Button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleDelete(img.name)
                         }}
-                        className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="shrink-0 rounded-full"
                         style={{ background: "oklch(0 0 0 / 0.4)" }}
                         title="Excluir"
                       >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                        </svg>
-                      </button>
+                        <Trash2 size={12} stroke="white" />
+                      </Button>
                     </div>
                   </>
                 )}
@@ -578,24 +550,24 @@ export default function GalleryPage() {
           onClick={closeLightbox}
         >
           {/* Nav arrows */}
-          <button
+          <Button
             onClick={(e) => { e.stopPropagation(); goPrev() }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10"
+            variant="ghost"
+            size="icon"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-          <button
+            <ChevronLeft size={20} stroke="white" />
+          </Button>
+          <Button
             onClick={(e) => { e.stopPropagation(); goNext() }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-10"
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 6 15 12 9 18" />
-            </svg>
-          </button>
+            <ChevronRight size={20} stroke="white" />
+          </Button>
 
           {/* Image + editor */}
           <div className="relative max-w-[92vw] max-h-[92vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
@@ -612,30 +584,34 @@ export default function GalleryPage() {
               <span className="font-sans text-xs tabular-nums" style={{ color: "oklch(1 0 0 / 0.35)" }}>
                 {selectedIndex + 1} / {images.length}
               </span>
-              <button
+              <Button
                 onClick={() => handleDelete(selected.name)}
-                className="font-sans text-xs transition-colors"
+                variant="ghost"
+                size="sm"
+                className="font-sans text-xs rounded-full"
                 style={{ color: "var(--muted-foreground)" }}
               >
                 Excluir
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={closeLightbox}
-                className="ml-2 font-sans text-sm transition-colors"
+                variant="ghost"
+                size="sm"
+                className="ml-2 font-sans text-sm rounded-full"
                 style={{ color: "oklch(1 0 0 / 0.5)" }}
               >
                 Fechar
-              </button>
+              </Button>
             </div>
 
             {/* Prompt + tags editor */}
             <div className="mt-3 w-full max-w-2xl">
-              <label
+              <Label
                 className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5"
                 style={{ color: "oklch(1 0 0 / 0.35)" }}
               >
                 Prompt
-              </label>
+              </Label>
               <textarea
                 value={editingPrompt}
                 onChange={(e) => setEditingPrompt(e.target.value)}
@@ -651,12 +627,12 @@ export default function GalleryPage() {
 
               {/* Tags editor */}
               <div className="mt-2">
-                <label
+                <Label
                   className="font-sans text-xs tracking-[0.12em] uppercase block mb-1.5"
                   style={{ color: "oklch(1 0 0 / 0.35)" }}
                 >
                   Tags
-                </label>
+                </Label>
                 <div className="flex flex-wrap gap-1 mb-1.5">
                   {editingTags.map((tag) => (
                     <span
@@ -669,15 +645,12 @@ export default function GalleryPage() {
                         onClick={() => setEditingTags((prev) => prev.filter((t) => t !== tag))}
                         className="opacity-60 hover:opacity-100"
                       >
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <line x1="18" y1="6" x2="6" y2="18" />
-                          <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
+                        <X size={10} />
                       </button>
                     </span>
                   ))}
                 </div>
-                <input
+                <Input
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -691,7 +664,7 @@ export default function GalleryPage() {
                     }
                   }}
                   placeholder="Adicionar tag..."
-                  className="w-full rounded-lg px-2 py-1 font-sans text-xs outline-none"
+                  className="w-full font-sans text-xs"
                   style={{
                     background: "oklch(0.15 0 0 / 0.8)",
                     border: "1px solid oklch(1 0 0 / 0.1)",
@@ -701,17 +674,15 @@ export default function GalleryPage() {
               </div>
 
               <div className="mt-1.5 flex items-center gap-2">
-                <button
+                <Button
                   onClick={handleSavePrompt}
                   disabled={savingPrompt || !hasChanges}
-                  className="font-sans text-xs px-3 py-1 rounded-full transition-opacity disabled:opacity-30"
-                  style={{
-                    background: "oklch(1 0 0 / 0.15)",
-                    color: "oklch(1 0 0 / 0.7)",
-                  }}
+                  size="sm"
+                  className="rounded-full"
+                  style={{ background: "oklch(1 0 0 / 0.15)", color: "oklch(1 0 0 / 0.7)" }}
                 >
                   {savingPrompt ? "Salvando..." : "Salvar"}
-                </button>
+                </Button>
                 {hasChanges && (
                   <span className="font-sans text-xs" style={{ color: "oklch(1 0 0 / 0.3)" }}>
                     alterado
@@ -722,16 +693,15 @@ export default function GalleryPage() {
           </div>
 
           {/* Close X */}
-          <button
+          <Button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center"
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 rounded-full"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+            <X size={18} stroke="white" />
+          </Button>
         </div>
       )}
     </div>

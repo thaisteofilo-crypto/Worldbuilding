@@ -2,6 +2,10 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Upload, FileText } from "lucide-react"
 
 interface Doc {
   id: string
@@ -132,12 +136,11 @@ export default function DocumentsPage() {
                 <label className="font-sans text-[10px] uppercase tracking-[0.12em] block mb-1" style={{ color: "var(--muted-foreground)" }}>
                   Titulo (opcional)
                 </label>
-                <input
+                <Input
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
                   placeholder="Detecta do arquivo..."
-                  className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none"
-                  style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--foreground)" }}
+                  className="font-sans text-sm"
                 />
               </div>
               <div>
@@ -164,19 +167,14 @@ export default function DocumentsPage() {
                   onChange={handleFileChange}
                   className="absolute w-0 h-0 opacity-0 overflow-hidden"
                 />
-                <button
+                <Button
                   onClick={() => inputRef.current?.click()}
                   disabled={uploading}
-                  className="w-full flex items-center justify-center gap-2 rounded-full px-5 py-2.5 font-sans text-sm transition-opacity disabled:opacity-50"
-                  style={{ background: "var(--foreground)", color: "var(--background)" }}
+                  className="w-full rounded-full"
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
+                  <Upload size={14} />
                   {uploading ? "Processando..." : "Enviar"}
-                </button>
+                </Button>
               </div>
             </div>
             <p className="font-sans text-[10px] mt-2" style={{ color: "var(--muted-foreground)" }}>
@@ -188,10 +186,17 @@ export default function DocumentsPage() {
         {uploadResult && (
           <div
             className="mt-4 rounded-lg px-4 py-2.5 font-sans text-sm"
-            style={{
-              background: uploadResult.startsWith("Erro") ? "oklch(0.55 0.18 27 / 0.08)" : "oklch(0.45 0.12 150 / 0.08)",
-              color: uploadResult.startsWith("Erro") ? "oklch(0.55 0.18 27)" : "oklch(0.35 0.12 150)",
-            }}
+            style={
+              uploadResult.startsWith("Erro")
+                ? {
+                    background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
+                    color: "var(--destructive)",
+                  }
+                : {
+                    background: "color-mix(in oklch, oklch(0.65 0.15 150) 10%, transparent)",
+                    color: "oklch(0.65 0.15 150)",
+                  }
+            }
           >
             {uploadResult}
           </div>
@@ -200,17 +205,29 @@ export default function DocumentsPage() {
 
       {/* Documents list */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="w-6 h-6 rounded-full border-2 animate-spin" style={{ borderColor: "var(--border)", borderTopColor: "var(--foreground)" }} />
+        <div className="flex flex-col gap-4 py-4">
+          {[1,2,3].map((i) => (
+            <div key={i}>
+              <Skeleton className="h-3 w-24 mb-3" />
+              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+                {[1,2].map((j) => (
+                  <div key={j} className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: j < 2 ? "1px solid var(--border)" : "none" }}>
+                    <div>
+                      <Skeleton className="h-3.5 w-48 mb-1" />
+                      <Skeleton className="h-2.5 w-28 opacity-60" />
+                    </div>
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       ) : docs.length === 0 ? (
         <div className="rounded-xl py-16 text-center glass-card">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="mx-auto mb-4" style={{ color: "var(--muted-foreground)", opacity: 0.3 }}>
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-          </svg>
-          <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Nenhum documento.</p>
-          <p className="font-sans text-xs mt-1" style={{ color: "var(--muted-foreground)" }}>Envie arquivos .docx, .md ou .txt acima.</p>
+          <FileText size={48} className="mx-auto mb-4 opacity-30 text-muted-foreground" strokeWidth={0.8} />
+          <p className="font-sans text-sm text-muted-foreground">Nenhum documento.</p>
+          <p className="font-sans text-xs mt-1 text-muted-foreground">Envie arquivos .docx, .md ou .txt acima.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-6">

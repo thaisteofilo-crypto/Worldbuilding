@@ -1,5 +1,8 @@
 "use client"
 
+import { GlassCard } from "@/components/ui/glass-card"
+import { Badge } from "@/components/ui/badge"
+
 interface Props {
   taskStats: {
     total: number
@@ -28,7 +31,7 @@ export function TasksBreakdown({ taskStats }: Props) {
   ]
 
   return (
-    <section className="glass-card rounded-xl p-5" aria-labelledby="tasks-breakdown-heading">
+    <GlassCard variant="frosted" className="p-5" aria-labelledby="tasks-breakdown-heading" role="region">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-2 flex-wrap">
           <span
@@ -49,16 +52,9 @@ export function TasksBreakdown({ taskStats }: Props) {
           </h2>
         </div>
         {highPriority > 0 && (
-          <span
-            className="inline-flex items-center rounded-full px-2.5 py-1 font-sans text-[10px] font-medium shrink-0 whitespace-nowrap"
-            style={{
-              background: "color-mix(in oklch, oklch(0.55 0.18 25) 14%, transparent)",
-              border: "1px solid color-mix(in oklch, oklch(0.55 0.18 25) 35%, transparent)",
-              color: "oklch(0.55 0.18 25)",
-            }}
-          >
+          <Badge variant="destructive" className="shrink-0 whitespace-nowrap font-sans text-[10px]">
             {highPriority} alta prioridade
-          </span>
+          </Badge>
         )}
       </div>
 
@@ -124,6 +120,6 @@ export function TasksBreakdown({ taskStats }: Props) {
           })}
         </div>
       )}
-    </section>
+    </GlassCard>
   )
 }
