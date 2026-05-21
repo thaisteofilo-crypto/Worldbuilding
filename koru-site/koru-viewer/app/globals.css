@@ -1,462 +1,254 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap');
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-    /* ─── Tipografia ─── */
-    --font-heading: 'Instrument Serif', Georgia, serif;
-    --font-sans:    'Instrument Sans', system-ui, sans-serif;
-    --font-mono:    'Space Mono', ui-monospace, Consolas, monospace;
+@theme {
+  --font-sans:  'Instrument Sans', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono:  'Space Mono', ui-monospace, Consolas, monospace;
 
-    /* ─── Tokens semânticos → CSS vars HSL ─── */
-    --color-background:           hsl(var(--background));
-    --color-foreground:           hsl(var(--foreground));
-    --color-card:                 hsl(var(--card));
-    --color-card-foreground:      hsl(var(--card-foreground));
-    --color-popover:              hsl(var(--popover));
-    --color-popover-foreground:   hsl(var(--popover-foreground));
-    --color-primary:              hsl(var(--primary));
-    --color-primary-foreground:   hsl(var(--primary-foreground));
-    --color-secondary:            hsl(var(--secondary));
-    --color-secondary-foreground: hsl(var(--secondary-foreground));
-    --color-muted:                hsl(var(--muted));
-    --color-muted-foreground:     hsl(var(--muted-foreground));
-    --color-accent:               hsl(var(--accent));
-    --color-accent-foreground:    hsl(var(--accent-foreground));
-    --color-destructive:          hsl(var(--destructive));
-    --color-border:               hsl(var(--border));
-    --color-input:                hsl(var(--input));
-    --color-ring:                 hsl(var(--ring));
-    --color-sidebar:              hsl(var(--sidebar));
-    --color-sidebar-foreground:   hsl(var(--sidebar-foreground));
-    --color-sidebar-primary:              hsl(var(--sidebar-primary));
-    --color-sidebar-primary-foreground:   hsl(var(--sidebar-primary-foreground));
-    --color-sidebar-accent:               hsl(var(--sidebar-accent));
-    --color-sidebar-accent-foreground:    hsl(var(--sidebar-accent-foreground));
-    --color-sidebar-border:       hsl(var(--sidebar-border));
-    --color-sidebar-ring:         hsl(var(--sidebar-ring));
+  /* Semantic tokens → CSS vars HSL */
+  --color-background:         hsl(var(--background));
+  --color-foreground:         hsl(var(--foreground));
+  --color-card:               hsl(var(--card));
+  --color-card-foreground:    hsl(var(--card-foreground));
+  --color-popover:            hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary:            hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary:          hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted:              hsl(var(--muted));
+  --color-muted-foreground:   hsl(var(--muted-foreground));
+  --color-accent:             hsl(var(--accent-shadcn));
+  --color-accent-foreground:  hsl(var(--accent-foreground));
+  --color-destructive:        hsl(var(--destructive));
+  --color-border:             hsl(var(--border-shadcn));
+  --color-input:              hsl(var(--input));
+  --color-ring:               hsl(var(--ring));
 
-    /* ─── Cores de marca DS Iara ─── */
-    --color-iara:    #0B6377;
-    --color-una:     #090E17;
-    --color-alva:    #77C5D5;
-    --color-orvalho: #DEF7F9;
-    --color-mare:    #92DCE2;
-    --color-jala:    #35BDC8;
-    --color-mara:    #2CA0AB;
-    --color-omi:     #1A6872;
-    --color-pego:    #114F56;
-    --color-ibu:     #0B363C;
-    --color-barro:   #8B3D17;
-    --color-mel:     #9B6C22;
-    --color-mata:    #707C36;
-    --color-jambo:   #BF505C;
-    --color-brasa:   #DD560D;
-    --color-urucum:  #C72211;
+  /* Brand colors */
+  --color-iara:    #0B6377;
+  --color-una:     #090E17;
+  --color-alva:    #77C5D5;
+  --color-orvalho: #DEF7F9;
+  --color-mare:    #92DCE2;
+  --color-jala:    #35BDC8;
+  --color-mara:    #2CA0AB;
+  --color-omi:     #1A6872;
+  --color-pego:    #114F56;
+  --color-ibu:     #0B363C;
+  --color-barro:   #8B3D17;
+  --color-mel:     #9B6C22;
+  --color-mata:    #707C36;
+  --color-jambo:   #BF505C;
+  --color-brasa:   #DD560D;
+  --color-urucum:  #C72211;
 
-    /* ─── Escala de grays ─── */
-    --color-gray-0:   #000000;
-    --color-gray-950: #101010;
-    --color-gray-900: #202020;
-    --color-gray-800: #303030;
-    --color-gray-700: #484848;
-    --color-gray-600: #5E5E5E;
-    --color-gray-400: #A4A4A4;
-    --color-gray-300: #BCBCBC;
-    --color-gray-200: #D4D4D4;
-    --color-gray-100: #E7E7E7;
-    --color-gray-50:  #F2F2F2;
-    --color-white:    #ffffff;
+  /* Gray scale */
+  --color-gray-0:   #000000;
+  --color-gray-950: #101010;
+  --color-gray-900: #202020;
+  --color-gray-800: #303030;
+  --color-gray-700: #484848;
+  --color-gray-600: #5E5E5E;
+  --color-gray-400: #A4A4A4;
+  --color-gray-300: #BCBCBC;
+  --color-gray-200: #D4D4D4;
+  --color-gray-100: #E7E7E7;
+  --color-gray-50:  #F2F2F2;
+  --color-white:    #ffffff;
 
-    /* ─── Radius ─── */
-    --radius-sm:  calc(var(--radius) * 0.6);
-    --radius-md:  calc(var(--radius) * 0.8);
-    --radius-lg:  var(--radius);
-    --radius-xl:  calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
-
-    /* ─── Accordion ─── */
-    --animate-accordion-down: accordion-down 0.2s ease-out;
-    --animate-accordion-up:   accordion-up   0.2s ease-out;
-}
-
-/* ─── Light mode (DS Iara) ─── */
-:root {
-    --background:             0 0% 100%;
-    --foreground:             219 49% 8%;
-    --card:                   0 0% 95%;
-    --card-foreground:        219 49% 8%;
-    --popover:                0 0% 95%;
-    --popover-foreground:     219 49% 8%;
-    --primary:                191 83% 25%;
-    --primary-foreground:     0 0% 100%;
-    --secondary:              0 0% 95%;
-    --secondary-foreground:   219 49% 8%;
-    --muted:                  0 0% 95%;
-    --muted-foreground:       187 57% 20%;
-    --accent:                 191 83% 25%;
-    --accent-foreground:      0 0% 100%;
-    --destructive:            5 72% 44%;
-    --border:                 191 83% 25%;
-    --input:                  0 0% 95%;
-    --ring:                   191 83% 25%;
-    --radius:                 0.5rem;
-    --sidebar:                0 0% 97%;
-    --sidebar-foreground:     219 49% 8%;
-    --sidebar-primary:        191 83% 25%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent:         0 0% 95%;
-    --sidebar-accent-foreground:  219 49% 8%;
-    --sidebar-border:         191 83% 25%;
-    --sidebar-ring:           191 83% 25%;
-}
-
-/* ─── Dark mode (DS Iara) ─── */
-.dark {
-    --background:             0 0% 0%;
-    --foreground:             180 54% 93%;
-    --card:                   185 80% 13%;
-    --card-foreground:        180 54% 93%;
-    --popover:                185 80% 13%;
-    --popover-foreground:     180 54% 93%;
-    --primary:                185 58% 50%;
-    --primary-foreground:     0 0% 0%;
-    --secondary:              185 80% 13%;
-    --secondary-foreground:   180 54% 93%;
-    --muted:                  185 80% 13%;
-    --muted-foreground:       184 55% 73%;
-    --accent:                 185 58% 50%;
-    --accent-foreground:      0 0% 0%;
-    --destructive:            5 72% 44%;
-    --border:                 185 58% 50%;
-    --input:                  185 80% 13%;
-    --ring:                   185 58% 50%;
-    --sidebar:                186 80% 5%;
-    --sidebar-foreground:     180 54% 93%;
-    --sidebar-primary:        185 58% 50%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent:         185 80% 13%;
-    --sidebar-accent-foreground:  180 54% 93%;
-    --sidebar-border:         185 58% 50%;
-    --sidebar-ring:           185 58% 50%;
-}
-
-/* ─── Admin sidebar tokens ─── */
-:root {
-    --admin-hover:        color-mix(in srgb, hsl(var(--foreground)) 6%, transparent);
-    --admin-active:       color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
-    --admin-badge-border: color-mix(in srgb, hsl(var(--foreground)) 18%, transparent);
-}
-.dark {
-    --admin-hover:        color-mix(in srgb, hsl(var(--foreground)) 6%, transparent);
-    --admin-active:       color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
-    --admin-badge-border: color-mix(in srgb, hsl(var(--foreground)) 18%, transparent);
+  /* Radius */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
 }
 
 @layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-    body {
-        @apply bg-background text-foreground;
-        font-family: var(--font-sans);
-    }
-    html {
-        @apply antialiased;
-    }
-    h1, h2 {
-        font-family: var(--font-heading);
-    }
+  :root {
+    /* background: #F2F2F2 */
+    --background: 0 0% 95%;
+    /* foreground: Una #090E17 */
+    --foreground: 219 44% 6%;
+    /* card: #FFFFFF */
+    --card: 0 0% 100%;
+    --card-foreground: 219 44% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 219 44% 6%;
+    /* primary: Iara #0B6377 */
+    --primary: 191 83% 25%;
+    --primary-foreground: 0 0% 95%;
+    /* secondary: #E7E7E7 */
+    --secondary: 0 0% 91%;
+    --secondary-foreground: 219 44% 6%;
+    /* muted: #ECECEC */
+    --muted: 0 0% 93%;
+    /* muted-foreground: Omi #1A6872 */
+    --muted-foreground: 187 63% 27%;
+    --accent-shadcn: 191 83% 25%;
+    --accent-foreground: 0 0% 95%;
+    /* destructive: Urucum #C72211 */
+    --destructive: 6 84% 42%;
+    /* border: Mara #2CA0AB */
+    --border-shadcn: 185 59% 42%;
+    --input: 185 59% 42%;
+    --ring: 191 83% 25%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* background: Una #090E17 */
+    --background: 219 44% 6%;
+    --foreground: 0 0% 95%;
+    /* card: slightly lighter than Una */
+    --card: 219 44% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 219 44% 10%;
+    --popover-foreground: 0 0% 95%;
+    /* primary: Jala #35BDC8 */
+    --primary: 185 58% 50%;
+    --primary-foreground: 219 44% 6%;
+    /* secondary: Ibu #0B363C */
+    --secondary: 187 69% 14%;
+    --secondary-foreground: 184 69% 92%;
+    --muted: 187 69% 14%;
+    /* muted-foreground: Maré #92DCE2 */
+    --muted-foreground: 184 55% 73%;
+    --accent-shadcn: 185 58% 50%;
+    --accent-foreground: 219 44% 6%;
+    --destructive: 6 84% 35%;
+    --border-shadcn: 191 70% 34%;
+    --input: 191 70% 34%;
+    --ring: 185 58% 50%;
+  }
+
+  * {
+    border-color: hsl(var(--border-shadcn));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2 {
+    font-family: var(--font-serif);
+  }
 }
 
-/* Glassmorphism utilities */
-.glass {
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    background: hsl(0 0% 95% / 0.82);
-    border: 1px solid hsl(0 0% 82% / 0.5);
-}
-.dark .glass {
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    background: hsl(186 80% 5% / 0.9);
-    border: 1px solid hsl(185 58% 50% / 0.2);
+/* ─── Sidebar tokens (reutiliza background/card/border) ─── */
+:root {
+  --sidebar:                  hsl(var(--card));
+  --sidebar-foreground:       hsl(var(--foreground));
+  --sidebar-primary:          hsl(var(--primary));
+  --sidebar-primary-foreground: hsl(var(--primary-foreground));
+  --sidebar-accent:           hsl(var(--muted));
+  --sidebar-accent-foreground: hsl(var(--foreground));
+  --sidebar-border:           hsl(var(--border-shadcn));
+  --sidebar-ring:             hsl(var(--ring));
 }
 
-.glass-card {
-    background: hsl(var(--card));
-    border: none;
-    box-shadow: 0 2px 8px hsl(219 49% 8% / 0.10);
+/* ─── Admin nav hover tokens ─── */
+:root {
+  --admin-hover:  color-mix(in srgb, #0B6377 8%, transparent);
+  --admin-active: color-mix(in srgb, #0B6377 12%, transparent);
 }
-.dark .glass-card {
-    background: hsl(var(--card));
-    border: none;
-    box-shadow: 0 4px 20px hsl(0 0% 0% / 0.7), inset 0 1px 0 hsl(0 0% 100% / 0.05);
+.dark {
+  --admin-hover:  color-mix(in srgb, #35BDC8 8%, transparent);
+  --admin-active: color-mix(in srgb, #35BDC8 12%, transparent);
 }
 
-/* Horizontal scroll affordance for wide MDX tables */
+/* ─── Table scroll ─── */
 .koru-table-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--foreground) / 0.25) transparent;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border-shadcn)) transparent;
 }
 .koru-table-scroll table { min-width: 720px; }
 
-.koru-table-cols-5 table { min-width: 1760px; table-layout: fixed; }
-.koru-table-cols-5 th,
-.koru-table-cols-5 td {
-    background: transparent !important;
-    position: static !important;
-    word-break: break-word;
-}
-.koru-table-cols-5 th:nth-child(1),
-.koru-table-cols-5 td:nth-child(1) { width: 340px; }
-.koru-table-cols-5 th:nth-child(2),
-.koru-table-cols-5 td:nth-child(2) { width: 220px; }
-.koru-table-cols-5 th:nth-child(3),
-.koru-table-cols-5 td:nth-child(3) { width: 480px; }
-.koru-table-cols-5 th:nth-child(4),
-.koru-table-cols-5 td:nth-child(4) { width: 560px; }
-.koru-table-cols-5 th:nth-child(5),
-.koru-table-cols-5 td:nth-child(5) { width: 160px; }
-
-.koru-table-cols-6 table { min-width: 1980px; table-layout: fixed; }
-.koru-table-cols-6 th,
-.koru-table-cols-6 td {
-    background: transparent !important;
-    position: static !important;
-    word-break: break-word;
-}
-.koru-table-cols-6 th:nth-child(1),
-.koru-table-cols-6 td:nth-child(1) { width: 320px; }
-.koru-table-cols-6 th:nth-child(2),
-.koru-table-cols-6 td:nth-child(2) { width: 220px; }
-.koru-table-cols-6 th:nth-child(3),
-.koru-table-cols-6 td:nth-child(3) { width: 460px; }
-.koru-table-cols-6 th:nth-child(4),
-.koru-table-cols-6 td:nth-child(4) { width: 440px; }
-.koru-table-cols-6 th:nth-child(5),
-.koru-table-cols-6 td:nth-child(5) { width: 380px; }
-.koru-table-cols-6 th:nth-child(6),
-.koru-table-cols-6 td:nth-child(6) { width: 160px; }
-
-.koru-table-cols-7 table { min-width: 2200px; table-layout: fixed; }
-.koru-table-cols-7 th,
-.koru-table-cols-7 td {
-    background: transparent !important;
-    position: static !important;
-    word-break: break-word;
-}
-.koru-table-cols-7 th:nth-child(1),
-.koru-table-cols-7 td:nth-child(1) { width: 300px; }
-.koru-table-cols-7 th:nth-child(2),
-.koru-table-cols-7 td:nth-child(2) { width: 220px; }
-.koru-table-cols-7 th:nth-child(3),
-.koru-table-cols-7 td:nth-child(3) { width: 440px; }
-.koru-table-cols-7 th:nth-child(4),
-.koru-table-cols-7 td:nth-child(4) { width: 360px; }
-.koru-table-cols-7 th:nth-child(5),
-.koru-table-cols-7 td:nth-child(5) { width: 340px; }
-.koru-table-cols-7 th:nth-child(6),
-.koru-table-cols-7 td:nth-child(6) { width: 380px; }
-.koru-table-cols-7 th:nth-child(7),
-.koru-table-cols-7 td:nth-child(7) { width: 160px; }
-
-.koru-table-scroll::-webkit-scrollbar {
-    height: 12px;
-}
-.koru-table-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-.koru-table-scroll::-webkit-scrollbar-thumb {
-    background: hsl(var(--foreground) / 0.22);
-    border-radius: 999px;
-}
-.koru-table-scroll::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--foreground) / 0.40);
-}
-
-/* Hide scrollbar for carousels */
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-
-/* Responsive carousel cards */
-.carousel-card {
-    width: calc((100% - 8px) / 2);
-    scroll-snap-align: start;
-    flex-shrink: 0;
-}
-@media (min-width: 640px) {
-    .carousel-card { width: calc((100% - 16px) / 3); }
-}
-@media (min-width: 1024px) {
-    .carousel-card { width: calc((100% - 24px) / 3); }
-}
-@media (min-width: 1280px) {
-    .carousel-card { width: calc((100% - 32px) / 5); }
-}
-@media (max-width: 320px) {
-    .carousel-card { width: calc(100% - 16px); }
-}
-
-/* Drop cap para contos e capítulos */
+/* ─── Drop cap ─── */
 .drop-cap::first-letter {
-    float: left;
-    font-size: 3.2em;
-    line-height: 0.8;
-    padding-right: 0.12em;
-    font-family: var(--font-heading);
-    color: hsl(var(--primary));
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.8;
+  padding-right: 0.12em;
+  font-family: var(--font-serif, Georgia, serif);
+  color: hsl(var(--primary));
 }
 
-/* ─── Easing tokens + hover suave ─── */
-:root {
-    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-gentle: cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-/* ─── Page transitions via View Transitions API ─── */
-@keyframes koru-fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes koru-fade-out {
-    from { opacity: 1; transform: translateY(0); }
-    to   { opacity: 0; transform: translateY(-4px); }
-}
-
-::view-transition-old(root) {
-    animation: 260ms var(--ease-soft) koru-fade-out;
-}
-
-::view-transition-new(root) {
-    animation: 380ms var(--ease-smooth) koru-fade-in;
-}
-
-/* ─── Card hover suave (carrosséis da home) ─── */
+/* ─── Card hover ─── */
 .koru-card {
-    transition: transform 380ms var(--ease-gentle), box-shadow 380ms var(--ease-gentle);
-    transform-origin: center;
-    will-change: transform;
-    backface-visibility: hidden;
+  transition: transform 280ms cubic-bezier(0.33, 1, 0.68, 1),
+              box-shadow 280ms cubic-bezier(0.33, 1, 0.68, 1);
 }
-.koru-card:hover {
-    transform: scale(1.012);
-}
-.koru-card-img {
-    transition: transform 720ms var(--ease-gentle);
-    transform-origin: center;
-    will-change: transform;
-    backface-visibility: hidden;
-}
-.group:hover .koru-card-img {
-    transform: scale(1.04);
-}
+.koru-card:hover { transform: scale(1.012); }
 
-/* Nav item hover suave (sidebars) */
+/* ─── Nav item transition ─── */
 .koru-nav-item {
-    transition-property: background-color, color, opacity;
-    transition-duration: 280ms;
-    transition-timing-function: var(--ease-soft);
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* Flash de destaque ao aceitar sugestão */
-@keyframes koru-accept-flash {
-    0% {
-        background-color: hsl(var(--accent) / 0.32);
-        box-shadow: 0 0 0 8px hsl(var(--accent) / 0.14);
-    }
-    60% {
-        background-color: hsl(var(--accent) / 0.16);
-        box-shadow: 0 0 0 6px hsl(var(--accent) / 0.06);
-    }
-    100% {
-        background-color: transparent;
-        box-shadow: 0 0 0 0 transparent;
-    }
+/* ─── Page fade ─── */
+@keyframes koru-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes koru-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
-.koru-accept-flash {
-    animation: koru-accept-flash 1.8s var(--ease-smooth) forwards;
-    border-radius: 0.375rem;
-    transition: background-color 0.3s ease;
+/* ─── Accordion ─── */
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--accordion-panel-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--accordion-panel-height); }
+  to   { height: 0; }
 }
 
-/* Respeita preferência do usuário */
-@media (prefers-reduced-motion: reduce) {
-    .koru-card,
-    .koru-card-img,
-    .koru-nav-item {
-        animation: none !important;
-        transition: none !important;
-    }
-    .koru-card:hover,
-    .group:hover .koru-card-img {
-        transform: none;
-    }
-}
-
-/* Radix ScrollArea: force inner wrapper to block */
-[data-slot="scroll-area-viewport"] > div {
-    display: block !important;
-    min-width: 0 !important;
-    width: 100% !important;
-}
-
-/* Tables inside the rich editor */
+/* ─── Editor tables ─── */
 .koru-editor table,
 .ProseMirror table {
-    border-collapse: separate;
-    border-spacing: 0;
-    margin: 1rem 0;
-    width: auto;
-    min-width: 60%;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    table-layout: auto;
-    font-size: 0.95em;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0;
+  width: auto;
+  min-width: 60%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.95em;
 }
 .koru-editor table th,
 .ProseMirror table th {
-    background: hsl(var(--foreground) / 0.06);
-    color: hsl(var(--muted-foreground));
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    text-align: left;
-    padding: 0.55rem 0.7rem;
-    vertical-align: top;
-    min-width: 120px;
-    word-break: normal;
-    overflow-wrap: break-word;
+  background: color-mix(in srgb, hsl(var(--foreground)) 6%, transparent);
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
 }
 .koru-editor table td,
 .ProseMirror table td {
-    padding: 0.55rem 0.7rem;
-    vertical-align: top;
-    line-height: 1.45;
-    word-break: normal;
-    overflow-wrap: break-word;
+  padding: 0.55rem 0.7rem;
+  line-height: 1.45;
 }
 .koru-editor table tbody tr:nth-child(even) td,
 .ProseMirror table tbody tr:nth-child(even) td {
-    background: hsl(var(--foreground) / 0.03);
+  background: color-mix(in srgb, hsl(var(--foreground)) 3%, transparent);
 }
 
-/* ─── Accordion animations ─── */
-@keyframes accordion-down {
-    from { height: 0; }
-    to   { height: var(--accordion-panel-height); }
-}
-
-@keyframes accordion-up {
-    from { height: var(--accordion-panel-height); }
-    to   { height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .koru-card, .koru-nav-item { animation: none !important; transition: none !important; }
+  .koru-card:hover { transform: none; }
 }

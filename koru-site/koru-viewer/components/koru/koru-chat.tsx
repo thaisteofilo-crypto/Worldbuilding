@@ -585,18 +585,18 @@ export function KoruChat() {
       {/* Estilos locais */}
       <style jsx global>{`
         .koru-chat-button {
-          background: color-mix(in oklch, var(--background) 70%, var(--accent) 30%);
-          border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
-          color: var(--foreground);
+          background: color-mix(in srgb, hsl(var(--background)) 70%, hsl(var(--primary)) 30%);
+          border: 1px solid color-mix(in srgb, hsl(var(--primary)) 30%, transparent);
+          color: hsl(var(--foreground));
           box-shadow:
-            0 0 18px color-mix(in oklch, var(--accent) 22%, transparent),
-            0 6px 18px color-mix(in oklch, black 30%, transparent);
+            0 0 18px color-mix(in srgb, hsl(var(--primary)) 22%, transparent),
+            0 6px 18px color-mix(in srgb, black 30%, transparent);
         }
         .koru-chat-button:hover {
           box-shadow:
-            0 0 26px color-mix(in oklch, var(--accent) 32%, transparent),
-            0 8px 22px color-mix(in oklch, black 35%, transparent);
-          border-color: color-mix(in oklch, var(--accent) 45%, transparent);
+            0 0 26px color-mix(in srgb, hsl(var(--primary)) 32%, transparent),
+            0 8px 22px color-mix(in srgb, black 35%, transparent);
+          border-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent);
         }
         @keyframes koru-glyph-pulse {
           0%, 100% { opacity: 0.55; transform: scale(1); }

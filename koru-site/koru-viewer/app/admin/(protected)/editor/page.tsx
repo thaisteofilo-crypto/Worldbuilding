@@ -695,11 +695,11 @@ export default function EditorPage() {
 
   // Autosave status display
   const autosaveNode = selectedPath && autosaveStatus !== 'idle' ? (
-    <span className="font-sans text-[11px] flex items-center gap-1" style={{ color: 'var(--muted-foreground)' }}>
+    <span className="font-mono text-[10px] flex items-center gap-1 text-muted-foreground">
       {autosaveStatus === 'pending' && (
         <>
-          <span style={{ opacity: 0.5 }}>&#8226;</span>
-          <span>modificado</span>
+          <span className="opacity-60">&#8226;</span>
+          <span className="opacity-60">modificado</span>
         </>
       )}
       {autosaveStatus === 'saving' && (
@@ -711,15 +711,15 @@ export default function EditorPage() {
         </>
       )}
       {autosaveStatus === 'saved' && (
-        <>
+        <span className="flex items-center gap-1 text-primary">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
           <span>salvo</span>
-        </>
+        </span>
       )}
       {autosaveStatus === 'error' && (
-        <span style={{ color: 'oklch(0.65 0.2 25)' }}>! erro ao salvar</span>
+        <span className="text-destructive">! erro ao salvar</span>
       )}
     </span>
   ) : null
@@ -727,32 +727,26 @@ export default function EditorPage() {
   // Modo foco: layout completamente diferente
   if (focusMode && selectedPath) {
     return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col"
-        style={{ background: 'var(--background)' }}
-      >
+      <div className="fixed inset-0 z-50 flex flex-col bg-background">
         {/* Header minimalista no modo foco */}
         <div
           className="flex items-center justify-between px-10 py-3 shrink-0"
           style={{ opacity: 0.55 }}
         >
           <div className="flex items-center gap-5 min-w-0">
-            <h2
-              className="text-sm leading-tight truncate"
-              style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', color: 'var(--foreground)' }}
-            >
+            <h2 className="font-serif text-sm leading-tight truncate text-foreground/70">
               {selectedLabel}
             </h2>
             {autosaveNode}
             {wordCount > 0 && (
-              <p className="text-[11px] font-sans tabular-nums flex items-center gap-2.5" style={{ color: 'var(--muted-foreground)' }}>
+              <p className="font-mono text-[10px] tabular-nums flex items-center gap-2.5 text-muted-foreground">
                 <span>{wordCount.toLocaleString('pt-BR')} palavras</span>
                 <span style={{ opacity: 0.4 }}>&middot;</span>
                 <span>{readingMinutes} min</span>
                 {(wordCount - sessionStartWordsRef.current > 0 || sessionElapsed >= 60) && (
                   <>
-                    <span style={{ opacity: 0.4 }}>&middot;</span>
-                    <span style={{ color: 'var(--foreground)', opacity: 1 }}>
+                    <span className="opacity-40">&middot;</span>
+                    <span className="text-primary">
                       {wordCount - sessionStartWordsRef.current > 0 && `+${(wordCount - sessionStartWordsRef.current).toLocaleString('pt-BR')}`}
                       {wordCount - sessionStartWordsRef.current > 0 && sessionElapsed >= 60 && ' \u00b7 '}
                       {sessionElapsed >= 60 && `${Math.floor(sessionElapsed / 60)} min`}
@@ -764,8 +758,7 @@ export default function EditorPage() {
           </div>
           <button
             onClick={() => setFocusMode(false)}
-            className="flex items-center gap-1.5 text-xs font-sans transition-all duration-200"
-            style={{ color: 'var(--muted-foreground)' }}
+            className="flex items-center gap-1.5 text-xs font-sans transition-all duration-200 text-muted-foreground"
           >
             Esc
           </button>
@@ -795,10 +788,7 @@ export default function EditorPage() {
         {sidebarCollapsed && (
           <button
             onClick={() => setSidebarCollapsed(false)}
-            className="shrink-0 flex items-center justify-center w-8 rounded-lg transition-colors self-start mt-1"
-            style={{ color: 'var(--muted-foreground)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+            className="shrink-0 flex items-center justify-center w-8 rounded-lg transition-colors self-start mt-1 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
             title="Mostrar sidebar"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -810,27 +800,19 @@ export default function EditorPage() {
         {/* Sidebar */}
         <div
           className={`shrink-0 overflow-y-auto overflow-x-hidden rounded-xl p-3 flex flex-col gap-1 transition-all duration-200 ${
-            sidebarCollapsed ? 'w-0 p-0 border-0 opacity-0' : 'w-[min(19rem,calc(100vw-3rem))]'
+            sidebarCollapsed
+              ? 'w-0 p-0 border-0 opacity-0'
+              : 'w-[min(19rem,calc(100vw-3rem))] bg-card border border-border'
           }`}
-          style={sidebarCollapsed ? {} : {
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-          }}
         >
           {/* Sidebar header: project name + collapse */}
           <div className="flex items-center justify-between mb-2">
-            <span
-              className="text-sm font-sans font-medium truncate"
-              style={{ color: 'var(--foreground)' }}
-            >
+            <span className="text-sm font-sans font-medium truncate text-foreground">
               Koru
             </span>
             <button
               onClick={() => setSidebarCollapsed(true)}
-              className="flex items-center justify-center rounded-lg p-1 transition-colors shrink-0"
-              style={{ color: 'var(--muted-foreground)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+              className="flex items-center justify-center rounded-lg p-1 transition-colors shrink-0 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
               title="Esconder sidebar"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -844,10 +826,7 @@ export default function EditorPage() {
           <div className="flex gap-1.5 mb-2">
             <button
               onClick={() => { setAddingTo(docGroups[0]?.section ?? 'Biblia'); setNewDocName('') }}
-              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors"
-              style={{ background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--foreground)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -855,10 +834,7 @@ export default function EditorPage() {
               Novo
             </button>
             <button
-              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors"
-              style={{ background: 'color-mix(in oklch, var(--foreground) 6%, transparent)', color: 'var(--muted-foreground)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 6%, transparent)' }}
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-sans font-medium transition-colors bg-muted text-muted-foreground border border-border opacity-50 cursor-not-allowed"
               title="Em breve"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -877,42 +853,25 @@ export default function EditorPage() {
                 {/* Section header */}
                 <button
                   onClick={() => toggleSection(group.section)}
-                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 transition-all duration-150"
-                  style={{ color: 'var(--foreground)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = `color-mix(in oklch, var(--foreground) 6%, transparent)`
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent'
-                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 transition-all duration-150 hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                 >
                   <svg
                     width="10"
                     height="10"
                     viewBox="0 0 10 10"
                     fill="currentColor"
-                    className="shrink-0 transition-transform duration-200"
+                    className="shrink-0 transition-transform duration-200 text-muted-foreground opacity-60"
                     style={{
                       transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-                      opacity: 0.4,
                     }}
                   >
                     <path d="M2 3l3 3.5L8 3" />
                   </svg>
-                  <span
-                    className="w-1.5 h-1.5 rounded-sm shrink-0"
-                    style={{ background: 'var(--muted-foreground)', opacity: 0.7 }}
-                  />
-                  <span
-                    className="text-[10px] font-semibold uppercase tracking-[0.15em]"
-                    style={{ color: 'var(--muted-foreground)' }}
-                  >
+                  <span className="w-1.5 h-1.5 rounded-sm shrink-0 bg-primary opacity-70" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                     {group.section}
                   </span>
-                  <span
-                    className="ml-auto text-[10px] font-sans"
-                    style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}
-                  >
+                  <span className="ml-auto text-[10px] font-sans text-muted-foreground/50">
                     {group.docs.length}
                   </span>
                 </button>
@@ -933,49 +892,22 @@ export default function EditorPage() {
                                 if (e.key === 'Escape') setRenamingDoc(null)
                               }}
                               onBlur={() => renameDocument(group.section, doc.path, renameLabel)}
-                              className="flex-1 rounded-md px-2 py-1 text-xs font-sans outline-none"
-                              style={{
-                                background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-                                color: 'var(--foreground)',
-                                border: '1px solid var(--border)',
-                              }}
+                              className="flex-1 rounded-md px-2 py-1 text-xs font-sans outline-none bg-background border border-border text-foreground placeholder:text-muted-foreground/50"
                             />
                           </div>
                         ) : (
                           <button
                             onClick={() => loadFile(doc.path, doc.label)}
                             onDoubleClick={() => { setRenamingDoc({ section: group.section, path: doc.path }); setRenameLabel(doc.label) }}
-                            className="flex-1 min-w-0 text-left rounded-lg px-3 py-1.5 text-sm transition-all duration-150 flex items-center"
-                            style={
+                            className={`flex-1 min-w-0 text-left rounded-lg px-3 py-1.5 text-sm transition-all duration-150 flex items-center ${
                               selectedPath === doc.path
-                                ? {
-                                    background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
-                                    color: 'var(--foreground)',
-                                    fontWeight: 500,
-                                  }
-                                : {
-                                    color: 'var(--muted-foreground)',
-                                  }
-                            }
-                            onMouseEnter={(e) => {
-                              if (selectedPath !== doc.path) {
-                                e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
-                                e.currentTarget.style.color = 'var(--foreground)'
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (selectedPath !== doc.path) {
-                                e.currentTarget.style.background = 'transparent'
-                                e.currentTarget.style.color = 'var(--muted-foreground)'
-                              }
-                            }}
+                                ? 'bg-primary/10 text-primary font-medium'
+                                : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'
+                            }`}
                           >
                             <span className="flex-1 min-w-0 truncate">{doc.label}</span>
                             {selectedPath === doc.path && wordCount > 0 && (
-                              <span
-                                className="ml-2 text-[10px] font-sans tabular-nums shrink-0"
-                                style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}
-                              >
+                              <span className="ml-2 text-[10px] font-mono tabular-nums shrink-0 text-muted-foreground/50">
                                 {wordCount}
                               </span>
                             )}
@@ -1004,8 +936,7 @@ export default function EditorPage() {
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => { setRenamingDoc({ section: group.section, path: doc.path }); setRenameLabel(doc.label) }}
-                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity"
-                            style={{ color: 'var(--muted-foreground)' }}
+                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity text-muted-foreground"
                             title="Renomear"
                           >
                             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1017,8 +948,7 @@ export default function EditorPage() {
                         {renamingDoc?.path !== doc.path && (
                           <button
                             onClick={() => removeDocument(group.section, doc.path)}
-                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity"
-                            style={{ color: 'var(--muted-foreground)' }}
+                            className="opacity-0 group-hover:opacity-100 shrink-0 p-1 rounded transition-opacity text-muted-foreground"
                             title="Remover"
                           >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1042,27 +972,17 @@ export default function EditorPage() {
                             if (e.key === 'Escape') { setAddingTo(null); setNewDocName('') }
                           }}
                           placeholder="Nome do documento..."
-                          className="flex-1 rounded-md px-2 py-1 text-xs font-sans outline-none"
-                          style={{
-                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-                            color: 'var(--foreground)',
-                            border: '1px solid var(--border)',
-                          }}
+                          className="flex-1 rounded-md px-2 py-1 text-xs font-sans outline-none bg-background border border-border text-foreground placeholder:text-muted-foreground/50"
                         />
                         <button
                           onClick={() => addDocument(group.section)}
-                          className="shrink-0 rounded-md px-2 py-1 text-xs font-sans font-medium transition-opacity hover:opacity-80"
-                          style={{
-                            background: 'var(--foreground)',
-                            color: 'var(--background)',
-                          }}
+                          className="shrink-0 rounded-md px-2 py-1 text-xs font-sans font-medium transition-opacity hover:opacity-80 bg-primary text-primary-foreground"
                         >
                           OK
                         </button>
                         <button
                           onClick={() => { setAddingTo(null); setNewDocName('') }}
-                          className="shrink-0 p-1 rounded transition-opacity"
-                          style={{ color: 'var(--muted-foreground)' }}
+                          className="shrink-0 p-1 rounded transition-opacity text-muted-foreground"
                         >
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18" />
@@ -1073,16 +993,7 @@ export default function EditorPage() {
                     ) : (
                       <button
                         onClick={() => { setAddingTo(group.section); setNewDocName('') }}
-                        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs transition-all duration-150"
-                        style={{ color: 'var(--muted-foreground)', opacity: 0.6 }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = '1'
-                          e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = '0.6'
-                          e.currentTarget.style.background = 'transparent'
-                        }}
+                        className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs transition-all duration-150 text-muted-foreground/60 hover:text-primary hover:bg-[#DEF7F9] dark:hover:bg-primary/10 hover:opacity-100 opacity-70"
                       >
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <line x1="12" y1="5" x2="12" y2="19" />
@@ -1099,11 +1010,8 @@ export default function EditorPage() {
 
           {/* Outline / TOC */}
           {selectedPath && headings.length > 0 && (
-            <div className="mt-3 pt-3" style={{ borderTop: '1px solid color-mix(in oklch, var(--border) 50%, transparent)' }}>
-              <p
-                className="text-[9px] font-sans uppercase tracking-[0.15em] px-2.5 mb-2"
-                style={{ color: 'var(--muted-foreground)', opacity: 0.7 }}
-              >
+            <div className="mt-3 pt-3 border-t border-border">
+              <p className="text-[9px] font-sans uppercase tracking-[0.15em] px-2.5 mb-2 text-muted-foreground/70">
                 Estrutura
               </p>
               <div className="flex flex-col gap-0.5">
@@ -1111,22 +1019,12 @@ export default function EditorPage() {
                   <button
                     key={`${h.index}-${i}`}
                     onClick={() => scrollToHeading(h.index)}
-                    className="text-left rounded-lg py-1 text-xs transition-all duration-150 truncate"
+                    className="text-left rounded-lg py-1 text-xs transition-all duration-150 truncate text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                     style={{
-                      color: 'var(--muted-foreground)',
                       paddingLeft: `${0.75 + (h.level - 1) * 0.75}rem`,
                       paddingRight: '0.5rem',
                       fontSize: h.level === 1 ? '12px' : '11px',
                       fontWeight: h.level === 1 ? 500 : 400,
-                      fontFamily: h.level === 1 ? 'var(--font-sans), Inter, sans-serif' : undefined,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
-                      e.currentTarget.style.color = 'var(--foreground)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent'
-                      e.currentTarget.style.color = 'var(--muted-foreground)'
                     }}
                     title={h.text}
                   >
@@ -1141,13 +1039,7 @@ export default function EditorPage() {
         {/* Editor area */}
         <div className="flex-1 flex flex-col min-h-0 min-w-0">
           {!selectedPath ? (
-            <div
-              className="flex-1 flex flex-col items-center justify-center rounded-xl gap-3"
-              style={{
-                border: '1px dashed var(--border)',
-                background: 'var(--card)',
-              }}
-            >
+            <div className="flex-1 flex flex-col items-center justify-center rounded-xl gap-4 border-2 border-dashed border-border bg-card">
               <svg
                 width="32"
                 height="32"
@@ -1157,16 +1049,16 @@ export default function EditorPage() {
                 strokeWidth="0.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ color: 'var(--muted-foreground)', opacity: 0.3 }}
+                className="text-primary/30"
               >
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
               <div className="text-center">
-                <p className="text-sm font-sans" style={{ color: 'var(--muted-foreground)' }}>
+                <p className="text-sm font-sans text-muted-foreground">
                   Selecione um documento para editar.
                 </p>
-                <p className="text-xs font-sans mt-1" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
+                <p className="text-xs font-sans mt-1 text-muted-foreground/50">
                   Use Ctrl+S para salvar rapidamente.
                 </p>
               </div>
@@ -1199,43 +1091,35 @@ export default function EditorPage() {
                       }
                       setEditingTitle(false)
                     }}
-                    className="text-lg leading-tight font-medium outline-none bg-transparent border-b"
+                    className="text-xl leading-tight font-normal outline-none bg-transparent border-b border-border text-foreground"
                     style={{
-                      fontFamily: 'var(--font-sans), Inter, sans-serif',
-                      color: 'var(--foreground)',
-                      borderColor: 'var(--border)',
+                      fontFamily: 'var(--font-serif)',
                       minWidth: '120px',
                     }}
                   />
                 ) : (
                   <h2
-                    className="text-lg leading-tight font-medium cursor-text"
-                    style={{ fontFamily: 'var(--font-sans), Inter, sans-serif', color: 'var(--foreground)' }}
+                    className="text-xl leading-tight font-normal cursor-text text-foreground"
+                    style={{ fontFamily: 'var(--font-serif)' }}
                     onClick={() => { setTitleDraft(selectedLabel); setEditingTitle(true) }}
                     title="Clique para renomear"
                   >
                     {selectedLabel}
                   </h2>
                 )}
-                <span className="text-[10px] font-mono" style={{ color: 'var(--muted-foreground)', opacity: 0.5 }}>
+                <span className="font-mono text-[10px] text-muted-foreground/60">
                   {selectedPath}
                 </span>
               </div>
 
               {/* AI Actions Top Bar — Sudowrite style */}
-              <div
-                className="flex items-center mb-3 rounded-lg px-2 py-1.5"
-                style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-              >
+              <div className="flex items-center mb-3 rounded-xl px-3 py-2 bg-card border border-border">
                 {/* Left: Voltar + AI actions */}
                 <div className="flex items-center gap-1">
                   {/* Voltar */}
                   <a
                     href="/admin"
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
@@ -1243,15 +1127,12 @@ export default function EditorPage() {
                     Voltar
                   </a>
 
-                  <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                  <div className="h-4 w-px bg-border mx-1" />
 
                   {/* Escrever */}
                   <button
                     onClick={() => triggerAIAction('continue')}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -1263,10 +1144,7 @@ export default function EditorPage() {
                   {/* Reescrever */}
                   <button
                     onClick={() => triggerAIAction('rewrite')}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
@@ -1277,10 +1155,7 @@ export default function EditorPage() {
                   {/* Descrever */}
                   <button
                     onClick={() => triggerAIAction('describe')}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -1291,10 +1166,7 @@ export default function EditorPage() {
                   {/* Expandir */}
                   <button
                     onClick={() => triggerAIAction('expand')}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" />
@@ -1307,10 +1179,7 @@ export default function EditorPage() {
                   <div className="relative">
                     <button
                       onClick={(e) => { e.stopPropagation(); setShowMoreTools(!showMoreTools) }}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                      style={{ color: 'var(--muted-foreground)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -1322,8 +1191,7 @@ export default function EditorPage() {
                     </button>
                     {showMoreTools && (
                       <div
-                        className="absolute top-full left-0 mt-1 rounded-lg py-1 z-20 min-w-[160px]"
-                        style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '0 4px 12px oklch(0 0 0 / 0.15)' }}
+                        className="absolute top-full left-0 mt-1 rounded-xl py-1 z-20 min-w-[160px] bg-card border border-border shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {[
@@ -1335,10 +1203,7 @@ export default function EditorPage() {
                           <button
                             key={item.action}
                             onClick={() => { triggerAIAction(item.action); setShowMoreTools(false) }}
-                            className="w-full text-left px-3 py-2 text-sm font-sans transition-colors"
-                            style={{ color: 'var(--foreground)' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                            className="w-full text-left px-3 py-2 text-xs font-sans transition-colors text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                           >
                             {item.label}
                           </button>
@@ -1354,22 +1219,19 @@ export default function EditorPage() {
                 {/* Right side: word count, autosave, focus, IA, save */}
                 <div className="flex items-center gap-2">
                   {/* Word count */}
-                  <span className="text-[11px] font-sans tabular-nums" style={{ color: 'var(--muted-foreground)' }}>
-                    {wordCount > 0 ? `Palavras: ${wordCount.toLocaleString('pt-BR')}` : ''}
+                  <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                    {wordCount > 0 ? `${wordCount.toLocaleString('pt-BR')} palavras` : ''}
                   </span>
 
                   {/* Autosave status */}
                   {autosaveNode}
 
-                  <span className="mx-0.5 h-4 w-px" style={{ background: 'var(--border)' }} />
+                  <div className="h-4 w-px bg-border mx-1" />
 
                   {/* Focus mode */}
                   <button
                     onClick={() => setFocusMode(true)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={{ color: 'var(--muted-foreground)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted-foreground)'; e.currentTarget.style.background = 'transparent' }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                     title="Modo foco (Esc para sair)"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1381,24 +1243,11 @@ export default function EditorPage() {
                   {/* Chat toggle */}
                   <button
                     onClick={() => setShowChat(!showChat)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-sans font-medium transition-colors"
-                    style={
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors duration-150 ${
                       showChat
-                        ? { background: 'var(--foreground)', color: 'var(--background)', borderRadius: '0.375rem' }
-                        : { color: 'var(--muted-foreground)' }
-                    }
-                    onMouseEnter={(e) => {
-                      if (!showChat) {
-                        e.currentTarget.style.color = 'var(--foreground)'
-                        e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!showChat) {
-                        e.currentTarget.style.color = 'var(--muted-foreground)'
-                        e.currentTarget.style.background = 'transparent'
-                      }
-                    }}
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'
+                    }`}
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -1410,12 +1259,7 @@ export default function EditorPage() {
                   <button
                     onClick={handleSave}
                     disabled={saving || loading}
-                    className="rounded-md px-4 py-1.5 text-sm font-sans font-medium transition-all duration-200 hover:opacity-80 disabled:opacity-40 flex items-center"
-                    style={{
-                      background: 'var(--foreground)',
-                      color: 'var(--background)',
-                      opacity: autosaveStatus === 'saved' ? 0.5 : undefined,
-                    }}
+                    className={`rounded-lg px-4 py-1.5 text-xs font-sans font-medium transition-colors duration-150 disabled:opacity-40 flex items-center bg-primary text-primary-foreground hover:bg-primary/90 ${autosaveStatus === 'saved' ? 'opacity-50' : ''}`}
                   >
                     {saving ? 'Salvando...' : autosaveStatus === 'saved' ? 'Salvo' : 'Salvar'}
                   </button>
@@ -1424,54 +1268,46 @@ export default function EditorPage() {
 
               {/* Find & Replace */}
               {showFindReplace && (
-                <div
-                  className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2.5"
-                  style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-                >
+                <div className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2.5 bg-card border border-border">
                   <div className="flex items-center gap-2 flex-1">
                     <input
                       value={findText}
                       onChange={(e) => setFindText(e.target.value)}
                       placeholder="Buscar..."
                       autoFocus
-                      className="rounded-lg px-3 py-1.5 font-sans text-xs outline-none flex-1"
-                      style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--foreground)' }}
+                      className="rounded-lg px-3 py-1.5 font-sans text-xs outline-none flex-1 bg-background border border-border text-foreground placeholder:text-muted-foreground/50"
                       onKeyDown={(e) => { if (e.key === 'Escape') setShowFindReplace(false) }}
                     />
                     <input
                       value={replaceText}
                       onChange={(e) => setReplaceText(e.target.value)}
                       placeholder="Substituir por..."
-                      className="rounded-lg px-3 py-1.5 font-sans text-xs outline-none flex-1"
-                      style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--foreground)' }}
+                      className="rounded-lg px-3 py-1.5 font-sans text-xs outline-none flex-1 bg-background border border-border text-foreground placeholder:text-muted-foreground/50"
                       onKeyDown={(e) => { if (e.key === 'Escape') setShowFindReplace(false) }}
                     />
                   </div>
                   {findText && (
-                    <span className="font-sans text-[11px] tabular-nums shrink-0" style={{ color: 'var(--muted-foreground)' }}>
+                    <span className="font-mono text-[10px] tabular-nums shrink-0 text-muted-foreground">
                       {findCount} ocorr&ecirc;ncia{findCount !== 1 ? 's' : ''}
                     </span>
                   )}
                   <button
                     onClick={handleReplace}
                     disabled={!findText || findCount === 0}
-                    className="rounded-full px-3 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-30"
-                    style={{ background: 'var(--surface)', color: 'var(--foreground)', border: '1px solid var(--border)' }}
+                    className="font-sans text-xs px-3 py-1.5 rounded-lg transition-colors disabled:opacity-30 border border-border text-primary hover:bg-[#DEF7F9] dark:hover:bg-primary/10"
                   >
                     Substituir
                   </button>
                   <button
                     onClick={handleReplaceAll}
                     disabled={!findText || findCount === 0}
-                    className="rounded-full px-3 py-1.5 font-sans text-[11px] transition-opacity disabled:opacity-30"
-                    style={{ background: 'var(--foreground)', color: 'var(--background)' }}
+                    className="font-sans text-xs px-3 py-1.5 rounded-lg transition-colors disabled:opacity-30 bg-primary text-primary-foreground hover:bg-primary/90"
                   >
                     Substituir todos
                   </button>
                   <button
                     onClick={() => setShowFindReplace(false)}
-                    className="ml-1 rounded-full w-6 h-6 flex items-center justify-center transition-opacity hover:opacity-70 shrink-0"
-                    style={{ color: 'var(--muted-foreground)', border: '1px solid var(--border)' }}
+                    className="ml-1 rounded-full w-6 h-6 flex items-center justify-center transition-opacity hover:opacity-70 shrink-0 text-muted-foreground border border-border"
                   >
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -1485,119 +1321,76 @@ export default function EditorPage() {
                 const editor = richEditorRef.current?.editor
                 void toolbarKey
                 const isActive = (type: string, attrs?: Record<string, unknown>) => editor?.isActive(type, attrs) ?? false
-                const activeStyle = (type: string, attrs?: Record<string, unknown>) => ({
-                  background: isActive(type, attrs) ? 'color-mix(in oklch, var(--foreground) 10%, transparent)' : undefined,
-                  color: isActive(type, attrs) ? 'var(--foreground)' : 'var(--foreground)',
-                  boxShadow: isActive(type, attrs) ? 'inset 0 0 0 1px color-mix(in oklch, var(--foreground) 15%, transparent)' : undefined,
-                })
-                const mutedActiveStyle = (type: string, attrs?: Record<string, unknown>) => ({
-                  background: isActive(type, attrs) ? 'color-mix(in oklch, var(--foreground) 10%, transparent)' : undefined,
-                  color: isActive(type, attrs) ? 'var(--foreground)' : 'var(--muted-foreground)',
-                  boxShadow: isActive(type, attrs) ? 'inset 0 0 0 1px color-mix(in oklch, var(--foreground) 15%, transparent)' : undefined,
-                })
 
                 return (
               <div
-                className="mb-2 flex items-center gap-1 rounded-xl px-3 py-1.5 sticky top-0 z-10"
-                style={{
-                  background: 'color-mix(in oklch, var(--background) 85%, transparent)',
-                  border: '1px solid var(--border)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
-                }}
+                className="mb-2 flex items-center gap-1 rounded-xl px-3 py-1.5 sticky top-0 z-10 bg-card/90 border border-border backdrop-blur-md"
               >
                 <button
                   onClick={() => editor?.chain().focus().toggleBold().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150"
-                  style={activeStyle('bold')}
-                  onMouseEnter={(e) => { if (!isActive('bold')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('bold')) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150 ${isActive('bold') ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="Negrito"
                 >
                   B
                 </button>
                 <button
                   onClick={() => editor?.chain().focus().toggleItalic().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm italic transition-all duration-150"
-                  style={activeStyle('italic')}
-                  onMouseEnter={(e) => { if (!isActive('italic')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('italic')) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2.5 py-1 text-sm italic transition-all duration-150 ${isActive('italic') ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="It&aacute;lico"
                 >
                   I
                 </button>
-                <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                <div className="mx-1 h-4 w-px bg-border" />
                 <button
                   onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150"
-                  style={activeStyle('heading', { level: 1 })}
-                  onMouseEnter={(e) => { if (!isActive('heading', { level: 1 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('heading', { level: 1 })) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2.5 py-1 text-sm font-bold transition-all duration-150 ${isActive('heading', { level: 1 }) ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="T&iacute;tulo H1"
                 >
                   H1
                 </button>
                 <button
                   onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                  className="rounded-lg px-2.5 py-1 text-sm font-semibold transition-all duration-150"
-                  style={activeStyle('heading', { level: 2 })}
-                  onMouseEnter={(e) => { if (!isActive('heading', { level: 2 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('heading', { level: 2 })) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2.5 py-1 text-sm font-semibold transition-all duration-150 ${isActive('heading', { level: 2 }) ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="T&iacute;tulo H2"
                 >
                   H2
                 </button>
                 <button
                   onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-                  className="rounded-lg px-2 py-1 text-xs font-semibold transition-all duration-150"
-                  style={activeStyle('heading', { level: 3 })}
-                  onMouseEnter={(e) => { if (!isActive('heading', { level: 3 })) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('heading', { level: 3 })) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2 py-1 text-xs font-semibold transition-all duration-150 ${isActive('heading', { level: 3 }) ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="Subt&iacute;tulo H3"
                 >
                   H3
                 </button>
-                <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                <div className="mx-1 h-4 w-px bg-border" />
                 <button
                   onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm transition-all duration-150"
-                  style={mutedActiveStyle('blockquote')}
-                  onMouseEnter={(e) => { if (!isActive('blockquote')) { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' } }}
-                  onMouseLeave={(e) => { if (!isActive('blockquote')) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' } }}
+                  className={`rounded-lg px-2.5 py-1 text-sm transition-all duration-150 ${isActive('blockquote') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="Cita&ccedil;&atilde;o"
                 >
                   &ldquo;
                 </button>
                 <button
                   onClick={() => editor?.chain().focus().setHorizontalRule().run()}
-                  className="rounded-lg px-2.5 py-1 text-xs transition-all duration-150"
-                  style={{ color: 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
+                  className="rounded-lg px-2.5 py-1 text-xs transition-all duration-150 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   title="Separador horizontal"
                 >
                   ---
                 </button>
-                <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                <div className="mx-1 h-4 w-px bg-border" />
                 <button
                   onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                  className="rounded-lg px-2.5 py-1 text-sm transition-all duration-150"
-                  style={activeStyle('bulletList')}
-                  onMouseEnter={(e) => { if (!isActive('bulletList')) e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { if (!isActive('bulletList')) e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2.5 py-1 text-sm transition-all duration-150 ${isActive('bulletList') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary'}`}
                   title="Lista"
                 >
                   &bull; Lista
                 </button>
-                <span className="mx-1 h-4 w-px" style={{ background: 'var(--border)' }} />
+                <div className="mx-1 h-4 w-px bg-border" />
                 {/* Media uploads — compact */}
                 <button
                   onClick={() => triggerUpload('image')}
                   disabled={uploading}
-                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40"
-                  style={{ color: 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
+                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   title="Inserir imagem"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1609,10 +1402,7 @@ export default function EditorPage() {
                 <button
                   onClick={() => triggerUpload('video')}
                   disabled={uploading}
-                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40"
-                  style={{ color: 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
+                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   title="Inserir v&iacute;deo"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1623,10 +1413,7 @@ export default function EditorPage() {
                 <button
                   onClick={() => triggerUpload('audio')}
                   disabled={uploading}
-                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40"
-                  style={{ color: 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)'; e.currentTarget.style.color = 'var(--foreground)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted-foreground)' }}
+                  className="rounded-lg px-2 py-1 text-xs transition-colors disabled:opacity-40 text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
                   title="Inserir &aacute;udio"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1635,14 +1422,11 @@ export default function EditorPage() {
                     <circle cx="18" cy="16" r="3"/>
                   </svg>
                 </button>
-                {uploading && <span className="text-xs ml-1" style={{ color: 'var(--muted-foreground)' }}>Enviando...</span>}
+                {uploading && <span className="text-xs ml-1 text-muted-foreground">Enviando...</span>}
                 {/* Find & Replace toggle (via Ctrl+H) */}
                 <button
                   onClick={() => setShowFindReplace(prev => !prev)}
-                  className="rounded-lg px-2 py-1 text-xs transition-colors ml-auto"
-                  style={{ color: showFindReplace ? 'var(--foreground)' : 'var(--muted-foreground)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 8%, transparent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                  className={`rounded-lg px-2 py-1 text-xs transition-colors ml-auto hover:bg-[#DEF7F9] dark:hover:bg-primary/10 ${showFindReplace ? 'text-primary' : 'text-muted-foreground'}`}
                   title="Buscar e substituir (Ctrl+H)"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1671,16 +1455,11 @@ export default function EditorPage() {
 
               {/* Message */}
               {message && (
-                <div
-                  className="mb-2 rounded-lg px-4 py-2 text-xs font-sans flex items-center gap-2"
-                  style={{
-                    background: message.type === 'success'
-                      ? 'color-mix(in oklch, var(--accent) 10%, var(--card))'
-                      : 'color-mix(in oklch, var(--destructive) 10%, var(--card))',
-                    border: `1px solid ${message.type === 'success' ? 'color-mix(in oklch, var(--accent) 30%, transparent)' : 'color-mix(in oklch, var(--destructive) 30%, transparent)'}`,
-                    color: 'var(--foreground)',
-                  }}
-                >
+                <div className={`mb-2 rounded-lg px-4 py-2 text-xs font-sans flex items-center gap-2 text-foreground ${
+                  message.type === 'success'
+                    ? 'bg-primary/5 border border-primary/20'
+                    : 'bg-destructive/5 border border-destructive/20'
+                }`}>
                   {message.type === 'success' ? (
                     <svg
                       width="12"
@@ -1691,7 +1470,7 @@ export default function EditorPage() {
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      style={{ color: 'var(--accent)', flexShrink: 0 }}
+                      className="text-primary shrink-0"
                     >
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
@@ -1705,7 +1484,7 @@ export default function EditorPage() {
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      style={{ color: 'var(--destructive)', flexShrink: 0 }}
+                      className="text-destructive shrink-0"
                     >
                       <circle cx="12" cy="12" r="10"/>
                       <line x1="12" y1="8" x2="12" y2="12"/>
@@ -1723,11 +1502,8 @@ export default function EditorPage() {
                   className="flex flex-col min-h-0 overflow-y-auto w-full"
                 >
                   {loading ? (
-                    <div
-                      className="flex-1 flex items-center justify-center rounded-xl"
-                      style={{ border: '1px dashed var(--border)' }}
-                    >
-                      <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Carregando...</p>
+                    <div className="flex-1 flex items-center justify-center rounded-xl border-2 border-dashed border-border">
+                      <p className="text-sm text-muted-foreground">Carregando...</p>
                     </div>
                   ) : (
                     <>
@@ -1741,46 +1517,22 @@ export default function EditorPage() {
                       />
 
                       {/* Bottom editor quick actions */}
-                      <div
-                        className="flex items-center justify-center gap-2 py-4"
-                        style={{ borderTop: '1px solid color-mix(in oklch, var(--border) 40%, transparent)' }}
-                      >
+                      <div className="flex items-center justify-center gap-2 py-4 border-t border-border">
                         <button
                           onClick={() => triggerAIAction('continue')}
-                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
-                          style={{
-                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-                            color: 'var(--foreground)',
-                            border: '1px solid var(--border)',
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-colors border border-primary/30 text-primary hover:bg-[#DEF7F9] dark:hover:bg-primary/10"
                         >
                           Gere um rascunho
                         </button>
                         <button
                           onClick={() => triggerAIAction('expand')}
-                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
-                          style={{
-                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-                            color: 'var(--foreground)',
-                            border: '1px solid var(--border)',
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-colors border border-primary/30 text-primary hover:bg-[#DEF7F9] dark:hover:bg-primary/10"
                         >
                           Expandir trecho
                         </button>
                         <button
                           onClick={() => setShowChat(true)}
-                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-all"
-                          style={{
-                            background: 'color-mix(in oklch, var(--foreground) 5%, transparent)',
-                            color: 'var(--foreground)',
-                            border: '1px solid var(--border)',
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 10%, transparent)' }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = 'color-mix(in oklch, var(--foreground) 5%, transparent)' }}
+                          className="rounded-full px-4 py-2 text-xs font-sans font-medium transition-colors border border-primary/30 text-primary hover:bg-[#DEF7F9] dark:hover:bg-primary/10"
                         >
                           Conversar sobre uma ideia
                         </button>

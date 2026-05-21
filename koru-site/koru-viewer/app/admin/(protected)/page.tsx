@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Type, FileText, CheckSquare, Images, ExternalLink, ChevronRight } from "lucide-react"
+import { Type, FileText, CheckSquare, Images, ExternalLink, ChevronRight, FileEdit, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { GlassCard } from "@/components/ui/glass-card"
 import { AIAnalysisPanel } from "@/components/admin/ai-analysis-panel"
 import { StatusProgressCard } from "@/components/admin/status-progress-card"
 import { WordDistribution } from "@/components/admin/word-distribution"
@@ -53,6 +51,21 @@ function formatNumber(n: number) {
   return n.toString()
 }
 
+/* ─── Section Header ─── */
+
+function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="flex items-baseline gap-3 mb-4">
+      <h2 className="font-serif text-lg text-foreground">{title}</h2>
+      {subtitle && (
+        <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+          {subtitle}
+        </span>
+      )}
+    </div>
+  )
+}
+
 /* ─── Loading skeleton ─── */
 
 function DashboardSkeleton() {
@@ -61,22 +74,31 @@ function DashboardSkeleton() {
       {/* Header skeleton */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
         <div className="flex flex-col gap-2">
-          <Skeleton className="h-8 w-36" />
-          <Skeleton className="h-4 w-56" />
+          <Skeleton className="h-3 w-40 rounded" />
+          <Skeleton className="h-8 w-52" />
+          <Skeleton className="h-4 w-36" />
         </div>
         <Skeleton className="h-8 w-24 rounded-full" />
+      </div>
+      {/* Quick access skeleton */}
+      <div className="flex gap-2 mb-8">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-7 w-24 rounded-full" />
+        ))}
       </div>
       {/* Stat cards skeleton */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <GlassCard key={i} variant="frosted" className="p-4 flex items-center gap-3">
-            <Skeleton className="size-8 rounded-lg shrink-0" />
-            <div className="flex flex-col gap-1.5 flex-1">
-              <Skeleton className="h-2.5 w-16" />
-              <Skeleton className="h-6 w-12" />
-              <Skeleton className="h-2.5 w-24" />
+          <div key={i} className="rounded-xl border bg-card overflow-hidden">
+            <div className="p-5 flex items-start gap-4">
+              <Skeleton className="size-5 rounded shrink-0 mt-0.5" />
+              <div className="flex flex-col gap-2 flex-1">
+                <Skeleton className="h-2 w-16" />
+                <Skeleton className="h-8 w-12" />
+                <Skeleton className="h-2.5 w-24" />
+              </div>
             </div>
-          </GlassCard>
+          </div>
         ))}
       </div>
       {/* Charts skeleton */}
@@ -119,22 +141,51 @@ export default function AdminDashboardPage() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite"
 
+  const accentColors = ['#0B6377', '#9B6C22', '#707C36', '#BF505C']
+
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
-        <div className="min-w-0">
-          <h1 className="font-serif text-2xl sm:text-3xl text-foreground">{greeting}</h1>
-          <p className="mt-1 font-sans text-sm text-muted-foreground">
-            Painel de controle do mundo de Korú
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
+          <h1 className="font-serif text-3xl text-foreground">{greeting}, Thais.</h1>
+          <p className="font-sans text-sm text-muted-foreground mt-1">
+            Painel de controle · Korú
           </p>
         </div>
-        <Button variant="outline" size="sm" asChild className="gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+          className="gap-2 border-primary text-primary hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary"
+        >
           <Link href="/" target="_blank" rel="noopener noreferrer">
             <ExternalLink size={13} aria-hidden="true" />
             Ver site
           </Link>
         </Button>
+      </div>
+
+      {/* Quick access */}
+      <div className="flex gap-2 mb-8 flex-wrap">
+        {[
+          { href: '/admin/editor', label: 'Editor', icon: <FileEdit size={13} aria-hidden="true" /> },
+          { href: '/admin/tasks', label: 'Tarefas', icon: <CheckSquare size={13} aria-hidden="true" /> },
+          { href: '/admin/gallery', label: 'Galeria', icon: <Images size={13} aria-hidden="true" /> },
+          { href: '/admin/characters', label: 'Personagens', icon: <Users size={13} aria-hidden="true" /> },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-sans text-xs font-medium bg-primary/8 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all duration-150"
+          >
+            {item.icon}
+            {item.label}
+          </Link>
+        ))}
       </div>
 
       {/* Stats */}
@@ -145,6 +196,7 @@ export default function AdminDashboardPage() {
           sub="no universo"
           icon={<Type size={16} aria-hidden="true" />}
           href="/admin/editor"
+          accentColor={accentColors[0]}
         />
         <StatCard
           label="Documentos"
@@ -153,6 +205,7 @@ export default function AdminDashboardPage() {
           icon={<FileText size={16} aria-hidden="true" />}
           href="/admin/editor"
           badge={`${completionPercent}%`}
+          accentColor={accentColors[1]}
         />
         <StatCard
           label="Tarefas"
@@ -160,6 +213,7 @@ export default function AdminDashboardPage() {
           sub={`${taskStats.done}/${taskStats.total} concluídas`}
           icon={<CheckSquare size={16} aria-hidden="true" />}
           href="/admin/tasks"
+          accentColor={accentColors[2]}
         />
         <StatCard
           label="Galeria"
@@ -167,12 +221,14 @@ export default function AdminDashboardPage() {
           sub="cenas cadastradas"
           icon={<Images size={16} aria-hidden="true" />}
           href="/admin/gallery"
+          accentColor={accentColors[3]}
         />
       </div>
 
       {/* Status Progress */}
       {analytics.statusCounts && analytics.statusTotalTracked !== undefined && (
-        <div className="mt-8">
+        <div className="mt-10">
+          <SectionHeader title="Status do projeto" subtitle="visão geral" />
           <StatusProgressCard
             counts={analytics.statusCounts}
             totalTracked={analytics.statusTotalTracked}
@@ -183,7 +239,8 @@ export default function AdminDashboardPage() {
 
       {/* Word Distribution */}
       {analytics.contoWordCounts && analytics.bibliaWordCounts && analytics.mainBibleWords !== undefined && (
-        <div className="mt-8">
+        <div className="mt-10">
+          <SectionHeader title="Distribuição" subtitle="palavras por seção" />
           <WordDistribution
             chapters={analytics.chapters as Array<{ slug: string; title: string; words: number; tensionScore: number }>}
             contoWordCounts={analytics.contoWordCounts}
@@ -195,18 +252,25 @@ export default function AdminDashboardPage() {
       )}
 
       {/* Tasks + Status List */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TasksBreakdown taskStats={analytics.taskStats} />
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <SectionHeader title="Tarefas" subtitle={`${taskStats.total} no total`} />
+          <TasksBreakdown taskStats={analytics.taskStats} />
+        </div>
         {analytics.statusByDoc && analytics.statusCounts && (
-          <StatusList
-            statusByDoc={analytics.statusByDoc}
-            counts={analytics.statusCounts as Record<string, number>}
-          />
+          <div>
+            <SectionHeader title="Documentos" subtitle="por status" />
+            <StatusList
+              statusByDoc={analytics.statusByDoc}
+              counts={analytics.statusCounts as Record<string, number>}
+            />
+          </div>
         )}
       </div>
 
       {/* AI Analysis Panel */}
-      <div className="mt-8">
+      <div className="mt-10">
+        <SectionHeader title="Análise IA" subtitle="gerado por claude" />
         <AIAnalysisPanel />
       </div>
     </div>
@@ -222,6 +286,7 @@ function StatCard({
   icon,
   href,
   badge,
+  accentColor,
 }: {
   label: string
   value: string
@@ -229,27 +294,37 @@ function StatCard({
   icon: React.ReactNode
   href?: string
   badge?: string
+  accentColor?: string
 }) {
-  const inner = (
-    <>
-      <div className="shrink-0 text-muted-foreground">{icon}</div>
-      <div className="min-w-0 flex-1">
-        <p className="font-sans text-[10px] uppercase tracking-[0.15em] mb-0.5 text-muted-foreground">{label}</p>
-        <div className="flex items-baseline gap-2">
-          <p className="font-serif text-2xl leading-none text-foreground">{value}</p>
-          {badge && <Badge variant="secondary" className="text-[9px]">{badge}</Badge>}
+  const content = (
+    <div className="flex items-start gap-4 p-5">
+      <div className="mt-0.5 shrink-0 text-primary">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground mb-2">
+          {label}
+        </p>
+        <div className="flex items-baseline gap-2 mb-1.5">
+          <p className="font-serif text-3xl leading-none text-foreground">{value}</p>
+          {badge && (
+            <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+              {badge}
+            </span>
+          )}
         </div>
-        <p className="font-sans text-[10px] mt-0.5 truncate text-muted-foreground">{sub}</p>
+        <p className="font-sans text-xs text-muted-foreground truncate">{sub}</p>
       </div>
       {href && (
         <ChevronRight
-          size={12}
+          size={14}
           aria-hidden="true"
-          className="shrink-0 opacity-0 group-hover:opacity-50 transition-opacity text-muted-foreground"
+          className="shrink-0 mt-1 opacity-0 group-hover:opacity-50 transition-opacity text-primary"
         />
       )}
-    </>
+    </div>
   )
+
+  const cls = "group bg-card rounded-xl ring-1 ring-foreground/10 overflow-hidden hover:ring-primary/30 hover:shadow-md transition-all duration-200"
+  const style = accentColor ? { borderLeft: `3px solid ${accentColor}` } : {}
 
   if (href) {
     return (
@@ -257,16 +332,22 @@ function StatCard({
         href={href}
         role="listitem"
         aria-label={`${label}: ${value}`}
-        className="group rounded-2xl border backdrop-blur-md bg-white/10 border-white/25 shadow-[0_4px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.3)] text-foreground p-4 flex items-center gap-3 transition-transform duration-200 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className={cls}
+        style={style}
       >
-        {inner}
+        {content}
       </Link>
     )
   }
 
   return (
-    <GlassCard variant="frosted" role="listitem" aria-label={`${label}: ${value}`} className="p-4 flex items-center gap-3">
-      {inner}
-    </GlassCard>
+    <div
+      role="listitem"
+      aria-label={`${label}: ${value}`}
+      className={cls}
+      style={style}
+    >
+      {content}
+    </div>
   )
 }

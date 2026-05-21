@@ -865,14 +865,16 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
           <span
             className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5"
             style={{
-              background: 'color-mix(in oklch, var(--accent) 14%, transparent)',
-              color: 'var(--accent)',
+              background: 'color-mix(in srgb, hsl(var(--primary)) 12%, transparent)',
+              color: 'hsl(var(--primary))',
               fontSize: 10,
               letterSpacing: '0.15em',
             }}
           >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2l2.39 7.36H22l-6.2 4.5 2.39 7.36L12 16.72l-6.19 4.5 2.39-7.36L2 9.36h7.61z" />
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" strokeWidth="1.2" opacity="0.7" />
+              <circle cx="12" cy="12" r="5.6" strokeWidth="1.3" opacity="0.9" />
+              <circle cx="12" cy="12" r="2.6" strokeWidth="1.4" opacity="1" />
             </svg>
             IA
           </span>
@@ -1212,16 +1214,17 @@ export function ChatToggleButton({ open, onClick, unread }: ChatToggleProps) {
   return createPortal(
     <button
       onClick={onClick}
-      className="fixed rounded-full flex items-center justify-center transition-all hover:scale-105"
+      className="fixed rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
       style={{
         bottom: 20,
         right: 20,
         width: 48,
         height: 48,
         zIndex: 89,
-        background: 'var(--foreground)',
-        color: 'var(--background)',
-        boxShadow: '0 8px 24px oklch(0 0 0 / 0.35)',
+        background: 'color-mix(in srgb, hsl(var(--background)) 70%, hsl(var(--primary)) 30%)',
+        color: 'hsl(var(--foreground))',
+        border: '1px solid color-mix(in srgb, hsl(var(--primary)) 30%, transparent)',
+        boxShadow: '0 0 18px color-mix(in srgb, hsl(var(--primary)) 22%, transparent), 0 6px 18px color-mix(in srgb, black 30%, transparent)',
         opacity: open ? 0 : 1,
         pointerEvents: open ? 'none' : 'auto',
         transform: open ? 'translateY(16px)' : 'translateY(0)',
@@ -1229,9 +1232,11 @@ export function ChatToggleButton({ open, onClick, unread }: ChatToggleProps) {
       aria-label="Abrir assistente de IA"
       title="Assistente de IA"
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
-        <path d="M18 14l1.05 3.15L22 18.5l-2.95.85L18 22.5l-1.05-3.15L14 18.5l2.95-.85L18 14z" opacity="0.5" />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" strokeWidth="1.2" opacity="0.7" />
+        <circle cx="12" cy="12" r="5.6" strokeWidth="1.3" opacity="0.9" />
+        <circle cx="12" cy="12" r="2.6" strokeWidth="1.4" opacity="1" />
+        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
       </svg>
       {unread !== undefined && unread > 0 && (
         <span

@@ -2,26 +2,41 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
   LayoutDashboard, Users, Image, Monitor, Images,
-  Pencil, FileEdit, Lock, MessageCircle, Settings, X, LogOut,
+  Pencil, FileEdit, Lock, MessageCircle, Settings, X, LogOut, UserCheck,
 } from 'lucide-react'
 
-const navItems = [
-  { href: '/admin', label: 'Dashboard', exact: true, icon: <LayoutDashboard size={16} /> },
-  { href: '/admin/characters', label: 'Personagens', icon: <Users size={16} /> },
-  { href: '/admin/banners', label: 'Banners', icon: <Image size={16} /> },
-  { href: '/admin/card-images', label: 'Cards', icon: <Monitor size={16} /> },
-  { href: '/admin/gallery', label: 'Galeria', icon: <Images size={16} /> },
-  { href: '/admin/conteudo', label: 'Conteúdo', icon: <Pencil size={16} /> },
-  { href: '/admin/editor', label: 'Editor', icon: <FileEdit size={16} /> },
-  { href: '/admin/publicacao', label: 'Publicação', icon: <Lock size={16} /> },
-  { href: '/admin/conversas', label: 'Conversas', icon: <MessageCircle size={16} /> },
-  { href: '/admin/configuracoes', label: 'Configurações', icon: <Settings size={16} /> },
+const navGroups = [
+  {
+    items: [
+      { href: '/admin', label: 'Dashboard', exact: true, icon: LayoutDashboard },
+    ],
+  },
+  {
+    items: [
+      { href: '/admin/characters', label: 'Personagens', icon: Users },
+      { href: '/admin/banners', label: 'Banners', icon: Image },
+      { href: '/admin/card-images', label: 'Cards', icon: Monitor },
+      { href: '/admin/gallery', label: 'Galeria', icon: Images },
+      { href: '/admin/leads', label: 'Leads', icon: UserCheck },
+    ],
+  },
+  {
+    items: [
+      { href: '/admin/conteudo', label: 'Conteúdo', icon: Pencil },
+      { href: '/admin/editor', label: 'Editor', icon: FileEdit },
+      { href: '/admin/publicacao', label: 'Publicação', icon: Lock },
+    ],
+  },
+  {
+    items: [
+      { href: '/admin/conversas', label: 'Conversas', icon: MessageCircle },
+      { href: '/admin/configuracoes', label: 'Configurações', icon: Settings },
+    ],
+  },
 ]
 
 interface AdminSidebarProps {
@@ -32,13 +47,11 @@ interface AdminSidebarProps {
 export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname()
 
-  // Auto-close mobile drawer on route change
   useEffect(() => {
     onClose?.()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
-  // Lock body scroll when mobile drawer is open
   useEffect(() => {
     if (open && typeof window !== 'undefined' && window.innerWidth < 1024) {
       const prev = document.body.style.overflow
@@ -54,72 +67,75 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
         aria-hidden={!open}
         onClick={onClose}
         className={cn(
-          'fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden',
+          'fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-200 lg:hidden',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
       />
 
       <aside
         aria-label="Navegação principal"
-        aria-modal={open || undefined}
         className={cn(
-          'flex w-56 flex-col bg-background',
-          // Mobile: off-canvas drawer
+          'flex w-56 flex-col bg-card border-r border-border',
           'fixed inset-y-0 left-0 z-50 transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
         {/* Logo */}
-        <div className="flex h-14 items-center justify-between px-5">
-          <div className="flex items-center gap-2">
-            <span className="font-serif text-2xl tracking-tight text-foreground">
-              Korú
-            </span>
-            <Badge variant="outline" className="rounded-full font-sans text-[9px] tracking-[0.15em] uppercase">
-              Admin
-            </Badge>
+        <div className="flex h-14 items-center justify-between px-4 border-b border-border">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+            <div>
+              <span className="font-serif text-lg leading-none text-foreground">Korú</span>
+              <p className="font-mono text-[9px] leading-none mt-0.5 text-muted-foreground uppercase tracking-widest">admin</p>
+            </div>
           </div>
-          {/* Mobile close */}
-          <Button
-            variant="ghost"
-            size="icon-sm"
+          <button
             onClick={onClose}
-            className="lg:hidden"
+            className="lg:hidden p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             aria-label="Fechar menu"
           >
-            <X size={16} aria-hidden="true" />
-          </Button>
+            <X size={15} />
+          </button>
         </div>
 
         {/* Nav */}
-        <nav aria-label="Menu" className="flex flex-col gap-0.5 p-3 pt-4 flex-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const active = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href)
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm transition-all duration-150',
-                  active
-                    ? 'bg-admin-active text-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-admin-hover hover:text-foreground',
-                )}
-              >
-                <span aria-hidden="true" className={active ? 'opacity-100' : 'opacity-45'}>{item.icon}</span>
-                {item.label}
-              </Link>
-            )
-          })}
+        <nav aria-label="Menu" className="flex-1 overflow-y-auto p-2 space-y-0.5">
+          {navGroups.map((group, gi) => (
+            <div key={gi}>
+              {gi > 0 && <div className="h-px bg-border my-1.5 mx-1" />}
+              {group.items.map((item) => {
+                const active = item.exact
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href)
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onClose}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-sans transition-colors duration-150',
+                      active
+                        ? 'bg-primary text-primary-foreground font-medium'
+                        : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary',
+                    )}
+                  >
+                    <Icon size={15} aria-hidden="true" className={active ? 'opacity-100' : 'opacity-60'} />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
         </nav>
 
-        {/* Logout */}
-        <div className="p-3 border-t border-border">
+        {/* Footer */}
+        <div className="p-2 border-t border-border space-y-1">
           <LogoutButton />
+          <p className="font-mono text-[8px] text-muted-foreground/40 uppercase tracking-widest px-3 pb-1">
+            v0.1 · stage
+          </p>
         </div>
       </aside>
     </>
@@ -133,14 +149,12 @@ function LogoutButton() {
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
+    <button
       onClick={handleLogout}
-      className="w-full justify-start gap-2.5 rounded-lg font-sans text-xs text-muted-foreground"
+      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-sans text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-colors duration-150"
     >
       <LogOut size={14} aria-hidden="true" />
       Sair
-    </Button>
+    </button>
   )
 }
