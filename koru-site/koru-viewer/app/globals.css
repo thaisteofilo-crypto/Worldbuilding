@@ -69,8 +69,8 @@
 
 @layer base {
   :root {
-    /* background: #F2F2F2 */
-    --background: 0 0% 95%;
+    /* background: #F7F2E6 (cream DS) */
+    --background: 42 52% 94%;
     /* foreground: Una #090E17 */
     --foreground: 219 44% 6%;
     /* card: #FFFFFF */
