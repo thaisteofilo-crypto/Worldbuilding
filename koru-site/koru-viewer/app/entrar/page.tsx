@@ -87,7 +87,7 @@ export default function EntrarPage() {
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-end",
+        justifyContent: "center",
         /* Fallback para quando não há imagem */
         background: "linear-gradient(135deg, #0B363C 0%, #090E17 55%, #0B6377 100%)",
       }}
@@ -129,6 +129,7 @@ export default function EntrarPage() {
           width: "100%",
           maxWidth: "420px",
           margin: "0 clamp(16px, 5vw, 80px)",
+          textAlign: "center",
           backgroundColor: "rgba(255, 255, 255, 0.97)",
           borderRadius: "16px",
           padding: "36px 32px 32px",
