@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { BookOpen, BookMarked, FileText, Users, Images, MessageCircle, ChevronRight, Search } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { BookOpen, BookMarked, FileText, Users, Images, MessageCircle, ChevronRight, Search, LogOut } from "lucide-react"
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -132,11 +132,17 @@ function FlatLink({
 }
 
 export function NavSidebar() {
+  const router = useRouter()
   const [bibliaItems, setBibliaItems] = React.useState<NavItem[]>([])
   const [livroItems, setLivroItems] = React.useState<NavItem[]>([])
   const [contosItems, setContosItems] = React.useState<NavItem[]>([])
   const [personagensItems, setPersonagensItems] = React.useState<NavItem[]>([])
   const [loadError, setLoadError] = React.useState(false)
+
+  async function handleSignOut() {
+    await fetch('/api/auth/sign-out', { method: 'POST' })
+    router.push('/entrar')
+  }
 
   React.useEffect(() => {
     fetch("/api/docs")
@@ -209,6 +215,18 @@ export function NavSidebar() {
             <FlatLink href="/perguntas-ao-mundo" icon={<MessageCircle size={16} />} label="Perguntas ao mundo" />
           </nav>
         </ScrollArea>
+
+        {/* Rodapé: sair */}
+        <div className="px-3 pb-4 pt-2 border-t border-border/40">
+          <Button
+            variant="ghost"
+            onClick={handleSignOut}
+            className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground koru-nav-item hover:bg-admin-hover hover:text-foreground h-auto justify-start"
+          >
+            <LogOut size={14} className="opacity-45" aria-hidden="true" />
+            Sair
+          </Button>
+        </div>
       </SidebarContent>
     </Sidebar>
   )

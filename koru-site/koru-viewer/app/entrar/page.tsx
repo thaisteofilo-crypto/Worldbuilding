@@ -29,6 +29,13 @@ export default function EntrarPage() {
   const [heroVideo, setHeroVideo] = useState<string | null>(null)
 
   useEffect(() => {
+    // Verifica parâmetros de erro vindos do callback OAuth
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("error") === "oauth") setError("Não foi possível entrar com Google. Tente email e senha.")
+    if (params.get("error") === "callback") setError("Erro ao completar autenticação. Tente novamente.")
+  }, [])
+
+  useEffect(() => {
     fetch("/api/banners")
       .then((r) => r.json())
       .then(({ banners }) => {
@@ -65,6 +72,14 @@ export default function EntrarPage() {
       })
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}))
+        if (data.warning === 'created_no_session') {
+          // Conta criada mas sessão não iniciou — pede login manual
+          switchTab("entrar")
+          setError("Conta criada! Entre com seu email e senha.")
+          setLoading(false)
+          return
+        }
         window.location.href = next
       } else {
         const data = await res.json().catch(() => ({}))
@@ -336,7 +351,11 @@ export default function EntrarPage() {
             variant="outline"
             className="w-full rounded-full h-10 gap-2 font-sans"
             style={{ borderColor: "#D1D5DB", color: "#374151", backgroundColor: "white" }}
-            onClick={() => { window.location.href = "/api/auth/google" }}
+            onClick={() => {
+              const params = new URLSearchParams(window.location.search)
+              const next = params.get("next") || "/"
+              window.location.href = `/api/auth/google?next=${encodeURIComponent(next)}`
+            }}
           >
             <GoogleIcon />
             Continuar com Google

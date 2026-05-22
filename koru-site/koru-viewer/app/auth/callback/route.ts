@@ -1,31 +1,42 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
-export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+/**
+ * Callback do OAuth (Google) e do magic-link do Supabase.
+ * Troca o code por uma sessão e redireciona para `next`.
+ */
+export async function GET(req: NextRequest) {
+  const { searchParams, origin } = new URL(req.url)
   const code = searchParams.get('code')
+  const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const cookieStore = await cookies()
+    const response = NextResponse.redirect(`${origin}${next}`)
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return cookieStore.getAll()
+            return req.cookies.getAll()
           },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+            cookiesToSet.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options)
+            })
           },
         },
       }
     )
-    await supabase.auth.exchangeCodeForSession(code)
+
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (!error) {
+      return response
+    }
   }
 
-  return NextResponse.redirect(`${origin}/admin`)
+  // Falha no callback — volta para /entrar com aviso
+  return NextResponse.redirect(`${origin}/entrar?error=callback`)
 }
