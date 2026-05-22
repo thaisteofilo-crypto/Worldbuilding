@@ -5,38 +5,29 @@ import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard, Users, Image, Monitor, Images,
-  Pencil, FileEdit, Lock, MessageCircle, Settings, X, LogOut, UserCheck,
+  Search, Folder, Network, Bookmark, MessageCircle, Plus,
+  ChevronRight, PanelLeftClose, X, LogOut,
 } from 'lucide-react'
 
-const navGroups = [
-  {
-    items: [
-      { href: '/admin', label: 'Dashboard', exact: true, icon: LayoutDashboard },
-    ],
-  },
-  {
-    items: [
-      { href: '/admin/characters', label: 'Personagens', icon: Users },
-      { href: '/admin/banners', label: 'Banners', icon: Image },
-      { href: '/admin/card-images', label: 'Cards', icon: Monitor },
-      { href: '/admin/gallery', label: 'Galeria', icon: Images },
-      { href: '/admin/leads', label: 'Leads', icon: UserCheck },
-    ],
-  },
-  {
-    items: [
-      { href: '/admin/conteudo', label: 'Conteúdo', icon: Pencil },
-      { href: '/admin/editor', label: 'Editor', icon: FileEdit },
-      { href: '/admin/publicacao', label: 'Publicação', icon: Lock },
-    ],
-  },
-  {
-    items: [
-      { href: '/admin/conversas', label: 'Conversas', icon: MessageCircle },
-      { href: '/admin/configuracoes', label: 'Configurações', icon: Settings },
-    ],
-  },
+const navItems = [
+  { href: '/admin', label: 'Dashboard', exact: true },
+  { href: '/admin/conteudo', label: 'Conteúdo' },
+  { href: '/admin/editor', label: 'Editor' },
+  { href: '/admin/publicacao', label: 'Publicação' },
+  { href: '/admin/characters', label: 'Personagens' },
+  { href: '/admin/gallery', label: 'Galeria' },
+  { href: '/admin/banners', label: 'Banners' },
+  { href: '/admin/card-images', label: 'Cards' },
+  { href: '/admin/leads', label: 'Leads' },
+  { href: '/admin/conversas', label: 'Conversas' },
+  { href: '/admin/configuracoes', label: 'Configurações' },
+]
+
+const quickActions = [
+  { href: '/admin/conteudo', label: 'Conteúdo', icon: Folder },
+  { href: '/admin/characters', label: 'Personagens', icon: Network },
+  { href: '/admin/publicacao', label: 'Publicação', icon: Bookmark },
+  { href: '/admin/conversas', label: 'Conversas', icon: MessageCircle },
 ]
 
 interface AdminSidebarProps {
@@ -62,7 +53,6 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
 
   return (
     <>
-      {/* Mobile backdrop */}
       <div
         aria-hidden={!open}
         onClick={onClose}
@@ -75,66 +65,106 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
       <aside
         aria-label="Navegação principal"
         className={cn(
-          'flex w-56 flex-col bg-background border-r border-border',
+          'flex w-64 flex-col bg-background',
           'fixed inset-y-0 left-0 z-50 transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
-        {/* Logo */}
-        <div className="flex h-14 items-center justify-between px-4 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-            <div>
-              <span className="font-serif text-lg leading-none text-foreground">Korú</span>
-              <p className="font-mono text-[9px] leading-none mt-0.5 text-muted-foreground uppercase tracking-widest">admin</p>
-            </div>
-          </div>
+        {/* Brand */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-4">
+          <h1 className="font-serif text-2xl leading-none text-una">
+            Korú <span className="italic">Admin</span>
+          </h1>
           <button
             onClick={onClose}
-            className="lg:hidden p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="text-iara/60 hover:text-iara transition-colors lg:hidden"
             aria-label="Fechar menu"
           >
-            <X size={15} />
+            <X size={18} />
+          </button>
+          <button
+            className="hidden lg:inline-flex text-iara/60 hover:text-iara transition-colors"
+            aria-label="Recolher menu"
+          >
+            <PanelLeftClose size={18} />
           </button>
         </div>
 
+        {/* Search */}
+        <div className="px-5 pb-4">
+          <div className="relative">
+            <Search size={14} aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-iara" />
+            <input
+              type="search"
+              placeholder="Buscar..."
+              aria-label="Buscar no admin"
+              className="w-full rounded-full border border-iara/20 bg-white pl-9 pr-14 py-2 font-sans text-sm text-una placeholder:text-pego outline-none transition-colors focus:border-iara focus:ring-2 focus:ring-iara/15"
+            />
+            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded-md border border-iara/20 bg-white px-1.5 py-0.5 font-mono text-[10px] text-pego">
+              ⌘K
+            </kbd>
+          </div>
+        </div>
+
+        {/* Quick actions row */}
+        <div className="px-5 pb-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {quickActions.map((qa) => {
+              const Icon = qa.icon
+              return (
+                <Link
+                  key={qa.href}
+                  href={qa.href}
+                  aria-label={qa.label}
+                  title={qa.label}
+                  className="text-iara/70 hover:text-iara transition-colors"
+                >
+                  <Icon size={16} aria-hidden="true" />
+                </Link>
+              )
+            })}
+          </div>
+          <Link
+            href="/admin/editor"
+            aria-label="Novo"
+            title="Novo"
+            className="text-iara/70 hover:text-iara transition-colors"
+          >
+            <Plus size={16} aria-hidden="true" />
+          </Link>
+        </div>
+
         {/* Nav */}
-        <nav aria-label="Menu" className="flex-1 overflow-y-auto p-2 space-y-0.5">
-          {navGroups.map((group, gi) => (
-            <div key={gi}>
-              {group.items.map((item) => {
-                const active = ('exact' in item && item.exact)
-                  ? pathname === item.href
-                  : pathname.startsWith(item.href)
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={onClose}
-                    aria-current={active ? 'page' : undefined}
-                    className={cn(
-                      'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-sans transition-colors duration-150',
-                      active
-                        ? 'bg-primary text-primary-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-[#DEF7F9] hover:text-primary dark:hover:bg-primary/10 dark:hover:text-primary',
-                    )}
-                  >
-                    <Icon size={15} aria-hidden="true" className={active ? 'opacity-100' : 'opacity-60'} />
-                    {item.label}
-                  </Link>
-                )
-              })}
-            </div>
-          ))}
+        <nav aria-label="Menu" className="flex-1 overflow-y-auto px-5 pb-4">
+          {navItems.map((item) => {
+            const active = item.exact
+              ? pathname === item.href
+              : pathname.startsWith(item.href)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'flex items-center justify-between py-2.5 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors',
+                  active ? 'text-una' : 'text-iara hover:text-una',
+                )}
+              >
+                <span>{item.label}</span>
+                <ChevronRight
+                  size={12}
+                  aria-hidden="true"
+                  className={active ? 'text-una' : 'text-iara/50'}
+                />
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Footer */}
-        <div className="p-2 border-t border-border space-y-1">
+        <div className="px-5 pb-5 pt-2">
           <LogoutButton />
-          <p className="font-mono text-[8px] text-muted-foreground/40 uppercase tracking-widest px-3 pb-1">
-            v0.1 · stage
-          </p>
         </div>
       </aside>
     </>
@@ -150,9 +180,9 @@ function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-sans text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-colors duration-150"
+      className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.15em] text-pego hover:text-urucum transition-colors"
     >
-      <LogOut size={14} aria-hidden="true" />
+      <LogOut size={12} aria-hidden="true" />
       Sair
     </button>
   )
