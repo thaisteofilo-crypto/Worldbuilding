@@ -164,6 +164,11 @@
   --admin-active: color-mix(in srgb, #35BDC8 12%, transparent);
 }
 
+/* ─── Auth page background ─── */
+.auth-bg {
+  background: linear-gradient(135deg, #0B363C 0%, #090E17 55%, #0B6377 100%);
+}
+
 /* ─── Table scroll ─── */
 .koru-table-scroll {
   overflow-x: auto;

@@ -29,7 +29,6 @@ export default function EntrarPage() {
   const [heroVideo, setHeroVideo] = useState<string | null>(null)
 
   useEffect(() => {
-    // Verifica parâmetros de erro vindos do callback OAuth
     const params = new URLSearchParams(window.location.search)
     if (params.get("error") === "oauth") setError("Não foi possível entrar com Google. Tente email e senha.")
     if (params.get("error") === "callback") setError("Erro ao completar autenticação. Tente novamente.")
@@ -73,8 +72,7 @@ export default function EntrarPage() {
 
       if (res.ok) {
         const data = await res.json().catch(() => ({}))
-        if (data.warning === 'created_no_session') {
-          // Conta criada mas sessão não iniciou — pede login manual
+        if (data.warning === "created_no_session") {
           switchTab("entrar")
           setError("Conta criada! Entre com seu email e senha.")
           setLoading(false)
@@ -93,134 +91,51 @@ export default function EntrarPage() {
   }
 
   return (
-    /* Tela inteira, posição relativa para o fundo */
-    <div
-      style={{
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        /* Fallback para quando não há imagem */
-        background: "linear-gradient(135deg, #0B363C 0%, #090E17 55%, #0B6377 100%)",
-      }}
-    >
-      {/* ── Imagem de fundo: SEM blur, SEM overlay ── */}
+    <div className="auth-bg relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* Fundo: vídeo ou imagem */}
       {heroVideo ? (
         <video
           src={heroVideo}
           autoPlay muted loop playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
-          }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
       ) : heroImage ? (
         <img
           src={heroImage}
           alt="Universo Korú"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
-          }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
       ) : null}
 
-      {/* ── Card de auth — flutuante, lado direito ── */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 10,
-          width: "100%",
-          maxWidth: "420px",
-          margin: "0 clamp(16px, 5vw, 80px)",
-          textAlign: "center",
-          backgroundColor: "rgba(255, 255, 255, 0.97)",
-          borderRadius: "16px",
-          padding: "36px 32px 32px",
-          boxShadow: "0 8px 48px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.12)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
-        {/* Cabeçalho */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <h1
-            style={{
-              fontFamily: "var(--font-serif, Georgia, serif)",
-              fontSize: "26px",
-              fontWeight: 400,
-              color: "#090E17",
-              lineHeight: 1.2,
-              margin: 0,
-            }}
-          >
-            Korú
-          </h1>
-          <p
-            style={{
-              fontFamily: "var(--font-sans, system-ui, sans-serif)",
-              fontSize: "15px",
-              fontWeight: 500,
-              color: "#090E17",
-              margin: 0,
-            }}
-          >
+      {/* Card branco flutuante */}
+      <div className="relative z-10 w-full max-w-[420px] mx-4 sm:mx-8 bg-white rounded-2xl shadow-2xl p-8 sm:p-9 flex flex-col gap-5">
+
+        {/* Logo / cabeçalho */}
+        <div className="flex flex-col gap-1 text-center">
+          <h1 className="font-serif text-[26px] font-normal text-una leading-snug">Korú</h1>
+          <p className="font-sans text-[15px] font-medium text-una">
             {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
           </p>
-          <p
-            style={{
-              fontFamily: "var(--font-sans, system-ui, sans-serif)",
-              fontSize: "13px",
-              color: "#4A5568",
-              margin: 0,
-            }}
-          >
+          <p className="font-sans text-[13px] text-[#4A5568]">
             {tab === "entrar"
               ? "Entre com sua conta para acessar o universo Korú"
               : "Cadastre-se para acompanhar o projeto"}
           </p>
         </div>
 
-        {/* Tab toggle */}
-        <div
-          style={{
-            display: "flex",
-            borderRadius: "999px",
-            padding: "3px",
-            gap: "3px",
-            backgroundColor: "#F0F0F0",
-          }}
-        >
+        {/* Tabs: Entrar / Criar conta */}
+        <div className="flex rounded-full p-[3px] gap-[3px] bg-[#F0F0F0]">
           {(["entrar", "criar"] as Tab[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => switchTab(t)}
-              style={{
-                flex: 1,
-                borderRadius: "999px",
-                padding: "7px 12px",
-                fontSize: "13px",
-                fontFamily: "var(--font-sans, system-ui, sans-serif)",
-                fontWeight: 500,
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.18s ease",
-                backgroundColor: tab === t ? "#0B6377" : "transparent",
-                color: tab === t ? "#FFFFFF" : "#4A5568",
-              }}
+              className={[
+                "flex-1 rounded-full py-[7px] px-3 text-[13px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
+                tab === t
+                  ? "bg-iara text-white"
+                  : "bg-transparent text-[#4A5568]",
+              ].join(" ")}
             >
               {t === "entrar" ? "Entrar" : "Criar conta"}
             </button>
@@ -228,22 +143,10 @@ export default function EntrarPage() {
         </div>
 
         {/* Formulário */}
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "14px" }}
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[14px]">
           {tab === "criar" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-              <Label
-                htmlFor="name"
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "#4A5568",
-                  fontFamily: "var(--font-sans, system-ui, sans-serif)",
-                }}
-              >
+            <div className="flex flex-col gap-[5px]">
+              <Label htmlFor="name" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
                 Nome
               </Label>
               <Input
@@ -254,23 +157,13 @@ export default function EntrarPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome"
-                className="h-10"
-                style={{ backgroundColor: "#F7F7F7", borderColor: "#D1D5DB", color: "#090E17" }}
+                className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
               />
             </div>
           )}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Label
-              htmlFor="email"
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "#4A5568",
-                fontFamily: "var(--font-sans, system-ui, sans-serif)",
-              }}
-            >
+          <div className="flex flex-col gap-[5px]">
+            <Label htmlFor="email" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
               Email
             </Label>
             <Input
@@ -281,22 +174,12 @@ export default function EntrarPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="seu@email.com"
-              className="h-10"
-              style={{ backgroundColor: "#F7F7F7", borderColor: "#D1D5DB", color: "#090E17" }}
+              className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-            <Label
-              htmlFor="password"
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "#4A5568",
-                fontFamily: "var(--font-sans, system-ui, sans-serif)",
-              }}
-            >
+          <div className="flex flex-col gap-[5px]">
+            <Label htmlFor="password" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
               Senha
             </Label>
             <Input
@@ -307,21 +190,12 @@ export default function EntrarPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="h-10"
-              style={{ backgroundColor: "#F7F7F7", borderColor: "#D1D5DB", color: "#090E17" }}
+              className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
           {error && (
-            <p
-              role="alert"
-              style={{
-                fontSize: "12px",
-                color: "#C72211",
-                fontFamily: "var(--font-sans, system-ui, sans-serif)",
-                margin: 0,
-              }}
-            >
+            <p role="alert" className="text-[12px] text-urucum font-sans m-0">
               {error}
             </p>
           )}
@@ -329,28 +203,24 @@ export default function EntrarPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full h-10 font-sans font-medium"
-            style={{ marginTop: "2px" }}
+            className="w-full rounded-full h-10 font-sans font-medium mt-0.5"
           >
             {loading
               ? (tab === "entrar" ? "Entrando…" : "Criando conta…")
               : (tab === "entrar" ? "Entrar" : "Criar conta")}
           </Button>
 
-          {/* Divisor */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E7EB" }} />
-            <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "var(--font-sans, system-ui, sans-serif)" }}>
-              ou
-            </span>
-            <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E7EB" }} />
+          {/* Divider */}
+          <div className="flex items-center gap-2.5">
+            <div className="flex-1 h-px bg-[#E5E7EB]" />
+            <span className="text-[12px] text-[#9CA3AF] font-sans">ou</span>
+            <div className="flex-1 h-px bg-[#E5E7EB]" />
           </div>
 
           <Button
             type="button"
             variant="outline"
-            className="w-full rounded-full h-10 gap-2 font-sans"
-            style={{ borderColor: "#D1D5DB", color: "#374151", backgroundColor: "white" }}
+            className="w-full rounded-full h-10 gap-2 font-sans border-[#D1D5DB] text-[#374151] bg-white hover:bg-[#F9FAFB]"
             onClick={() => {
               const params = new URLSearchParams(window.location.search)
               const next = params.get("next") || "/"
@@ -362,32 +232,15 @@ export default function EntrarPage() {
           </Button>
         </form>
 
-        {/* Link rodapé */}
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: "13px",
-            color: "#6B7280",
-            fontFamily: "var(--font-sans, system-ui, sans-serif)",
-            margin: 0,
-          }}
-        >
+        {/* Rodapé */}
+        <p className="text-center text-[13px] text-[#6B7280] font-sans m-0">
           {tab === "entrar" ? (
             <>
               Ainda não tem conta?{" "}
               <button
                 type="button"
                 onClick={() => switchTab("criar")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#0B6377",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  fontSize: "13px",
-                  fontFamily: "inherit",
-                }}
+                className="bg-transparent border-none cursor-pointer text-iara underline underline-offset-[3px] text-[13px] font-[inherit] p-0"
               >
                 Criar conta
               </button>
@@ -398,16 +251,7 @@ export default function EntrarPage() {
               <button
                 type="button"
                 onClick={() => switchTab("entrar")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#0B6377",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  fontSize: "13px",
-                  fontFamily: "inherit",
-                }}
+                className="bg-transparent border-none cursor-pointer text-iara underline underline-offset-[3px] text-[13px] font-[inherit] p-0"
               >
                 Entrar
               </button>

@@ -104,7 +104,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
             <div key={gi}>
               {gi > 0 && <div className="h-px bg-border my-1.5 mx-1" />}
               {group.items.map((item) => {
-                const active = item.exact
+                const active = ('exact' in item && item.exact)
                   ? pathname === item.href
                   : pathname.startsWith(item.href)
                 const Icon = item.icon
