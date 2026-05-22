@@ -1,9 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 function GoogleIcon() {
   return (
@@ -108,145 +105,140 @@ export default function EntrarPage() {
       ) : null}
 
       {/* Card branco flutuante */}
-      <div className="relative z-10 w-full max-w-[400px] mx-4 sm:mx-8 bg-white rounded-3xl shadow-2xl px-8 py-9 flex flex-col gap-5">
+      <div
+        style={{ maxWidth: 400 }}
+        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 shadow-2xl rounded-2xl px-8 py-10"
+      >
 
-        {/* Logo / cabeçalho */}
-        <div className="flex flex-col gap-3 text-center">
-          <h1 className="font-serif text-[30px] font-normal text-una leading-none tracking-tight m-0">
-            <span>Ko</span><span className="italic">rú</span>
+        {/* Logo */}
+        <div className="mb-7 flex justify-center">
+          <span className="font-serif text-una inline-flex items-baseline whitespace-nowrap leading-none tracking-tight text-4xl">
+            Korú
+          </span>
+        </div>
+
+        {/* Título */}
+        <div className="mb-7 text-center">
+          <h1 className="font-sans text-una mb-1.5 text-2xl leading-tight">
+            {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
           </h1>
-          <div className="flex flex-col gap-1">
-            <p className="font-sans text-[22px] font-normal text-una leading-tight m-0">
-              {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
-            </p>
-            <p className="font-sans text-[13px] text-[#6B7280] leading-snug m-0">
-              {tab === "entrar"
-                ? "Entre no Universo de Korú com sua conta Google."
-                : "Cadastre-se para acompanhar o projeto."}
-            </p>
+          <p className="text-pego text-sm">
+            {tab === "entrar"
+              ? "Entre no Universo de Korú com sua conta Google."
+              : "Cadastre-se para acompanhar o projeto."}
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="flex flex-col gap-5">
+          {/* Tabs */}
+          <div role="tablist" className="border-iara/15 flex rounded-lg border p-1">
+            {(["entrar", "criar"] as Tab[]).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                onClick={() => switchTab(t)}
+                className={[
+                  "flex-1 rounded-md px-3 py-2 text-sm transition-colors",
+                  tab === t
+                    ? "bg-iara/10 text-una"
+                    : "text-pego hover:text-una hover:bg-iara/[0.04]",
+                ].join(" ")}
+              >
+                {t === "entrar" ? "Entrar" : "Criar conta"}
+              </button>
+            ))}
           </div>
-        </div>
 
-        {/* Tabs: Entrar / Criar conta */}
-        <div className="flex rounded-xl p-1 gap-1 border border-[#E5E7EB] bg-white">
-          {(["entrar", "criar"] as Tab[]).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => switchTab(t)}
-              className={[
-                "flex-1 rounded-lg py-2 px-3 text-[14px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
-                tab === t
-                  ? "bg-[#F3F4F6] text-una"
-                  : "bg-transparent text-[#6B7280]",
-              ].join(" ")}
-            >
-              {t === "entrar" ? "Entrar" : "Criar conta"}
-            </button>
-          ))}
-        </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            {tab === "criar" && (
+              <label className="flex flex-col gap-1.5">
+                <span className="text-pego font-mono text-[10px] uppercase tracking-[0.2em]">Nome</span>
+                <input
+                  type="text"
+                  required
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+                />
+              </label>
+            )}
 
-        {/* Formulário */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-[14px]">
-          {tab === "criar" && (
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="name" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
-                Nome
-              </Label>
-              <Input
-                id="name"
-                type="text"
+            <label className="flex flex-col gap-1.5">
+              <span className="text-pego font-mono text-[10px] uppercase tracking-[0.2em]">Email</span>
+              <input
+                type="email"
                 required
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder=""
-                className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
               />
-            </div>
-          )}
+            </label>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder=""
-              className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
-            />
+            <label className="flex flex-col gap-1.5">
+              <span className="text-pego font-mono text-[10px] uppercase tracking-[0.2em]">Senha</span>
+              <input
+                type="password"
+                required
+                autoComplete={tab === "entrar" ? "current-password" : "new-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+              />
+            </label>
+
+            {error && (
+              <p role="alert" className="text-urucum font-mono text-[11px] mt-1 m-0">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-iara hover:bg-iara/90 disabled:opacity-60 mt-1 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm text-white transition-colors disabled:cursor-not-allowed"
+            >
+              {loading
+                ? (tab === "entrar" ? "Entrando…" : "Criando conta…")
+                : (tab === "entrar" ? "Entrar" : "Criar conta")}
+            </button>
+          </form>
+
+          {/* Separador */}
+          <div className="flex items-center gap-3">
+            <div className="bg-iara/15 h-px flex-1" />
+            <span className="text-pego font-mono text-[10px] uppercase tracking-[0.2em]">ou</span>
+            <div className="bg-iara/15 h-px flex-1" />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="password" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
-              Senha
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              autoComplete={tab === "entrar" ? "current-password" : "new-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder=""
-              className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
-            />
-          </div>
-
-          {error && (
-            <p role="alert" className="text-[12px] text-urucum font-sans m-0">
-              {error}
-            </p>
-          )}
-
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full h-11 font-sans font-medium text-[15px] mt-1"
-          >
-            {loading
-              ? (tab === "entrar" ? "Entrando…" : "Criando conta…")
-              : (tab === "entrar" ? "Entrar" : "Criar conta")}
-          </Button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-0.5">
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-[10.5px] tracking-[0.14em] uppercase text-[#9CA3AF] font-sans font-normal">
-              ou
-            </span>
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-          </div>
-
-          <Button
+          {/* Botão Google */}
+          <button
             type="button"
-            variant="outline"
-            className="w-full rounded-full h-11 gap-2.5 font-sans font-normal text-[14px] border-[#D1D5DB] text-[#374151] bg-white hover:bg-[#F9FAFB]"
             onClick={() => {
               const params = new URLSearchParams(window.location.search)
               const next = params.get("next") || "/"
               window.location.href = `/api/auth/google?next=${encodeURIComponent(next)}`
             }}
+            className="group border-iara/25 bg-white hover:border-iara hover:bg-orvalho disabled:opacity-60 flex w-full items-center justify-center gap-3 rounded-lg border px-4 py-3 text-sm transition-colors"
           >
             <GoogleIcon />
-            Continuar com Google
-          </Button>
-        </form>
+            <span className="text-una">Continuar com Google</span>
+          </button>
+        </div>
 
-        {/* Rodapé */}
-        <p className="text-center text-[13px] text-[#6B7280] font-sans m-0">
+        {/* Footer */}
+        <p className="text-pego mt-7 text-center text-xs">
           {tab === "entrar" ? (
             <>
               Ainda não tem conta?{" "}
               <button
                 type="button"
                 onClick={() => switchTab("criar")}
-                className="bg-transparent border-none cursor-pointer text-iara underline underline-offset-[3px] text-[13px] font-[inherit] p-0"
+                className="text-iara hover:text-pego underline decoration-iara/40 hover:decoration-iara underline-offset-4 transition-colors bg-transparent border-none p-0 cursor-pointer font-[inherit]"
               >
                 Solicite acesso
               </button>
@@ -257,7 +249,7 @@ export default function EntrarPage() {
               <button
                 type="button"
                 onClick={() => switchTab("entrar")}
-                className="bg-transparent border-none cursor-pointer text-iara underline underline-offset-[3px] text-[13px] font-[inherit] p-0"
+                className="text-iara hover:text-pego underline decoration-iara/40 hover:decoration-iara underline-offset-4 transition-colors bg-transparent border-none p-0 cursor-pointer font-[inherit]"
               >
                 Entrar
               </button>
