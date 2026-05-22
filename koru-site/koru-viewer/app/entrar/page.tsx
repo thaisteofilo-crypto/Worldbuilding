@@ -106,14 +106,18 @@ export default function EntrarPage() {
 
       {/* Card branco flutuante */}
       <div
-        style={{ maxWidth: 400 }}
-        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 shadow-2xl rounded-2xl px-8 py-10"
+        style={{ maxWidth: 400, boxShadow: "0 10px 30px -12px rgba(11, 54, 60, 0.25)" }}
+        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 rounded-2xl px-8 py-10"
       >
 
         {/* Logo */}
         <div className="mb-7 flex justify-center">
-          <span className="font-serif text-una inline-flex items-baseline whitespace-nowrap leading-none tracking-tight text-4xl">
-            Korú
+          <span
+            aria-label="Korú"
+            className="font-serif text-una inline-flex items-baseline whitespace-nowrap tracking-tight text-4xl"
+          >
+            <span>Ko</span>
+            <span className="ml-[0.02em] italic">rú</span>
           </span>
         </div>
 
