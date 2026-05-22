@@ -75,7 +75,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
       <aside
         aria-label="Navegação principal"
         className={cn(
-          'flex w-56 flex-col bg-card border-r border-border',
+          'flex w-56 flex-col bg-background border-r border-border',
           'fixed inset-y-0 left-0 z-50 transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
