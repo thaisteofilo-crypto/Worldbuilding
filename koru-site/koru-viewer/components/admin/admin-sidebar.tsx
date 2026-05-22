@@ -102,7 +102,6 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
         <nav aria-label="Menu" className="flex-1 overflow-y-auto p-2 space-y-0.5">
           {navGroups.map((group, gi) => (
             <div key={gi}>
-              {gi > 0 && <div className="h-px bg-border my-1.5 mx-1" />}
               {group.items.map((item) => {
                 const active = ('exact' in item && item.exact)
                   ? pathname === item.href
