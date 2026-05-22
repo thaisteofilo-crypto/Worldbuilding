@@ -107,7 +107,7 @@ export default function EntrarPage() {
       {/* Card branco flutuante */}
       <div
         style={{ maxWidth: 400, boxShadow: "0 10px 30px -12px rgba(11, 54, 60, 0.25)" }}
-        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 rounded-2xl px-8 py-10"
+        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 rounded-3xl px-8 py-10"
       >
 
         {/* Logo */}
@@ -116,8 +116,7 @@ export default function EntrarPage() {
             aria-label="Korú"
             className="font-serif text-una inline-flex items-baseline whitespace-nowrap tracking-tight text-4xl"
           >
-            <span>Ko</span>
-            <span className="ml-[0.02em] italic">rú</span>
+            Korú
           </span>
         </div>
 
@@ -136,7 +135,7 @@ export default function EntrarPage() {
         {/* Form */}
         <div className="flex flex-col gap-5">
           {/* Tabs */}
-          <div role="tablist" className="border-iara/15 flex rounded-lg border p-1">
+          <div role="tablist" className="border-iara/15 flex rounded-xl border p-1">
             {(["entrar", "criar"] as Tab[]).map((t) => (
               <button
                 key={t}
@@ -145,7 +144,7 @@ export default function EntrarPage() {
                 aria-selected={tab === t}
                 onClick={() => switchTab(t)}
                 className={[
-                  "flex-1 rounded-md px-3 py-2 text-sm transition-colors",
+                  "flex-1 rounded-lg px-3 py-2 text-sm transition-colors",
                   tab === t
                     ? "bg-iara/10 text-una"
                     : "text-pego hover:text-una hover:bg-iara/[0.04]",
@@ -166,7 +165,7 @@ export default function EntrarPage() {
                   autoComplete="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+                  className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
                 />
               </label>
             )}
@@ -179,7 +178,7 @@ export default function EntrarPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
               />
             </label>
 
@@ -191,7 +190,7 @@ export default function EntrarPage() {
                 autoComplete={tab === "entrar" ? "current-password" : "new-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-lg border bg-white px-3 py-2.5 text-sm outline-none transition-colors focus:ring-2"
+                className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
               />
             </label>
 
@@ -204,7 +203,7 @@ export default function EntrarPage() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-iara hover:bg-iara/90 disabled:opacity-60 mt-1 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm text-white transition-colors disabled:cursor-not-allowed"
+              className="bg-iara hover:bg-iara/90 disabled:opacity-60 mt-1 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-white transition-colors disabled:cursor-not-allowed"
             >
               {loading
                 ? (tab === "entrar" ? "Entrando…" : "Criando conta…")
@@ -227,7 +226,7 @@ export default function EntrarPage() {
               const next = params.get("next") || "/"
               window.location.href = `/api/auth/google?next=${encodeURIComponent(next)}`
             }}
-            className="group border-iara/25 bg-white hover:border-iara hover:bg-orvalho disabled:opacity-60 flex w-full items-center justify-center gap-3 rounded-lg border px-4 py-3 text-sm transition-colors"
+            className="group border-iara/25 bg-white hover:border-iara hover:bg-orvalho disabled:opacity-60 flex w-full items-center justify-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors"
           >
             <GoogleIcon />
             <span className="text-una">Continuar com Google</span>
