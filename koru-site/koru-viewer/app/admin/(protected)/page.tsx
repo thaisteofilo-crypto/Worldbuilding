@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Type, FileText, CheckSquare, Images, ExternalLink, ChevronRight, FileEdit, Users } from "lucide-react"
+import {
+  Type, FileText, CheckSquare, Images, ExternalLink, ChevronRight, FileEdit, Users,
+  Pencil, Lock, Image as ImageIcon, Monitor, UserCheck, MessageCircle, Settings,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AIAnalysisPanel } from "@/components/admin/ai-analysis-panel"
@@ -169,23 +172,46 @@ export default function AdminDashboardPage() {
         </Button>
       </div>
 
-      {/* Quick access */}
-      <div className="flex gap-2 mb-8 flex-wrap">
-        {[
-          { href: '/admin/editor', label: 'Editor', icon: <FileEdit size={13} aria-hidden="true" /> },
-          { href: '/admin/tasks', label: 'Tarefas', icon: <CheckSquare size={13} aria-hidden="true" /> },
-          { href: '/admin/gallery', label: 'Galeria', icon: <Images size={13} aria-hidden="true" /> },
-          { href: '/admin/characters', label: 'Personagens', icon: <Users size={13} aria-hidden="true" /> },
-        ].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-sans text-xs font-medium bg-primary/8 text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all duration-150"
-          >
-            {item.icon}
-            {item.label}
-          </Link>
-        ))}
+      {/* Topic cards */}
+      <div className="mb-10">
+        <SectionHeader title="Áreas" subtitle="acessar tópico" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {[
+            { href: '/admin/editor', label: 'Editor', desc: 'Escrever e revisar textos', icon: FileEdit },
+            { href: '/admin/conteudo', label: 'Conteúdo', desc: 'Organizar documentos', icon: Pencil },
+            { href: '/admin/publicacao', label: 'Publicação', desc: 'Controlar o que está no ar', icon: Lock },
+            { href: '/admin/tasks', label: 'Tarefas', desc: 'Acompanhar pendências', icon: CheckSquare },
+            { href: '/admin/characters', label: 'Personagens', desc: 'Bíblia de personagens', icon: Users },
+            { href: '/admin/gallery', label: 'Galeria', desc: 'Cenas e imagens', icon: Images },
+            { href: '/admin/banners', label: 'Banners', desc: 'Imagens do hero', icon: ImageIcon },
+            { href: '/admin/card-images', label: 'Cards', desc: 'Imagens dos cards', icon: Monitor },
+            { href: '/admin/leads', label: 'Leads', desc: 'Inscritos e contatos', icon: UserCheck },
+            { href: '/admin/conversas', label: 'Conversas', desc: 'Mensagens recebidas', icon: MessageCircle },
+            { href: '/admin/configuracoes', label: 'Configurações', desc: 'Ajustes do painel', icon: Settings },
+          ].map((item) => {
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-start gap-3 rounded-2xl border border-iara/15 bg-white p-4 transition-all duration-150 hover:border-iara/40 hover:shadow-[0_8px_24px_-12px_rgba(11,113,127,0.25)]"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iara/10 text-iara transition-colors group-hover:bg-iara group-hover:text-white">
+                  <Icon size={18} aria-hidden="true" />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-sans text-sm text-una leading-tight">{item.label}</p>
+                  <p className="font-sans text-xs text-pego mt-1 leading-snug">{item.desc}</p>
+                </div>
+                <ChevronRight
+                  size={14}
+                  aria-hidden="true"
+                  className="shrink-0 mt-1 text-iara/40 opacity-0 transition-opacity group-hover:opacity-100"
+                />
+              </Link>
+            )
+          })}
+        </div>
       </div>
 
       {/* Stats */}
