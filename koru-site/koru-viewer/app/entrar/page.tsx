@@ -108,34 +108,34 @@ export default function EntrarPage() {
       ) : null}
 
       {/* Card branco flutuante */}
-      <div className="relative z-10 w-full max-w-[440px] mx-4 sm:mx-8 bg-white rounded-3xl shadow-2xl px-9 py-10 sm:px-10 sm:py-11 flex flex-col gap-6">
+      <div className="relative z-10 w-full max-w-[400px] mx-4 sm:mx-8 bg-white rounded-3xl shadow-2xl px-8 py-9 flex flex-col gap-5">
 
         {/* Logo / cabeçalho */}
         <div className="flex flex-col gap-3 text-center">
-          <h1 className="font-serif text-[34px] font-normal text-una leading-none tracking-tight m-0">
-            Korú
+          <h1 className="font-serif text-[30px] font-normal text-una leading-none tracking-tight m-0">
+            <span>Ko</span><span className="italic">rú</span>
           </h1>
-          <div className="flex flex-col gap-1.5">
-            <p className="font-sans text-[20px] font-semibold text-una leading-tight m-0">
+          <div className="flex flex-col gap-1">
+            <p className="font-sans text-[22px] font-normal text-una leading-tight m-0">
               {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
             </p>
             <p className="font-sans text-[13px] text-[#6B7280] leading-snug m-0">
               {tab === "entrar"
-                ? "Entre no sistema da marca com sua conta Google."
+                ? "Entre no Universo de Korú com sua conta Google."
                 : "Cadastre-se para acompanhar o projeto."}
             </p>
           </div>
         </div>
 
         {/* Tabs: Entrar / Criar conta */}
-        <div className="flex rounded-2xl p-1 gap-1 border border-[#E5E7EB] bg-white">
+        <div className="flex rounded-xl p-1 gap-1 border border-[#E5E7EB] bg-white">
           {(["entrar", "criar"] as Tab[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => switchTab(t)}
               className={[
-                "flex-1 rounded-xl py-2.5 px-3 text-[14px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
+                "flex-1 rounded-lg py-2 px-3 text-[14px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
                 tab === t
                   ? "bg-[#F3F4F6] text-una"
                   : "bg-transparent text-[#6B7280]",
@@ -147,10 +147,10 @@ export default function EntrarPage() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[14px]">
           {tab === "criar" && (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="name" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
                 Nome
               </Label>
               <Input
@@ -161,13 +161,13 @@ export default function EntrarPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder=""
-                className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
+                className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
               />
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="email" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
               Email
             </Label>
             <Input
@@ -178,12 +178,12 @@ export default function EntrarPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder=""
-              className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
+              className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="password" className="text-[10.5px] tracking-[0.14em] uppercase text-[#6B7280] font-sans font-normal">
               Senha
             </Label>
             <Input
@@ -194,7 +194,7 @@ export default function EntrarPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder=""
-              className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
+              className="h-10 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
@@ -215,9 +215,9 @@ export default function EntrarPage() {
           </Button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-1">
+          <div className="flex items-center gap-3 my-0.5">
             <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF] font-sans font-medium">
+            <span className="text-[10.5px] tracking-[0.14em] uppercase text-[#9CA3AF] font-sans font-normal">
               ou
             </span>
             <div className="flex-1 h-px bg-[#E5E7EB]" />
