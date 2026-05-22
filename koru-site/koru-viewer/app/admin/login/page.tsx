@@ -1,9 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Lock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
@@ -45,75 +42,51 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div
-      className="relative flex min-h-screen items-center justify-center overflow-hidden"
-      style={{ background: "var(--background)" }}
-    >
+    <div className="auth-bg relative min-h-screen w-full flex items-center justify-center overflow-hidden">
       {heroVideo ? (
         <video
           src={heroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
+          autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "blur(4px) brightness(0.35)", transform: "scale(1.08)" }}
         />
       ) : heroImage ? (
         <img
           src={heroImage}
-          alt=""
-          aria-hidden="true"
+          alt="Universo Korú"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "blur(4px) brightness(0.35)", transform: "scale(1.08)" }}
         />
       ) : null}
 
-      <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.45)" }} />
-
-      <div className="relative z-10 w-full max-w-sm px-4">
-        <div className="mb-10 text-center">
-          <div className="flex justify-center mb-4" aria-hidden="true">
-            <span
-              className="inline-flex items-center justify-center w-12 h-12 rounded-full"
-              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
-            >
-              <Lock size={20} />
-            </span>
-          </div>
-          <h1
-            className="font-serif text-4xl"
-            style={{ color: "var(--foreground)", fontFamily: "var(--font-serif), Georgia, serif" }}
+      <div
+        style={{ maxWidth: 400, borderRadius: 32, boxShadow: "0 10px 30px -12px rgba(11, 54, 60, 0.25)" }}
+        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 px-8 py-10"
+      >
+        <div className="mb-7 flex justify-center">
+          <span
+            aria-label="Korú"
+            className="font-serif text-una inline-flex items-baseline whitespace-nowrap tracking-tight text-4xl"
           >
             Korú
+          </span>
+        </div>
+
+        <div className="mb-7 text-center">
+          <h1 className="font-sans text-una mb-1.5 text-2xl leading-tight">
+            Painel admin
           </h1>
-          <p
-            className="mt-2 font-sans text-xs tracking-[0.2em] uppercase"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            Admin
+          <p className="text-pego text-sm">
+            Acesso restrito. Informe a senha do painel.
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
           aria-label="Formulário de acesso ao painel admin"
-          className="flex flex-col gap-4 rounded-2xl p-6"
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-            boxShadow: "0 8px 32px color-mix(in oklch, var(--background) 60%, transparent)",
-          }}
+          className="flex flex-col gap-5"
         >
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="password"
-              className="font-sans text-xs tracking-[0.15em] uppercase"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              Senha
-            </label>
-            <Input
+          <label className="flex flex-col gap-1.5">
+            <span className="text-pego font-mono text-[10px] uppercase tracking-[0.2em]">Senha</span>
+            <input
               id="password"
               name="password"
               type="password"
@@ -124,28 +97,27 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               aria-invalid={error || undefined}
               aria-describedby={error ? "admin-password-error" : undefined}
-              className="h-10"
+              className="border-iara/25 focus:border-iara focus:ring-iara/20 text-una rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:ring-2"
             />
-          </div>
+          </label>
 
           {error && (
             <p
               id="admin-password-error"
               role="alert"
-              className="font-sans text-xs"
-              style={{ color: "var(--destructive)" }}
+              className="text-urucum font-mono text-[11px] m-0"
             >
               Senha incorreta
             </p>
           )}
 
-          <Button
+          <button
             type="submit"
             disabled={loading}
-            className="w-full h-10 mt-2"
+            className="bg-iara hover:bg-iara/90 disabled:opacity-60 mt-1 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-white transition-colors disabled:cursor-not-allowed"
           >
-            {loading ? "Entrando..." : "Entrar"}
-          </Button>
+            {loading ? "Entrando…" : "Entrar"}
+          </button>
         </form>
       </div>
     </div>
