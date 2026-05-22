@@ -6,74 +6,90 @@ const DOC_SLOTS = BIBLIA_PAGE_SLUGS.flatMap((s) => [`doc-${s}`, `doc-${s}-video`
 const BANNER_SLOTS = [...HOME_SLOTS, ...DOC_SLOTS]
 
 export async function getBannerUrls(): Promise<Record<string, string>> {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files } = await admin.storage.from("banners").list("", {
-    sortBy: { column: "name", order: "asc" },
-  })
+    const { data: files } = await admin.storage.from("banners").list("", {
+      sortBy: { column: "name", order: "asc" },
+    })
 
-  const banners: Record<string, string> = {}
-  for (const file of files || []) {
-    const slot = file.name.split(".")[0]
-    if (BANNER_SLOTS.includes(slot)) {
-      const { data } = admin.storage.from("banners").getPublicUrl(file.name)
-      const v = file.updated_at || file.created_at || ""
-      const bust = v ? `?v=${new Date(v).getTime()}` : ""
-      banners[slot] = data.publicUrl + bust
+    const banners: Record<string, string> = {}
+    for (const file of files || []) {
+      const slot = file.name.split(".")[0]
+      if (BANNER_SLOTS.includes(slot)) {
+        const { data } = admin.storage.from("banners").getPublicUrl(file.name)
+        const v = file.updated_at || file.created_at || ""
+        const bust = v ? `?v=${new Date(v).getTime()}` : ""
+        banners[slot] = data.publicUrl + bust
+      }
     }
-  }
 
-  return banners
+    return banners
+  } catch {
+    return {}
+  }
 }
 
 export async function getCardImages(): Promise<Record<string, string>> {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files } = await admin.storage.from("card-images").list("", {
-    sortBy: { column: "name", order: "asc" },
-  })
+    const { data: files } = await admin.storage.from("card-images").list("", {
+      sortBy: { column: "name", order: "asc" },
+    })
 
-  const images: Record<string, string> = {}
-  for (const file of files ?? []) {
-    if (file.name.startsWith(".")) continue
-    const key = file.name.replace(/\.[^.]+$/, "")
-    const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
-    const v = file.updated_at || file.created_at || ""
-    const bust = v ? `?v=${new Date(v).getTime()}` : ""
-    images[key] = data.publicUrl + bust
+    const images: Record<string, string> = {}
+    for (const file of files ?? []) {
+      if (file.name.startsWith(".")) continue
+      const key = file.name.replace(/\.[^.]+$/, "")
+      const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
+      const v = file.updated_at || file.created_at || ""
+      const bust = v ? `?v=${new Date(v).getTime()}` : ""
+      images[key] = data.publicUrl + bust
+    }
+
+    return images
+  } catch {
+    return {}
   }
-
-  return images
 }
 
 export async function getGalleryImages(): Promise<{ name: string; url: string }[]> {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files } = await admin.storage.from("gallery").list("", {
-    sortBy: { column: "created_at", order: "desc" },
-  })
-
-  return (files ?? [])
-    .filter((f) => !f.name.startsWith("."))
-    .map((f) => {
-      const { data } = admin.storage.from("gallery").getPublicUrl(f.name)
-      return { name: f.name, url: data.publicUrl }
+    const { data: files } = await admin.storage.from("gallery").list("", {
+      sortBy: { column: "created_at", order: "desc" },
     })
+
+    return (files ?? [])
+      .filter((f) => !f.name.startsWith("."))
+      .map((f) => {
+        const { data } = admin.storage.from("gallery").getPublicUrl(f.name)
+        return { name: f.name, url: data.publicUrl }
+      })
+  } catch {
+    return []
+  }
 }
 
 export async function getCharacterImageUrls(): Promise<Record<string, string>> {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: characters } = await admin
-    .from("characters")
-    .select("slug, image_url")
+    const { data: characters } = await admin
+      .from("characters")
+      .select("slug, image_url")
 
-  const images: Record<string, string> = {}
-  for (const char of characters || []) {
-    if (char.image_url) {
-      images[char.slug] = char.image_url
+    const images: Record<string, string> = {}
+    for (const char of characters || []) {
+      if (char.image_url) {
+        images[char.slug] = char.image_url
+      }
     }
-  }
 
-  return images
+    return images
+  } catch {
+    return {}
+  }
 }

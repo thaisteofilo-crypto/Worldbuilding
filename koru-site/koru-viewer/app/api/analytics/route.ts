@@ -6,6 +6,7 @@ import { readLocalState } from "@/lib/local-state"
 import { characterOrder } from "@/lib/characters"
 
 export async function GET() {
+  try {
   // ─── Read chapters from filesystem ───
   const chapterSlugs = livroChapters()
   const chapters = chapterSlugs.map(({ capitulo }) => {
@@ -199,4 +200,11 @@ export async function GET() {
     bibliaWordCounts,
     mainBibleWords,
   })
+  } catch (err) {
+    console.error("analytics: erro ao processar dados", err)
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Erro interno ao carregar analytics" },
+      { status: 500 }
+    )
+  }
 }

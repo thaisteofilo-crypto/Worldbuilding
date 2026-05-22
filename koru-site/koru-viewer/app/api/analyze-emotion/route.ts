@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import Anthropic from "@anthropic-ai/sdk"
 import { readMarkdown } from "@/lib/content"
 
-const anthropic = new Anthropic() // Uses ANTHROPIC_API_KEY env var
-
 function smartTruncate(text: string, maxChars: number): string {
   if (text.length <= maxChars) return text
   const truncated = text.slice(0, maxChars)
@@ -13,6 +11,7 @@ function smartTruncate(text: string, maxChars: number): string {
 
 export async function POST(req: Request) {
   try {
+    const anthropic = new Anthropic() // Uses ANTHROPIC_API_KEY env var
     const { chapter } = await req.json()
     if (!chapter)
       return NextResponse.json({ error: "chapter required" }, { status: 400 })
