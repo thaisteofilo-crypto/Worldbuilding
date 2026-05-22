@@ -108,33 +108,37 @@ export default function EntrarPage() {
       ) : null}
 
       {/* Card branco flutuante */}
-      <div className="relative z-10 w-full max-w-[420px] mx-4 sm:mx-8 bg-white rounded-2xl shadow-2xl p-8 sm:p-9 flex flex-col gap-5">
+      <div className="relative z-10 w-full max-w-[440px] mx-4 sm:mx-8 bg-white rounded-3xl shadow-2xl px-9 py-10 sm:px-10 sm:py-11 flex flex-col gap-6">
 
         {/* Logo / cabeçalho */}
-        <div className="flex flex-col gap-1 text-center">
-          <h1 className="font-serif text-[26px] font-normal text-una leading-snug">Korú</h1>
-          <p className="font-sans text-[15px] font-medium text-una">
-            {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
-          </p>
-          <p className="font-sans text-[13px] text-[#4A5568]">
-            {tab === "entrar"
-              ? "Entre com sua conta para acessar o universo Korú"
-              : "Cadastre-se para acompanhar o projeto"}
-          </p>
+        <div className="flex flex-col gap-3 text-center">
+          <h1 className="font-serif text-[34px] font-normal text-una leading-none tracking-tight m-0">
+            Korú
+          </h1>
+          <div className="flex flex-col gap-1.5">
+            <p className="font-sans text-[20px] font-semibold text-una leading-tight m-0">
+              {tab === "entrar" ? "Bem-vinda de volta" : "Crie sua conta"}
+            </p>
+            <p className="font-sans text-[13px] text-[#6B7280] leading-snug m-0">
+              {tab === "entrar"
+                ? "Entre no sistema da marca com sua conta Google."
+                : "Cadastre-se para acompanhar o projeto."}
+            </p>
+          </div>
         </div>
 
         {/* Tabs: Entrar / Criar conta */}
-        <div className="flex rounded-full p-[3px] gap-[3px] bg-[#F0F0F0]">
+        <div className="flex rounded-2xl p-1 gap-1 border border-[#E5E7EB] bg-white">
           {(["entrar", "criar"] as Tab[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => switchTab(t)}
               className={[
-                "flex-1 rounded-full py-[7px] px-3 text-[13px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
+                "flex-1 rounded-xl py-2.5 px-3 text-[14px] font-sans font-medium border-none cursor-pointer transition-all duration-150",
                 tab === t
-                  ? "bg-iara text-white"
-                  : "bg-transparent text-[#4A5568]",
+                  ? "bg-[#F3F4F6] text-una"
+                  : "bg-transparent text-[#6B7280]",
               ].join(" ")}
             >
               {t === "entrar" ? "Entrar" : "Criar conta"}
@@ -143,10 +147,10 @@ export default function EntrarPage() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-[14px]">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {tab === "criar" && (
-            <div className="flex flex-col gap-[5px]">
-              <Label htmlFor="name" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="name" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
                 Nome
               </Label>
               <Input
@@ -156,14 +160,14 @@ export default function EntrarPage() {
                 autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Seu nome"
-                className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
+                placeholder=""
+                className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
               />
             </div>
           )}
 
-          <div className="flex flex-col gap-[5px]">
-            <Label htmlFor="email" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
               Email
             </Label>
             <Input
@@ -173,13 +177,13 @@ export default function EntrarPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
+              placeholder=""
+              className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
-          <div className="flex flex-col gap-[5px]">
-            <Label htmlFor="password" className="text-[11px] tracking-[0.08em] uppercase text-[#4A5568] font-sans">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password" className="text-[11px] tracking-[0.12em] uppercase text-[#6B7280] font-sans font-medium">
               Senha
             </Label>
             <Input
@@ -189,8 +193,8 @@ export default function EntrarPage() {
               autoComplete={tab === "entrar" ? "current-password" : "new-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="h-10 bg-[#F7F7F7] border-[#D1D5DB] text-una placeholder:text-[#9CA3AF]"
+              placeholder=""
+              className="h-11 rounded-full bg-white border-[#D1D5DB] px-4 text-una placeholder:text-[#9CA3AF]"
             />
           </div>
 
@@ -203,7 +207,7 @@ export default function EntrarPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full h-10 font-sans font-medium mt-0.5"
+            className="w-full rounded-full h-11 font-sans font-medium text-[15px] mt-1"
           >
             {loading
               ? (tab === "entrar" ? "Entrando…" : "Criando conta…")
@@ -211,16 +215,18 @@ export default function EntrarPage() {
           </Button>
 
           {/* Divider */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3 my-1">
             <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-[12px] text-[#9CA3AF] font-sans">ou</span>
+            <span className="text-[11px] tracking-[0.12em] uppercase text-[#9CA3AF] font-sans font-medium">
+              ou
+            </span>
             <div className="flex-1 h-px bg-[#E5E7EB]" />
           </div>
 
           <Button
             type="button"
             variant="outline"
-            className="w-full rounded-full h-10 gap-2 font-sans border-[#D1D5DB] text-[#374151] bg-white hover:bg-[#F9FAFB]"
+            className="w-full rounded-full h-11 gap-2.5 font-sans font-normal text-[14px] border-[#D1D5DB] text-[#374151] bg-white hover:bg-[#F9FAFB]"
             onClick={() => {
               const params = new URLSearchParams(window.location.search)
               const next = params.get("next") || "/"
@@ -242,7 +248,7 @@ export default function EntrarPage() {
                 onClick={() => switchTab("criar")}
                 className="bg-transparent border-none cursor-pointer text-iara underline underline-offset-[3px] text-[13px] font-[inherit] p-0"
               >
-                Criar conta
+                Solicite acesso
               </button>
             </>
           ) : (
