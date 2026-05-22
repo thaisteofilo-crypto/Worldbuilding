@@ -106,8 +106,8 @@ export default function EntrarPage() {
 
       {/* Card branco flutuante */}
       <div
-        style={{ maxWidth: 400, boxShadow: "0 10px 30px -12px rgba(11, 54, 60, 0.25)" }}
-        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 rounded-3xl px-8 py-10"
+        style={{ maxWidth: 400, borderRadius: 32, boxShadow: "0 10px 30px -12px rgba(11, 54, 60, 0.25)" }}
+        className="relative z-10 w-full mx-4 sm:mx-8 bg-white border border-iara/15 px-8 py-10"
       >
 
         {/* Logo */}
