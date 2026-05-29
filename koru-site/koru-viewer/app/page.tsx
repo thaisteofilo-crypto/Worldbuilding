@@ -9,10 +9,27 @@ import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
+import { BANNER_CONFIG } from "@/lib/navigation"
 import { Button } from "@/components/ui/button"
 import { Settings, Lock } from "lucide-react"
 
 interface DocEntry { label: string; path: string }
+
+// Gradiente de fallback para cards sem imagem — usa a cor da marca por seção
+function bibliaGradient(slug: string): string {
+  const hue = BANNER_CONFIG[slug]?.fallbackHue ?? 75
+  return `linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.30 0.12 ${hue}) 50%, oklch(0.14 0.01 280) 100%)`
+}
+
+const LIVRO_HUES: Record<string, number> = {
+  "01": 220, "02": 210, "03": 200, "04": 230, "05": 215,
+  "06": 205, "07": 220, "08": 210, "09": 200, "10": 225,
+  "11": 215, "12": 205, epilogo: 190,
+}
+function livroGradient(slug: string): string {
+  const hue = LIVRO_HUES[slug] ?? 215
+  return `linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.28 0.10 ${hue}) 50%, oklch(0.14 0.01 280) 100%)`
+}
 
 // Extract last filename without extension: "livro/capitulo-07.md" -> "capitulo-07"
 function pathFilename(path: string): string {
@@ -310,7 +327,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", background: bibliaGradient(filename), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
@@ -355,7 +372,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", background: char.gradient, width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`char-${key}`] ? (
                   <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -394,7 +411,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", background: char.gradient, width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`conto-${key}`] ? (
                   <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -435,7 +452,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", background: livroGradient(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
