@@ -1,11 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Menu } from 'lucide-react'
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Homepage editor é tela cheia — sem sidebar
+  if (pathname === '/admin/homepage') {
+    return <>{children}</>
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
