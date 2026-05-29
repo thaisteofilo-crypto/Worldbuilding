@@ -12,6 +12,7 @@ import {
 const navItems = [
   { href: '/admin', label: 'Dashboard', exact: true },
   { href: '/admin/conteudo', label: 'Conteúdo' },
+  { href: '/admin/homepage', label: 'Homepage' },
   { href: '/admin/editor', label: 'Editor' },
   { href: '/admin/publicacao', label: 'Publicação' },
   { href: '/admin/characters', label: 'Personagens' },
