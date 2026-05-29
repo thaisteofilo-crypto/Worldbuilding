@@ -9,26 +9,56 @@ import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
-import { BANNER_CONFIG } from "@/lib/navigation"
 import { Button } from "@/components/ui/button"
 import { Settings, Lock } from "lucide-react"
 
 interface DocEntry { label: string; path: string }
 
-// Gradiente de fallback para cards sem imagem — usa a cor da marca por seção
-function bibliaGradient(slug: string): string {
-  const hue = BANNER_CONFIG[slug]?.fallbackHue ?? 75
-  return `linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.30 0.12 ${hue}) 50%, oklch(0.14 0.01 280) 100%)`
+// Cores sólidas da marca Korú
+const BRAND: string[] = ["#E99000", "#C72211", "#DD560D", "#BF505C", "#707C36", "#9B6C22", "#8B3D17"]
+
+const BIBLIA_COLORS: Record<string, string> = {
+  "manifesto":            "#E99000",
+  "parte-00-manifesto":   "#E99000",
+  "parte-00":             "#9B6C22",
+  "parte-01":             "#707C36",
+  "parte-02":             "#8B3D17",
+  "parte-03":             "#707C36",
+  "parte-04":             "#C72211",
+  "parte-05":             "#BF505C",
+  "parte-06":             "#9B6C22",
+  "parte-07":             "#E99000",
+  "parte-08":             "#8B3D17",
+  "glossario-de-koru":    "#DD560D",
+  "glossario-de-lugares": "#707C36",
+}
+function bibliaColor(slug: string): string {
+  return BIBLIA_COLORS[slug] ?? "#9B6C22"
 }
 
-const LIVRO_HUES: Record<string, number> = {
-  "01": 220, "02": 210, "03": 200, "04": 230, "05": 215,
-  "06": 205, "07": 220, "08": 210, "09": 200, "10": 225,
-  "11": 215, "12": 205, epilogo: 190,
+const CHAR_COLORS: Record<string, string> = {
+  temiku: "#BF505C",
+  amara:  "#707C36",
+  oruku:  "#9B6C22",
+  beku:   "#8B3D17",
+  obaru:  "#C72211",
+  kemdi:  "#DD560D",
+  temi:   "#E99000",
+  orike:  "#707C36",
+  kairo:  "#BF505C",
 }
-function livroGradient(slug: string): string {
-  const hue = LIVRO_HUES[slug] ?? 215
-  return `linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.28 0.10 ${hue}) 50%, oklch(0.14 0.01 280) 100%)`
+function charColor(slug: string): string {
+  return CHAR_COLORS[slug] ?? BRAND[0]
+}
+
+const LIVRO_COLORS: Record<string, string> = {
+  "01": "#C72211", "02": "#DD560D", "03": "#BF505C", "04": "#707C36",
+  "05": "#9B6C22", "06": "#8B3D17", "07": "#E99000", "08": "#C72211",
+  "09": "#DD560D", "10": "#BF505C", "11": "#707C36", "12": "#9B6C22",
+  epilogo: "#E99000",
+}
+function livroColor(slug: string): string {
+  return LIVRO_COLORS[slug] ?? "#9B6C22"
 }
 
 // Extract last filename without extension: "livro/capitulo-07.md" -> "capitulo-07"
@@ -327,7 +357,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", background: bibliaGradient(filename), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: bibliaColor(filename), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
@@ -372,7 +402,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", background: char.gradient, width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`char-${key}`] ? (
                   <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -411,7 +441,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", background: char.gradient, width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`conto-${key}`] ? (
                   <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -452,7 +482,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", background: livroGradient(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: livroColor(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
