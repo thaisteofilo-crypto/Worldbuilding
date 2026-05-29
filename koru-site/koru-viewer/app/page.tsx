@@ -310,7 +310,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
@@ -355,7 +355,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`char-${key}`] ? (
                   <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -394,7 +394,7 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`conto-${key}`] ? (
                   <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
                 ) : (
@@ -435,7 +435,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)", width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
                 ) : (
