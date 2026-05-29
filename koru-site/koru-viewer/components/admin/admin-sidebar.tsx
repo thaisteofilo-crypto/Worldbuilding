@@ -2,23 +2,27 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import {
-  Search, Folder, Network, Bookmark, MessageCircle, Plus,
-  ChevronRight, PanelLeftClose, X, LogOut,
+  Search, Folder, Network, Bookmark, Plus,
+  ChevronRight, ChevronDown, PanelLeftClose, X, LogOut,
+  Settings,
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', exact: true },
-  { href: '/admin/conteudo', label: 'Conteúdo' },
   { href: '/admin/homepage', label: 'Homepage' },
+  { href: '/admin/conteudo', label: 'Conteúdo' },
   { href: '/admin/editor', label: 'Editor' },
   { href: '/admin/publicacao', label: 'Publicação' },
   { href: '/admin/characters', label: 'Personagens' },
   { href: '/admin/gallery', label: 'Galeria' },
   { href: '/admin/banners', label: 'Banners' },
   { href: '/admin/card-images', label: 'Cards' },
+]
+
+const sistemaItems = [
+  { href: '/admin', label: 'Dashboard', exact: true },
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/conversas', label: 'Conversas' },
   { href: '/admin/configuracoes', label: 'Configurações' },
@@ -28,7 +32,6 @@ const quickActions = [
   { href: '/admin/conteudo', label: 'Conteúdo', icon: Folder },
   { href: '/admin/characters', label: 'Personagens', icon: Network },
   { href: '/admin/publicacao', label: 'Publicação', icon: Bookmark },
-  { href: '/admin/conversas', label: 'Conversas', icon: MessageCircle },
 ]
 
 interface AdminSidebarProps {
@@ -38,6 +41,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname()
+  const [sistemaOpen, setSistemaOpen] = useState(false)
 
   useEffect(() => {
     onClose?.()
@@ -138,9 +142,7 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
         {/* Nav */}
         <nav aria-label="Menu" className="flex-1 overflow-y-auto px-5 pb-4">
           {navItems.map((item) => {
-            const active = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href)
+            const active = pathname.startsWith(item.href)
             return (
               <Link
                 key={item.href}
@@ -161,6 +163,54 @@ export function AdminSidebar({ open = false, onClose }: AdminSidebarProps) {
               </Link>
             )
           })}
+
+          {/* Sistema group */}
+          <div className="mt-2 border-t border-iara/10 pt-2">
+            <button
+              onClick={() => setSistemaOpen((v) => !v)}
+              className="flex w-full items-center justify-between py-2.5 font-mono text-[11px] uppercase tracking-[0.15em] text-iara hover:text-una transition-colors"
+              aria-expanded={sistemaOpen}
+            >
+              <span className="flex items-center gap-2">
+                <Settings size={12} aria-hidden="true" />
+                Sistema
+              </span>
+              <ChevronDown
+                size={12}
+                aria-hidden="true"
+                className={cn('transition-transform duration-200', sistemaOpen ? 'rotate-180' : '')}
+              />
+            </button>
+
+            {sistemaOpen && (
+              <div className="pl-4">
+                {sistemaItems.map((item) => {
+                  const active = item.exact
+                    ? pathname === item.href
+                    : pathname.startsWith(item.href)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={onClose}
+                      aria-current={active ? 'page' : undefined}
+                      className={cn(
+                        'flex items-center justify-between py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-colors',
+                        active ? 'text-una' : 'text-iara hover:text-una',
+                      )}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronRight
+                        size={12}
+                        aria-hidden="true"
+                        className={active ? 'text-una' : 'text-iara/50'}
+                      />
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Footer */}

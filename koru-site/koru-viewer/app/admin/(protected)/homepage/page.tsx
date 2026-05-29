@@ -1,78 +1,64 @@
 "use client"
 
-import Image from "next/image"
-import { useState } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
+import { Upload, Eye, Pencil, ExternalLink, CheckCircle2, Loader2 } from "lucide-react"
 import { CardCarousel } from "@/components/koru/card-carousel"
-import {
-  EditModeProvider,
-  EditModeBar,
-  EditableHero,
-  EditableSection,
-  EditableCard,
-  AdminFooterSection,
-  useHomepageData,
-  useSaveContent,
-  useUploadCardImage,
-  useUploadBanner,
-} from "@/components/admin/homepage-editor"
 
 // ---------------------------------------------------------------------------
-// Static slug lists (hardcoded — page is client-side, no fs access)
+// Color maps
+// ---------------------------------------------------------------------------
+
+const BIBLIA_COLORS: Record<string, string> = {
+  "manifesto": "#E99000", "parte-00-manifesto": "#E99000", "parte-00": "#9B6C22",
+  "parte-01": "#707C36", "parte-02": "#8B3D17", "parte-03": "#707C36",
+  "parte-04": "#C72211", "parte-05": "#BF505C", "parte-06": "#9B6C22",
+  "parte-07": "#E99000", "parte-08": "#8B3D17",
+  "glossario-de-koru": "#DD560D", "glossario-de-lugares": "#707C36",
+}
+function bibliaColor(slug: string): string {
+  const key = slug.replace(/^parte-(\d+).*/, "parte-$1")
+  return BIBLIA_COLORS[slug] ?? BIBLIA_COLORS[key] ?? "#9B6C22"
+}
+
+const CHAR_COLORS: Record<string, string> = {
+  temiku: "#BF505C", amara: "#707C36", oruku: "#9B6C22", beku: "#8B3D17",
+  obaru: "#C72211", kemdi: "#DD560D", temi: "#E99000", orike: "#707C36", kairo: "#BF505C",
+}
+function charColor(slug: string): string {
+  return CHAR_COLORS[slug] ?? "#9B6C22"
+}
+
+const LIVRO_COLORS: Record<string, string> = {
+  "01": "#C72211", "02": "#DD560D", "03": "#BF505C", "04": "#707C36",
+  "05": "#9B6C22", "06": "#8B3D17", "07": "#E99000", "08": "#C72211",
+  "09": "#DD560D", "10": "#BF505C", "11": "#707C36", "12": "#9B6C22", epilogo: "#E99000",
+}
+function livroColor(slug: string): string {
+  return LIVRO_COLORS[slug] ?? "#9B6C22"
+}
+
+// ---------------------------------------------------------------------------
+// Slug lists
 // ---------------------------------------------------------------------------
 
 const BIBLIA_SLUGS = [
-  "parte-00-manifesto",
-  "parte-01-fisica-cosmologia",
-  "parte-02-geografia",
-  "parte-03-ecossistema",
-  "parte-04-criaturas",
-  "parte-05-personagens",
-  "parte-06-regras",
-  "parte-07-cultura",
-  "parte-08-linha-do-tempo",
-  "glossario-de-koru",
-  "glossario-de-lugares",
+  "parte-00-manifesto", "parte-01-fisica-cosmologia", "parte-02-geografia",
+  "parte-03-ecossistema", "parte-04-criaturas", "parte-05-personagens",
+  "parte-06-regras", "parte-07-cultura", "parte-08-linha-do-tempo",
+  "glossario-de-koru", "glossario-de-lugares",
 ]
 
 const LIVRO_SLUGS = [
   "01", "02", "03", "04", "05", "06",
-  "07", "08", "09", "10", "11", "12",
-  "epilogo",
+  "07", "08", "09", "10", "11", "12", "epilogo",
 ]
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Default content values
 // ---------------------------------------------------------------------------
 
-function bibliaCardKey(slug: string): string {
-  return `biblia-${slug}`
-}
-
-function livroCardKey(slug: string): string {
-  return `livro-${slug}`
-}
-
-function contoCardKey(personagem: string): string {
-  return `conto-${personagem}`
-}
-
-function charCardKey(personagem: string): string {
-  return `char-${personagem}`
-}
-
-// "parte-00-manifesto" → "biblia.parte-00-manifesto.title"
-function bibliaTitleKey(slug: string): string {
-  return `biblia.${slug}.title`
-}
-
-// "01" → "livro.01.title", "epilogo" → "livro.epilogo.title"
-function livroTitleKey(slug: string): string {
-  return `livro.${slug}.title`
-}
-
-// Default display titles when no override is in siteContent
-const BIBLIA_DEFAULT_TITLES: Record<string, string> = {
+const BIBLIA_DEFAULTS: Record<string, string> = {
   "parte-00-manifesto": "Introdução · A Língua de Korú",
   "parte-01-fisica-cosmologia": "Física · A Natureza do Akwu",
   "parte-02-geografia": "Geografia · Ikwe e seus Lugares",
@@ -86,446 +72,247 @@ const BIBLIA_DEFAULT_TITLES: Record<string, string> = {
   "glossario-de-lugares": "Glossário de Lugares",
 }
 
-const LIVRO_DEFAULT_TITLES: Record<string, string> = {
-  "01": "O que ela é",
-  "02": "Manhãs",
-  "03": "A cidade",
-  "04": "A mentira silenciosa",
-  "05": "Entre o lilás e o cinza",
-  "06": "O que a floresta guarda",
-  "07": "O projeto do fim do luto",
-  "08": "A chuva",
-  "09": "O limiar como morada",
-  "10": "A noite antes",
-  "11": "O que ela paga",
-  "12": "O retorno",
-  "epilogo": "Epílogo",
+const LIVRO_DEFAULTS: Record<string, string> = {
+  "01": "O que ela é", "02": "Manhãs", "03": "A cidade",
+  "04": "A mentira silenciosa", "05": "Entre o lilás e o cinza",
+  "06": "O que a floresta guarda", "07": "O projeto do fim do luto",
+  "08": "A chuva", "09": "O limiar como morada", "10": "A noite antes",
+  "11": "O que ela paga", "12": "O retorno", "epilogo": "Epílogo",
+}
+
+const SECTION_DEFAULTS: Record<string, string> = {
+  "hero.tagline": "Um mundo cuja física é baseada em memória.",
+  "section.biblia.label": "Bíblia do Mundo",
+  "section.biblia.title": "O arquivo vivo",
+  "section.biblia.description": "A física, a cosmologia, as criaturas e os acordos que sustentam o Akwu.",
+  "section.personagens.label": "Personagens",
+  "section.personagens.title": "Os seres do Akwu",
+  "section.personagens.description": "Cada ser carrega memória em substâncias diferentes.",
+  "section.contos.label": "Contos",
+  "section.contos.title": "Vozes do Akwu",
+  "section.contos.description": "Sete histórias. Sete formas de habitar o mesmo mundo.",
+  "section.livro.label": "Livro",
+  "section.livro.title": "O Peso da Luz",
+  "section.livro.description": "A história de Temiku, em doze capítulos.",
+  "footer.copyright": "© Thaís Teófilo · Todos os direitos reservados",
 }
 
 // ---------------------------------------------------------------------------
-// Loading skeleton
+// InlineEdit
 // ---------------------------------------------------------------------------
 
-function HomepageSkeleton() {
-  return (
-    <div className="w-full flex flex-col gap-6" aria-busy="true" aria-label="Carregando editor da homepage…">
-      {/* EditModeBar placeholder */}
-      <Skeleton className="h-11 w-full rounded-none" />
-      {/* Hero placeholder */}
-      <Skeleton className="w-full rounded-xl" style={{ minHeight: "30vh" }} />
-      {/* Section skeletons */}
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="flex flex-col gap-3 px-4 md:px-16 py-8">
-          <Skeleton className="h-4 w-24 rounded" />
-          <Skeleton className="h-10 w-64 rounded" />
-          <Skeleton className="h-5 w-96 rounded" />
-          <div className="flex gap-3 mt-2">
-            {Array.from({ length: 5 }).map((_, j) => (
-              <Skeleton key={j} className="rounded-xl shrink-0" style={{ width: 160, aspectRatio: "2/3" }} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
+interface InlineEditProps {
+  as?: keyof JSX.IntrinsicElements
+  value: string
+  contentKey: string
+  onSave: (key: string, value: string) => Promise<void>
+  isEditing: boolean
+  multiline?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
-// ---------------------------------------------------------------------------
-// Image placeholder (used when card has no image yet)
-// ---------------------------------------------------------------------------
+function InlineEdit({
+  as: Tag = "p",
+  value,
+  contentKey,
+  onSave,
+  isEditing,
+  multiline = false,
+  className,
+  style,
+}: InlineEditProps) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(value)
+  const ref = useRef<HTMLInputElement & HTMLTextAreaElement>(null)
 
-function ImagePlaceholder() {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <svg
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.8"
-        className="opacity-15"
-        style={{ color: "var(--muted-foreground)" }}
+  useEffect(() => {
+    setDraft(value)
+  }, [value])
+
+  useEffect(() => {
+    if (editing && ref.current) ref.current.focus()
+  }, [editing])
+
+  if (!isEditing) {
+    return (
+      <Tag className={className} style={style}>
+        {value}
+      </Tag>
+    )
+  }
+
+  if (!editing) {
+    return (
+      <Tag
+        className={className}
+        style={{ ...style, cursor: "text", outline: "1px dashed oklch(1 0 0 / 0.25)", borderRadius: 3 }}
+        onClick={() => setEditing(true)}
+        title="Clique para editar"
       >
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21,15 16,10 5,21" />
-      </svg>
-    </div>
+        {value || <span style={{ opacity: 0.4 }}>clique para editar</span>}
+      </Tag>
+    )
+  }
+
+  function commit() {
+    setEditing(false)
+    if (draft !== value) onSave(contentKey, draft)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape") { setDraft(value); setEditing(false) }
+    if (e.key === "Enter" && !multiline) { e.preventDefault(); commit() }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    ...style,
+    background: "oklch(0.12 0.008 280 / 0.85)",
+    border: "1px solid oklch(1 0 0 / 0.3)",
+    borderRadius: 4,
+    padding: "2px 6px",
+    outline: "none",
+    width: "100%",
+    color: "inherit",
+    fontFamily: "inherit",
+    fontSize: "inherit",
+    lineHeight: "inherit",
+    resize: multiline ? "vertical" : "none",
+  }
+
+  if (multiline) {
+    return (
+      <textarea
+        ref={ref as React.RefObject<HTMLTextAreaElement>}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={handleKeyDown}
+        className={className}
+        style={inputStyle}
+        rows={3}
+      />
+    )
+  }
+
+  return (
+    <input
+      ref={ref as React.RefObject<HTMLInputElement>}
+      type="text"
+      value={draft}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={handleKeyDown}
+      className={className}
+      style={inputStyle}
+    />
   )
 }
 
 // ---------------------------------------------------------------------------
-// AdminHomepageInner — consumes hooks inside EditModeProvider
+// CardWithUpload
 // ---------------------------------------------------------------------------
 
-function AdminHomepageInner() {
-  const { siteContent, banners, cardImages, characters, characterOrder, loading } =
-    useHomepageData()
-  const { save } = useSaveContent()
-  const { upload: uploadCardImage } = useUploadCardImage()
-  const { upload: uploadBanner } = useUploadBanner()
+interface CardWithUploadProps {
+  color: string
+  title: string
+  titleKey: string
+  kicker?: string
+  isEditing: boolean
+  onSave: (key: string, value: string) => Promise<void>
+  cardKey: string
+  uploadedImage?: string
+  onUpload: (file: File, key: string) => Promise<void>
+}
 
-  // Publish state: local map keyed by doc path; all start as published (true)
-  const [publishedMap, setPublishedMap] = useState<Record<string, boolean>>({})
+function CardWithUpload({
+  color, title, titleKey, kicker, isEditing, onSave, cardKey, uploadedImage, onUpload,
+}: CardWithUploadProps) {
+  const fileRef = useRef<HTMLInputElement>(null)
 
-  function isPublished(key: string): boolean {
-    return publishedMap[key] !== false
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) await onUpload(file, cardKey)
+    // reset so same file can be re-uploaded
+    if (fileRef.current) fileRef.current.value = ""
   }
-
-  function togglePublished(key: string) {
-    setPublishedMap((prev) => ({ ...prev, [key]: !isPublished(key) }))
-  }
-
-  if (loading) return <HomepageSkeleton />
-
-  const get = (key: string, fallback = ""): string =>
-    siteContent?.[key] ?? fallback
-
-  const heroImage = banners?.["hero"]
-  const heroVideo = banners?.["hero-video"]
-
-  // CTA target: first biblia slug
-  const bibliaHref = `/biblia/${BIBLIA_SLUGS[0]}`
-
-  // Characters with contos: use characterOrder filtered by whether a conto card
-  // key could exist. In the admin we show all chars, toggling publish state.
-  const charsWithContos = characterOrder
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Fixed edit bar */}
-      <EditModeBar />
+    <div
+      className="carousel-card koru-card group shrink-0 block rounded-xl overflow-hidden relative"
+      style={{
+        width: "clamp(140px, 20vw, 260px)",
+        aspectRatio: "2/3",
+        backgroundColor: color,
+        borderRadius: 12,
+        overflow: "hidden",
+        position: "relative",
+        flexShrink: 0,
+      }}
+    >
+      {/* Upload button (edit mode only) */}
+      {isEditing && (
+        <label
+          style={{
+            position: "absolute", top: 8, left: 8, zIndex: 10, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 4,
+            background: "oklch(0 0 0 / 0.55)", backdropFilter: "blur(6px)",
+            border: "1px solid oklch(1 0 0 / 0.25)", borderRadius: 6,
+            padding: "3px 8px", fontSize: 11, color: "rgba(255,255,255,0.85)",
+            fontFamily: "var(--font-mono, monospace)",
+          }}
+          title="Upload de imagem"
+        >
+          <Upload size={12} />
+          Upload
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFile}
+            style={{ display: "none" }}
+          />
+        </label>
+      )}
 
-      <div style={{ marginTop: 44 }}>
-        {/* ── Hero ──────────────────────────────────────────────────── */}
-        <EditableHero
-          heroImage={heroImage}
-          heroVideo={heroVideo}
-          tagline={get("hero.tagline", "Um mundo cuja física é baseada em memória.")}
-          bibliaHref={bibliaHref}
-          onSave={save}
-          onBannerUpload={uploadBanner}
+      {/* Uploaded image */}
+      {uploadedImage && (
+        <img
+          src={uploadedImage}
+          alt={title}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
         />
+      )}
 
-        {/* ── Bíblia ────────────────────────────────────────────────── */}
-        <EditableSection
-          title={get("section.biblia.title", "O arquivo vivo")}
-          titleKey="section.biblia.title"
-          description={get("section.biblia.description")}
-          descriptionKey="section.biblia.description"
-          label={get("section.biblia.label", "Bíblia do Mundo")}
-          labelKey="section.biblia.label"
-          bannerUrl={banners?.["biblia"]}
-          videoUrl={banners?.["biblia-video"]}
-          bannerSlot="biblia"
-          onSave={save}
-          onBannerUpload={uploadBanner}
-        >
-          <CardCarousel>
-            {BIBLIA_SLUGS.map((slug) => {
-              const cardKey = bibliaCardKey(slug)
-              const titleKey = bibliaTitleKey(slug)
-              const title = get(titleKey, BIBLIA_DEFAULT_TITLES[slug] ?? slug)
-              const imgUrl = cardImages?.[cardKey]
-              const published = isPublished(`biblia/${slug}.md`)
-              const kicker = title.includes(" · ") ? title.split(" · ")[0] : undefined
-              const displayTitle = title.includes(" · ") ? title.split(" · ")[1] : title
+      {/* Gradient overlay */}
+      <div
+        style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to top, oklch(0 0 0 / 0.65) 0%, transparent 55%)",
+        }}
+      />
 
-              return (
-                <EditableCard
-                  key={slug}
-                  cardKey={cardKey}
-                  title={title}
-                  titleKey={titleKey}
-                  kicker={kicker}
-                  href={`/biblia/${slug}`}
-                  published={published}
-                  onTogglePublish={() => togglePublished(`biblia/${slug}.md`)}
-                  onSave={save}
-                  onImageUpload={(file) => uploadCardImage(file, cardKey)}
-                >
-                  <div
-                    className="relative"
-                    style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}
-                  >
-                    {imgUrl ? (
-                      <Image
-                        src={imgUrl}
-                        alt={title}
-                        fill
-                        className="object-cover koru-card-img"
-                      />
-                    ) : (
-                      <ImagePlaceholder />
-                    )}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)",
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                      {kicker && (
-                        <p className="text-xs md:text-sm font-sans text-white/50">{kicker}</p>
-                      )}
-                      <p
-                        className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1"
-                        style={{
-                          fontFamily: "var(--font-serif), Georgia, serif",
-                          textShadow: "0 1px 4px oklch(0 0 0 / 0.5)",
-                        }}
-                      >
-                        {displayTitle}
-                      </p>
-                    </div>
-                  </div>
-                </EditableCard>
-              )
-            })}
-          </CardCarousel>
-        </EditableSection>
-
-        {/* ── Personagens ───────────────────────────────────────────── */}
-        <EditableSection
-          title={get("section.personagens.title", "Os seres do Akwu")}
-          titleKey="section.personagens.title"
-          description={get("section.personagens.description")}
-          descriptionKey="section.personagens.description"
-          label={get("section.personagens.label", "Personagens")}
-          labelKey="section.personagens.label"
-          bannerUrl={banners?.["personagens"]}
-          videoUrl={banners?.["personagens-video"]}
-          bannerSlot="personagens"
-          onSave={save}
-          onBannerUpload={uploadBanner}
-        >
-          <CardCarousel>
-            {characterOrder.map((key) => {
-              const char = characters?.[key]
-              if (!char) return null
-              const cardKey = charCardKey(key)
-              const imgUrl = cardImages?.[cardKey]
-              const published = isPublished(`personagens/${key}`)
-
-              return (
-                <EditableCard
-                  key={key}
-                  cardKey={cardKey}
-                  title={char.name}
-                  href={`/personagens/${key}`}
-                  published={published}
-                  onTogglePublish={() => togglePublished(`personagens/${key}`)}
-                  onSave={save}
-                  onImageUpload={(file) => uploadCardImage(file, cardKey)}
-                >
-                  <div
-                    className="relative"
-                    style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}
-                  >
-                    {imgUrl ? (
-                      <Image
-                        src={imgUrl}
-                        alt={char.name}
-                        fill
-                        className="object-cover koru-card-img"
-                      />
-                    ) : (
-                      <ImagePlaceholder />
-                    )}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)",
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                      <p
-                        className="font-serif text-lg md:text-2xl leading-tight text-white"
-                        style={{
-                          fontFamily: "var(--font-serif), Georgia, serif",
-                          textShadow: "0 1px 4px oklch(0 0 0 / 0.5)",
-                        }}
-                      >
-                        {char.name}
-                      </p>
-                      <p className="text-sm md:text-base font-sans text-white/70 mt-1">
-                        {char.role.split(",")[0].trim()}
-                      </p>
-                    </div>
-                  </div>
-                </EditableCard>
-              )
-            })}
-          </CardCarousel>
-        </EditableSection>
-
-        {/* ── Contos ────────────────────────────────────────────────── */}
-        <EditableSection
-          title={get("section.contos.title", "Vozes do Akwu")}
-          titleKey="section.contos.title"
-          description={get("section.contos.description")}
-          descriptionKey="section.contos.description"
-          label={get("section.contos.label", "Contos")}
-          labelKey="section.contos.label"
-          bannerUrl={banners?.["contos"]}
-          videoUrl={banners?.["contos-video"]}
-          bannerSlot="contos"
-          onSave={save}
-          onBannerUpload={uploadBanner}
-        >
-          <CardCarousel>
-            {charsWithContos.map((key) => {
-              const char = characters?.[key]
-              if (!char) return null
-              const cardKey = contoCardKey(key)
-              const imgUrl = cardImages?.[cardKey]
-              const published = isPublished(`contos/conto-${key}.md`)
-
-              return (
-                <EditableCard
-                  key={key}
-                  cardKey={cardKey}
-                  title={char.name}
-                  kicker="Conto"
-                  href={`/contos/${key}`}
-                  published={published}
-                  onTogglePublish={() => togglePublished(`contos/conto-${key}.md`)}
-                  onSave={save}
-                  onImageUpload={(file) => uploadCardImage(file, cardKey)}
-                >
-                  <div
-                    className="relative"
-                    style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}
-                  >
-                    {imgUrl ? (
-                      <Image
-                        src={imgUrl}
-                        alt={char.name}
-                        fill
-                        className="object-cover koru-card-img"
-                      />
-                    ) : (
-                      <ImagePlaceholder />
-                    )}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)",
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                      <p className="text-xs md:text-base font-sans text-white/60">Conto</p>
-                      <p
-                        className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1"
-                        style={{
-                          fontFamily: "var(--font-serif), Georgia, serif",
-                          textShadow: "0 1px 4px oklch(0 0 0 / 0.5)",
-                        }}
-                      >
-                        {char.name}
-                      </p>
-                    </div>
-                  </div>
-                </EditableCard>
-              )
-            })}
-          </CardCarousel>
-        </EditableSection>
-
-        {/* ── Livro ─────────────────────────────────────────────────── */}
-        <EditableSection
-          title={get("section.livro.title", "O Peso da Luz")}
-          titleKey="section.livro.title"
-          description={get("section.livro.description")}
-          descriptionKey="section.livro.description"
-          label={get("section.livro.label", "Livro")}
-          labelKey="section.livro.label"
-          bannerUrl={banners?.["livro"]}
-          videoUrl={banners?.["livro-video"]}
-          bannerSlot="livro"
-          onSave={save}
-          onBannerUpload={uploadBanner}
-        >
-          <CardCarousel>
-            {LIVRO_SLUGS.map((slug) => {
-              const cardKey = livroCardKey(slug)
-              const titleKey = livroTitleKey(slug)
-              const title = get(titleKey, LIVRO_DEFAULT_TITLES[slug] ?? `Capítulo ${slug}`)
-              const imgUrl = cardImages?.[cardKey]
-              const published = isPublished(
-                slug === "epilogo" ? "livro/epilogo.md" : `livro/capitulo-${slug}.md`
-              )
-              const kicker = slug === "epilogo" ? "Fim" : `Cap. ${slug}`
-
-              return (
-                <EditableCard
-                  key={slug}
-                  cardKey={cardKey}
-                  title={title}
-                  titleKey={titleKey}
-                  kicker={kicker}
-                  href={`/livro/${slug}`}
-                  published={published}
-                  onTogglePublish={() =>
-                    togglePublished(
-                      slug === "epilogo" ? "livro/epilogo.md" : `livro/capitulo-${slug}.md`
-                    )
-                  }
-                  onSave={save}
-                  onImageUpload={(file) => uploadCardImage(file, cardKey)}
-                >
-                  <div
-                    className="relative"
-                    style={{ aspectRatio: "2/3", backgroundColor: "var(--surface)" }}
-                  >
-                    {imgUrl ? (
-                      <Image
-                        src={imgUrl}
-                        alt={title}
-                        fill
-                        className="object-cover koru-card-img"
-                      />
-                    ) : (
-                      <ImagePlaceholder />
-                    )}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)",
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                      <p className="text-xs md:text-base font-sans text-white/60">{kicker}</p>
-                      <p
-                        className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1"
-                        style={{
-                          fontFamily: "var(--font-serif), Georgia, serif",
-                          textShadow: "0 1px 4px oklch(0 0 0 / 0.5)",
-                        }}
-                      >
-                        {title}
-                      </p>
-                    </div>
-                  </div>
-                </EditableCard>
-              )
-            })}
-          </CardCarousel>
-        </EditableSection>
-
-        {/* ── Footer ────────────────────────────────────────────────── */}
-        <AdminFooterSection
-          footerImage={banners?.["footer"]}
-          footerVideo={banners?.["footer-video"]}
-          copyright={get("footer.copyright", "Todos os direitos reservados a Thaís Teófilo")}
-          copyrightKey="footer.copyright"
-          onSave={save}
-          onBannerUpload={uploadBanner}
+      {/* Footer text */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 14px", zIndex: 5 }}>
+        {kicker && (
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-sans, sans-serif)", margin: 0 }}>
+            {kicker}
+          </p>
+        )}
+        <InlineEdit
+          as="p"
+          value={title}
+          contentKey={titleKey}
+          onSave={onSave}
+          isEditing={isEditing}
+          style={{
+            fontFamily: "var(--font-serif), Georgia, serif",
+            fontSize: "clamp(0.95rem, 1.8vw, 1.4rem)",
+            color: "white",
+            lineHeight: 1.2,
+            margin: 0,
+          }}
         />
       </div>
     </div>
@@ -533,13 +320,420 @@ function AdminHomepageInner() {
 }
 
 // ---------------------------------------------------------------------------
-// Default export — wraps inner component in EditModeProvider
+// Main page
 // ---------------------------------------------------------------------------
 
 export default function AdminHomepagePage() {
+  const [isEditing, setIsEditing] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<string | null>(null)
+  const [content, setContent] = useState<Record<string, string>>(SECTION_DEFAULTS)
+  const [chars, setChars] = useState<Record<string, { name: string; role: string }>>({})
+  const [charOrder, setCharOrder] = useState<string[]>([])
+  const [cardImages, setCardImages] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/site-content").then((r) => r.json()).catch(() => ({ content: [] })),
+      fetch("/api/characters").then((r) => r.json()).catch(() => ({ chars: {}, order: [] })),
+      fetch("/api/card-images").then((r) => r.json()).catch(() => ({ images: {} })),
+    ]).then(([contentData, charData, cardData]) => {
+      const map = { ...SECTION_DEFAULTS }
+      for (const row of (contentData.content ?? [])) {
+        if (row.key) map[row.key] = row.value
+      }
+      setContent(map)
+      if (charData.chars) {
+        setChars(charData.chars)
+        setCharOrder(charData.order ?? Object.keys(charData.chars))
+      }
+      setCardImages(cardData.images ?? {})
+    })
+  }, [])
+
+  async function save(key: string, value: string) {
+    setContent((prev) => ({ ...prev, [key]: value }))
+    setSaving(true)
+    await fetch("/api/site-content", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key, value }),
+    })
+    setSaving(false)
+    setLastSaved(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }))
+  }
+
+  async function uploadCardImage(file: File, key: string) {
+    const fd = new FormData()
+    fd.append("file", file)
+    fd.append("key", key)
+    const res = await fetch("/api/card-images", { method: "POST", body: fd })
+    const data = await res.json()
+    if (data.url) setCardImages((prev) => ({ ...prev, [key]: data.url }))
+  }
+
+  function get(key: string): string {
+    return content[key] ?? SECTION_DEFAULTS[key] ?? ""
+  }
+
+  // ── Control bar ─────────────────────────────────────────────────────────────
+  const ControlBar = (
+    <div
+      style={{
+        position: "sticky", top: 0, zIndex: 100, height: 44,
+        background: "oklch(0.06 0.008 280 / 0.95)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid oklch(1 0 0 / 0.08)",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        paddingInline: "1rem",
+        flexShrink: 0,
+      }}
+    >
+      {/* Left */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontFamily: "var(--font-serif), Georgia, serif", fontSize: 17, color: "white", lineHeight: 1 }}>
+          Korú
+        </span>
+        <span style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 11, color: "oklch(1 0 0 / 0.4)", letterSpacing: "0.06em" }}>
+          admin · homepage
+        </span>
+      </div>
+
+      {/* Centre */}
+      <div style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 11, color: "oklch(1 0 0 / 0.5)", display: "flex", alignItems: "center", gap: 6 }}>
+        {saving ? (
+          <>
+            <Loader2 size={12} style={{ animation: "spin 1s linear infinite" }} />
+            Salvando...
+          </>
+        ) : lastSaved ? (
+          <>
+            <CheckCircle2 size={12} style={{ color: "oklch(0.75 0.17 145)" }} />
+            Salvo {lastSaved}
+          </>
+        ) : null}
+      </div>
+
+      {/* Right */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <Link
+          href="/"
+          target="_blank"
+          style={{
+            display: "flex", alignItems: "center", gap: 4,
+            fontFamily: "var(--font-mono, monospace)", fontSize: 11,
+            color: "oklch(1 0 0 / 0.55)", textDecoration: "none",
+            letterSpacing: "0.08em",
+          }}
+        >
+          <ExternalLink size={12} />
+          Ver site
+        </Link>
+        <button
+          onClick={() => setIsEditing((v) => !v)}
+          style={{
+            display: "flex", alignItems: "center", gap: 6,
+            fontFamily: "var(--font-mono, monospace)", fontSize: 11,
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            background: isEditing ? "oklch(0.65 0.18 50)" : "oklch(1 0 0 / 0.08)",
+            color: isEditing ? "white" : "oklch(1 0 0 / 0.7)",
+            border: "1px solid oklch(1 0 0 / 0.15)",
+            borderRadius: 6, padding: "4px 12px", cursor: "pointer",
+          }}
+        >
+          {isEditing ? <Eye size={12} /> : <Pencil size={12} />}
+          {isEditing ? "Visualizar" : "Editar"}
+        </button>
+      </div>
+    </div>
+  )
+
+  // ── Section header helper ────────────────────────────────────────────────────
+  function SectionHeader({
+    labelKey, titleKey, descKey,
+  }: { labelKey: string; titleKey: string; descKey: string }) {
+    return (
+      <div style={{ position: "relative", zIndex: 10, marginBottom: "2rem" }}>
+        <InlineEdit
+          as="p"
+          value={get(labelKey)}
+          contentKey={labelKey}
+          onSave={save}
+          isEditing={isEditing}
+          style={{
+            fontFamily: "var(--font-mono, monospace)", fontSize: 11,
+            textTransform: "uppercase", letterSpacing: "0.18em",
+            color: "var(--muted-foreground)", marginBottom: 8,
+          }}
+        />
+        <InlineEdit
+          as="h2"
+          value={get(titleKey)}
+          contentKey={titleKey}
+          onSave={save}
+          isEditing={isEditing}
+          style={{
+            fontFamily: "var(--font-serif), Georgia, serif",
+            fontSize: "clamp(2.5rem, 7vw, 5rem)",
+            lineHeight: 1.05, letterSpacing: "-0.02em",
+            color: "var(--foreground)", marginBottom: 12, display: "block",
+          }}
+        />
+        <InlineEdit
+          as="p"
+          value={get(descKey)}
+          contentKey={descKey}
+          onSave={save}
+          isEditing={isEditing}
+          multiline
+          style={{
+            fontFamily: "var(--font-sans, sans-serif)",
+            fontSize: "clamp(1rem, 1.5vw, 1.2rem)",
+            lineHeight: 1.6, maxWidth: "40rem",
+            color: "var(--muted-foreground)",
+          }}
+        />
+      </div>
+    )
+  }
+
   return (
-    <EditModeProvider>
-      <AdminHomepageInner />
-    </EditModeProvider>
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 50,
+        overflowY: "auto", background: "var(--background)",
+      }}
+    >
+      {/* ── Control bar ─────────────────────────────────────────────── */}
+      {ControlBar}
+
+      {/* ── Hero ────────────────────────────────────────────────────── */}
+      <section
+        style={{
+          position: "relative", minHeight: "100vh",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          overflow: "hidden", padding: "2.5rem 4rem",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <h1
+            style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: "clamp(6rem, 18vw, 14rem)",
+              lineHeight: 0.85, marginBottom: "2rem",
+              color: "var(--foreground)",
+            }}
+          >
+            Korú
+          </h1>
+          <InlineEdit
+            as="p"
+            value={get("hero.tagline")}
+            contentKey="hero.tagline"
+            onSave={save}
+            isEditing={isEditing}
+            style={{
+              fontFamily: "var(--font-sans, sans-serif)",
+              fontSize: "clamp(1.1rem, 2.5vw, 1.6rem)",
+              lineHeight: 1.5, maxWidth: "36rem",
+              color: "var(--muted-foreground)",
+            }}
+          />
+        </div>
+      </section>
+
+      {/* ── Bíblia ──────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh", padding: "2.5rem 4rem",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <SectionHeader
+            labelKey="section.biblia.label"
+            titleKey="section.biblia.title"
+            descKey="section.biblia.description"
+          />
+          <CardCarousel>
+            {BIBLIA_SLUGS.map((slug) => {
+              const cardKey = `biblia-${slug}`
+              const titleKey = `biblia.${slug}.title`
+              const rawTitle = get(titleKey) || BIBLIA_DEFAULTS[slug] || slug
+              const kicker = rawTitle.includes(" · ") ? rawTitle.split(" · ")[0] : undefined
+              const displayTitle = rawTitle.includes(" · ") ? rawTitle.split(" · ")[1] : rawTitle
+              return (
+                <CardWithUpload
+                  key={slug}
+                  color={bibliaColor(slug)}
+                  title={displayTitle}
+                  titleKey={titleKey}
+                  kicker={kicker}
+                  isEditing={isEditing}
+                  onSave={save}
+                  cardKey={cardKey}
+                  uploadedImage={cardImages[cardKey]}
+                  onUpload={uploadCardImage}
+                />
+              )
+            })}
+          </CardCarousel>
+        </div>
+      </section>
+
+      {/* ── Personagens ─────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh", padding: "2.5rem 4rem",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <SectionHeader
+            labelKey="section.personagens.label"
+            titleKey="section.personagens.title"
+            descKey="section.personagens.description"
+          />
+          <CardCarousel>
+            {charOrder.map((key) => {
+              const char = chars[key]
+              if (!char) return null
+              const cardKey = `char-${key}`
+              return (
+                <CardWithUpload
+                  key={key}
+                  color={charColor(key)}
+                  title={char.name}
+                  titleKey={`char.${key}.name`}
+                  kicker={char.role?.split(",")[0]?.trim()}
+                  isEditing={isEditing}
+                  onSave={save}
+                  cardKey={cardKey}
+                  uploadedImage={cardImages[cardKey]}
+                  onUpload={uploadCardImage}
+                />
+              )
+            })}
+          </CardCarousel>
+        </div>
+      </section>
+
+      {/* ── Contos ──────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh", padding: "2.5rem 4rem",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <SectionHeader
+            labelKey="section.contos.label"
+            titleKey="section.contos.title"
+            descKey="section.contos.description"
+          />
+          <CardCarousel>
+            {charOrder.map((key) => {
+              const char = chars[key]
+              if (!char) return null
+              const cardKey = `conto-${key}`
+              return (
+                <CardWithUpload
+                  key={key}
+                  color={charColor(key)}
+                  title={char.name}
+                  titleKey={`conto.${key}.title`}
+                  kicker="Conto"
+                  isEditing={isEditing}
+                  onSave={save}
+                  cardKey={cardKey}
+                  uploadedImage={cardImages[cardKey]}
+                  onUpload={uploadCardImage}
+                />
+              )
+            })}
+          </CardCarousel>
+        </div>
+      </section>
+
+      {/* ── Livro ───────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh", padding: "2.5rem 4rem",
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <SectionHeader
+            labelKey="section.livro.label"
+            titleKey="section.livro.title"
+            descKey="section.livro.description"
+          />
+          <CardCarousel>
+            {LIVRO_SLUGS.map((slug) => {
+              const cardKey = `livro-${slug}`
+              const titleKey = `livro.${slug}.title`
+              const title = get(titleKey) || LIVRO_DEFAULTS[slug] || `Capítulo ${slug}`
+              const kicker = slug === "epilogo" ? "Fim" : `Cap. ${slug}`
+              return (
+                <CardWithUpload
+                  key={slug}
+                  color={livroColor(slug)}
+                  title={title}
+                  titleKey={titleKey}
+                  kicker={kicker}
+                  isEditing={isEditing}
+                  onSave={save}
+                  cardKey={cardKey}
+                  uploadedImage={cardImages[cardKey]}
+                  onUpload={uploadCardImage}
+                />
+              )
+            })}
+          </CardCarousel>
+        </div>
+      </section>
+
+      {/* ── Footer ──────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh", position: "relative",
+          display: "flex", flexDirection: "column", justifyContent: "flex-end",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "var(--background)" }} />
+        <div
+          style={{
+            position: "relative", zIndex: 10,
+            padding: "1.5rem", textAlign: "center",
+          }}
+        >
+          <InlineEdit
+            as="p"
+            value={get("footer.copyright")}
+            contentKey="footer.copyright"
+            onSave={save}
+            isEditing={isEditing}
+            style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: "0.9rem", letterSpacing: "0.08em",
+              color: "oklch(1 0 0 / 0.25)",
+            }}
+          />
+        </div>
+      </section>
+
+      {/* Keyframes for loader spin */}
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
   )
 }
