@@ -1,3 +1,8 @@
+---
+title: "Criaturas · Os Seres de Korú"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 ## PARTE 4, AS CRIATURAS
 

@@ -1,3 +1,8 @@
+---
+title: "Workflow do Projeto"
+status: "complete"
+---
+
 # KORÚ, WORKFLOW DE CRIAÇÃO
 ### Mapa completo do projeto: bíblia, livro e contos
 

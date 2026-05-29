@@ -36,7 +36,7 @@ const nextConfig = {
     root: __dirname,
   },
   async headers() {
-    return [
+    const securityHeaders = [
       {
         source: "/:path*",
         headers: [
@@ -57,6 +57,16 @@ const nextConfig = {
           },
         ],
       },
+    ]
+
+    // Aggressive immutable caching só em produção. Em dev quebra o HMR
+    // e faz o browser servir chunks JS antigos (stale).
+    if (process.env.NODE_ENV !== "production") {
+      return securityHeaders
+    }
+
+    return [
+      ...securityHeaders,
       {
         source: "/_next/static/:path*",
         headers: [

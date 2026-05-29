@@ -1,3 +1,8 @@
+---
+title: "Bíblia do Mundo"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 
 **Versão:** 2.0, Sistema de luz revisado, morfologia corrigida, 13 regras, ecossistema completo

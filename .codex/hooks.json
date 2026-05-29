@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash 'C:\\Users\\THAIS TEOFILO\\Desktop\\Worldbuilding - Korú\\.codex\\hooks\\auto-publish.sh'",
+            "timeout": 60,
+            "statusMessage": "Publicando no GitHub"
+          }
+        ]
+      }
+    ]
+  }
+}

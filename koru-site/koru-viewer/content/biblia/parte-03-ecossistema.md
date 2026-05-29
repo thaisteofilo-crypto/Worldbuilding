@@ -1,3 +1,8 @@
+---
+title: "Ecossistema · O Ciclo da Memória"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 ## PARTE 3, ECOSSISTEMA COMPLETO
 

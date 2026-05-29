@@ -1,3 +1,8 @@
+---
+title: "Bíblia Completa · Korú"
+status: "complete"
+---
+
 # KORÚ, BÍBLIA DO MUNDO
 ### Documento de Referência para Desenvolvimento Criativo, Design de Personagens e Continuidade Narrativa
 

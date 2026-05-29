@@ -1,3 +1,8 @@
+---
+title: "Vozes do Akwu"
+status: "complete"
+---
+
 # KORÚ, Contos dos Personagens
 
 Sete contos sobre as criaturas que habitam Korú, cada um uma lacuna que o livro menciona mas não mostra. Funcionam de forma autossuficiente, mas aprofundam a leitura do livro principal (*Temiku*).

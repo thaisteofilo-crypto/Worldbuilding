@@ -1,3 +1,8 @@
+---
+title: "O Peso da Luz"
+status: "complete"
+---
+
 # Korú, A História de Temiku
 ### Índice do Livro
 

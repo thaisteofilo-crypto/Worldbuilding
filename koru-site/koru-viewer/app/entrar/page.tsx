@@ -114,7 +114,7 @@ export default function EntrarPage() {
         <div className="mb-7 flex justify-center">
           <span
             aria-label="Korú"
-            className="font-serif text-una inline-flex items-baseline whitespace-nowrap tracking-tight text-4xl"
+            className="font-serif text-una inline-flex items-baseline whitespace-nowrap tracking-tight text-[38px] leading-none"
           >
             Korú
           </span>
@@ -127,7 +127,7 @@ export default function EntrarPage() {
           </h1>
           <p className="text-pego text-sm">
             {tab === "entrar"
-              ? "Entre no Universo de Korú com sua conta Google."
+              ? "Entre no sistema da marca com sua conta Google."
               : "Cadastre-se para acompanhar o projeto."}
           </p>
         </div>
