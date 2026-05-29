@@ -1,3 +1,8 @@
+---
+title: "Glossário de Lugares"
+status: "complete"
+---
+
 # KORÚ, GLOSSÁRIO DE LUGARES
 ### Referência rápida · Memorização · Cross-links
 

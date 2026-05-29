@@ -1,3 +1,8 @@
+---
+title: "O retorno"
+status: "complete"
+capitulo: 12
+---
 # XII, O RETORNO
 *Korú, A História de Temiku*
 

@@ -1,3 +1,9 @@
+---
+title: "A cidade"
+status: "complete"
+capitulo: 3
+---
+
 # III, A CIDADE
 *Korú, A História de Temiku*
 

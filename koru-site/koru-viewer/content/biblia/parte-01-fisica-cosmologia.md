@@ -1,3 +1,8 @@
+---
+title: "Física · A Natureza do Akwu"
+status: "complete"
+---
+
 ### A NATUREZA DO AKWU
 
 **Akwu** (Igbo: aquilo que sustenta, a palma aberta que carrega)

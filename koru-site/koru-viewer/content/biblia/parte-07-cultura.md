@@ -1,3 +1,8 @@
+---
+title: "Cultura · Como se Vive"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 ## PARTE 7, CULTURA & COTIDIANO
 

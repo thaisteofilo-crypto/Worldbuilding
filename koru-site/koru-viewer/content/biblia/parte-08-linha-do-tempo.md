@@ -1,3 +1,8 @@
+---
+title: "Linha do Tempo · As Seis Eras"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 ## PARTE 8, LINHA DO TEMPO
 

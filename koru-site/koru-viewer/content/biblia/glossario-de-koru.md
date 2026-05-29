@@ -1,3 +1,8 @@
+---
+title: "Glossário de Korú"
+status: "complete"
+---
+
 # GLOSSÁRIO DE KORÚ
 
 ## Por que o mundo se chama Korú

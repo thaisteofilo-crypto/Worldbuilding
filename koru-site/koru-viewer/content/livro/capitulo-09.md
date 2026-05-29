@@ -1,3 +1,8 @@
+---
+title: "O limiar como morada"
+status: "complete"
+capitulo: 9
+---
 # IX, O LIMIAR COMO MORADA
 
 *Korú, A História de Temiku*

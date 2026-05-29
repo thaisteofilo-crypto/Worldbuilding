@@ -1,3 +1,8 @@
+---
+title: "O que ela paga"
+status: "complete"
+capitulo: 11
+---
 # XI, O QUE ELA PAGA
 
 *Korú, A História de Temiku*

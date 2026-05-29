@@ -1,3 +1,9 @@
+---
+title: "Oruku"
+personagem: "oruku"
+status: "complete"
+---
+
 **TRANSITION TEST** ok.
 
 Outro.

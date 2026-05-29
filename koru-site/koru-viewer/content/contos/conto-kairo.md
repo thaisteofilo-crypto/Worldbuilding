@@ -1,3 +1,9 @@
+---
+title: "Kairo"
+personagem: "kairo"
+status: "complete"
+---
+
 # Conto: Kairo
 *Korú, A criatura que esquece*
 

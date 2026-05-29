@@ -1,3 +1,8 @@
+﻿---
+title: "Orike"
+personagem: "orike"
+status: "complete"
+---
 **TOAST TRANSITION** teste.
 
 Ok.

@@ -1,3 +1,9 @@
+---
+title: "Temi"
+personagem: "temi"
+status: "complete"
+---
+
 # Conto: Temi
 *Korú, O que pertence à criatura que pertence a nenhum lugar*
 

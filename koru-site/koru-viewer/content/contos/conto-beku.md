@@ -1,3 +1,8 @@
+﻿---
+title: "Beku"
+personagem: "beku"
+status: "complete"
+---
 **RETRY FLASH** teste.
 
 Segundo bloco aqui.

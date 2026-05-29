@@ -1,3 +1,8 @@
+---
+title: "A noite antes"
+status: "complete"
+capitulo: 10
+---
 # X, A NOITE ANTES
 *Korú, A História de Temiku*
 

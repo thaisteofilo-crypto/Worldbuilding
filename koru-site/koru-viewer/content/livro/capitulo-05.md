@@ -1,3 +1,9 @@
+---
+title: "Entre o lilás e o cinza"
+status: "complete"
+capitulo: 5
+---
+
 # V, ENTRE O LILÁS E O CINZA
 *Korú, A História de Temiku*
 

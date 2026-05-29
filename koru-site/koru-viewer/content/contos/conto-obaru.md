@@ -1,3 +1,8 @@
+﻿---
+title: "Obaru"
+personagem: "obaru"
+status: "complete"
+---
 **TOAST** teste.
 
 Segundo bloco.

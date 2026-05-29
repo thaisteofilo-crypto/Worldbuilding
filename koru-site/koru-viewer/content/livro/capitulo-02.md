@@ -1,3 +1,9 @@
+---
+title: "Manhãs"
+status: "complete"
+capitulo: 2
+---
+
 # II, MANHÃS
 
 *Korú, A História de Temiku*

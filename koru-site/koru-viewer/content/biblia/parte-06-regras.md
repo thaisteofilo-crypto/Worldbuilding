@@ -1,3 +1,8 @@
+---
+title: "Regras · Os 13 Acordos"
+status: "complete"
+---
+
 # KORÚ, Bíblia do Mundo
 ## PARTE 6, AS 13 REGRAS
 

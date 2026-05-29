@@ -1,3 +1,8 @@
+---
+title: "O projeto do fim do luto"
+status: "complete"
+capitulo: 7
+---
 # VII, O PROJETO DO FIM DO LUTO
 
 *Korú, A História de Temiku*

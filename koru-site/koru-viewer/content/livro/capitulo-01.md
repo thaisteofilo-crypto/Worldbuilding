@@ -1,5 +1,7 @@
 ---
-title: "I, O que ela é"
+title: "O que ela é"
+status: "complete"
+capitulo: 1
 ---
 
 O círculo não tem nome. Nunca precisou.

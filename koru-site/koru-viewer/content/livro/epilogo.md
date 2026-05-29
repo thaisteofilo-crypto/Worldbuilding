@@ -1,3 +1,7 @@
+---
+title: "Epílogo"
+status: "complete"
+---
 # EPÍLOGO
 *Korú, A História de Temiku*
 

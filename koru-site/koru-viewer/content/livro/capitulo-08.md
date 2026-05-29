@@ -1,3 +1,8 @@
+---
+title: "A chuva"
+status: "complete"
+capitulo: 8
+---
 # VIII, A CHUVA
 *Korú, A História de Temiku*
 

@@ -1,3 +1,9 @@
+---
+title: "O que a floresta guarda"
+status: "complete"
+capitulo: 6
+---
+
 # VI, O QUE A FLORESTA GUARDA
 
 *Korú, A História de Temiku*

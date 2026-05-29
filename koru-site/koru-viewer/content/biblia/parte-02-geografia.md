@@ -1,5 +1,10 @@
 
 
+---
+title: "Geografia · Ikwe e seus Lugares"
+status: "complete"
+---
+
 ### Topologia geral
 
 Korú não tem horizonte externo, o Akwu é a câmara que contém tudo. Dentro do Akwu, a topologia de Ikwe segue uma lógica de camadas: da abertura para o arquivo, da exposição para o interior.

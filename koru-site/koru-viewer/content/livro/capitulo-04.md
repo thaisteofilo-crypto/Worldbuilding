@@ -1,3 +1,9 @@
+---
+title: "A mentira silenciosa"
+status: "complete"
+capitulo: 4
+---
+
 # IV, A MENTIRA SILENCIOSA
 
 *Korú, A História de Temiku*

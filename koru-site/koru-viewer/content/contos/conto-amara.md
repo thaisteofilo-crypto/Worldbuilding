@@ -1,3 +1,8 @@
+﻿---
+title: "Amara"
+personagem: "amara"
+status: "complete"
+---
 **Novo bloco** formatado.
 
 **CONN** teste.
