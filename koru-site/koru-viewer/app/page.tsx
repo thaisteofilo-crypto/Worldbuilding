@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { getCharactersForViewer } from "@/lib/characters-db"
-import { ThemeToggle } from "@/components/koru/theme-toggle"
+import { HomeNav } from "@/components/koru/home-nav"
 import { CardCarousel } from "@/components/koru/card-carousel"
 import { ContinueReadingCard } from "@/components/koru/continue-reading-card"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
@@ -11,7 +11,7 @@ import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
 import { Button } from "@/components/ui/button"
-import { Settings, Lock } from "lucide-react"
+import { Lock } from "lucide-react"
 
 interface DocEntry { label: string; path: string }
 
@@ -90,6 +90,37 @@ function ImagePlaceholder() {
   )
 }
 
+// Placeholder elegante para capítulos do Livro sem imagem de capa:
+// gradiente azul-frio do design system + número do capítulo em serifa.
+// Mantém os cards 07–12 e o Epílogo visualmente consistentes com os 01–06.
+function LivroCardPlaceholder({ slug }: { slug: string }) {
+  const isEpilogo = slug === "epilogo"
+  return (
+    <div
+      className="absolute inset-0 flex items-center justify-center"
+      aria-hidden="true"
+      style={{
+        background:
+          "radial-gradient(130% 100% at 80% 0%, color-mix(in oklch, var(--blue-cold) 55%, oklch(0.22 0.02 260)) 0%, oklch(0.24 0.02 265) 48%, oklch(0.15 0.012 270) 100%)",
+      }}
+    >
+      <div className="absolute inset-3 rounded-lg pointer-events-none" style={{ border: "1px solid oklch(1 0 0 / 0.08)" }} />
+      <span
+        className="font-serif select-none leading-none"
+        style={{
+          fontFamily: "var(--font-serif), Georgia, serif",
+          fontSize: isEpilogo ? "2.25rem" : "5rem",
+          fontStyle: isEpilogo ? "italic" : "normal",
+          letterSpacing: isEpilogo ? "0.06em" : "0.02em",
+          color: "oklch(1 0 0 / 0.22)",
+        }}
+      >
+        {isEpilogo ? "fim" : slug}
+      </span>
+    </div>
+  )
+}
+
 // Format ISO date as a short PT-BR label for "scheduled" cards.
 function formatReleaseLabel(at: string | null | undefined): string | null {
   if (!at) return null
@@ -150,12 +181,15 @@ function SectionBanner({ url }: { url?: string }) {
 }
 
 function FullSection({
+  id,
+  label,
   title,
   description,
   bannerUrl,
   videoUrl,
   children,
 }: {
+  id?: string
   label?: string
   title: string
   description?: string
@@ -165,7 +199,7 @@ function FullSection({
 }) {
   const hasBanner = !!(videoUrl || bannerUrl)
   return (
-    <section className="relative flex flex-col justify-center overflow-hidden min-h-screen py-10 md:py-16 px-4 md:px-16">
+    <section id={id} className="relative flex flex-col justify-center overflow-hidden min-h-[100svh] py-20 md:py-24 px-4 md:px-16 scroll-mt-16">
       {videoUrl ? (
         <>
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
@@ -177,6 +211,17 @@ function FullSection({
         <div className="absolute inset-0 bg-background" />
       )}
       <div className="relative z-10">
+        {label && (
+          <p
+            className="font-sans text-xs tracking-[0.2em] uppercase mb-3"
+            style={{
+              color: hasBanner ? "oklch(1 0 0 / 0.6)" : "var(--muted-foreground)",
+              textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
+            }}
+          >
+            {label}
+          </p>
+        )}
         <h2
           className="font-serif text-5xl md:text-7xl leading-[1.05] tracking-tight mb-4 md:mb-6"
           style={{
@@ -189,7 +234,7 @@ function FullSection({
         </h2>
         {description && (
           <p
-            className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-8"
+            className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-10"
             style={{
               color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
@@ -268,8 +313,8 @@ export default async function HomePage() {
       const fsBibliaPaths = new Set(filesystemBiblia.map((d) => d.path))
       const fsLivroPaths = new Set(filesystemLivro.map((d) => d.path))
 
-      // Editor labels (with "Kicker · Título" format) take precedence on the home cards,
-      // so simplifying biblia.parte-XX.title in site_content doesn't strip the kicker.
+      // Editor labels (with "Kicker · Título" format) are the fallback for the home cards;
+      // títulos cadastrados no CMS (site_content / admin → Conteúdo) têm prioridade na renderização.
       finalBibliaDocs = filesystemBiblia.map((d) => ({ ...d, label: bibliaLabels.get(d.path) ?? d.label }))
       finalLivroDocs = filesystemLivro.map((d) => ({ ...d, label: livroLabels.get(d.path) ?? d.label }))
 
@@ -288,22 +333,18 @@ export default async function HomePage() {
   const firstBibliaSlug = firstBibliaPath ? pathFilename(firstBibliaPath.path) : "parte-00-manifesto"
   const bibliaHref = `/biblia/${firstBibliaSlug}`
 
+  // Hero CTAs — texto e link vêm do CMS (admin → Conteúdo); hardcoded é só fallback.
+  const ctaPrimaryText = get(siteContent, "hero.cta_primary_text") || "Começar pela bíblia"
+  const ctaPrimaryHref = get(siteContent, "hero.cta_primary_href") || bibliaHref
+  const ctaSecondaryText = get(siteContent, "hero.cta_secondary_text")
+  const ctaSecondaryHref = get(siteContent, "hero.cta_secondary_href")
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="fixed top-4 right-6 z-50 flex items-center gap-1">
-        <Link
-          href="/admin/login"
-          className="inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors hover:bg-muted opacity-30 hover:opacity-60"
-          aria-label="Admin"
-          title="Admin"
-        >
-          <Settings size={14} className="text-foreground" />
-        </Link>
-        <ThemeToggle />
-      </div>
+      <HomeNav />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden">
         {banners["hero-video"] ? (
           <>
             <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={banners["hero-video"]} poster={banners.hero} />
@@ -339,21 +380,32 @@ export default async function HomePage() {
           >
             {get(siteContent, "hero.tagline")}
           </p>
-          <Button
-            variant={hasHero ? "outline" : "default"}
-            size="default"
-            asChild
-            className={
-              hasHero
-                ? "koru-content-enter border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-md dark:border-white/30 dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
-                : "koru-content-enter"
-            }
-            style={{ animationDelay: "0.7s" }}
-          >
-            <Link href={bibliaHref}>
-              Começar pela bíblia
-            </Link>
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              variant="outline"
+              size="default"
+              asChild
+              className="koru-content-enter border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-md dark:border-white/30 dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
+              style={{ animationDelay: "0.7s" }}
+            >
+              <Link href={ctaPrimaryHref}>
+                {ctaPrimaryText}
+              </Link>
+            </Button>
+            {ctaSecondaryText && ctaSecondaryHref && (
+              <Button
+                variant="outline"
+                size="default"
+                asChild
+                className="koru-content-enter border-white/15 text-white/85 bg-transparent hover:bg-white/10 hover:text-white backdrop-blur-md dark:border-white/15 dark:text-white/85 dark:bg-transparent dark:hover:bg-white/10"
+                style={{ animationDelay: "0.8s" }}
+              >
+                <Link href={ctaSecondaryHref}>
+                  {ctaSecondaryText}
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </section>
 
@@ -361,7 +413,7 @@ export default async function HomePage() {
       <ContinueReadingCard />
 
       {/* Bíblia */}
-      <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} description={get(siteContent, "section.biblia.description")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
+      <FullSection id="biblia" label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} description={get(siteContent, "section.biblia.description")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
         <CardCarousel>
           {finalBibliaDocs.map((doc) => {
             const filename = pathFilename(doc.path)
@@ -379,10 +431,11 @@ export default async function HomePage() {
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">
-                  {doc.label.includes(" · ") ? (
+                  {/* Título do card: CMS (site_content) primeiro; label do editor é só fallback */}
+                  {title.includes(" · ") ? (
                     <>
-                      <p className="text-xs md:text-sm font-sans text-white/50">{doc.label.split(" · ")[0]}</p>
-                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{doc.label.split(" · ")[1]}</p>
+                      <p className="text-xs md:text-sm font-sans text-white/50">{title.split(" · ")[0]}</p>
+                      <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white mt-1" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title.split(" · ")[1]}</p>
                     </>
                   ) : (
                     <p className="font-serif text-lg md:text-2xl font-medium leading-tight text-white" style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "0 1px 4px oklch(0 0 0 / 0.5)" }}>{title}</p>
@@ -407,7 +460,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Personagens */}
-      <FullSection label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} description={get(siteContent, "section.personagens.description")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
+      <FullSection id="personagens" label={get(siteContent, "section.personagens.label")} title={get(siteContent, "section.personagens.title")} description={get(siteContent, "section.personagens.description")} bannerUrl={banners.personagens} videoUrl={banners["personagens-video"]}>
         <CardCarousel>
           {characterOrder.map((key) => {
             const char = characters[key]
@@ -446,7 +499,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Contos */}
-      <FullSection label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} description={get(siteContent, "section.contos.description")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
+      <FullSection id="contos" label={get(siteContent, "section.contos.label")} title={get(siteContent, "section.contos.title")} description={get(siteContent, "section.contos.description")} bannerUrl={banners.contos} videoUrl={banners["contos-video"]}>
         <CardCarousel>
           {characterOrder.filter((key) => contosAvailable.has(key) && !excluded.has(`contos/conto-${key}.md`)).map((key) => {
             const char = characters[key]
@@ -485,7 +538,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Livro */}
-      <FullSection label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} description={get(siteContent, "section.livro.description")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
+      <FullSection id="livro" label={get(siteContent, "section.livro.label")} title={get(siteContent, "section.livro.title")} description={get(siteContent, "section.livro.description")} bannerUrl={banners.livro} videoUrl={banners["livro-video"]}>
         <CardCarousel>
           {finalLivroDocs.map((doc) => {
             const filename = pathFilename(doc.path)
@@ -499,7 +552,7 @@ export default async function HomePage() {
                 {cardImages[cardKey] ? (
                   <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
                 ) : (
-                  <ImagePlaceholder />
+                  <LivroCardPlaceholder slug={urlSlug} />
                 )}
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
@@ -526,7 +579,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Banner Final — Vídeo */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden">
         {banners["footer-video"] ? (
           <>
             <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={banners["footer-video"]} poster={banners.footer} />

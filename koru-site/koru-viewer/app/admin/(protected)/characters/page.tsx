@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { ImagePositioner } from "@/components/admin/image-positioner"
 import type { Character } from "@/lib/database.types"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,15 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton, SkeletonContainer } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
 import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
-import { Plus, X, ChevronUp, ChevronDown, Trash2, Pencil } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Plus, X, ChevronUp, ChevronDown, Trash2, Pencil, Search } from "lucide-react"
 
 const VIEWS = [
   { key: "front", label: "Frente" },
@@ -339,8 +347,40 @@ export default function CharactersPage() {
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<Character | null>(null)
+
+  // Filters — client-side
+  const [search, setSearch] = useState("")
+  const [speciesFilter, setSpeciesFilter] = useState<string | null>(null)
 
   const [loadError, setLoadError] = useState<string | null>(null)
+
+  const speciesOptions = useMemo(() => {
+    const set = new Set<string>()
+    for (const c of characters) {
+      const s = c.species?.trim()
+      if (s) set.add(s)
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"))
+  }, [characters])
+
+  const normalizedSearch = search.trim().toLowerCase()
+  const isFiltering = normalizedSearch !== "" || speciesFilter !== null
+
+  const filteredCharacters = useMemo(() => {
+    if (!isFiltering) return characters
+    return characters.filter((c) => {
+      if (
+        normalizedSearch &&
+        !c.name.toLowerCase().includes(normalizedSearch) &&
+        !c.slug.toLowerCase().includes(normalizedSearch)
+      ) {
+        return false
+      }
+      if (speciesFilter && (c.species?.trim() ?? "") !== speciesFilter) return false
+      return true
+    })
+  }, [characters, normalizedSearch, speciesFilter, isFiltering])
 
   const fetchCharacters = () => {
     const timeout = setTimeout(() => {
@@ -412,16 +452,16 @@ export default function CharactersPage() {
     setUploading(null)
   }
 
-  async function deleteCharacter(id: string, name: string) {
-    if (!confirm(`Remover ${name}? Esta ação não pode ser desfeita.`)) return
-    setDeleting(id)
+  async function deleteCharacter(character: Character) {
+    setConfirmDelete(null)
+    setDeleting(character.id)
     const res = await fetch("/api/characters", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id: character.id }),
     })
     if (res.ok) {
-      setCharacters((prev) => prev.filter((c) => c.id !== id))
+      setCharacters((prev) => prev.filter((c) => c.id !== character.id))
     } else {
       const data = await res.json()
       alert(data.error || "Erro ao remover personagem")
@@ -515,7 +555,10 @@ export default function CharactersPage() {
         <div>
           <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
           <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-            {characters.length} personagens — use ↑↓ para reordenar — clique nos campos para editar
+            {isFiltering
+              ? `${filteredCharacters.length} de ${characters.length} personagens`
+              : `${characters.length} personagens`}
+            {" — use ↑↓ para reordenar — clique nos campos para editar"}
           </p>
           {loadError && (
             <p
@@ -533,6 +576,64 @@ export default function CharactersPage() {
         <NewCharacterForm onCreated={handleCharacterCreated} />
       </div>
 
+      {/* Search + species filter */}
+      {characters.length > 0 && (
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <Search
+              size={13}
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: "var(--muted-foreground)" }}
+            />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por nome..."
+              aria-label="Buscar personagem por nome"
+              className="h-8 w-56 pl-8 font-sans text-xs"
+            />
+          </div>
+          {speciesOptions.length > 1 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>
+                Espécie
+              </span>
+              {speciesOptions.map((sp) => {
+                const active = speciesFilter === sp
+                return (
+                  <Button
+                    key={sp}
+                    onClick={() => setSpeciesFilter(active ? null : sp)}
+                    variant="outline"
+                    size="xs"
+                    className="font-sans"
+                    style={active ? {
+                      background: "color-mix(in oklch, var(--accent) 18%, transparent)",
+                      borderColor: "var(--accent)",
+                      color: "var(--foreground)",
+                      fontWeight: 600,
+                    } : undefined}
+                  >
+                    {sp}
+                  </Button>
+                )
+              })}
+            </div>
+          )}
+          {isFiltering && (
+            <Button
+              onClick={() => { setSearch(""); setSpeciesFilter(null) }}
+              variant="ghost"
+              size="xs"
+              className="font-sans"
+            >
+              <X size={11} />
+              Limpar
+            </Button>
+          )}
+        </div>
+      )}
+
       <div className="mt-8 flex flex-col gap-8">
         {characters.length === 0 ? (
           <GlassCard className="px-5 py-10 text-center">
@@ -541,8 +642,14 @@ export default function CharactersPage() {
               Execute <code className="font-mono" style={{ color: "var(--foreground)" }}>node scripts/seed-characters.mjs</code> para popular.
             </p>
           </GlassCard>
+        ) : filteredCharacters.length === 0 ? (
+          <GlassCard className="px-5 py-10 text-center">
+            <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+              Nenhum personagem corresponde à busca ou aos filtros.
+            </p>
+          </GlassCard>
         ) : (
-          characters.map((char) => (
+          filteredCharacters.map((char) => (
             <GlassCard key={char.id} className="p-5">
               {/* Character name header */}
               <div className="flex items-center gap-3 mb-4">
@@ -554,21 +661,21 @@ export default function CharactersPage() {
                 <div className="flex flex-col gap-0.5">
                   <Button
                     onClick={() => moveCharacter(char.id, "up")}
-                    disabled={characters.indexOf(char) === 0}
+                    disabled={isFiltering || characters.indexOf(char) === 0}
                     variant="outline"
                     size="icon-xs"
                     className="rounded"
-                    title="Mover para cima"
+                    title={isFiltering ? "Limpe a busca/filtros para reordenar" : "Mover para cima"}
                   >
                     <ChevronUp size={10} />
                   </Button>
                   <Button
                     onClick={() => moveCharacter(char.id, "down")}
-                    disabled={characters.indexOf(char) === characters.length - 1}
+                    disabled={isFiltering || characters.indexOf(char) === characters.length - 1}
                     variant="outline"
                     size="icon-xs"
                     className="rounded"
-                    title="Mover para baixo"
+                    title={isFiltering ? "Limpe a busca/filtros para reordenar" : "Mover para baixo"}
                   >
                     <ChevronDown size={10} />
                   </Button>
@@ -585,7 +692,7 @@ export default function CharactersPage() {
                 )}
                 {/* Delete button */}
                 <Button
-                  onClick={() => deleteCharacter(char.id, char.name)}
+                  onClick={() => setConfirmDelete(char)}
                   disabled={deleting === char.id}
                   variant="outline"
                   size="icon-xs"
@@ -653,6 +760,37 @@ export default function CharactersPage() {
           ))
         )}
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={confirmDelete !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDelete(null) }}
+      >
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className="font-serif" style={{ color: "var(--foreground)" }}>
+              Remover personagem
+            </DialogTitle>
+            <DialogDescription className="font-sans">
+              Remover <strong style={{ color: "var(--foreground)" }}>{confirmDelete?.name}</strong>?
+              {" "}Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" size="sm" onClick={() => setConfirmDelete(null)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => { if (confirmDelete) deleteCharacter(confirmDelete) }}
+            >
+              <Trash2 size={12} />
+              Remover
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
