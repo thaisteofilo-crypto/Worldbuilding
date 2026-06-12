@@ -153,14 +153,14 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           onClick={() => scroll("left")}
           className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full flex items-center justify-center transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 group-hover/carousel:opacity-100 hover:scale-[1.06] z-10"
           style={{
-            background: "oklch(1 0 0 / 0.2)",
+            background: "hsl(var(--background) / 0.5)",
             backdropFilter: "blur(16px)",
-            border: "1px solid oklch(1 0 0 / 0.3)",
-            boxShadow: "0 4px 12px oklch(0 0 0 / 0.2)",
+            border: "1px solid hsl(var(--border-shadcn) / 0.4)",
+            boxShadow: "0 4px 12px hsl(var(--foreground) / 0.18)",
           }}
           aria-label="Anterior"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
@@ -172,14 +172,14 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           onClick={() => scroll("right")}
           className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full flex items-center justify-center transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-0 group-hover/carousel:opacity-100 hover:scale-[1.06] z-10"
           style={{
-            background: "oklch(1 0 0 / 0.2)",
+            background: "hsl(var(--background) / 0.5)",
             backdropFilter: "blur(16px)",
-            border: "1px solid oklch(1 0 0 / 0.3)",
-            boxShadow: "0 4px 12px oklch(0 0 0 / 0.2)",
+            border: "1px solid hsl(var(--border-shadcn) / 0.4)",
+            boxShadow: "0 4px 12px hsl(var(--foreground) / 0.18)",
           }}
           aria-label="Próximo"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 6 15 12 9 18" />
           </svg>
         </button>
