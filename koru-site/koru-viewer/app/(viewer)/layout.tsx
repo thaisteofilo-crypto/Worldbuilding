@@ -110,7 +110,7 @@ export default function ViewerLayout({
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-2 focus:text-sm focus:rounded focus:font-sans"
-        style={{ backgroundColor: "var(--accent)", color: "var(--background)" }}
+        style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
       >
         Pular para conteúdo principal
       </a>
@@ -125,7 +125,7 @@ export default function ViewerLayout({
           className={`sticky top-0 z-10 flex items-center gap-3 px-4 h-12 transition-opacity duration-300 ${
             immersive ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
-          style={{ background: "var(--background)" }}
+          style={{ background: "hsl(var(--background))" }}
         >
           <SidebarTrigger className="text-muted-foreground hover:text-foreground shrink-0" />
           <Breadcrumb />

@@ -12,17 +12,17 @@ export default function Loading() {
         <div className="mb-8">
           <div
             className="h-3 w-24 rounded mb-3 animate-pulse"
-            style={{ backgroundColor: "var(--surface)" }}
+            style={{ backgroundColor: "hsl(var(--muted))" }}
           />
           <div
             className="h-px w-16"
-            style={{ backgroundColor: "var(--border)" }}
+            style={{ backgroundColor: "hsl(var(--border-shadcn))" }}
           />
         </div>
         <div className="mb-10">
           <div
             className="h-10 w-3/4 rounded mb-3 animate-pulse"
-            style={{ backgroundColor: "var(--surface)" }}
+            style={{ backgroundColor: "hsl(var(--muted))" }}
           />
         </div>
         <div className="space-y-3">
@@ -32,7 +32,7 @@ export default function Loading() {
               className="h-4 rounded animate-pulse"
               style={{
                 width: `${w}%`,
-                backgroundColor: "var(--surface)",
+                backgroundColor: "hsl(var(--muted))",
                 animationDelay: `${i * 40}ms`,
               }}
             />

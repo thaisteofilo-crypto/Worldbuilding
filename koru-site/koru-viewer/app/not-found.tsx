@@ -47,7 +47,7 @@ export default async function NotFound() {
             textShadow: onBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
           }}
         >
-          Este documento não foi encontrado no Akwu.
+          Este documento não foi encontrado no universo.
         </p>
       </div>
       <Link
