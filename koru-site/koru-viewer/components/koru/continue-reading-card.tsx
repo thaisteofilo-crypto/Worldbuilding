@@ -51,7 +51,7 @@ export function ContinueReadingCard() {
           <BookOpen size={15} aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-sans text-[11px] uppercase tracking-[0.18em] text-foreground/70">
+          <span className="block font-sans text-[11px] uppercase tracking-[0.18em] text-foreground">
             Continuar lendo{lastRead.section ? ` · ${lastRead.section}` : ""}
           </span>
           <span
