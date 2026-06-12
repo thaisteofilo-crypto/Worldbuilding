@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { GlassCard, GlassCardContent } from "@/components/ui/glass-card"
-import { ChevronDown, Pencil } from "lucide-react"
+import { ChevronDown, ExternalLink, Pencil } from "lucide-react"
 
 /* ─── Types ─── */
 
@@ -68,6 +68,29 @@ const DEFAULTS: Record<string, string> = {
 interface FieldDef {
   key: string
   label: string
+  /** Campo de link: ativa validação de URL e renderização como link clicável */
+  isLink?: boolean
+}
+
+/* ─── URL helpers (campos de link) ─── */
+
+/** Aceita URLs absolutas http/https e caminhos relativos começando com "/" */
+function isValidLinkValue(value: string): boolean {
+  if (!value) return true // vazio não é "inválido" — só não vira link
+  if (value.startsWith("/")) return true
+  if (/^https?:\/\//i.test(value)) {
+    try {
+      new URL(value)
+      return true
+    } catch {
+      return false
+    }
+  }
+  return false
+}
+
+function isExternalUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value)
 }
 
 interface GroupDef {
@@ -85,9 +108,9 @@ const GROUPS: GroupDef[] = [
     fields: [
       { key: "hero.tagline", label: "Tagline principal" },
       { key: "hero.cta_primary_text", label: "Botão primário — Texto" },
-      { key: "hero.cta_primary_href", label: "Botão primário — Link" },
+      { key: "hero.cta_primary_href", label: "Botão primário — Link", isLink: true },
       { key: "hero.cta_secondary_text", label: "Botão secundário — Texto" },
-      { key: "hero.cta_secondary_href", label: "Botão secundário — Link" },
+      { key: "hero.cta_secondary_href", label: "Botão secundário — Link", isLink: true },
     ],
   },
   {
@@ -163,10 +186,12 @@ const GROUPS: GroupDef[] = [
 function EditableField({
   label,
   value,
+  isLink = false,
   onSave,
 }: {
   label: string
   value: string
+  isLink?: boolean
   onSave: (newValue: string) => Promise<{ ok: boolean }>
 }) {
   const [editing, setEditing] = useState(false)
@@ -205,6 +230,8 @@ function EditableField({
     setEditing(false)
   }
 
+  const linkInvalid = isLink && !isValidLinkValue(draft)
+
   if (editing) {
     return (
       <div>
@@ -216,11 +243,24 @@ function EditableField({
           onChange={(e) => setDraft(e.target.value)}
           autoFocus
           className="mt-1 font-sans text-xs h-7"
+          style={
+            linkInvalid
+              ? { borderColor: "color-mix(in oklch, oklch(0.7 0.14 70) 60%, transparent)" }
+              : undefined
+          }
           onKeyDown={(e) => {
             if (e.key === "Enter") save()
             if (e.key === "Escape") cancel()
           }}
         />
+        {linkInvalid && (
+          <p
+            className="mt-1 font-sans text-[10px] leading-snug"
+            style={{ color: "oklch(0.7 0.14 70)" }}
+          >
+            Link fora do formato esperado — use http(s):// ou um caminho começando com /. Você ainda pode salvar.
+          </p>
+        )}
         <div className="mt-1 flex gap-1">
           <Button
             onClick={save}
@@ -243,10 +283,14 @@ function EditableField({
     )
   }
 
+  const renderAsLink = isLink && !!value && isValidLinkValue(value)
+  const external = renderAsLink && isExternalUrl(value)
+
   return (
     <div
-      className="group cursor-pointer rounded px-1 py-0.5 transition-colors hover:bg-[var(--surface)]"
+      className="group cursor-pointer rounded border border-transparent px-1 py-0.5 transition-colors hover:border-[var(--border)] hover:bg-[var(--surface)]"
       onClick={startEdit}
+      title="Clique para editar"
     >
       <p
         className="font-sans text-[10px] tracking-[0.12em] uppercase"
@@ -258,14 +302,29 @@ function EditableField({
         className="mt-0.5 font-sans text-xs leading-relaxed flex items-center gap-1"
         style={{ color: "var(--foreground)" }}
       >
-        <span>{value || <span style={{ color: "var(--muted-foreground)", fontStyle: "italic" }}>vazio</span>}</span>
+        {renderAsLink ? (
+          <a
+            href={value}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 underline underline-offset-2 transition-opacity hover:opacity-75"
+            style={{ color: "var(--foreground)", textDecorationColor: "var(--muted-foreground)" }}
+            title={external ? "Abrir em nova aba" : "Abrir link"}
+          >
+            <span>{value}</span>
+            {external && <ExternalLink size={10} className="shrink-0" />}
+          </a>
+        ) : (
+          <span>{value || <span style={{ color: "var(--muted-foreground)", fontStyle: "italic" }}>vazio</span>}</span>
+        )}
         {saved && (
           <span className="font-sans text-[10px]" style={{ color: "oklch(0.65 0.15 150)" }}>
             salvo
           </span>
         )}
-        <span className="inline-block opacity-0 transition-opacity group-hover:opacity-50">
-          <Pencil size={10} className="inline" />
+        <span className="inline-block opacity-0 transition-opacity group-hover:opacity-100">
+          <Pencil size={10} className="inline" style={{ color: "var(--muted-foreground)" }} />
         </span>
       </p>
     </div>
@@ -324,6 +383,7 @@ function CollapsibleGroup({
               key={field.key}
               label={field.label}
               value={content[field.key] ?? DEFAULTS[field.key] ?? ""}
+              isLink={field.isLink}
               onSave={(val) => onSave(field.key, val)}
             />
           ))}
@@ -458,6 +518,17 @@ export default function ConteudoPage() {
         <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
           Edite textos da homepage sem tocar no código.
         </p>
+        <p
+          className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-flex items-center gap-2"
+          style={{
+            color: "var(--muted-foreground)",
+            background: "color-mix(in oklch, var(--surface) 70%, transparent)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <Pencil size={11} className="shrink-0" />
+          Clique em qualquer campo para editar. As alterações são salvas imediatamente no banco.
+        </p>
         {error && (
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
@@ -483,14 +554,6 @@ export default function ConteudoPage() {
           />
         ))}
       </div>
-
-      {/* Footer hint */}
-      <p
-        className="mt-6 font-sans text-[11px] text-center"
-        style={{ color: "var(--muted-foreground)", opacity: 0.6 }}
-      >
-        Clique em qualquer campo para editar. As alterações são salvas imediatamente no banco.
-      </p>
     </div>
   )
 }

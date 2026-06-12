@@ -49,31 +49,31 @@ const STATE_COLORS: Record<PublishState, { bg: string; border: string; fg: strin
 }
 
 function StateButton({
-  state,
   active,
   label,
   onClick,
 }: {
-  state: PublishState
   active: boolean
   label: string
   onClick: () => void
 }) {
-  const c = STATE_COLORS[state]
+  // Estado selecionado: preenchido com a cor primária + check, claramente
+  // distinto das ações não selecionadas (outline). Evita clique acidental.
   return (
     <Button
       type="button"
       onClick={onClick}
-      variant="outline"
+      variant={active ? "default" : "outline"}
       size="xs"
       className="rounded-md font-sans"
-      style={active ? {
-        background: c.bg,
-        borderColor: c.border,
-        color: c.fg,
-        fontWeight: 600,
-      } : undefined}
+      aria-pressed={active}
+      style={active ? { fontWeight: 600 } : undefined}
     >
+      {active && (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
       {label}
     </Button>
   )
@@ -285,13 +285,11 @@ export default function PublicacaoPage() {
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     <StateButton
-                      state="published"
                       active={cfg.state === "published"}
                       label="Publicado"
                       onClick={() => applyConfig(doc.path, { state: "published", at: null })}
                     />
                     <StateButton
-                      state="scheduled"
                       active={cfg.state === "scheduled"}
                       label="Agendar"
                       onClick={() => {
@@ -300,7 +298,6 @@ export default function PublicacaoPage() {
                       }}
                     />
                     <StateButton
-                      state="draft"
                       active={cfg.state === "draft"}
                       label="Rascunho"
                       onClick={() => applyConfig(doc.path, { state: "draft", at: null })}
