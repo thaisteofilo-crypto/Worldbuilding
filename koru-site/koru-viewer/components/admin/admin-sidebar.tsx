@@ -17,8 +17,8 @@ const navItems = [
   { href: '/admin/editor', label: 'Editor' },
   { href: '/admin/publicacao', label: 'Publicação' },
   { href: '/admin/characters', label: 'Personagens' },
-  { href: '/admin/gallery', label: 'Galeria de Arte' },
-  { href: '/admin/banners', label: 'Banners da Homepage' },
+  { href: '/admin/gallery', label: 'Galeria' },
+  { href: '/admin/banners', label: 'Banners' },
   { href: '/admin/card-images', label: 'Cards' },
 ]
 

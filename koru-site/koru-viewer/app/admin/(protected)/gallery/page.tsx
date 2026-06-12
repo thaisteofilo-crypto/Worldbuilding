@@ -253,10 +253,10 @@ export default function GalleryPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
-              Galeria de Arte
+              Galeria
             </h1>
             <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
-              Cenas e artes do mundo de Korú
+              Cenas e artes do mundo de Koru
             </p>
           </div>
           <div className="flex items-center gap-3">

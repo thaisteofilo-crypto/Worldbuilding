@@ -3,12 +3,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { PublishConfig, PublishState } from "@/lib/document-publish"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 interface Props {
   value: PublishConfig
@@ -268,65 +262,57 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
     document.body,
   ) : null
 
-  // Texto explicativo do ícone (cadeado/relógio) — mostra o estado de
-  // publicação, e a data de liberação quando agendado. Vai pro tooltip e
-  // pro aria-label, pra ficar acessível por mouse e por leitor de tela.
-  const tooltipText = (() => {
+  // Compact title — shows state, plus the scheduled date when relevant.
+  const compactTitle = (() => {
     if (value.state === "scheduled" && value.at) {
       const d = new Date(value.at)
       if (!isNaN(d.getTime())) {
-        return "Publicação: " + def.label + " — libera " + d.toLocaleString("pt-BR", {
+        return def.label + " — libera " + d.toLocaleString("pt-BR", {
           day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
         })
       }
     }
-    return "Publicação: " + def.label + " — " + def.description
+    return def.label + " — " + def.description
   })()
 
   return (
     <>
-      <TooltipProvider delayDuration={200}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              ref={btnRef}
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                setOpen((v) => !v)
-              }}
-              className="inline-flex items-center justify-center rounded-md transition-all"
-              style={{
-                padding: "4px 6px",
-                background: "color-mix(in oklch, " + def.color + " 12%, transparent)",
-                border: "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)",
-                color: labelColor,
-                gap: 5,
-              }}
-              aria-haspopup="menu"
-              aria-expanded={open}
-              aria-label={tooltipText}
-            >
-              <span className="shrink-0 inline-flex" style={{ color: dotColor }}>
-                <StateIcon state={value.state} size={iconSize} />
-              </span>
-              <span
-                className={
-                  "font-sans uppercase whitespace-nowrap transition-all duration-150 " +
-                  (showLabel
-                    ? "max-w-[80px] opacity-90"
-                    : "max-w-0 opacity-0 overflow-hidden group-hover:max-w-[80px] group-hover:opacity-70")
-                }
-                style={{ fontSize: 9, letterSpacing: "0.12em", fontWeight: 500 }}
-              >
-                {def.short}
-              </span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">{tooltipText}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          e.preventDefault()
+          setOpen((v) => !v)
+        }}
+        className="inline-flex items-center justify-center rounded-md transition-all"
+        style={{
+          padding: "4px 6px",
+          background: "color-mix(in oklch, " + def.color + " 12%, transparent)",
+          border: "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)",
+          color: labelColor,
+          gap: 5,
+        }}
+        title={compactTitle}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={"Publicação: " + def.label}
+      >
+        <span className="shrink-0 inline-flex" style={{ color: dotColor }}>
+          <StateIcon state={value.state} size={iconSize} />
+        </span>
+        <span
+          className={
+            "font-sans uppercase whitespace-nowrap transition-all duration-150 " +
+            (showLabel
+              ? "max-w-[80px] opacity-90"
+              : "max-w-0 opacity-0 overflow-hidden group-hover:max-w-[80px] group-hover:opacity-70")
+          }
+          style={{ fontSize: 9, letterSpacing: "0.12em", fontWeight: 500 }}
+        >
+          {def.short}
+        </span>
+      </button>
       {menu}
     </>
   )
