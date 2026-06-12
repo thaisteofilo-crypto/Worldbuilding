@@ -210,7 +210,7 @@ function FullSection({
           <p
             className="font-sans text-xs tracking-[0.2em] uppercase mb-3"
             style={{
-              color: hasBanner ? "oklch(1 0 0 / 0.6)" : "hsl(var(--muted-foreground))",
+              color: hasBanner ? "oklch(1 0 0 / 0.6)" : "hsl(var(--foreground))",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
             }}
           >
@@ -231,7 +231,7 @@ function FullSection({
           <p
             className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-10"
             style={{
-              color: hasBanner ? "oklch(1 0 0 / 0.85)" : "hsl(var(--muted-foreground))",
+              color: hasBanner ? "oklch(1 0 0 / 0.85)" : "hsl(var(--foreground))",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
             }}
           >
@@ -368,7 +368,7 @@ export default async function HomePage() {
           <p
             className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans mb-8"
             style={{
-              color: hasHero ? "oklch(1 0 0 / 0.9)" : "hsl(var(--muted-foreground))",
+              color: hasHero ? "oklch(1 0 0 / 0.9)" : "hsl(var(--foreground))",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
               animationDelay: "0.55s",
             }}
