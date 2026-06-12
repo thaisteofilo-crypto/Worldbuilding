@@ -109,7 +109,7 @@ export const mdxComponents: MDXComponents = {
   wrapper: MDXWrapper,
   h1: ({ children }) => (
     <h1
-      className="font-sans text-5xl md:text-6xl leading-tight mt-10 mb-6"
+      className="font-sans text-4xl md:text-6xl leading-tight mt-10 mb-6 break-words"
       style={{
         fontFamily: "var(--font-sans), 'Inter', sans-serif",
         color: "var(--foreground)",
@@ -121,7 +121,7 @@ export const mdxComponents: MDXComponents = {
   h2: ({ children }) => (
     <h2
       id={headingId(children)}
-      className="font-sans text-3xl md:text-4xl leading-tight mt-12 mb-5 pb-3 scroll-mt-6"
+      className="font-sans text-2xl md:text-4xl leading-tight mt-12 mb-5 pb-3 scroll-mt-6 break-words"
       style={{
         fontFamily: "var(--font-sans), 'Inter', sans-serif",
         color: "var(--foreground)",
@@ -262,8 +262,11 @@ export const mdxComponents: MDXComponents = {
 
     const colClass = cols >= 5 ? `koru-table-cols-${Math.min(cols, 7)}` : ""
 
+    // Negative margins cancel exatamente o padding do <article> (px-6 md:px-10),
+    // para a tabela ocupar a largura total da coluna sem nunca estourar o
+    // container em larguras intermediárias. Tabelas largas rolam no eixo X.
     return (
-      <div className={`my-6 -mx-6 md:-mx-10 lg:-mx-20 xl:-mx-32 2xl:-mx-48 glass-card rounded-2xl overflow-x-auto koru-table-scroll ${colClass}`}>
+      <div className={`my-6 -mx-6 md:-mx-10 glass-card rounded-2xl overflow-x-auto koru-table-scroll ${colClass}`}>
         <table className="text-sm font-sans border-collapse" style={{ width: "100%" }}>
           {children}
         </table>
@@ -320,7 +323,7 @@ export const mdxComponents: MDXComponents = {
     <img
       src={src}
       alt={alt || ""}
-      className="w-full rounded-xl my-6"
+      className="w-full h-auto rounded-xl my-6"
       style={{ maxWidth: "100%" }}
     />
   ),
@@ -328,7 +331,7 @@ export const mdxComponents: MDXComponents = {
     <video
       {...props}
       controls
-      className="w-full rounded-xl my-6"
+      className="w-full h-auto rounded-xl my-6"
       style={{ maxWidth: "100%" }}
     />
   ),

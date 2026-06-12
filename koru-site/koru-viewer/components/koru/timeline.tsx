@@ -14,23 +14,23 @@ export default function Timeline({ events }: TimelineProps) {
     <div className="relative">
       {/* Central line — hidden on mobile, visible md+ */}
       <div
-        className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-px"
-        style={{ width: 2, backgroundColor: "var(--border)" }}
+        className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-px w-[2px] bg-border"
         aria-hidden="true"
       />
 
       {/* Mobile line — always left-aligned */}
       <div
-        className="md:hidden absolute left-3 top-0 bottom-0"
-        style={{ width: 2, backgroundColor: "var(--border)" }}
+        className="md:hidden absolute left-3 top-0 bottom-0 w-[2px] bg-border"
         aria-hidden="true"
       />
 
-      <ol className="space-y-10 md:space-y-12">
+      <ol className="space-y-8 md:space-y-12">
         {events.map((event, index) => {
           const isLeft = index % 2 === 0
           const dotColor =
-            event.category === "gold" ? "var(--gold)" : "var(--accent)"
+            event.category === "gold"
+              ? "var(--color-mel)"
+              : "hsl(var(--accent-shadcn))"
 
           return (
             <li
@@ -39,7 +39,7 @@ export default function Timeline({ events }: TimelineProps) {
               style={{ animationDelay: `${index * 60}ms` }}
             >
               {/* ── Mobile layout: dot on left, card to the right ── */}
-              <div className="md:hidden flex items-start gap-5 pl-0">
+              <div className="md:hidden flex items-start gap-4 pl-0 w-full min-w-0">
                 {/* Dot */}
                 <div
                   className="relative z-10 flex-shrink-0 mt-1.5"
@@ -56,26 +56,17 @@ export default function Timeline({ events }: TimelineProps) {
 
                 {/* Card */}
                 <div
-                  className="glass-card rounded-xl p-4 flex-1 min-w-0"
+                  className="bg-card border border-border rounded-xl p-4 flex-1 min-w-0"
                   role="article"
                 >
-                  <p
-                    className="font-mono text-xs mb-1"
-                    style={{ color: "var(--muted-foreground)" }}
-                  >
+                  <p className="font-mono text-xs mb-1 text-muted-foreground">
                     {event.year}
                   </p>
-                  <h3
-                    className="font-serif text-base leading-snug"
-                    style={{ color: "var(--foreground)" }}
-                  >
+                  <h3 className="font-serif text-base leading-snug text-foreground">
                     {event.title}
                   </h3>
                   {event.description && (
-                    <p
-                      className="font-sans text-sm leading-[1.7] mt-1.5"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
+                    <p className="font-sans text-sm leading-[1.7] mt-1.5 text-muted-foreground">
                       {event.description}
                     </p>
                   )}
@@ -88,26 +79,17 @@ export default function Timeline({ events }: TimelineProps) {
                 <div className={`w-[calc(50%-20px)] ${isLeft ? "pr-6" : ""}`}>
                   {isLeft && (
                     <div
-                      className="glass-card rounded-xl p-5 text-right"
+                      className="bg-card border border-border rounded-xl p-5 text-right"
                       role="article"
                     >
-                      <p
-                        className="font-mono text-xs mb-1"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
+                      <p className="font-mono text-xs mb-1 text-muted-foreground">
                         {event.year}
                       </p>
-                      <h3
-                        className="font-serif text-base leading-snug"
-                        style={{ color: "var(--foreground)" }}
-                      >
+                      <h3 className="font-serif text-base leading-snug text-foreground">
                         {event.title}
                       </h3>
                       {event.description && (
-                        <p
-                          className="font-sans text-sm leading-[1.7] mt-1.5"
-                          style={{ color: "var(--muted-foreground)" }}
-                        >
+                        <p className="font-sans text-sm leading-[1.7] mt-1.5 text-muted-foreground">
                           {event.description}
                         </p>
                       )}
@@ -133,26 +115,17 @@ export default function Timeline({ events }: TimelineProps) {
                 <div className={`w-[calc(50%-20px)] ${!isLeft ? "pl-6" : ""}`}>
                   {!isLeft && (
                     <div
-                      className="glass-card rounded-xl p-5"
+                      className="bg-card border border-border rounded-xl p-5"
                       role="article"
                     >
-                      <p
-                        className="font-mono text-xs mb-1"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
+                      <p className="font-mono text-xs mb-1 text-muted-foreground">
                         {event.year}
                       </p>
-                      <h3
-                        className="font-serif text-base leading-snug"
-                        style={{ color: "var(--foreground)" }}
-                      >
+                      <h3 className="font-serif text-base leading-snug text-foreground">
                         {event.title}
                       </h3>
                       {event.description && (
-                        <p
-                          className="font-sans text-sm leading-[1.7] mt-1.5"
-                          style={{ color: "var(--muted-foreground)" }}
-                        >
+                        <p className="font-sans text-sm leading-[1.7] mt-1.5 text-muted-foreground">
                           {event.description}
                         </p>
                       )}

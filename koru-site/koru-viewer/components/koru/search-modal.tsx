@@ -15,9 +15,9 @@ export interface SearchResult {
 }
 
 const SECTION_COLORS: Record<string, string> = {
-  "Bíblia": "var(--gold)",
-  "Livro": "var(--blue-cold)",
-  "Contos": "var(--accent)",
+  "Bíblia": "var(--color-mel)",
+  "Livro": "var(--color-jala)",
+  "Contos": "hsl(var(--primary))",
 }
 
 function highlightTerm(text: string, query: string): React.ReactNode {
@@ -28,8 +28,8 @@ function highlightTerm(text: string, query: string): React.ReactNode {
       <mark
         key={i}
         style={{
-          background: "color-mix(in oklch, var(--accent) 20%, transparent)",
-          color: "var(--accent)",
+          background: "hsl(var(--primary) / 0.2)",
+          color: "hsl(var(--primary))",
           fontWeight: 600,
           borderRadius: "2px",
           padding: "0 1px",
@@ -139,7 +139,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50"
-        style={{ background: "color-mix(in oklch, var(--background) 60%, transparent)", backdropFilter: "blur(6px)" }}
+        style={{ background: "hsl(var(--background) / 0.6)", backdropFilter: "blur(6px)" }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -155,15 +155,15 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
         <div
           className="glass-card rounded-xl overflow-hidden"
           style={{
-            border: "1px solid var(--border)",
-            boxShadow: "0 24px 64px color-mix(in oklch, var(--foreground) 20%, transparent)",
+            border: "1px solid hsl(var(--border-shadcn))",
+            boxShadow: "0 24px 64px hsl(var(--foreground) / 0.2)",
           }}
           onKeyDown={handleKeyDown}
         >
           {/* Input row */}
           <div
             className="flex items-center gap-3 px-4"
-            style={{ borderBottom: "1px solid var(--border)" }}
+            style={{ borderBottom: "1px solid hsl(var(--border-shadcn))" }}
           >
             <svg
               width="16"
@@ -171,7 +171,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden="true"
-              style={{ color: "var(--muted-foreground)", flexShrink: 0 }}
+              style={{ color: "hsl(var(--muted-foreground))", flexShrink: 0 }}
             >
               <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
               <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -184,7 +184,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="flex-1 py-4 bg-transparent font-sans text-sm outline-none border-0 ring-0 focus-visible:ring-0 focus-visible:border-0 h-auto rounded-none px-0"
-              style={{ color: "var(--foreground)" }}
+              style={{ color: "hsl(var(--foreground))" }}
               spellCheck={false}
               autoComplete="off"
             />
@@ -196,7 +196,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                 viewBox="0 0 16 16"
                 fill="none"
                 aria-label="Carregando"
-                style={{ color: "var(--muted-foreground)", flexShrink: 0, animation: "spin 0.8s linear infinite" }}
+                style={{ color: "hsl(var(--muted-foreground))", flexShrink: 0, animation: "spin 0.8s linear infinite" }}
               >
                 <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" strokeDasharray="20" strokeDashoffset="10" />
               </svg>
@@ -205,9 +205,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             <kbd
               className="font-sans text-xs px-1.5 py-0.5 rounded"
               style={{
-                background: "var(--surface)",
-                color: "var(--muted-foreground)",
-                border: "1px solid var(--border)",
+                background: "hsl(var(--muted))",
+                color: "hsl(var(--muted-foreground))",
+                border: "1px solid hsl(var(--border-shadcn))",
                 flexShrink: 0,
               }}
             >
@@ -217,9 +217,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
           {/* Results */}
           {query.trim().length >= 2 && !loading && results.length === 0 && (
-            <div className="px-4 py-8 text-center font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <div className="px-4 py-8 text-center font-sans text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
               Nenhum resultado para{" "}
-              <span style={{ color: "var(--foreground)", fontWeight: 500 }}>"{query}"</span>
+              <span style={{ color: "hsl(var(--foreground))", fontWeight: 500 }}>"{query}"</span>
             </div>
           )}
 
@@ -232,7 +232,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               style={{ maxHeight: "calc(70vh - 60px)" }}
             >
               {results.map((result, i) => {
-                const sectionColor = SECTION_COLORS[result.section] ?? "var(--accent)"
+                const sectionColor = SECTION_COLORS[result.section] ?? "hsl(var(--primary))"
                 const isActive = i === activeIndex
 
                 return (
@@ -246,7 +246,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       variant="ghost"
                       className="w-full text-left px-4 py-3 transition-colors h-auto rounded-none justify-start"
                       style={{
-                        background: isActive ? "color-mix(in oklch, var(--accent) 8%, transparent)" : "transparent",
+                        background: isActive ? "hsl(var(--primary) / 0.08)" : "transparent",
                         cursor: "pointer",
                       }}
                       onMouseEnter={() => setActiveIndex(i)}
@@ -259,7 +259,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       <div className="flex items-center gap-2 mb-1">
                         <span
                           className="font-serif text-sm"
-                          style={{ color: "var(--foreground)", flex: 1, lineHeight: 1.4 }}
+                          style={{ color: "hsl(var(--foreground))", flex: 1, lineHeight: 1.4 }}
                         >
                           {highlightTerm(result.title, query)}
                         </span>
@@ -278,7 +278,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       {/* Excerpt */}
                       <p
                         className="font-sans text-xs leading-relaxed line-clamp-2"
-                        style={{ color: "var(--muted-foreground)" }}
+                        style={{ color: "hsl(var(--muted-foreground))" }}
                       >
                         {highlightTerm(result.excerpt, query)}
                       </p>
@@ -286,7 +286,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
                     {/* Separator (between items, not after last) */}
                     {i < results.length - 1 && (
-                      <div style={{ height: "1px", background: "var(--border)", margin: "0 16px" }} />
+                      <div style={{ height: "1px", background: "hsl(var(--border-shadcn))", margin: "0 16px" }} />
                     )}
                   </li>
                 )
@@ -298,18 +298,18 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
           {results.length > 0 && (
             <div
               className="flex items-center gap-4 px-4 py-2.5"
-              style={{ borderTop: "1px solid var(--border)" }}
+              style={{ borderTop: "1px solid hsl(var(--border-shadcn))" }}
             >
-              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↑↓</kbd>
+              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "hsl(var(--muted-foreground))" }}>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "hsl(var(--muted))", border: "1px solid hsl(var(--border-shadcn))" }}>↑↓</kbd>
                 navegar
               </span>
-              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↵</kbd>
+              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "hsl(var(--muted-foreground))" }}>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "hsl(var(--muted))", border: "1px solid hsl(var(--border-shadcn))" }}>↵</kbd>
                 abrir
               </span>
-              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>Esc</kbd>
+              <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "hsl(var(--muted-foreground))" }}>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "hsl(var(--muted))", border: "1px solid hsl(var(--border-shadcn))" }}>Esc</kbd>
                 fechar
               </span>
             </div>

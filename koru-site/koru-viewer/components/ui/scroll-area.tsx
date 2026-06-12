@@ -18,7 +18,11 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+        // O div interno do Radix vem com display:table (suporte a scroll
+        // horizontal), o que deixa o conteúdo mais largo que o viewport e
+        // corta títulos longos em vez de quebrar linha. Só usamos scroll
+        // vertical — força block para o texto quebrar normalmente.
+        className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 [&>div]:!block [&>div]:min-w-0"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>

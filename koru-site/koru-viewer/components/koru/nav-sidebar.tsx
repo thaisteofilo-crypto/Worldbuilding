@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { BookOpen, BookMarked, FileText, Users, Images, MessageCircle, ChevronRight, Search, LogOut } from "lucide-react"
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, useSidebar } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
@@ -27,12 +27,23 @@ function docToSlug(doc: DocEntry, section: string): NavItem {
 }
 
 
+// Em telas < lg a sidebar vira um Sheet (offcanvas); ao navegar por um link
+// ela precisa fechar, senão fica aberta cobrindo o conteúdo da nova página.
+function useCloseMobileSidebar() {
+  const { isMobile, setOpenMobile } = useSidebar()
+  return React.useCallback(() => {
+    if (isMobile) setOpenMobile(false)
+  }, [isMobile, setOpenMobile])
+}
+
 function SubLink({ href, children }: { href: string; children: React.ReactNode }) {
   const pathname = usePathname()
   const isActive = pathname === href
+  const closeMobile = useCloseMobileSidebar()
   return (
     <Link
       href={href}
+      onClick={closeMobile}
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "block py-1.5 pl-10 pr-3 rounded-lg font-sans text-[13px] koru-nav-item",
@@ -114,9 +125,11 @@ function FlatLink({
 }) {
   const pathname = usePathname()
   const isActive = pathname === href || pathname.startsWith(href + "/")
+  const closeMobile = useCloseMobileSidebar()
   return (
     <Link
       href={href}
+      onClick={closeMobile}
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "flex items-center gap-2.5 rounded-lg px-3 py-2.5 font-sans text-sm koru-nav-item",
@@ -128,6 +141,22 @@ function FlatLink({
       <span className={isActive ? "opacity-100" : "opacity-45"}>{icon}</span>
       {label}
     </Link>
+  )
+}
+
+function SidebarLogo() {
+  const closeMobile = useCloseMobileSidebar()
+  return (
+    <div className="flex h-14 items-center px-5 pt-3">
+      <Link
+        href="/"
+        onClick={closeMobile}
+        className="font-serif text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
+        style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "none", filter: "none", fontWeight: 400 }}
+      >
+        Korú
+      </Link>
+    </div>
   )
 }
 
@@ -171,15 +200,7 @@ export function NavSidebar() {
     >
       <SidebarContent className="bg-background">
         {/* Logo */}
-        <div className="flex h-14 items-center px-5 pt-3">
-          <Link
-            href="/"
-            className="font-serif text-2xl tracking-tight text-foreground transition-[letter-spacing,color] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:tracking-wide"
-            style={{ fontFamily: "var(--font-serif), Georgia, serif", textShadow: "none", filter: "none", fontWeight: 400 }}
-          >
-            Korú
-          </Link>
-        </div>
+        <SidebarLogo />
 
         {/* Search */}
         <div className="px-3 pt-2">

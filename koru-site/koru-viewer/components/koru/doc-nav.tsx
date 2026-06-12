@@ -21,15 +21,15 @@ export function DocNav({ items, current, basePath }: DocNavProps) {
   return (
     <nav
       aria-label="Navegação entre documentos"
-      className="flex items-center justify-between pt-8 mt-8"
+      className="flex items-center justify-between gap-4 pt-8 mt-8"
     >
       {prev ? (
         <Link
           href={`${basePath}/${prev.slug}`}
           title={prev.title}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
+          className="flex min-w-0 items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           <span className="text-xs font-sans truncate max-w-[200px]">{prev.title}</span>
@@ -42,10 +42,10 @@ export function DocNav({ items, current, basePath }: DocNavProps) {
         <Link
           href={`${basePath}/${next.slug}`}
           title={next.title}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
+          className="flex min-w-0 items-center gap-2 text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm transition-colors"
         >
           <span className="text-xs font-sans truncate max-w-[200px]">{next.title}</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </Link>

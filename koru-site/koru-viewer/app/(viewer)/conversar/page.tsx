@@ -66,9 +66,9 @@ export default function ConversarPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-40px)] w-full max-w-2xl flex-col px-4">
+    <div className="mx-auto flex h-[calc(100dvh-2.5rem)] w-full max-w-2xl flex-col px-4">
       {/* Cabeçalho */}
-      <header className="shrink-0 pt-8 pb-6">
+      <header className="shrink-0 pt-5 pb-4 sm:pt-8 sm:pb-6">
         <h1 className="font-serif text-3xl leading-tight tracking-tight text-foreground sm:text-4xl">
           O Akwu responde
         </h1>
@@ -114,7 +114,7 @@ export default function ConversarPage() {
             <div key={i} className={cn("flex", isUser ? "justify-end" : "justify-start")}>
               <div
                 className={cn(
-                  "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 font-sans text-sm leading-relaxed",
+                  "max-w-[90%] sm:max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 font-sans text-sm leading-relaxed",
                   isUser
                     ? "rounded-br-md bg-primary text-primary-foreground"
                     : "rounded-bl-md bg-muted text-foreground"

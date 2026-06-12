@@ -25,16 +25,14 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
 
   return (
     <div className="flex flex-col gap-0">
-      {/* Main image */}
-      <div
-        className="relative w-full overflow-hidden rounded-2xl"
-        style={{ aspectRatio: "16/9", backgroundColor: "var(--surface)" }}
-      >
+      {/* Main image — mais alto no mobile pra não decapitar a arte; 16/9 só em telas largas */}
+      <div className="relative w-full overflow-hidden rounded-2xl bg-muted aspect-[4/3] sm:aspect-[3/2] md:aspect-video">
         {activeView?.src ? (
           <Image
             src={activeView.src}
             alt={`${name} — ${activeView.label}`}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
             className="object-cover"
             priority
           />
@@ -49,15 +47,14 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
               strokeWidth="0.8"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="opacity-15"
-              style={{ color: "var(--foreground)" }}
+              className="opacity-15 text-foreground"
               aria-hidden="true"
             >
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21,15 16,10 5,21" />
             </svg>
-            <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <p className="font-sans text-sm text-muted-foreground">
               {activeView?.label}
             </p>
           </div>
@@ -70,8 +67,8 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
         )}
       </div>
 
-      {/* Thumbnails row */}
-      <div className="flex justify-center gap-2 px-8 md:px-16 py-3" style={{ background: "var(--background)" }}>
+      {/* Thumbnails row — rola horizontal se faltar espaço no mobile */}
+      <div className="flex justify-start sm:justify-center gap-2 px-4 sm:px-8 md:px-16 py-3 overflow-x-auto bg-background">
         {views.map((view) => {
           const isActive = view.key === activeKey
           return (
@@ -80,14 +77,13 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
               onClick={() => setActiveKey(view.key)}
               aria-label={`Ver ${view.label} de ${name}`}
               aria-pressed={isActive}
-              className="relative overflow-hidden rounded-lg flex-shrink-0 transition-all duration-200"
+              className="relative overflow-hidden rounded-lg flex-shrink-0 transition-all duration-200 bg-muted"
               style={{
                 width: 64,
                 height: 64,
-                backgroundColor: "var(--surface)",
                 border: isActive
-                  ? "2px solid var(--accent)"
-                  : "2px solid var(--border)",
+                  ? "2px solid hsl(var(--accent-shadcn))"
+                  : "2px solid hsl(var(--border-shadcn))",
                 opacity: isActive ? 1 : 0.6,
               }}
             >
@@ -96,6 +92,7 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
                   src={view.src}
                   alt={`${name} — ${view.label}`}
                   fill
+                  sizes="64px"
                   className="object-cover"
                 />
               ) : (
@@ -109,8 +106,7 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
                     strokeWidth="1"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="opacity-20"
-                    style={{ color: "var(--foreground)" }}
+                    className="opacity-20 text-foreground"
                     aria-hidden="true"
                   >
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -124,7 +120,7 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
                 className="absolute bottom-0 left-0 right-0 py-0.5 flex items-center justify-center"
                 style={{
                   backgroundColor: isActive
-                    ? "oklch(from var(--accent) l c h / 0.85)"
+                    ? "hsl(var(--accent-shadcn) / 0.85)"
                     : "oklch(0 0 0 / 0.45)",
                 }}
               >
@@ -132,7 +128,9 @@ export function CharacterGallery({ name, views, overlay }: CharacterGalleryProps
                   className="font-sans leading-none"
                   style={{
                     fontSize: "9px",
-                    color: isActive ? "var(--background)" : "var(--foreground)",
+                    color: isActive
+                      ? "hsl(var(--accent-foreground-shadcn))"
+                      : "var(--color-gray-50)",
                     letterSpacing: "0.05em",
                   }}
                 >

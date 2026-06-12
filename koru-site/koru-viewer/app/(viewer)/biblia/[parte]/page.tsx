@@ -84,7 +84,9 @@ export default async function BibliaPage({ params }: Props) {
         videoSrc={uploadedVideo ?? bannerCfg.videoSrc}
         imageSrc={uploadedImage ?? bannerCfg.imageSrc}
       />
-      <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
+      {/* xl:max-w-4xl: documentos de referência têm tabelas largas — em telas
+          grandes a coluna alarga para aproveitar o espaço (Toc usa o mesmo valor). */}
+      <article className="max-w-3xl xl:max-w-4xl mx-auto px-6 md:px-10 py-10 pb-20">
         <MDXRemote source={safeContent} components={mdxComponents} options={mdxOptions} />
         <DocNav items={bibliaItems} current={parte} basePath="/biblia" />
       </article>

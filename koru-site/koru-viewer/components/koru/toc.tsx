@@ -11,8 +11,10 @@ interface TocProps {
 const MIN_WIDTH = 176
 const MAX_WIDTH = 232
 const GAP = 24
-// Metade de max-w-3xl (768px) — a coluna de texto é centrada no viewport
-const HALF_CONTENT = 384
+// Metade de max-w-4xl (896px) — largura da coluna da bíblia em xl+ (o Toc só
+// aparece em xl+, então usamos sempre a medida larga). A coluna é centrada
+// na área de conteúdo ao lado da sidebar.
+const HALF_CONTENT = 448
 
 // O viewport do conteúdo fica dentro de #main-content — a sidebar também
 // usa ScrollArea, então um querySelector global pegaria o viewport errado.

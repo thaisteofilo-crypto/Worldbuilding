@@ -116,16 +116,12 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
   const messages = row?.messages ?? []
 
   return (
-    <div
-      className="min-h-[100dvh] px-6 md:px-10 py-8 md:py-12"
-      style={{ background: "var(--background)" }}
-    >
+    <div className="min-h-[calc(100dvh-2.5rem)] bg-background px-4 sm:px-6 md:px-10 py-8 md:py-12">
       <div className="mx-auto max-w-3xl">
         {/* Voltar */}
         <Link
           href="/perguntas-ao-mundo"
-          className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-[0.2em] mb-8 transition-opacity hover:opacity-70"
-          style={{ color: "var(--muted-foreground)" }}
+          className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-[0.2em] mb-6 md:mb-8 transition-opacity hover:opacity-70 text-muted-foreground"
         >
           <svg
             width="14"
@@ -145,23 +141,14 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
 
         {/* Header */}
         <header className="mb-8">
-          <p
-            className="text-xs tracking-[0.2em] uppercase font-sans mb-3"
-            style={{ color: "var(--muted-foreground)" }}
-          >
+          <p className="text-xs tracking-[0.2em] uppercase font-sans mb-3 text-muted-foreground">
             uma pergunta ao mundo
           </p>
-          <h1
-            className="font-serif text-2xl md:text-3xl leading-tight"
-            style={{ color: "var(--foreground)" }}
-          >
+          <h1 className="font-serif text-2xl md:text-3xl leading-tight text-foreground">
             Visitante anônimo
           </h1>
           {row?.updated_at && (
-            <p
-              className="mt-2 font-sans text-sm"
-              style={{ color: "var(--muted-foreground)" }}
-            >
+            <p className="mt-2 font-sans text-sm text-muted-foreground">
               {formatLongDate(row.updated_at)}
             </p>
           )}
@@ -170,14 +157,7 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
         {loadError && (
           <div
             role="alert"
-            className="rounded-xl px-4 py-3 font-sans text-sm mb-6"
-            style={{
-              background:
-                "color-mix(in oklch, var(--destructive) 12%, transparent)",
-              border:
-                "1px solid color-mix(in oklch, var(--destructive) 40%, transparent)",
-              color: "var(--foreground)",
-            }}
+            className="rounded-xl px-4 py-3 font-sans text-sm mb-6 bg-destructive/10 border border-destructive/40 text-foreground"
           >
             Não foi possível carregar a conversa agora.
           </div>
@@ -185,10 +165,7 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
 
         {/* Timeline */}
         {!loadError && messages.length === 0 && (
-          <p
-            className="font-sans text-sm py-12 text-center"
-            style={{ color: "var(--muted-foreground)" }}
-          >
+          <p className="font-sans text-sm py-12 text-center text-muted-foreground">
             (conversa sem mensagens)
           </p>
         )}
@@ -204,17 +181,11 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
                   className={isUser ? "flex justify-end" : "flex justify-start"}
                 >
                   <div
-                    className="max-w-[85%] rounded-2xl px-4 py-3 font-sans text-[15px] leading-relaxed whitespace-pre-wrap"
-                    style={{
-                      background: isUser
-                        ? "var(--accent)"
-                        : "color-mix(in oklch, var(--foreground) 6%, transparent)",
-                      color: isUser
-                        ? "var(--accent-foreground)"
-                        : "var(--foreground)",
-                      borderBottomRightRadius: isUser ? "0.375rem" : undefined,
-                      borderBottomLeftRadius: !isUser ? "0.375rem" : undefined,
-                    }}
+                    className={`max-w-[90%] sm:max-w-[85%] rounded-2xl px-4 py-3 font-sans text-sm sm:text-[15px] leading-relaxed whitespace-pre-wrap ${
+                      isUser
+                        ? "rounded-br-md bg-primary text-primary-foreground"
+                        : "rounded-bl-md bg-foreground/5 text-foreground"
+                    }`}
                   >
                     <div
                       className="mb-1.5 flex items-baseline gap-2 font-sans text-[10px] uppercase tracking-[0.18em] opacity-70"
@@ -240,13 +211,7 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
 
         {/* Rodapé com nota sobre continuar */}
         {!loadError && messages.length > 0 && (
-          <p
-            className="mt-12 pt-6 text-center font-sans text-xs"
-            style={{
-              color: "var(--muted-foreground)",
-              borderTop: "1px solid var(--border)",
-            }}
-          >
+          <p className="mt-12 pt-6 text-center font-sans text-xs text-muted-foreground border-t border-border">
             Quer perguntar ao mundo também? Abra a conversa no canto da tela.
           </p>
         )}

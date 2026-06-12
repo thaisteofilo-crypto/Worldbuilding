@@ -85,36 +85,21 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return (
-    <div
-      className="min-h-[100dvh] px-6 md:px-10 py-8 md:py-12"
-      style={{ background: "var(--background)" }}
-    >
+    <div className="min-h-[calc(100dvh-2.5rem)] bg-background px-4 sm:px-6 md:px-10 py-8 md:py-12">
       <div className="mx-auto max-w-3xl">
         {/* Header */}
-        <header className="mb-10">
-          <p
-            className="text-xs tracking-[0.2em] uppercase font-sans mb-3"
-            style={{ color: "var(--muted-foreground)" }}
-          >
+        <header className="mb-8 md:mb-10">
+          <p className="text-xs tracking-[0.2em] uppercase font-sans mb-3 text-muted-foreground">
             o mundo escuta
           </p>
-          <h1
-            className="font-serif text-4xl md:text-5xl leading-tight"
-            style={{ color: "var(--foreground)" }}
-          >
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-foreground">
             Perguntas ao mundo
           </h1>
-          <p
-            className="mt-3 font-sans text-sm md:text-base max-w-xl"
-            style={{ color: "var(--muted-foreground)" }}
-          >
+          <p className="mt-3 font-sans text-sm md:text-base max-w-xl text-muted-foreground">
             O que visitantes vêm perguntando ao Korú. Anônimo.
           </p>
           {!loadError && total > 0 && (
-            <p
-              className="mt-4 font-sans text-xs uppercase tracking-[0.18em]"
-              style={{ color: "var(--muted-foreground)" }}
-            >
+            <p className="mt-4 font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground">
               {total} {total === 1 ? "pergunta ao mundo" : "perguntas ao mundo"}
             </p>
           )}
@@ -124,14 +109,7 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
         {loadError && (
           <div
             role="alert"
-            className="rounded-xl px-4 py-3 font-sans text-sm mb-6"
-            style={{
-              background:
-                "color-mix(in oklch, var(--destructive) 12%, transparent)",
-              border:
-                "1px solid color-mix(in oklch, var(--destructive) 40%, transparent)",
-              color: "var(--foreground)",
-            }}
+            className="rounded-xl px-4 py-3 font-sans text-sm mb-6 bg-destructive/10 border border-destructive/40 text-foreground"
           >
             Não foi possível carregar as perguntas agora. Tente novamente em
             instantes.
@@ -141,10 +119,7 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
         {/* Vazio */}
         {!loadError && rows.length === 0 && (
           <div className="py-20 text-center">
-            <p
-              className="font-serif text-lg"
-              style={{ color: "var(--muted-foreground)" }}
-            >
+            <p className="font-serif text-lg text-muted-foreground">
               O Bomi Veh ainda não recebeu perguntas.
             </p>
           </div>
@@ -164,23 +139,12 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
                 <li key={r.id}>
                   <Link
                     href={`/perguntas-ao-mundo/${r.id}`}
-                    className="block rounded-xl p-5 md:p-6 transition-colors"
-                    style={{
-                      background:
-                        "color-mix(in oklch, var(--foreground) 5%, transparent)",
-                      border: "1px solid var(--border)",
-                    }}
+                    className="block rounded-xl p-4 sm:p-5 md:p-6 transition-colors bg-foreground/5 border border-border hover:bg-foreground/10"
                   >
-                    <p
-                      className="font-serif text-xl md:text-2xl leading-snug"
-                      style={{ color: "var(--foreground)" }}
-                    >
+                    <p className="font-serif text-lg sm:text-xl md:text-2xl leading-snug text-foreground">
                       {preview}
                     </p>
-                    <div
-                      className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-xs"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-xs text-muted-foreground">
                       <time dateTime={r.updated_at}>{formatLongDate(r.updated_at)}</time>
                       <span aria-hidden="true">·</span>
                       <span>Visitante anônimo</span>
@@ -205,12 +169,7 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
             {page > 1 ? (
               <Link
                 href={`/perguntas-ao-mundo?page=${page - 1}`}
-                className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-80"
-                style={{
-                  border: "1px solid var(--border)",
-                  background: "var(--surface)",
-                  color: "var(--foreground)",
-                }}
+                className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-80 border border-border bg-muted text-foreground"
               >
                 ← Anterior
               </Link>
@@ -218,22 +177,14 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
               <span aria-hidden="true" />
             )}
 
-            <p
-              className="font-sans text-xs"
-              style={{ color: "var(--muted-foreground)" }}
-            >
+            <p className="font-sans text-xs text-muted-foreground">
               Página {page} de {totalPages}
             </p>
 
             {page < totalPages ? (
               <Link
                 href={`/perguntas-ao-mundo?page=${page + 1}`}
-                className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-80"
-                style={{
-                  border: "1px solid var(--border)",
-                  background: "var(--surface)",
-                  color: "var(--foreground)",
-                }}
+                className="rounded-full px-4 py-2 font-sans text-sm transition-opacity hover:opacity-80 border border-border bg-muted text-foreground"
               >
                 Próxima →
               </Link>

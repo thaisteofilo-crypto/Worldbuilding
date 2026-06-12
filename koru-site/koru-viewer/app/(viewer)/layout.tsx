@@ -117,10 +117,12 @@ export default function ViewerLayout({
       <NavSidebar />
       <SidebarInset>
         {/* Header mantém a altura no modo imersivo (só some visualmente) para
-            não deslocar os ScrollArea das páginas, que dependem de 100vh fixo. */}
+            não deslocar os ScrollArea das páginas, que dependem de 100vh fixo.
+            h-12 (3rem) precisa casar com o calc(100vh-3rem) dos ScrollArea
+            das páginas de leitura — senão sobra uma faixa morta no rodapé. */}
         <header
           inert={immersive || undefined}
-          className={`sticky top-0 z-10 flex items-center gap-3 px-4 h-10 transition-opacity duration-300 ${
+          className={`sticky top-0 z-10 flex items-center gap-3 px-4 h-12 transition-opacity duration-300 ${
             immersive ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
           style={{ background: "var(--background)" }}

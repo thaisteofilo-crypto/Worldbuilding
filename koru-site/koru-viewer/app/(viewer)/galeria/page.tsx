@@ -114,48 +114,37 @@ export default function GaleriaPage() {
   }, [selected, closeLightbox, goNext, goPrev, resetZoom])
 
   return (
-    <div className="h-[100dvh] overflow-y-auto" style={{ background: "var(--background)" }}>
+    <div className="h-[calc(100dvh-2.5rem)] overflow-y-auto bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-40 px-6 md:px-10 py-4" style={{ background: "var(--background)" }}>
-        <div className="flex items-end gap-4">
-          <h1
-            className="font-serif text-3xl md:text-4xl leading-none"
-            style={{ color: "var(--foreground)" }}
-          >
+      <div className="sticky top-0 z-40 bg-background px-4 sm:px-6 md:px-10 py-4">
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
+          <h1 className="font-serif text-3xl md:text-4xl leading-none text-foreground">
             Galeria
           </h1>
-          <p className="font-sans text-sm pb-0.5" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-sm pb-0.5 text-muted-foreground">
             Cenas do Akwu
           </p>
-          <div className="ml-auto font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
+          <div className="ml-auto font-sans text-xs tabular-nums text-muted-foreground">
             {!loading && !error && `${displayImages.length} ${displayImages.length === 1 ? "imagem" : "imagens"}`}
           </div>
         </div>
-        <div className="mt-3 h-px" style={{ background: "var(--border)" }} />
+        <div className="mt-3 h-px bg-border" />
       </div>
 
       {/* Content */}
-      <div className="px-4 md:px-6 pb-10">
+      <div className="px-4 sm:px-6 pb-10">
         {loading ? (
           <div className="flex items-center justify-center py-32">
-            <div
-              className="w-6 h-6 rounded-full border-2 animate-spin"
-              style={{ borderColor: "var(--border)", borderTopColor: "var(--accent)" }}
-            />
+            <div className="w-6 h-6 rounded-full border-2 border-border border-t-primary animate-spin" />
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-32 gap-5">
-            <p className="font-serif text-xl" style={{ color: "var(--foreground)" }}>
+            <p className="font-serif text-xl text-foreground">
               Nao foi possivel carregar as cenas.
             </p>
             <button
               onClick={loadImages}
-              className="font-sans text-sm rounded-full px-5 py-2 transition-colors"
-              style={{
-                background: "var(--surface)",
-                color: "var(--muted-foreground)",
-                border: "1px solid var(--border)",
-              }}
+              className="font-sans text-sm rounded-full px-5 py-2 transition-colors bg-muted text-muted-foreground border border-border hover:text-foreground"
             >
               Tentar novamente
             </button>
@@ -169,20 +158,20 @@ export default function GaleriaPage() {
               fill="none"
               stroke="currentColor"
               strokeWidth="0.6"
-              style={{ color: "var(--muted-foreground)", opacity: 0.3 }}
+              className="text-muted-foreground opacity-30"
             >
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <path d="M21 15l-5-5L5 21" />
             </svg>
-            <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <p className="font-sans text-sm text-muted-foreground">
               Nenhuma cena na galeria ainda.
             </p>
           </div>
         ) : (
           <div
             style={{
-              columns: "400px",
+              columns: "320px",
               columnGap: "8px",
             }}
           >
@@ -240,7 +229,7 @@ export default function GaleriaPage() {
           <button
             onClick={(e) => { e.stopPropagation(); goPrev() }}
             aria-label="Imagem anterior"
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -250,7 +239,7 @@ export default function GaleriaPage() {
           <button
             onClick={(e) => { e.stopPropagation(); goNext() }}
             aria-label="Próxima imagem"
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -307,7 +296,7 @@ export default function GaleriaPage() {
                 }}
               />
             </div>
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2 text-center">
               <p className="font-sans text-sm" style={{ color: "oklch(1 0 0 / 0.7)" }}>
                 {selected.name.replace(/\.[^.]+$/, "").replace(/-/g, " ")}
               </p>

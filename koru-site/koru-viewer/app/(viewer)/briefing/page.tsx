@@ -12,19 +12,13 @@ export default async function BriefingPage() {
   const safeContent = sanitizeForMdx(doc.content)
 
   return (
-    <ScrollArea className="h-[calc(100vh-3rem)]">
-      <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">
+    <ScrollArea className="h-[calc(100dvh-2.5rem)]">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 md:px-10 py-8 md:py-10 pb-20">
         <div className="mb-8">
-          <p
-            className="text-xs uppercase tracking-[0.2em] font-sans mb-2"
-            style={{ color: "var(--gold)" }}
-          >
+          <p className="text-xs uppercase tracking-[0.2em] font-sans mb-2 text-mel">
             Referência
           </p>
-          <div
-            className="h-px w-16"
-            style={{ backgroundColor: "var(--gold)" }}
-          />
+          <div className="h-px w-16 bg-mel" />
         </div>
         <MDXRemote source={safeContent} components={mdxComponents} options={mdxOptions} />
       </article>
