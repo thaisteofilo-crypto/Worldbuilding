@@ -151,7 +151,7 @@ function FullSection({
 }) {
   const hasBanner = !!(videoUrl || bannerUrl)
   return (
-    <section id={id} className="relative flex flex-col justify-center overflow-hidden min-h-screen py-10 md:py-16 px-4 md:px-16 scroll-mt-14">
+    <section id={id} className="relative flex flex-col justify-center overflow-hidden min-h-[100svh] py-20 md:py-24 px-4 md:px-16 scroll-mt-16">
       {videoUrl ? (
         <>
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
@@ -186,7 +186,7 @@ function FullSection({
         </h2>
         {description && (
           <p
-            className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-8"
+            className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-10"
             style={{
               color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
@@ -291,7 +291,7 @@ export default async function HomePage() {
       <HomeNav />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden">
         {banners["hero-video"] ? (
           <>
             <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={banners["hero-video"]} poster={banners.hero} />
@@ -523,7 +523,7 @@ export default async function HomePage() {
       </FullSection>
 
       {/* Banner Final — Vídeo */}
-      <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden">
         {banners["footer-video"] ? (
           <>
             <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={banners["footer-video"]} poster={banners.footer} />

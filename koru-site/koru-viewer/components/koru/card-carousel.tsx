@@ -185,13 +185,6 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
         </button>
       )}
 
-      {/* Fade edges */}
-      {canScrollLeft && (
-        <div className="absolute left-0 top-0 bottom-0 w-12 pointer-events-none z-[5]" style={{ background: "linear-gradient(to right, var(--background), transparent)" }} />
-      )}
-      {canScrollRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-12 pointer-events-none z-[5]" style={{ background: "linear-gradient(to left, var(--background), transparent)" }} />
-      )}
     </div>
   )
 }

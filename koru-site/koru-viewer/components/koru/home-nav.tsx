@@ -22,19 +22,21 @@ export function HomeNav() {
 
   return (
     <header
-      className="fixed top-0 inset-x-0 z-50 backdrop-blur-md"
+      className="fixed top-0 inset-x-0 z-50"
       style={{
-        background: "color-mix(in oklch, var(--background) 72%, transparent)",
-        borderBottom: "1px solid color-mix(in oklch, var(--border) 70%, transparent)",
+        background: "color-mix(in oklch, var(--background) 45%, transparent)",
+        backdropFilter: "blur(20px) saturate(1.5)",
+        WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+        borderBottom: "1px solid color-mix(in oklch, var(--border) 50%, transparent)",
       }}
     >
       <nav
-        className="flex items-center justify-between h-14 px-4 md:px-8"
+        className="flex items-center justify-between h-16 px-4 md:px-8"
         aria-label="Navegação principal"
       >
         <Link
           href="/"
-          className="font-serif text-xl tracking-tight text-foreground"
+          className="font-serif text-2xl md:text-3xl tracking-tight text-foreground"
           style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
           onClick={() => setOpen(false)}
         >
@@ -47,7 +49,7 @@ export function HomeNav() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="px-4 py-2 rounded-full font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+                className="px-4 py-2 rounded-full font-sans text-sm font-medium uppercase tracking-[0.14em] text-foreground/75 hover:text-foreground transition-colors"
               >
                 {link.label}
               </a>
@@ -96,7 +98,7 @@ export function HomeNav() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block px-2 py-2.5 font-sans text-sm uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground transition-colors"
+                  className="block px-2 py-2.5 font-sans text-base font-medium uppercase tracking-[0.12em] text-foreground/80 hover:text-foreground transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
