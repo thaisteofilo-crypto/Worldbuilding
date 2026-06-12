@@ -155,8 +155,6 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           style={{
             background: "hsl(var(--background) / 0.5)",
             backdropFilter: "blur(16px)",
-            border: "1px solid hsl(var(--border-shadcn) / 0.4)",
-            boxShadow: "0 4px 12px hsl(var(--foreground) / 0.18)",
           }}
           aria-label="Anterior"
         >
@@ -174,8 +172,6 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           style={{
             background: "hsl(var(--background) / 0.5)",
             backdropFilter: "blur(16px)",
-            border: "1px solid hsl(var(--border-shadcn) / 0.4)",
-            boxShadow: "0 4px 12px hsl(var(--foreground) / 0.18)",
           }}
           aria-label="Próximo"
         >
