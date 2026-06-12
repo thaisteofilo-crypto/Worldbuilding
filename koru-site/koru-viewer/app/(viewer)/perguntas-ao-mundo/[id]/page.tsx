@@ -17,7 +17,8 @@ export const revalidate = 0
 interface SavedMessage {
   role: "user" | "assistant"
   content: string
-  ts: string
+  /** ISO timestamp gravado pela API a cada mensagem (pode faltar em conversas antigas). */
+  ts?: string
 }
 
 interface Row {
@@ -42,6 +43,42 @@ function formatLongDate(iso: string): string {
     })
     .replace(":", "h")
   return `${datePart}, ${timePart}`
+}
+
+function sameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
+
+/**
+ * Hora discreta de cada mensagem ("14h32"). Inclui a data curta
+ * ("3 de jun., 14h32") apenas quando o dia muda em relação à mensagem
+ * anterior. Retorna null se o timestamp faltar ou for inválido
+ * (conversas antigas) — nunca inventa horário.
+ */
+function formatMessageTime(iso?: string, prevIso?: string): string | null {
+  if (!iso) return null
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return null
+
+  const time = d
+    .toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+    .replace(":", "h")
+
+  let showDate = false
+  if (prevIso) {
+    const prev = new Date(prevIso)
+    if (!isNaN(prev.getTime()) && !sameDay(prev, d)) showDate = true
+  }
+
+  if (showDate) {
+    const date = d.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })
+    return `${date}, ${time}`
+  }
+  return time
 }
 
 interface PageProps {
@@ -160,6 +197,7 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
           <ol className="flex flex-col gap-4 list-none">
             {messages.map((m, i) => {
               const isUser = m.role === "user"
+              const timeLabel = formatMessageTime(m.ts, i > 0 ? messages[i - 1]?.ts : undefined)
               return (
                 <li
                   key={i}
@@ -179,10 +217,18 @@ export default async function PerguntaDetalhe({ params }: PageProps) {
                     }}
                   >
                     <div
-                      className="mb-1.5 font-sans text-[10px] uppercase tracking-[0.18em] opacity-70"
+                      className="mb-1.5 flex items-baseline gap-2 font-sans text-[10px] uppercase tracking-[0.18em] opacity-70"
                       style={{ color: "inherit" }}
                     >
-                      {isUser ? "visitante" : "mundo"}
+                      <span>{isUser ? "visitante" : "mundo"}</span>
+                      {timeLabel && (
+                        <time
+                          dateTime={m.ts}
+                          className="normal-case tracking-normal tabular-nums opacity-80"
+                        >
+                          {timeLabel}
+                        </time>
+                      )}
                     </div>
                     {m.content}
                   </div>

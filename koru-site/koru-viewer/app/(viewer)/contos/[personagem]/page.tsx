@@ -11,10 +11,26 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { getCharactersForViewer } from "@/lib/characters-db"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
+import { ReadingPosition } from "@/components/koru/reading-position"
+import { ReadingProgress } from "@/components/koru/reading-progress"
+import { BackToTop } from "@/components/koru/back-to-top"
+import { KeyboardNav } from "@/components/koru/keyboard-nav"
+import { estimateReadingMinutes } from "@/components/koru/content-utils"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 
 interface Props {
   params: Promise<{ personagem: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { personagem } = await params
+  const item = getContosItems().find((i) => i.slug === personagem)
+  if (!item) return {}
+  return {
+    title: item.title,
+    description: `${item.title} — vozes do Akwu, contos do mundo de Korú.`,
+  }
 }
 
 const literaryComponents = {
@@ -68,11 +84,19 @@ export default async function ContoPage({ params }: Props) {
   const contosItems = getContosItems()
   const item = contosItems.find((i) => i.slug === personagem)
 
+  const title = item?.title ?? char?.name ?? personagem
+  const readingMinutes = estimateReadingMinutes(doc.content)
+
+  const idx = contosItems.findIndex((i) => i.slug === personagem)
+  const prevItem = idx > 0 ? contosItems[idx - 1] : null
+  const nextItem = idx >= 0 && idx < contosItems.length - 1 ? contosItems[idx + 1] : null
+
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
       <HeroBanner
-        title={item?.title ?? char?.name ?? personagem}
+        title={title}
         subtitle="Conto"
+        meta={`~${readingMinutes} min de leitura`}
         accentColor="var(--blue-cold)"
         fallbackHue={220}
       />
@@ -80,6 +104,13 @@ export default async function ContoPage({ params }: Props) {
         <MDXRemote source={safeContent} components={literaryComponents} options={mdxOptions} />
         <DocNav items={contosItems} current={personagem} basePath="/contos" />
       </article>
+      <ReadingPosition title={title} section="Conto" />
+      <ReadingProgress />
+      <BackToTop />
+      <KeyboardNav
+        prevHref={prevItem ? `/contos/${prevItem.slug}` : null}
+        nextHref={nextItem ? `/contos/${nextItem.slug}` : null}
+      />
     </ScrollArea>
   )
 }

@@ -153,6 +153,24 @@ export const characters: Record<string, Character> = {
       { name: "Obaru", slug: "obaru", type: "Relação — a ser revelada" },
     ],
   },
+  temi: {
+    name: "Temi",
+    role: "Azuri",
+    gradient:
+      "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.26 0.09 55) 50%, oklch(0.14 0.01 280) 100%)",
+    accentColor: "var(--foreground)",
+    morphology: "Azuri, quadrúpede com chifres.",
+    ability: "A definir.",
+    status: "A definir",
+    origin: "Azuri.",
+    description:
+      "Temi é Azuri — translúcida, quadrúpede com chifres que filtram e redistribuem a luz do Akwu.",
+    species: "Azuri",
+    location: "Akwu — zonas de luz Oru",
+    mark: "Isilo-Ori na testa e bordas dos olhos.",
+    quote: "",
+    relations: [],
+  },
   orike: {
     name: "Orike",
     role: "Perspectiva do Bomi Veh",
@@ -198,6 +216,7 @@ export const characterOrder = [
   "beku",
   "obaru",
   "kemdi",
+  "temi",
   "orike",
   "kairo",
 ] as const

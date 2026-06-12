@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 
 interface GalleryImage {
   name: string
@@ -16,6 +16,35 @@ export default function GaleriaPage() {
   const [error, setError] = useState(false)
   const [selected, setSelected] = useState<GalleryImage | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(-1)
+
+  // Zoom / pan do lightbox
+  const [zoom, setZoom] = useState(1)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStart = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null)
+
+  const resetZoom = useCallback(() => {
+    setZoom(1)
+    setOffset({ x: 0, y: 0 })
+    setIsDragging(false)
+    dragStart.current = null
+  }, [])
+
+  const zoomIn = useCallback(() => {
+    setZoom(2)
+  }, [])
+
+  const zoomOut = useCallback(() => {
+    resetZoom()
+  }, [resetZoom])
+
+  const toggleZoom = useCallback(() => {
+    if (zoom === 1) {
+      setZoom(2)
+    } else {
+      resetZoom()
+    }
+  }, [zoom, resetZoom])
 
   const displayImages = activeTag !== null ? filtered : images
 
@@ -56,14 +85,21 @@ export default function GaleriaPage() {
     const next = (selectedIndex + 1) % displayImages.length
     setSelected(displayImages[next])
     setSelectedIndex(next)
-  }, [displayImages, selectedIndex])
+    resetZoom()
+  }, [displayImages, selectedIndex, resetZoom])
 
   const goPrev = useCallback(() => {
     if (displayImages.length === 0) return
     const prev = (selectedIndex - 1 + displayImages.length) % displayImages.length
     setSelected(displayImages[prev])
     setSelectedIndex(prev)
-  }, [displayImages, selectedIndex])
+    resetZoom()
+  }, [displayImages, selectedIndex, resetZoom])
+
+  // Trocar de imagem (ou abrir/fechar) sempre reseta o zoom
+  useEffect(() => {
+    resetZoom()
+  }, [selectedIndex, resetZoom])
 
   useEffect(() => {
     if (!selected) return
@@ -71,10 +107,11 @@ export default function GaleriaPage() {
       if (e.key === "Escape") closeLightbox()
       if (e.key === "ArrowRight") goNext()
       if (e.key === "ArrowLeft") goPrev()
+      if (e.key === "0") resetZoom()
     }
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
-  }, [selected, closeLightbox, goNext, goPrev])
+  }, [selected, closeLightbox, goNext, goPrev, resetZoom])
 
   return (
     <div className="h-[100dvh] overflow-y-auto" style={{ background: "var(--background)" }}>
@@ -202,6 +239,7 @@ export default function GaleriaPage() {
           {/* Nav arrows */}
           <button
             onClick={(e) => { e.stopPropagation(); goPrev() }}
+            aria-label="Imagem anterior"
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
@@ -211,6 +249,7 @@ export default function GaleriaPage() {
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); goNext() }}
+            aria-label="Próxima imagem"
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
             style={{ background: "oklch(1 0 0 / 0.1)" }}
           >
@@ -224,12 +263,50 @@ export default function GaleriaPage() {
             className="relative max-w-[92vw] max-h-[92vh] flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={selected.url}
-              alt={selected.name}
-              className="max-w-full max-h-[85vh] rounded-lg object-contain"
-            />
+            <div className="overflow-hidden rounded-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={selected.url}
+                alt={selected.name}
+                draggable={false}
+                onDoubleClick={toggleZoom}
+                onPointerDown={(e) => {
+                  if (zoom === 1) return
+                  e.preventDefault()
+                  e.currentTarget.setPointerCapture(e.pointerId)
+                  dragStart.current = {
+                    x: e.clientX,
+                    y: e.clientY,
+                    ox: offset.x,
+                    oy: offset.y,
+                  }
+                  setIsDragging(true)
+                }}
+                onPointerMove={(e) => {
+                  if (!dragStart.current) return
+                  setOffset({
+                    x: dragStart.current.ox + (e.clientX - dragStart.current.x),
+                    y: dragStart.current.oy + (e.clientY - dragStart.current.y),
+                  })
+                }}
+                onPointerUp={() => {
+                  dragStart.current = null
+                  setIsDragging(false)
+                }}
+                onPointerCancel={() => {
+                  dragStart.current = null
+                  setIsDragging(false)
+                }}
+                className="max-w-full max-h-[85vh] rounded-lg object-contain select-none"
+                style={{
+                  transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+                  transition: isDragging ? "none" : "transform 0.25s ease",
+                  cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
+                  touchAction: "none",
+                  willChange: "transform",
+                }}
+              />
+            </div>
             <div className="mt-3 flex items-center gap-4">
               <p className="font-sans text-sm" style={{ color: "oklch(1 0 0 / 0.7)" }}>
                 {selected.name.replace(/\.[^.]+$/, "").replace(/-/g, " ")}
@@ -247,17 +324,49 @@ export default function GaleriaPage() {
             </div>
           </div>
 
-          {/* Close button */}
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
-            style={{ background: "oklch(1 0 0 / 0.1)" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+          {/* Zoom controls + close */}
+          <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+            <button
+              onClick={(e) => { e.stopPropagation(); zoomOut() }}
+              disabled={zoom === 1}
+              aria-label="Reduzir"
+              title="Reduzir (0)"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-default"
+              style={{ background: "oklch(1 0 0 / 0.1)" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+              </svg>
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); zoomIn() }}
+              disabled={zoom === 2}
+              aria-label="Ampliar"
+              title="Ampliar (duplo-clique)"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-default"
+              style={{ background: "oklch(1 0 0 / 0.1)" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+                <line x1="11" y1="8" x2="11" y2="14" />
+              </svg>
+            </button>
+            <button
+              onClick={closeLightbox}
+              aria-label="Fechar"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+              style={{ background: "oklch(1 0 0 / 0.1)" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -3,19 +3,24 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePublicSite } from "@/lib/revalidate"
 
 export async function GET() {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: characters, error } = await admin
-    .from("characters")
-    .select("*")
-    .order("order_index", { ascending: true, nullsFirst: false })
-    .order("name")
+    const { data: characters, error } = await admin
+      .from("characters")
+      .select("*")
+      .order("order_index", { ascending: true, nullsFirst: false })
+      .order("name")
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ characters: characters ?? [] })
+  } catch (err) {
+    console.error("characters GET:", err)
+    return NextResponse.json({ characters: [] })
   }
-
-  return NextResponse.json({ characters: characters ?? [] })
 }
 
 export async function POST(req: NextRequest) {

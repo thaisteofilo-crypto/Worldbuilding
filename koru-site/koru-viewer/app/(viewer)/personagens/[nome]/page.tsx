@@ -9,9 +9,21 @@ import Image from "next/image"
 import fs from "fs"
 import path from "path"
 import { CharacterGallery } from "@/components/koru/character-gallery"
+import { PERSONAGENS_ITEMS } from "@/lib/navigation"
+import type { Metadata } from "next"
 
 interface Props {
   params: Promise<{ nome: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { nome } = await params
+  const item = PERSONAGENS_ITEMS.find((i) => i.slug === nome)
+  if (!item) return {}
+  return {
+    title: item.title,
+    description: `${item.title} — personagem do mundo de Korú.`,
+  }
 }
 
 export const dynamic = "force-dynamic"

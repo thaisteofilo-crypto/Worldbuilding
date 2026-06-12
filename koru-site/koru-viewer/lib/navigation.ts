@@ -18,11 +18,17 @@ export const BIBLIA_ITEMS = [
 
 export const LIVRO_ITEMS = [
   { slug: "01", title: "O que ela é" },
-  { slug: "02", title: "A mentira silenciosa" },
-  { slug: "03", title: "O que a floresta guarda" },
-  { slug: "04", title: "O projeto do fim do luto" },
-  { slug: "05", title: "O limiar como morada" },
-  { slug: "06", title: "O que ela paga" },
+  { slug: "02", title: "Manhãs" },
+  { slug: "03", title: "A cidade" },
+  { slug: "04", title: "A mentira silenciosa" },
+  { slug: "05", title: "Entre o lilás e o cinza" },
+  { slug: "06", title: "O que a floresta guarda" },
+  { slug: "07", title: "O projeto do fim do luto" },
+  { slug: "08", title: "A chuva" },
+  { slug: "09", title: "O limiar como morada" },
+  { slug: "10", title: "A noite antes" },
+  { slug: "11", title: "O que ela paga" },
+  { slug: "12", title: "O retorno" },
   { slug: "epilogo", title: "Epílogo" },
 ]
 
@@ -45,6 +51,7 @@ export const PERSONAGENS_ITEMS = [
   { slug: "beku", title: "Beku" },
   { slug: "obaru", title: "Obaru" },
   { slug: "kemdi", title: "Kemdi" },
+  { slug: "temi", title: "Temi" },
   { slug: "orike", title: "Orike" },
   { slug: "kairo", title: "Kairo" },
 ]

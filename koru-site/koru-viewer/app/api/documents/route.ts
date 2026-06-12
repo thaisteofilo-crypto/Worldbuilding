@@ -2,18 +2,23 @@ import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET() {
-  const admin = createAdminClient()
-  const { data: documents, error } = await admin
-    .from("documents")
-    .select("id, slug, title, section, updated_at")
-    .order("section")
-    .order("slug")
+  try {
+    const admin = createAdminClient()
+    const { data: documents, error } = await admin
+      .from("documents")
+      .select("id, slug, title, section, updated_at")
+      .order("section")
+      .order("slug")
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ documents: documents ?? [] })
+  } catch (err) {
+    console.error("documents GET:", err)
+    return NextResponse.json({ documents: [] })
   }
-
-  return NextResponse.json({ documents: documents ?? [] })
 }
 
 export async function PATCH(req: NextRequest) {

@@ -5,14 +5,22 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/koru/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { KoruChat } from "@/components/koru/koru-chat"
+import { KoruChatLoader } from "@/components/koru/koru-chat-loader"
 
-const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600", "700"] })
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+})
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-serif",
+  display: "swap",
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -46,7 +54,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-screen">
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
-          <KoruChat />
+          <KoruChatLoader />
         </ThemeProvider>
       </body>
     </html>

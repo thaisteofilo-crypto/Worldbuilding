@@ -11,26 +11,31 @@ const DOC_SLOTS = BIBLIA_PAGE_SLUGS.flatMap((s) => [`doc-${s}`, `doc-${s}-video`
 const BANNER_SLOTS = [...HOME_SLOTS, ...DOC_SLOTS]
 
 export async function GET() {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files, error } = await admin.storage.from("banners").list("", {
-    sortBy: { column: "name", order: "asc" },
-  })
+    const { data: files, error } = await admin.storage.from("banners").list("", {
+      sortBy: { column: "name", order: "asc" },
+    })
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  const banners: Record<string, string> = {}
-  for (const file of files || []) {
-    const slot = file.name.split(".")[0]
-    if (BANNER_SLOTS.includes(slot)) {
-      const { data } = admin.storage.from("banners").getPublicUrl(file.name)
-      banners[slot] = data.publicUrl
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
-  }
 
-  return NextResponse.json({ banners })
+    const banners: Record<string, string> = {}
+    for (const file of files || []) {
+      const slot = file.name.split(".")[0]
+      if (BANNER_SLOTS.includes(slot)) {
+        const { data } = admin.storage.from("banners").getPublicUrl(file.name)
+        banners[slot] = data.publicUrl
+      }
+    }
+
+    return NextResponse.json({ banners })
+  } catch (err) {
+    console.error("banners GET:", err)
+    return NextResponse.json({ banners: {} })
+  }
 }
 
 export async function POST(req: NextRequest) {

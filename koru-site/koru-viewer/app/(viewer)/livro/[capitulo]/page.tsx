@@ -10,10 +10,26 @@ import { sanitizeForMdx, stripLeadingHeadings } from "@/lib/sanitize-md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { DocNav } from "@/components/koru/doc-nav"
 import { HeroBanner } from "@/components/koru/hero-banner"
+import { ReadingPosition } from "@/components/koru/reading-position"
+import { ReadingProgress } from "@/components/koru/reading-progress"
+import { BackToTop } from "@/components/koru/back-to-top"
+import { KeyboardNav } from "@/components/koru/keyboard-nav"
+import { estimateReadingMinutes } from "@/components/koru/content-utils"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 
 interface Props {
   params: Promise<{ capitulo: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { capitulo } = await params
+  const item = getLivroItems().find((i) => i.slug === capitulo)
+  if (!item) return {}
+  return {
+    title: item.title,
+    description: `${item.title} — O Peso da Luz, a história de Temiku.`,
+  }
 }
 
 const literaryComponents = {
@@ -69,11 +85,19 @@ export default async function LivroPage({ params }: Props) {
   const livroItems = getLivroItems()
   const item = livroItems.find((i) => i.slug === capitulo)
 
+  const title = item?.title ?? doc.title
+  const readingMinutes = estimateReadingMinutes(doc.content)
+
+  const idx = livroItems.findIndex((i) => i.slug === capitulo)
+  const prevItem = idx > 0 ? livroItems[idx - 1] : null
+  const nextItem = idx >= 0 && idx < livroItems.length - 1 ? livroItems[idx + 1] : null
+
   return (
     <ScrollArea className="h-[calc(100vh-3rem)]">
       <HeroBanner
-        title={item?.title ?? doc.title}
+        title={title}
         subtitle="Livro"
+        meta={`~${readingMinutes} min de leitura`}
         accentColor="var(--accent)"
         fallbackHue={290}
       />
@@ -83,6 +107,15 @@ export default async function LivroPage({ params }: Props) {
           <DocNav items={livroItems} current={capitulo} basePath="/livro" />
         )}
       </article>
+      <ReadingPosition title={title} section="Livro" />
+      <ReadingProgress />
+      <BackToTop />
+      {capitulo !== "epilogo" && (
+        <KeyboardNav
+          prevHref={prevItem ? `/livro/${prevItem.slug}` : null}
+          nextHref={nextItem ? `/livro/${nextItem.slug}` : null}
+        />
+      )}
     </ScrollArea>
   )
 }

@@ -6,6 +6,8 @@ import { useRef, useState, useEffect } from "react"
 export interface HeroBannerProps {
   title: string
   subtitle?: string
+  /** Linha discreta de metadados abaixo do subtitle (ex: "~14 min de leitura") */
+  meta?: string
   accentColor?: string
   fallbackHue?: number
   imageSrc?: string
@@ -15,6 +17,7 @@ export interface HeroBannerProps {
 export function HeroBanner({
   title,
   subtitle,
+  meta,
   accentColor = "var(--gold)",
   imageSrc,
   videoSrc,
@@ -23,6 +26,9 @@ export function HeroBanner({
   const [scrollY, setScrollY] = useState(0)
 
   useEffect(() => {
+    // Respeita prefers-reduced-motion: não ativa o parallax se reduzido.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+
     let rafId: number | null = null
 
     function onScroll() {
@@ -85,6 +91,13 @@ export function HeroBanner({
         </div>
       ) : null}
 
+      {/* Faixa de gradiente escuro atrás do texto — garante contraste
+          independente da imagem/vídeo de fundo */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-black/30 to-transparent"
+        aria-hidden="true"
+      />
+
       {/* Content */}
       <div className="relative z-10 flex flex-col justify-end h-full max-w-3xl mx-auto px-6 md:px-10 pb-8">
         <h1
@@ -103,6 +116,14 @@ export function HeroBanner({
             style={{ animationDelay: "0.22s" }}
           >
             {subtitle}
+          </p>
+        )}
+        {meta && (
+          <p
+            className="koru-content-enter font-sans text-xs text-white/80 mt-3 tracking-wide"
+            style={{ animationDelay: "0.32s" }}
+          >
+            {meta}
           </p>
         )}
       </div>

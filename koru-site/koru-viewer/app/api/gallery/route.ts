@@ -9,25 +9,30 @@ function storagePublicUrl(bucket: string, filename: string): string {
 }
 
 export async function GET() {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files, error } = await admin.storage.from("gallery").list("", {
-    sortBy: { column: "created_at", order: "desc" },
-  })
+    const { data: files, error } = await admin.storage.from("gallery").list("", {
+      sortBy: { column: "created_at", order: "desc" },
+    })
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    const images = (files ?? [])
+      .filter((f) => !f.name.startsWith("."))
+      .map((f) => ({
+        name: f.name,
+        url: storagePublicUrl("gallery", f.name),
+        created_at: f.created_at,
+      }))
+
+    return NextResponse.json({ images })
+  } catch (err) {
+    console.error("gallery GET:", err)
+    return NextResponse.json({ images: [] })
   }
-
-  const images = (files ?? [])
-    .filter((f) => !f.name.startsWith("."))
-    .map((f) => ({
-      name: f.name,
-      url: storagePublicUrl("gallery", f.name),
-      created_at: f.created_at,
-    }))
-
-  return NextResponse.json({ images })
 }
 
 export async function POST(req: NextRequest) {

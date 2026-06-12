@@ -21,7 +21,7 @@
   --color-muted:              hsl(var(--muted));
   --color-muted-foreground:   hsl(var(--muted-foreground));
   --color-accent:             hsl(var(--accent-shadcn));
-  --color-accent-foreground:  hsl(var(--accent-foreground));
+  --color-accent-foreground:  hsl(var(--accent-foreground-shadcn));
   --color-destructive:        hsl(var(--destructive));
   --color-border:             hsl(var(--border-shadcn));
   --color-input:              hsl(var(--input));
@@ -107,12 +107,15 @@
     /* muted-foreground: Omi #1A6872 */
     --muted-foreground: 187 63% 27%;
     --accent-shadcn: 191 83% 25%;
-    --accent-foreground: 0 0% 95%;
+    --accent-foreground-shadcn: 0 0% 95%;
     /* destructive: Urucum #C72211 */
     --destructive: 6 84% 42%;
-    /* border: Mara #2CA0AB */
-    --border-shadcn: 185 59% 42%;
-    --input: 185 59% 42%;
+    /* border: teal ~#21818C (entre Mara e Omi) — Mara puro (185 59% 42%) rendia
+       2,83:1 sobre o creme, abaixo do mínimo 3:1 de WCAG 1.4.11. Este valor
+       rende ~4,1:1 sobre o creme e ~4,6:1 sobre cards brancos, preservando
+       a vivacidade teal melhor que Omi (que escureceria toda a UI). */
+    --border-shadcn: 186 61% 34%;
+    --input: 186 61% 34%;
     --ring: 191 83% 25%;
     --radius: 0.5rem;
   }
@@ -136,8 +139,10 @@
     /* muted-foreground: Maré #92DCE2 */
     --muted-foreground: 184 55% 73%;
     --accent-shadcn: 185 58% 50%;
-    --accent-foreground: 219 44% 6%;
-    --destructive: 6 84% 35%;
+    --accent-foreground-shadcn: 219 44% 6%;
+    /* destructive: ~#E45444 — o valor anterior (6 84% 35%) rendia 2,56:1
+       sobre Una; este rende ~5,2:1 (WCAG AA texto normal). */
+    --destructive: 6 75% 58%;
     --border-shadcn: 191 70% 34%;
     --input: 191 70% 34%;
     --ring: 185 58% 50%;
@@ -158,6 +163,15 @@
   h1, h2 {
     font-family: var(--font-serif);
   }
+}
+
+/* ─── Escala de leitura (controle A− / A+) ───
+   `--reading-scale` é setada no <html> por components/koru/font-scale-control.tsx
+   (0.9 / 1 / 1.15). Regra fora de @layer: estilos sem camada vencem as camadas
+   do Tailwind no cascade, então sobrescreve `text-base` sem !important.
+   Escopo restrito ao corpo de leitura (.mdx-article) para não afetar admin/UI. */
+article .mdx-article :is(p, li, blockquote) {
+  font-size: calc(1rem * var(--reading-scale, 1));
 }
 
 /* ─── Sidebar tokens (reutiliza background/card/border) ─── */
@@ -211,6 +225,13 @@
               box-shadow 280ms cubic-bezier(0.33, 1, 0.68, 1);
 }
 .koru-card:hover { transform: scale(1.012); }
+
+/* ─── Card image zoom ─── */
+.koru-card-img {
+  transition: transform 300ms ease;
+  will-change: transform;
+}
+.koru-card:hover .koru-card-img { transform: scale(1.04); }
 
 /* ─── Nav item transition ─── */
 .koru-nav-item {
@@ -274,4 +295,5 @@
 @media (prefers-reduced-motion: reduce) {
   .koru-card, .koru-nav-item { animation: none !important; transition: none !important; }
   .koru-card:hover { transform: none; }
+  .koru-card-img { transition: none; }
 }

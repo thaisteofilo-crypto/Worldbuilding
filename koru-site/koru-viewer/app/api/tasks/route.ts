@@ -2,17 +2,22 @@ import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET() {
-  const admin = createAdminClient()
-  const { data: tasks, error } = await admin
-    .from("tasks")
-    .select("*")
-    .order("order_index", { ascending: true })
+  try {
+    const admin = createAdminClient()
+    const { data: tasks, error } = await admin
+      .from("tasks")
+      .select("*")
+      .order("order_index", { ascending: true })
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ tasks: tasks ?? [] })
+  } catch (err) {
+    console.error("tasks GET:", err)
+    return NextResponse.json({ tasks: [] })
   }
-
-  return NextResponse.json({ tasks: tasks ?? [] })
 }
 
 export async function POST(req: NextRequest) {

@@ -192,7 +192,7 @@ export function NavSidebar() {
           >
             <Search size={14} aria-hidden="true" className="opacity-45" />
             <span className="flex-1 text-left">Buscar</span>
-            <kbd className="text-[10px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid var(--border)" }}>
+            <kbd className="text-[11px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid var(--border)" }}>
               ⌘K
             </kbd>
           </Button>

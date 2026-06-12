@@ -3,6 +3,10 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { readLocalState, writeLocalState } from "@/lib/local-state"
 import { revalidatePublicSite } from "@/lib/revalidate"
 
+export const revalidate = 30
+
+const CACHE_HEADERS = { "Cache-Control": "s-maxage=30, stale-while-revalidate=60" }
+
 export async function GET() {
   // Try Supabase first; fall back to local file if table doesn't exist
   try {
@@ -19,14 +23,14 @@ export async function GET() {
       const localKeys = new Set(Object.keys(localState))
       const fromSupabase = data.filter((r) => !localKeys.has(r.key))
       const fromLocal = Object.entries(localState).map(([key, value]) => ({ key, value, updated_at: null }))
-      return NextResponse.json({ content: [...fromSupabase, ...fromLocal] })
+      return NextResponse.json({ content: [...fromSupabase, ...fromLocal] }, { headers: CACHE_HEADERS })
     }
   } catch { /* ignore */ }
 
   // Full fallback: local state only
   const localState = readLocalState()
   const content = Object.entries(localState).map(([key, value]) => ({ key, value, updated_at: null }))
-  return NextResponse.json({ content })
+  return NextResponse.json({ content }, { headers: CACHE_HEADERS })
 }
 
 export async function PATCH(req: NextRequest) {

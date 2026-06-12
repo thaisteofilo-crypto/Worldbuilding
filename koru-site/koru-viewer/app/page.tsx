@@ -1,10 +1,11 @@
-export const dynamic = "force-dynamic"
+﻿export const revalidate = 30
 
 import Link from "next/link"
 import Image from "next/image"
 import { getCharactersForViewer } from "@/lib/characters-db"
 import { ThemeToggle } from "@/components/koru/theme-toggle"
 import { CardCarousel } from "@/components/koru/card-carousel"
+import { ContinueReadingCard } from "@/components/koru/continue-reading-card"
 import { getBannerUrls, getCardImages } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
@@ -203,6 +204,11 @@ function FullSection({
   )
 }
 
+export const metadata = {
+  title: "Korú — Um mundo cuja física é baseada em memória",
+  description: "A física, a cosmologia, as criaturas e os acordos que sustentam o Akwu.",
+}
+
 export default async function HomePage() {
   const [banners, cardImages, siteContent, { chars: characters, order: characterOrder }] = await Promise.all([
     getBannerUrls(),
@@ -334,10 +340,14 @@ export default async function HomePage() {
             {get(siteContent, "hero.tagline")}
           </p>
           <Button
-            variant="outline"
+            variant={hasHero ? "outline" : "default"}
             size="default"
             asChild
-            className="koru-content-enter border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-md dark:border-white/30 dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
+            className={
+              hasHero
+                ? "koru-content-enter border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-md dark:border-white/30 dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
+                : "koru-content-enter"
+            }
             style={{ animationDelay: "0.7s" }}
           >
             <Link href={bibliaHref}>
@@ -346,6 +356,9 @@ export default async function HomePage() {
           </Button>
         </div>
       </section>
+
+      {/* Continuar lendo — só aparece se houver último documento lido (localStorage) */}
+      <ContinueReadingCard />
 
       {/* Bíblia */}
       <FullSection label={get(siteContent, "section.biblia.label")} title={get(siteContent, "section.biblia.title")} description={get(siteContent, "section.biblia.description")} bannerUrl={banners.biblia} videoUrl={banners["biblia-video"]}>
@@ -359,7 +372,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: bibliaColor(filename), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -404,7 +417,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`char-${key}`] ? (
-                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -443,7 +456,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[`conto-${key}`] ? (
-                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -484,7 +497,7 @@ export default async function HomePage() {
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: livroColor(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
                 {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill className="object-cover koru-card-img" />
+                  <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}

@@ -264,7 +264,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                           {highlightTerm(result.title, query)}
                         </span>
                         <span
-                          className="font-sans text-[10px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-full shrink-0"
+                          className="font-sans text-[11px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-full shrink-0"
                           style={{
                             background: `color-mix(in oklch, ${sectionColor} 15%, transparent)`,
                             color: sectionColor,
@@ -301,15 +301,15 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               style={{ borderTop: "1px solid var(--border)" }}
             >
               <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[10px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↑↓</kbd>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↑↓</kbd>
                 navegar
               </span>
               <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[10px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↵</kbd>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>↵</kbd>
                 abrir
               </span>
               <span className="flex items-center gap-1 font-sans text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                <kbd className="px-1 py-0.5 rounded text-[10px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>Esc</kbd>
+                <kbd className="px-1 py-0.5 rounded text-[11px]" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>Esc</kbd>
                 fechar
               </span>
             </div>

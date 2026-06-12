@@ -2,32 +2,39 @@ import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePublicSite } from "@/lib/revalidate"
 
+export const revalidate = 60
+
 // Card images are stored in the "card-images" bucket
 // Naming convention: {section}-{slug}.{ext}
 // Examples: biblia-parte-00.jpg, livro-01.jpg, referencia-harry-potter.jpg
 
 export async function GET() {
-  const admin = createAdminClient()
+  try {
+    const admin = createAdminClient()
 
-  const { data: files, error } = await admin.storage.from("card-images").list("", {
-    sortBy: { column: "name", order: "asc" },
-  })
+    const { data: files, error } = await admin.storage.from("card-images").list("", {
+      sortBy: { column: "name", order: "asc" },
+    })
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    const images: Record<string, string> = {}
+    for (const file of files ?? []) {
+      if (file.name.startsWith(".")) continue
+      const key = file.name.replace(/\.[^.]+$/, "")
+      const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
+      const v = file.updated_at || file.created_at || ""
+      const bust = v ? `?v=${new Date(v).getTime()}` : `?v=${Date.now()}`
+      images[key] = data.publicUrl + bust
+    }
+
+    return NextResponse.json({ images })
+  } catch (err) {
+    console.error("card-images GET:", err)
+    return NextResponse.json({ images: {} })
   }
-
-  const images: Record<string, string> = {}
-  for (const file of files ?? []) {
-    if (file.name.startsWith(".")) continue
-    const key = file.name.replace(/\.[^.]+$/, "")
-    const { data } = admin.storage.from("card-images").getPublicUrl(file.name)
-    const v = file.updated_at || file.created_at || ""
-    const bust = v ? `?v=${new Date(v).getTime()}` : `?v=${Date.now()}`
-    images[key] = data.publicUrl + bust
-  }
-
-  return NextResponse.json({ images })
 }
 
 export async function POST(req: NextRequest) {

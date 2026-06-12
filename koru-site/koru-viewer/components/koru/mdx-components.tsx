@@ -3,6 +3,14 @@ import type { ReactNode } from "react"
 import React from "react"
 import { GLOSSARY, getGlossaryEntry } from "@/lib/glossary"
 import { GlossaryTerm } from "@/components/koru/glossary-term"
+import { extractText, slugify } from "@/components/koru/content-utils"
+
+// Gera id estável a partir do texto do heading (para âncoras/sumário).
+// Retorna undefined quando o slug fica vazio, para não emitir id="".
+function headingId(children: ReactNode): string | undefined {
+  const slug = slugify(extractText(children))
+  return slug || undefined
+}
 
 // Build a single regex that matches any glossary term or alias as whole words.
 // Terms with spaces (e.g. "Bomi Veh") are included literally; the \b anchor
@@ -112,7 +120,8 @@ export const mdxComponents: MDXComponents = {
   ),
   h2: ({ children }) => (
     <h2
-      className="font-sans text-3xl md:text-4xl leading-tight mt-12 mb-5 pb-3"
+      id={headingId(children)}
+      className="font-sans text-3xl md:text-4xl leading-tight mt-12 mb-5 pb-3 scroll-mt-6"
       style={{
         fontFamily: "var(--font-sans), 'Inter', sans-serif",
         color: "var(--foreground)",
@@ -124,7 +133,8 @@ export const mdxComponents: MDXComponents = {
   ),
   h3: ({ children }) => (
     <h3
-      className="font-sans font-semibold text-xl mt-10 mb-3"
+      id={headingId(children)}
+      className="font-sans font-semibold text-xl mt-10 mb-3 scroll-mt-6"
       style={{ color: "var(--foreground)" }}
     >
       {children}

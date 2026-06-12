@@ -120,7 +120,7 @@ const SECTION_DEFAULTS: Record<string, string> = {
 // ---------------------------------------------------------------------------
 
 interface InlineEditProps {
-  as?: keyof JSX.IntrinsicElements
+  as?: keyof React.JSX.IntrinsicElements
   value: string
   contentKey: string
   onSave: (key: string, value: string) => Promise<void>
@@ -694,12 +694,14 @@ export default function AdminHomepagePage() {
               const char = chars[key]
               if (!char) return null
               const cardKey = `conto-${key}`
+              const contoTitleKey = `conto.${key}.title`
+              const contoTitle = getContent(contoTitleKey) || char.name
               return (
                 <CardWithUpload
                   key={key}
                   color={charColor(key)}
-                  title={char.name}
-                  titleKey={`conto.${key}.title`}
+                  title={contoTitle}
+                  titleKey={contoTitleKey}
                   kicker="Conto"
                   isEditing={isEditing}
                   onSave={save}

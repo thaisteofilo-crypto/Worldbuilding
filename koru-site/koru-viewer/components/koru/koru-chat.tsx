@@ -2,6 +2,14 @@
 
 import { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
+import {
+  ArrowUp,
+  ChevronLeft,
+  History,
+  MessageCircleQuestion,
+  SquarePen,
+  X,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type Message = {
@@ -22,6 +30,10 @@ const INITIAL_MESSAGE: Message = {
   role: "assistant",
   content: "Que parte das memórias de Korú gostaria de visitar?",
 }
+
+// Rotas onde o widget não deve flutuar: admin tem seu próprio chat,
+// /conversar já é o chat em página cheia, /entrar é o portão de login.
+const HIDDEN_PREFIXES = ["/admin", "/conversar", "/entrar"]
 
 function formatHistoryDate(iso: string): string {
   const d = new Date(iso)
@@ -265,7 +277,18 @@ export function KoruChat() {
 
   const busy = pending || streaming
 
-  if (pathname?.startsWith('/admin')) return null
+  if (pathname && HIDDEN_PREFIXES.some((p) => pathname.startsWith(p))) {
+    return null
+  }
+
+  const ghostButton = cn(
+    "inline-flex h-8 w-8 items-center justify-center rounded-full",
+    // Área de toque ≥40px sem alterar o visual (pseudo-elemento expandido)
+    "relative before:absolute before:-inset-1 before:content-['']",
+    "text-muted-foreground hover:text-foreground hover:bg-muted",
+    "transition-colors",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  )
 
   return (
     <>
@@ -276,13 +299,13 @@ export function KoruChat() {
         aria-label={open ? "Fechar conversa com Korú" : "Conversar com Korú"}
         aria-expanded={open}
         className={cn(
-          "fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full",
-          "transition-all duration-300 ease-out hover:scale-105 active:scale-95",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
-          "koru-chat-button"
+          "fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full",
+          "bg-primary text-primary-foreground shadow-card",
+          "transition-transform duration-200 ease-out hover:scale-105 active:scale-95",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         )}
       >
-        <KoruGlyph />
+        <MessageCircleQuestion size={20} strokeWidth={1.8} aria-hidden="true" />
       </button>
 
       {/* Painel de chat */}
@@ -293,139 +316,58 @@ export function KoruChat() {
           aria-modal="false"
           aria-label="Conversa com o mundo de Korú"
           className={cn(
-            "fixed bottom-24 right-6 z-50 flex flex-col overflow-hidden rounded-2xl",
+            "fixed bottom-[5.5rem] right-6 z-50 flex flex-col overflow-hidden rounded-2xl",
             "w-[min(380px,calc(100vw-3rem))] h-[60vh] max-h-[640px]",
-            "border border-[var(--border)] bg-[var(--surface)]",
-            "shadow-[0_20px_60px_color-mix(in_oklch,black_60%,transparent)]",
-            "animate-[koru-chat-in_220ms_var(--ease-smooth)_forwards]"
+            "bg-card text-card-foreground",
+            "shadow-[0_16px_48px_-12px_rgba(9,14,23,0.35)]",
+            "animate-[koru-chat-in_220ms_ease-out_forwards]"
           )}
         >
-          {/* Header */}
-          <div
-            className={cn(
-              "flex items-center justify-between border-b border-[var(--border)]",
-              "px-3 py-3 gap-2"
-            )}
-          >
-            {view === "chat" ? (
-              <button
-                type="button"
-                onClick={openHistory}
-                aria-label="Ver histórico de conversas"
-                title="Histórico"
-                className={cn(
-                  "inline-flex h-8 w-8 items-center justify-center rounded-md",
-                  "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
-                  "transition-colors hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
-                )}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <polyline points="12 7 12 12 15 14" />
-                </svg>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setView("chat")}
-                aria-label="Voltar para o chat"
-                title="Voltar"
-                className={cn(
-                  "inline-flex h-8 w-8 items-center justify-center rounded-md",
-                  "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
-                  "transition-colors hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
-                )}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-            )}
-
-            <div className="flex min-w-0 flex-1 flex-col items-center">
-              <span
-                className="font-serif text-lg leading-none text-[var(--foreground)]"
-                style={{ letterSpacing: "0.01em" }}
-              >
-                {view === "chat" ? "Korú" : "Histórico"}
-              </span>
-              <span className="mt-1 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] font-sans">
-                {view === "chat" ? "o mundo responde" : "suas conversas"}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {view === "chat" && (
+          {/* Header — sem divisória */}
+          <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-1">
+            <span className="font-serif text-lg leading-none">
+              {view === "chat" ? "Korú" : "Histórico"}
+            </span>
+            <div className="flex items-center gap-0.5">
+              {view === "chat" ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={openHistory}
+                    aria-label="Ver histórico de conversas"
+                    title="Histórico"
+                    className={ghostButton}
+                  >
+                    <History size={15} strokeWidth={1.7} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={startNewConversation}
+                    aria-label="Nova conversa"
+                    title="Nova conversa"
+                    className={ghostButton}
+                  >
+                    <SquarePen size={15} strokeWidth={1.7} aria-hidden="true" />
+                  </button>
+                </>
+              ) : (
                 <button
                   type="button"
-                  onClick={startNewConversation}
-                  aria-label="Nova conversa"
-                  title="Nova conversa"
-                  className={cn(
-                    "inline-flex h-8 w-8 items-center justify-center rounded-md",
-                    "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
-                    "transition-colors hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
-                  )}
+                  onClick={() => setView("chat")}
+                  aria-label="Voltar para o chat"
+                  title="Voltar"
+                  className={ghostButton}
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                  </svg>
+                  <ChevronLeft size={16} strokeWidth={1.7} aria-hidden="true" />
                 </button>
               )}
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Fechar"
-                className={cn(
-                  "inline-flex h-8 w-8 items-center justify-center rounded-md",
-                  "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
-                  "transition-colors hover:bg-[color-mix(in_oklch,var(--foreground)_8%,transparent)]"
-                )}
+                className={ghostButton}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
+                <X size={16} strokeWidth={1.7} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -435,10 +377,7 @@ export function KoruChat() {
               {/* Mensagens */}
               <div
                 ref={scrollRef}
-                className={cn(
-                  "flex-1 overflow-y-auto px-4 py-4 space-y-3",
-                  "scrollbar-thin"
-                )}
+                className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-thin"
               >
                 {messages.map((m, i) => {
                   const isLastAssistant =
@@ -455,22 +394,21 @@ export function KoruChat() {
                 })}
                 {pending && <PendingBubble />}
                 {error && (
-                  <div
-                    className="rounded-lg border border-[color-mix(in_oklch,var(--destructive)_50%,transparent)] bg-[color-mix(in_oklch,var(--destructive)_12%,transparent)] px-3 py-2 text-xs font-sans text-[var(--foreground)]"
+                  <p
+                    className="px-1 text-[13px] leading-snug font-sans text-destructive"
                     role="alert"
                   >
                     {error}
-                  </div>
+                  </p>
                 )}
               </div>
 
-              {/* Input */}
-              <div className="border-t border-[var(--border)] p-3 space-y-2">
+              {/* Input — sem divisória */}
+              <div className="px-3 pb-3 pt-1">
                 <div
                   className={cn(
-                    "flex items-center gap-2 rounded-xl border border-[var(--border)]",
-                    "bg-[var(--background)] pl-3 pr-2 py-1",
-                    "focus-within:border-[var(--accent)] transition-colors"
+                    "flex items-center gap-2 rounded-full bg-muted pl-4 pr-1.5 py-1",
+                    "transition-shadow focus-within:ring-2 focus-within:ring-ring"
                   )}
                 >
                   <input
@@ -483,8 +421,8 @@ export function KoruChat() {
                     placeholder="Pergunte ao mundo..."
                     aria-label="Sua pergunta"
                     className={cn(
-                      "flex-1 bg-transparent text-sm font-sans text-[var(--foreground)]",
-                      "placeholder:text-[var(--muted-foreground)]",
+                      "flex-1 bg-transparent text-sm font-sans text-foreground",
+                      "placeholder:text-muted-foreground",
                       "outline-none disabled:opacity-50"
                     )}
                   />
@@ -494,59 +432,45 @@ export function KoruChat() {
                     disabled={busy || !input.trim()}
                     aria-label="Enviar pergunta"
                     className={cn(
-                      "inline-flex h-8 w-8 items-center justify-center rounded-lg",
-                      "bg-[var(--accent)] text-[var(--accent-foreground)]",
-                      "transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+                      "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
+                      "relative before:absolute before:-inset-1 before:content-['']",
+                      "bg-primary text-primary-foreground",
+                      "transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     )}
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12l14-7-4 14-3-6-7-1z" />
-                    </svg>
+                    <ArrowUp size={15} strokeWidth={2} aria-hidden="true" />
                   </button>
                 </div>
-                <p className="text-center text-[10px] leading-snug font-sans text-[var(--muted-foreground)] opacity-80">
+                <p className="mt-2 text-center text-[11px] leading-snug font-sans text-muted-foreground/80">
                   Suas perguntas aparecem em Perguntas ao Mundo, anônimas.
                 </p>
               </div>
             </>
           ) : (
             /* View de histórico */
-            <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1.5 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5 scrollbar-thin">
               {historyLoading && (
                 <div className="flex justify-center py-6">
                   <div
-                    className="h-5 w-5 rounded-full border-2 animate-spin"
-                    style={{
-                      borderColor: "var(--border)",
-                      borderTopColor: "var(--accent)",
-                    }}
+                    className="h-5 w-5 rounded-full border-2 border-muted border-t-primary animate-spin"
                     aria-label="Carregando"
                   />
                 </div>
               )}
 
               {!historyLoading && historyError && (
-                <div
-                  className="rounded-lg border border-[color-mix(in_oklch,var(--destructive)_50%,transparent)] bg-[color-mix(in_oklch,var(--destructive)_12%,transparent)] px-3 py-2 text-xs font-sans text-[var(--foreground)]"
+                <p
+                  className="px-3 py-2 text-[13px] leading-snug font-sans text-destructive"
                   role="alert"
                 >
                   {historyError}
-                </div>
+                </p>
               )}
 
               {!historyLoading && !historyError && historyItems.length === 0 && (
                 <div className="px-2 py-6 text-center">
-                  <p className="font-sans text-xs text-[var(--muted-foreground)]">
+                  <p className="font-sans text-xs text-muted-foreground">
                     Nenhuma conversa anterior.
                   </p>
                 </div>
@@ -559,15 +483,14 @@ export function KoruChat() {
                     type="button"
                     onClick={() => openConversation(item.id)}
                     className={cn(
-                      "w-full text-left rounded-lg px-3 py-2.5 transition-colors",
-                      "border border-[var(--border)]",
-                      "hover:bg-[color-mix(in_oklch,var(--foreground)_5%,transparent)]"
+                      "w-full text-left rounded-xl px-3 py-2.5 transition-colors hover:bg-muted",
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     )}
                   >
-                    <p className="font-sans text-[13px] leading-snug text-[var(--foreground)] line-clamp-2">
+                    <p className="font-sans text-[13px] leading-snug text-foreground line-clamp-2">
                       {item.first_question}
                     </p>
-                    <div className="mt-1 flex items-center gap-2 text-[10px] uppercase tracking-[0.15em] font-sans text-[var(--muted-foreground)]">
+                    <div className="mt-1 flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] font-sans text-muted-foreground">
                       <span>{formatHistoryDate(item.updated_at)}</span>
                       <span aria-hidden="true">·</span>
                       <span>
@@ -584,28 +507,6 @@ export function KoruChat() {
 
       {/* Estilos locais */}
       <style jsx global>{`
-        .koru-chat-button {
-          background: color-mix(in srgb, hsl(var(--background)) 70%, hsl(var(--primary)) 30%);
-          border: 1px solid color-mix(in srgb, hsl(var(--primary)) 30%, transparent);
-          color: hsl(var(--foreground));
-          box-shadow:
-            0 0 18px color-mix(in srgb, hsl(var(--primary)) 22%, transparent),
-            0 6px 18px color-mix(in srgb, black 30%, transparent);
-        }
-        .koru-chat-button:hover {
-          box-shadow:
-            0 0 26px color-mix(in srgb, hsl(var(--primary)) 32%, transparent),
-            0 8px 22px color-mix(in srgb, black 35%, transparent);
-          border-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent);
-        }
-        @keyframes koru-glyph-pulse {
-          0%, 100% { opacity: 0.55; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.04); }
-        }
-        .koru-glyph-outer {
-          transform-origin: 12px 12px;
-          animation: koru-glyph-pulse 3.6s ease-in-out infinite;
-        }
         @keyframes koru-chat-in {
           from { opacity: 0; transform: translateY(8px) scale(0.98); }
           to { opacity: 1; transform: translateY(0) scale(1); }
@@ -620,64 +521,15 @@ export function KoruChat() {
           height: 0.95em;
           margin-left: 2px;
           vertical-align: -0.1em;
-          background: var(--foreground);
+          background: currentColor;
           animation: koru-cursor-blink 0.9s ease-in-out infinite;
           border-radius: 1px;
         }
         @media (prefers-reduced-motion: reduce) {
-          .koru-glyph-outer { animation: none; }
           .koru-cursor { animation: none; opacity: 0.7; }
         }
       `}</style>
     </>
-  )
-}
-
-/**
- * Glifo de luz inspirado no Akwu: três anéis concêntricos sugerindo as
- * três camadas (Lar Central, Ali Central, Ariku Externo) vistas de cima,
- * com núcleo de luz no centro. Pulso muito sutil só no anel externo.
- */
-function KoruGlyph() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <circle
-        className="koru-glyph-outer"
-        cx="12"
-        cy="12"
-        r="9"
-        strokeWidth="1.2"
-        opacity="0.7"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="5.6"
-        strokeWidth="1.3"
-        opacity="0.9"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="2.6"
-        strokeWidth="1.4"
-        opacity="1"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="0.9"
-        fill="currentColor"
-        stroke="none"
-      />
-    </svg>
   )
 }
 
@@ -695,8 +547,8 @@ function MessageBubble({
         className={cn(
           "max-w-[85%] rounded-2xl px-3.5 py-2 text-[13.5px] leading-relaxed font-sans whitespace-pre-wrap",
           isUser
-            ? "bg-[var(--accent)] text-[var(--accent-foreground)] rounded-br-md"
-            : "bg-[color-mix(in_oklch,var(--foreground)_6%,transparent)] text-[var(--foreground)] rounded-bl-md"
+            ? "bg-primary text-primary-foreground rounded-br-md"
+            : "bg-muted text-foreground rounded-bl-md"
         )}
       >
         {message.content}
@@ -709,12 +561,7 @@ function MessageBubble({
 function PendingBubble() {
   return (
     <div className="flex justify-start">
-      <div
-        className={cn(
-          "rounded-2xl rounded-bl-md px-3.5 py-2.5",
-          "bg-[color-mix(in_oklch,var(--foreground)_6%,transparent)]"
-        )}
-      >
+      <div className="rounded-2xl rounded-bl-md px-3.5 py-2.5 bg-muted">
         <div className="flex items-center gap-1.5">
           <Dot delay="0ms" />
           <Dot delay="160ms" />
@@ -734,7 +581,7 @@ function PendingBubble() {
 function Dot({ delay }: { delay: string }) {
   return (
     <span
-      className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--muted-foreground)]"
+      className="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground"
       style={{
         animation: "koru-dot 1.2s ease-in-out infinite",
         animationDelay: delay,

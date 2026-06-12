@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 
 const navItems = [
+  { href: '/admin/escrever', label: 'Escrever' },
   { href: '/admin/homepage', label: 'Homepage' },
   { href: '/admin/conteudo', label: 'Conteúdo' },
   { href: '/admin/editor', label: 'Editor' },

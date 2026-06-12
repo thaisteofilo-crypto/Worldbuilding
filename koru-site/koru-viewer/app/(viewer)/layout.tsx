@@ -1,11 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
+import { Maximize2, Minimize2 } from "lucide-react"
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { NavSidebar } from "@/components/koru/nav-sidebar"
 import { Breadcrumb } from "@/components/koru/breadcrumb"
+import { FontScaleControl } from "@/components/koru/font-scale-control"
+import Loading from "./loading"
 
 // SearchModal is only ever shown when the user presses Cmd+K (or clicks the
 // sidebar search). Loading it lazily keeps it out of the initial viewer bundle.
@@ -59,6 +62,10 @@ export default function ViewerLayout({
   children: React.ReactNode
 }) {
   const [searchOpen, setSearchOpen] = useState(false)
+  // Modo imersivo: oculta sidebar + chrome, deixando só o conteúdo.
+  const [immersive, setImmersive] = useState(false)
+  // Estado "real" da sidebar, preservado ao entrar/sair do modo imersivo.
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   // Global Cmd+K / Ctrl+K listener + custom event from sidebar
   useEffect(() => {
@@ -77,8 +84,28 @@ export default function ViewerLayout({
     }
   }, [])
 
+  // Modo imersivo: "f" alterna (ignorando campos editáveis), Esc sai.
+  useEffect(() => {
+    function handleImmersiveKeys(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        if (!searchOpen) setImmersive(false)
+        return
+      }
+      if (e.key !== "f" || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return
+      const target = e.target as HTMLElement | null
+      if (target?.closest("input, textarea, select, [contenteditable]")) return
+      e.preventDefault()
+      setImmersive((prev) => !prev)
+    }
+    window.addEventListener("keydown", handleImmersiveKeys)
+    return () => window.removeEventListener("keydown", handleImmersiveKeys)
+  }, [searchOpen])
+
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider
+      open={immersive ? false : sidebarOpen}
+      onOpenChange={setSidebarOpen}
+    >
       <ViewTransitions />
       <a
         href="#main-content"
@@ -89,12 +116,47 @@ export default function ViewerLayout({
       </a>
       <NavSidebar />
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex items-center gap-3 px-4 h-10" style={{ background: "var(--background)" }}>
+        {/* Header mantém a altura no modo imersivo (só some visualmente) para
+            não deslocar os ScrollArea das páginas, que dependem de 100vh fixo. */}
+        <header
+          inert={immersive || undefined}
+          className={`sticky top-0 z-10 flex items-center gap-3 px-4 h-10 transition-opacity duration-300 ${
+            immersive ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+          style={{ background: "var(--background)" }}
+        >
           <SidebarTrigger className="text-muted-foreground hover:text-foreground shrink-0" />
           <Breadcrumb />
+          <div className="ml-auto flex items-center gap-1 shrink-0">
+            <FontScaleControl />
+            <button
+              type="button"
+              onClick={() => setImmersive(true)}
+              aria-label="Modo imersivo"
+              title="Modo imersivo (f)"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[var(--admin-hover)] hover:text-foreground"
+            >
+              <Maximize2 size={14} aria-hidden="true" />
+            </button>
+          </div>
         </header>
-        <main id="main-content" className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1">
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </main>
       </SidebarInset>
+
+      {/* Saída do modo imersivo (além de Esc / f) */}
+      {immersive && (
+        <button
+          type="button"
+          onClick={() => setImmersive(false)}
+          aria-label="Sair do modo imersivo"
+          title="Sair do modo imersivo (Esc)"
+          className="fixed top-3 right-4 z-50 inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground opacity-40 transition-opacity duration-300 hover:opacity-100 hover:bg-[var(--admin-hover)] animate-fade-up"
+        >
+          <Minimize2 size={15} aria-hidden="true" />
+        </button>
+      )}
 
       {searchOpen && (
         <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />

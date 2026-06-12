@@ -181,7 +181,7 @@ export default async function PerguntasAoMundoPage({ searchParams }: PageProps) 
                       className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-xs"
                       style={{ color: "var(--muted-foreground)" }}
                     >
-                      <span>{formatLongDate(r.updated_at)}</span>
+                      <time dateTime={r.updated_at}>{formatLongDate(r.updated_at)}</time>
                       <span aria-hidden="true">·</span>
                       <span>Visitante anônimo</span>
                       <span aria-hidden="true">·</span>

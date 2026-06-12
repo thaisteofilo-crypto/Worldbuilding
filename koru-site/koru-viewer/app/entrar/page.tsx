@@ -24,6 +24,8 @@ export default function EntrarPage() {
   const [error, setError] = useState<string | null>(null)
   const [heroImage, setHeroImage] = useState<string | null>(null)
   const [heroVideo, setHeroVideo] = useState<string | null>(null)
+  const [bgImages, setBgImages] = useState<string[]>([])
+  const [bgIndex, setBgIndex] = useState(0)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -37,9 +39,26 @@ export default function EntrarPage() {
       .then(({ banners }) => {
         if (banners?.["hero-video"]) setHeroVideo(banners["hero-video"])
         else if (banners?.["hero"]) setHeroImage(banners["hero"])
+        else {
+          fetch("/api/media-images")
+            .then((r) => r.json())
+            .then(({ images }) => { if (images?.length) setBgImages(images) })
+            .catch(() => {})
+        }
       })
-      .catch(() => {})
+      .catch(() => {
+        fetch("/api/media-images")
+          .then((r) => r.json())
+          .then(({ images }) => { if (images?.length) setBgImages(images) })
+          .catch(() => {})
+      })
   }, [])
+
+  useEffect(() => {
+    if (bgImages.length <= 1) return
+    const id = setInterval(() => setBgIndex((i) => (i + 1) % bgImages.length), 5000)
+    return () => clearInterval(id)
+  }, [bgImages])
 
   function switchTab(t: Tab) {
     setTab(t)
@@ -87,9 +106,10 @@ export default function EntrarPage() {
     }
   }
 
+  const hasBg = heroVideo || heroImage || bgImages.length > 0
+
   return (
     <div className="auth-bg relative min-h-screen w-full flex items-center justify-center overflow-hidden">
-      {/* Fundo: vídeo ou imagem */}
       {heroVideo ? (
         <video
           src={heroVideo}
@@ -102,7 +122,22 @@ export default function EntrarPage() {
           alt="Universo Korú"
           className="absolute inset-0 w-full h-full object-cover"
         />
+      ) : bgImages.length > 0 ? (
+        <>
+          {bgImages.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+              style={{ opacity: i === bgIndex ? 1 : 0 }}
+            />
+          ))}
+        </>
       ) : null}
+
+      {hasBg && <div className="absolute inset-0 bg-black/40" aria-hidden />}
 
       {/* Card branco flutuante */}
       <div

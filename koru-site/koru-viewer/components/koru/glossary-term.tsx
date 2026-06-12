@@ -60,7 +60,7 @@ export function GlossaryTerm({ term, definition, category, children }: GlossaryT
             {definition}
           </span>
           <span
-            className="block font-sans text-[10px] uppercase tracking-wider mt-2"
+            className="block font-sans text-[11px] uppercase tracking-wider mt-2"
             style={{ color: "var(--muted-foreground)" }}
           >
             {displayCategory}
