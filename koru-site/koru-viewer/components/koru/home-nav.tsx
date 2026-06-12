@@ -24,10 +24,10 @@ export function HomeNav() {
     <header
       className="fixed top-0 inset-x-0 z-50"
       style={{
-        background: "hsl(var(--background) / 0.45)",
+        background: "color-mix(in oklch, var(--background) 45%, transparent)",
         backdropFilter: "blur(20px) saturate(1.5)",
         WebkitBackdropFilter: "blur(20px) saturate(1.5)",
-        borderBottom: "1px solid hsl(var(--border-shadcn) / 0.4)",
+        borderBottom: "1px solid color-mix(in oklch, var(--border) 50%, transparent)",
       }}
     >
       <nav
@@ -91,7 +91,7 @@ export function HomeNav() {
         <div
           id="home-nav-mobile"
           className="md:hidden"
-          style={{ borderTop: "1px solid hsl(var(--border-shadcn) / 0.4)" }}
+          style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 70%, transparent)" }}
         >
           <ul className="flex flex-col px-4 py-3 gap-1" role="list">
             {NAV_LINKS.map((link) => (

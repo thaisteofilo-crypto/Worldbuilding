@@ -81,7 +81,7 @@ function livroCardKey(filename: string): string {
 function ImagePlaceholder() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="opacity-15" style={{ color: "hsl(var(--muted-foreground))" }}>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" className="opacity-15" style={{ color: "var(--muted-foreground)" }}>
         <rect x="3" y="3" width="18" height="18" rx="2" />
         <circle cx="8.5" cy="8.5" r="1.5" />
         <polyline points="21,15 16,10 5,21" />
@@ -91,9 +91,8 @@ function ImagePlaceholder() {
 }
 
 // Placeholder elegante para capítulos do Livro sem imagem de capa:
-// a cor sólida da marca (livroColor, no card) fica visível sob um scrim
-// suave + número do capítulo em serifa. Mantém 07–12 e o Epílogo
-// visualmente consistentes com os 01–06.
+// gradiente azul-frio do design system + número do capítulo em serifa.
+// Mantém os cards 07–12 e o Epílogo visualmente consistentes com os 01–06.
 function LivroCardPlaceholder({ slug }: { slug: string }) {
   const isEpilogo = slug === "epilogo"
   return (
@@ -102,7 +101,7 @@ function LivroCardPlaceholder({ slug }: { slug: string }) {
       aria-hidden="true"
       style={{
         background:
-          "radial-gradient(130% 100% at 80% 0%, oklch(0 0 0 / 0) 0%, oklch(0 0 0 / 0.22) 55%, oklch(0 0 0 / 0.45) 100%)",
+          "radial-gradient(130% 100% at 80% 0%, color-mix(in oklch, var(--blue-cold) 55%, oklch(0.22 0.02 260)) 0%, oklch(0.24 0.02 265) 48%, oklch(0.15 0.012 270) 100%)",
       }}
     >
       <div className="absolute inset-3 rounded-lg pointer-events-none" style={{ border: "1px solid oklch(1 0 0 / 0.08)" }} />
@@ -216,7 +215,7 @@ function FullSection({
           <p
             className="font-sans text-xs tracking-[0.2em] uppercase mb-3"
             style={{
-              color: hasBanner ? "oklch(1 0 0 / 0.6)" : "hsl(var(--muted-foreground))",
+              color: hasBanner ? "oklch(1 0 0 / 0.6)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
             }}
           >
@@ -227,7 +226,7 @@ function FullSection({
           className="font-serif text-5xl md:text-7xl leading-[1.05] tracking-tight mb-4 md:mb-6"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
-            color: hasBanner ? "white" : "hsl(var(--foreground))",
+            color: hasBanner ? "white" : "var(--foreground)",
             textShadow: hasBanner ? "0 2px 12px oklch(0 0 0 / 0.4)" : undefined,
           }}
         >
@@ -237,7 +236,7 @@ function FullSection({
           <p
             className="font-sans text-lg md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-10"
             style={{
-              color: hasBanner ? "oklch(1 0 0 / 0.85)" : "hsl(var(--muted-foreground))",
+              color: hasBanner ? "oklch(1 0 0 / 0.85)" : "var(--muted-foreground)",
               textShadow: hasBanner ? "0 1px 6px oklch(0 0 0 / 0.45)" : undefined,
             }}
           >
@@ -364,7 +363,7 @@ export default async function HomePage() {
             className="koru-hero-text font-serif leading-[0.85] mb-8"
             style={{
               fontSize: "clamp(6rem, 18vw, 14rem)",
-              color: hasHero ? "white" : "hsl(var(--foreground))",
+              color: hasHero ? "white" : "var(--foreground)",
               fontFamily: "var(--font-serif), Georgia, serif",
               textShadow: "none",
             }}
@@ -374,7 +373,7 @@ export default async function HomePage() {
           <p
             className="koru-content-enter text-lg md:text-2xl leading-relaxed max-w-xl font-sans mb-8"
             style={{
-              color: hasHero ? "oklch(1 0 0 / 0.9)" : "hsl(var(--muted-foreground))",
+              color: hasHero ? "oklch(1 0 0 / 0.9)" : "var(--muted-foreground)",
               textShadow: hasHero ? "0 1px 8px oklch(0 0 0 / 0.5)" : undefined,
               animationDelay: "0.55s",
             }}

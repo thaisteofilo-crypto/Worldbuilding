@@ -238,56 +238,6 @@ article .mdx-article :is(p, li, blockquote) {
   transition: background-color 200ms ease, color 200ms ease;
 }
 
-/* ─── Carrosséis da home ─── */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Cards responsivos: N por viewport */
-.carousel-card {
-  width: calc((100% - 8px) / 2);    /* mobile: 2 cards */
-  scroll-snap-align: start;
-  flex-shrink: 0;
-}
-@media (min-width: 640px) {
-  .carousel-card {
-    width: calc((100% - 16px) / 3);  /* sm: 3 cards */
-  }
-}
-@media (min-width: 1024px) {
-  .carousel-card {
-    width: calc((100% - 24px) / 3);  /* lg: 3 cards */
-  }
-}
-@media (min-width: 1280px) {
-  .carousel-card {
-    width: calc((100% - 32px) / 5);  /* xl: 5 cards */
-  }
-}
-@media (max-width: 320px) {
-  .carousel-card {
-    width: calc(100% - 16px);        /* telas muito pequenas: 1 card */
-  }
-}
-
-/* ─── Hero entrance ─── */
-@keyframes koru-hero-enter {
-  from { opacity: 0; letter-spacing: 0.3em; }
-  to   { opacity: 1; letter-spacing: inherit; }
-}
-@keyframes koru-content-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.koru-hero-text {
-  animation: koru-hero-enter 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.koru-content-enter {
-  animation: koru-content-enter 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: 0.12s;
-  opacity: 0;
-}
-
 /* ─── Page fade ─── */
 @keyframes koru-fade-in {
   from { opacity: 0; transform: translateY(4px); }
@@ -346,5 +296,4 @@ article .mdx-article :is(p, li, blockquote) {
   .koru-card, .koru-nav-item { animation: none !important; transition: none !important; }
   .koru-card:hover { transform: none; }
   .koru-card-img { transition: none; }
-  .koru-hero-text, .koru-content-enter { animation: none !important; opacity: 1 !important; }
 }
