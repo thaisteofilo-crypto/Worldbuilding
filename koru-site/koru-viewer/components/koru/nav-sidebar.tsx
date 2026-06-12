@@ -209,11 +209,11 @@ export function NavSidebar() {
             onClick={() => window.dispatchEvent(new CustomEvent("koru:open-search"))}
             aria-label="Buscar (Ctrl+K)"
             className="flex items-center gap-2.5 w-full rounded-lg px-3 py-2.5 font-sans text-sm text-muted-foreground koru-nav-item hover:bg-admin-hover hover:text-foreground h-auto justify-start"
-            style={{ border: "1px solid var(--border)" }}
+            style={{ border: "1px solid hsl(var(--border-shadcn))" }}
           >
             <Search size={14} aria-hidden="true" className="opacity-45" />
             <span className="flex-1 text-left">Buscar</span>
-            <kbd className="text-[11px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid var(--border)" }}>
+            <kbd className="text-[11px] px-1.5 py-px rounded opacity-60" style={{ border: "1px solid hsl(var(--border-shadcn))" }}>
               ⌘K
             </kbd>
           </Button>

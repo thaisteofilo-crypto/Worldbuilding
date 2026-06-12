@@ -32,7 +32,7 @@ export function SectionBanner({
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(to top, var(--background) 5%, var(--background)/80 30%, transparent 70%)",
+                background: "linear-gradient(to top, hsl(var(--background)) 5%, hsl(var(--background) / 0.8) 30%, transparent 70%)",
               }}
             />
           )}
@@ -40,7 +40,7 @@ export function SectionBanner({
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(to top, var(--background) 5%, transparent 60%)",
+                background: "linear-gradient(to top, hsl(var(--background)) 5%, transparent 60%)",
               }}
             />
           )}

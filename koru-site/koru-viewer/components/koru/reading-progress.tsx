@@ -66,8 +66,8 @@ export function ReadingProgress() {
         top: rect.top,
         left: rect.left,
         width: `${(rect.width * progress) / 100}px`,
-        background: "var(--primary)",
-        boxShadow: "0 0 8px var(--primary)",
+        background: "hsl(var(--primary))",
+        boxShadow: "0 0 8px hsl(var(--primary))",
         transition: "width 0.1s linear",
       }}
       role="progressbar"

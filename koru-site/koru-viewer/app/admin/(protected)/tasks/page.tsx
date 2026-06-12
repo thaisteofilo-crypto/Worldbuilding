@@ -23,7 +23,7 @@ const CATEGORY_COLORS: Record<Task['category'], string> = {
   capitulo: 'var(--color-mel)',
   biblia: 'var(--color-jala)',
   site: 'oklch(0.65 0.09 150)',
-  outro: 'var(--muted-foreground)',
+  outro: 'hsl(var(--muted-foreground))',
 }
 
 const CATEGORY_LABELS: Record<Task['category'], string> = {
@@ -529,7 +529,7 @@ function TaskCard({
           <select
             value={editData.category}
             onChange={(e) => setEditData((d) => ({ ...d, category: e.target.value as Task['category'] }))}
-            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
+            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-foreground cursor-pointer"
           >
             <option value="outro">outro</option>
             <option value="conto">conto</option>
@@ -540,7 +540,7 @@ function TaskCard({
           <select
             value={editData.priority}
             onChange={(e) => setEditData((d) => ({ ...d, priority: e.target.value as Task['priority'] }))}
-            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
+            className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-foreground cursor-pointer"
           >
             <option value="low">↓ baixa</option>
             <option value="normal">– normal</option>
@@ -707,7 +707,7 @@ function AddTaskForm({
         <select
           value={newTask.category}
           onChange={(e) => onChange({ ...newTask, category: e.target.value as Task['category'] })}
-          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
+          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-foreground cursor-pointer"
         >
           <option value="outro">outro</option>
           <option value="conto">conto</option>
@@ -718,7 +718,7 @@ function AddTaskForm({
         <select
           value={newTask.priority}
           onChange={(e) => onChange({ ...newTask, priority: e.target.value as Task['priority'] })}
-          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-[var(--foreground)] cursor-pointer"
+          className="flex-1 rounded-lg border border-border bg-background px-2 py-1 font-sans text-xs text-foreground outline-none focus:border-foreground cursor-pointer"
         >
           <option value="low">↓ baixa</option>
           <option value="normal">– normal</option>

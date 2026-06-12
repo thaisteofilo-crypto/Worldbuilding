@@ -79,7 +79,7 @@ export default async function BibliaPage({ params }: Props) {
         title={title}
         subtitle="Bíblia do Mundo"
         meta={`~${readingMinutes} min de leitura`}
-        accentColor="var(--gold)"
+        accentColor="var(--color-mel)"
         fallbackHue={bannerCfg.fallbackHue}
         videoSrc={uploadedVideo ?? bannerCfg.videoSrc}
         imageSrc={uploadedImage ?? bannerCfg.imageSrc}

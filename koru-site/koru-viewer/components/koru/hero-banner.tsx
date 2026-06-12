@@ -18,7 +18,7 @@ export function HeroBanner({
   title,
   subtitle,
   meta,
-  accentColor = "var(--gold)",
+  accentColor = "var(--color-mel)",
   imageSrc,
   videoSrc,
 }: HeroBannerProps) {

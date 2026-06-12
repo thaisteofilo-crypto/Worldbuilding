@@ -53,7 +53,7 @@ const TABS: TabDef[] = [
     id: "inconsistencies",
     label: "Atritos",
     description: "Onde os textos não estão fechando entre si — morfologia, luz, Bomi Veh, Oruku — com o trecho, o porquê e uma sugestão de reescrita.",
-    accentVar: "var(--destructive)",
+    accentVar: "hsl(var(--destructive))",
     icon: <AlertTriangle size={14} />,
   },
   {

@@ -38,7 +38,7 @@ const literaryComponents = {
   p: ({ children }: { children?: React.ReactNode }) => (
     <p
       className="font-sans text-base leading-[1.85] mb-5"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </p>
@@ -46,7 +46,7 @@ const literaryComponents = {
   h3: ({ children }: { children?: React.ReactNode }) => (
     <h3
       className="font-sans font-semibold text-xl leading-tight mt-10 mb-3"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </h3>
@@ -54,7 +54,7 @@ const literaryComponents = {
   h4: ({ children }: { children?: React.ReactNode }) => (
     <h4
       className="font-sans font-medium text-lg leading-tight mt-8 mb-2 opacity-75"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </h4>
@@ -97,7 +97,7 @@ export default async function ContoPage({ params }: Props) {
         title={title}
         subtitle="Conto"
         meta={`~${readingMinutes} min de leitura`}
-        accentColor="var(--blue-cold)"
+        accentColor="var(--color-jala)"
         fallbackHue={220}
       />
       <article className="max-w-3xl mx-auto px-6 md:px-10 py-10 pb-20">

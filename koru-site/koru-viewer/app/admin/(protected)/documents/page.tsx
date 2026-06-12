@@ -240,7 +240,7 @@ export default function DocumentsPage() {
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="w-2 h-2 rounded-full"
-                  style={{ background: SECTION_COLORS[section] ?? "var(--muted-foreground)" }}
+                  style={{ background: SECTION_COLORS[section] ?? "hsl(var(--muted-foreground))" }}
                 />
                 <h2 className="font-sans text-xs uppercase tracking-[0.15em]" style={{ color: "var(--muted-foreground)" }}>
                   {section}

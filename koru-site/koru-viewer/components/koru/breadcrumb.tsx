@@ -63,20 +63,20 @@ export function Breadcrumb() {
       {section && (
         <span
           className="shrink-0"
-          style={{ color: "var(--muted-foreground)" }}
+          style={{ color: "hsl(var(--muted-foreground))" }}
         >
           {section}
         </span>
       )}
       {item && section && (
-        <span aria-hidden="true" style={{ color: "var(--border)" }}>
+        <span aria-hidden="true" style={{ color: "hsl(var(--border-shadcn))" }}>
           ›
         </span>
       )}
       {item && (
         <span
           className="truncate"
-          style={{ color: "var(--foreground)" }}
+          style={{ color: "hsl(var(--foreground))" }}
           aria-current="location"
         >
           {item}

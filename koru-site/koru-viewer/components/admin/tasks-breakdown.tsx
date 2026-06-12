@@ -26,7 +26,7 @@ export function TasksBreakdown({ taskStats }: Props) {
   const maxCount = categoryEntries.length > 0 ? categoryEntries[0][1] : 1
 
   const pills = [
-    { label: "Todo", value: todo, color: "var(--muted-foreground)" },
+    { label: "Todo", value: todo, color: "hsl(var(--muted-foreground))" },
     { label: "Em progresso", value: inProgress, color: "var(--color-mel)" },
     { label: "Feitas", value: done, color: "hsl(var(--primary))" },
   ]
