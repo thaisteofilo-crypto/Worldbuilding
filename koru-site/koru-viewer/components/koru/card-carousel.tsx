@@ -131,14 +131,16 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           margins outside) gives the scaled cards room to breathe.
           scroll-snap proximity > mandatory: lets the user free-scroll without
           the snap fighting momentum at every card boundary. */}
+      {/* scroll-px deve casar com o px interno: o snap alinha os cards à
+          scroll-padding, e um valor menor que o padding puxa a fila para a
+          borda e corta o primeiro card. */}
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-6 -my-6 px-4 md:px-16"
+        className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-6 -my-6 px-4 md:px-16 scroll-px-4 md:scroll-px-16"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           scrollSnapType: "x proximity",
-          scrollPaddingInline: "4px",
           WebkitOverflowScrolling: "touch",
         }}
       >
