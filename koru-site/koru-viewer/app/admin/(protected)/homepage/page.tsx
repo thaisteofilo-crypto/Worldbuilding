@@ -158,8 +158,8 @@ function InlineEdit({
   if (open) {
     const inputStyle: React.CSSProperties = {
       ...style,
-      background: "color-mix(in oklch, var(--surface, oklch(0.12 0.008 280)) 80%, transparent)",
-      border: "1.5px solid var(--accent, oklch(0.65 0.18 50))",
+      background: "color-mix(in oklch, hsl(var(--card)) 80%, transparent)",
+      border: "1.5px solid hsl(var(--primary))",
       borderRadius: 4,
       outline: "none",
       width: "100%",
@@ -215,7 +215,7 @@ function InlineEdit({
       style={{
         ...style,
         cursor: "text",
-        outline: "1px dashed color-mix(in oklch, var(--accent, oklch(0.65 0.18 50)) 40%, transparent)",
+        outline: "1px dashed color-mix(in oklch, hsl(var(--primary)) 40%, transparent)",
         outlineOffset: 2,
         borderRadius: 2,
       }}

@@ -264,8 +264,8 @@ function renderMarkdownSafe(
           <div
             key={key++}
             style={{
-              background: 'color-mix(in oklch, var(--accent) 6%, transparent)',
-              borderLeft: '2px solid var(--accent)',
+              background: 'color-mix(in oklch, hsl(var(--primary)) 6%, transparent)',
+              borderLeft: '2px solid hsl(var(--primary))',
               padding: '0.75rem 1rem',
               borderRadius: '0 0.5rem 0.5rem 0',
               margin: '0.5rem 0',
@@ -444,7 +444,7 @@ function InsertButton({ onClick, label, primary = false }: { onClick: () => void
       style={{
         fontSize: '10px',
         color: primary ? 'var(--background)' : 'var(--foreground)',
-        border: primary ? 'none' : '1px solid var(--border)',
+        border: primary ? 'none' : '1px solid hsl(var(--border-shadcn))',
         background: primary ? 'var(--foreground)' : 'transparent',
       }}
     >
@@ -843,7 +843,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
         width: 'min(440px, calc(100vw - 40px))',
         height: 'min(640px, calc(100vh - 120px))',
         zIndex: 90,
-        border: '1px solid var(--border)',
+        border: '1px solid hsl(var(--border-shadcn))',
         boxShadow: '0 20px 50px oklch(0 0 0 / 0.35)',
         animation: 'koru-chat-in 180ms ease-out',
       }}
@@ -886,7 +886,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
             className="ml-1 rounded-full px-2 py-0.5 font-sans transition-colors"
             style={{
               fontSize: '10px',
-              border: '1px solid var(--border)',
+              border: '1px solid hsl(var(--border-shadcn))',
               background:
                 responseMode === 'detailed'
                   ? 'color-mix(in oklch, var(--foreground) 10%, transparent)'
@@ -949,7 +949,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
         <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
           {viewingSession ? (
             <>
-              <div className="flex items-center gap-2 px-3 py-2 shrink-0 border-b" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex items-center gap-2 px-3 py-2 shrink-0 border-b" style={{ borderColor: 'hsl(var(--border-shadcn))' }}>
                 <button
                   onClick={() => setViewingSession(null)}
                   className="flex items-center gap-1 text-[11px] transition-colors rounded px-1.5 py-1"
@@ -999,7 +999,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
                   </p>
                 </div>
               ) : (
-                <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
+                <div className="divide-y" style={{ borderColor: 'hsl(var(--border-shadcn))' }}>
                   {sessions.map((session) => (
                     <button
                       key={session.id}
@@ -1039,7 +1039,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
           <div className="flex flex-col items-center justify-center text-center px-6 py-8">
             <div
               className="rounded-full p-2.5 mb-3"
-              style={{ background: 'color-mix(in oklch, var(--accent) 12%, transparent)', color: 'var(--accent)' }}
+              style={{ background: 'color-mix(in oklch, hsl(var(--primary)) 12%, transparent)', color: 'hsl(var(--primary))' }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
@@ -1125,7 +1125,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
                 fontSize: '10px',
                 background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
                 color: 'var(--foreground)',
-                border: '1px solid var(--border)',
+                border: '1px solid hsl(var(--border-shadcn))',
               }}
             >
               Reescrever seleção
@@ -1153,7 +1153,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
               rows={2}
               className="flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 transition-colors"
               style={{
-                borderColor: 'var(--border)',
+                borderColor: 'hsl(var(--border-shadcn))',
                 background: 'color-mix(in oklch, var(--foreground) 4%, transparent)',
                 color: 'var(--foreground)',
                 // @ts-expect-error custom property
@@ -1168,7 +1168,7 @@ export function ChatPanel({ documentPath, documentContent, documentLabel, select
                   onClick={handleStop}
                   className="rounded-lg px-3 py-2 text-xs font-medium transition-opacity hover:opacity-80 flex items-center justify-center gap-1.5"
                   style={{
-                    background: 'color-mix(in oklch, oklch(0.55 0.22 25) 15%, var(--surface))',
+                    background: 'color-mix(in oklch, oklch(0.55 0.22 25) 15%, hsl(var(--card)))',
                     color: 'oklch(0.65 0.2 25)',
                     border: '1px solid color-mix(in oklch, oklch(0.55 0.22 25) 25%, transparent)',
                   }}

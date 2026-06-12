@@ -78,17 +78,17 @@ const STATUS_STYLES: Record<
   },
   dissolvido: {
     bg: "oklch(0.22 0.07 220 / 0.25)",
-    color: "var(--blue-cold)",
+    color: "var(--color-jala)",
     border: "oklch(0.62 0.09 220 / 0.35)",
   },
   preso: {
     bg: "oklch(0.30 0.10 75 / 0.25)",
-    color: "var(--gold)",
+    color: "var(--color-mel)",
     border: "oklch(0.72 0.10 75 / 0.35)",
   },
   outro: {
     bg: "oklch(0 0 0 / 0.12)",
-    color: "var(--muted-foreground)",
+    color: "hsl(var(--muted-foreground))",
     border: "oklch(0 0 0 / 0.18)",
   },
 }
@@ -103,7 +103,7 @@ function resolveRelationStyle(type: string): { color: string; bg: string } {
     t.includes("dissolução")
   ) {
     return {
-      color: "var(--blue-cold)",
+      color: "var(--color-jala)",
       bg: "oklch(0.22 0.07 220 / 0.20)",
     }
   }
@@ -113,18 +113,18 @@ function resolveRelationStyle(type: string): { color: string; bg: string } {
     t.includes("limiar")
   ) {
     return {
-      color: "var(--accent)",
+      color: "hsl(var(--primary))",
       bg: "oklch(0.25 0.06 290 / 0.20)",
     }
   }
   if (t.includes("vínculo") || t.includes("vinculo")) {
     return {
-      color: "var(--gold)",
+      color: "var(--color-mel)",
       bg: "oklch(0.30 0.08 75 / 0.20)",
     }
   }
   return {
-    color: "var(--muted-foreground)",
+    color: "hsl(var(--muted-foreground))",
     bg: "oklch(0 0 0 / 0.10)",
   }
 }
@@ -192,7 +192,7 @@ export default async function PersonagemPage({ params }: Props) {
           <section className="mb-10" aria-label="Sobre">
             <p
               className="font-sans text-base leading-[1.8] max-w-3xl"
-              style={{ color: "var(--foreground)" }}
+              style={{ color: "hsl(var(--foreground))" }}
             >
               {char.description}
             </p>
@@ -200,7 +200,7 @@ export default async function PersonagemPage({ params }: Props) {
               <Link
                 href={`/contos/${nome}`}
                 className="inline-flex items-center gap-1 mt-4 font-sans text-xs transition-opacity duration-150 hover:opacity-70"
-                style={{ color: "var(--accent)" }}
+                style={{ color: "hsl(var(--primary))" }}
               >
                 Ler o conto de {char.name}
               </Link>
@@ -215,13 +215,13 @@ export default async function PersonagemPage({ params }: Props) {
                   <div key={label} className="glass-card p-5 rounded-xl">
                     <p
                       className="text-xs uppercase tracking-[0.15em] font-sans mb-2"
-                      style={{ color: "var(--muted-foreground)" }}
+                      style={{ color: "hsl(var(--muted-foreground))" }}
                     >
                       {label}
                     </p>
                     <p
                       className="font-sans text-sm leading-[1.7]"
-                      style={{ color: "var(--foreground)" }}
+                      style={{ color: "hsl(var(--foreground))" }}
                     >
                       {value}
                     </p>
@@ -237,13 +237,13 @@ export default async function PersonagemPage({ params }: Props) {
               <div className="mb-5">
                 <p
                   className="font-sans text-xs uppercase tracking-[0.2em] mb-1"
-                  style={{ color: "var(--muted-foreground)" }}
+                  style={{ color: "hsl(var(--muted-foreground))" }}
                 >
                   Mundo
                 </p>
                 <h2
                   className="font-serif text-2xl"
-                  style={{ color: "var(--foreground)" }}
+                  style={{ color: "hsl(var(--foreground))" }}
                 >
                   Conexoes
                 </h2>
@@ -269,8 +269,8 @@ export default async function PersonagemPage({ params }: Props) {
                         style={{
                           width: 48,
                           height: 48,
-                          backgroundColor: "var(--surface)",
-                          border: "1px solid var(--border)",
+                          backgroundColor: "hsl(var(--muted))",
+                          border: "1px solid hsl(var(--border-shadcn))",
                         }}
                       >
                         {relImageSrc ? (
@@ -283,7 +283,7 @@ export default async function PersonagemPage({ params }: Props) {
                         ) : (
                           <span
                             className="font-serif text-lg leading-none select-none"
-                            style={{ color: "var(--accent)" }}
+                            style={{ color: "hsl(var(--primary))" }}
                             aria-hidden="true"
                           >
                             {initial}
@@ -295,7 +295,7 @@ export default async function PersonagemPage({ params }: Props) {
                       <div className="min-w-0 flex-1">
                         <p
                           className="font-serif text-base leading-tight mb-1 group-hover:opacity-80 transition-opacity"
-                          style={{ color: "var(--foreground)" }}
+                          style={{ color: "hsl(var(--foreground))" }}
                         >
                           {rel.name}
                         </p>
@@ -324,8 +324,8 @@ export default async function PersonagemPage({ params }: Props) {
                 href={`/contos/${nome}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-90"
                 style={{
-                  backgroundColor: "var(--foreground)",
-                  color: "var(--background)",
+                  backgroundColor: "hsl(var(--foreground))",
+                  color: "hsl(var(--background))",
                 }}
               >
                 Ler o conto
@@ -334,7 +334,7 @@ export default async function PersonagemPage({ params }: Props) {
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-sans font-medium transition-all duration-200 hover:opacity-80 glass-card"
-              style={{ color: "var(--foreground)" }}
+              style={{ color: "hsl(var(--foreground))" }}
             >
               Todos os personagens
             </Link>

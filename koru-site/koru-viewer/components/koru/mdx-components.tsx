@@ -112,7 +112,7 @@ export const mdxComponents: MDXComponents = {
       className="font-sans text-4xl md:text-6xl leading-tight mt-10 mb-6 break-words"
       style={{
         fontFamily: "var(--font-sans), 'Inter', sans-serif",
-        color: "var(--foreground)",
+        color: "hsl(var(--foreground))",
       }}
     >
       {children}
@@ -124,8 +124,8 @@ export const mdxComponents: MDXComponents = {
       className="font-sans text-2xl md:text-4xl leading-tight mt-12 mb-5 pb-3 scroll-mt-6 break-words"
       style={{
         fontFamily: "var(--font-sans), 'Inter', sans-serif",
-        color: "var(--foreground)",
-        borderBottom: "1px solid color-mix(in oklch, var(--border) 40%, transparent)",
+        color: "hsl(var(--foreground))",
+        borderBottom: "1px solid hsl(var(--border-shadcn) / 0.4)",
       }}
     >
       {children}
@@ -135,7 +135,7 @@ export const mdxComponents: MDXComponents = {
     <h3
       id={headingId(children)}
       className="font-sans font-semibold text-xl mt-10 mb-3 scroll-mt-6"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </h3>
@@ -143,7 +143,7 @@ export const mdxComponents: MDXComponents = {
   h4: ({ children }) => (
     <h4
       className="font-sans font-medium text-sm uppercase tracking-[0.15em] mt-8 mb-2"
-      style={{ color: "var(--muted-foreground)" }}
+      style={{ color: "hsl(var(--muted-foreground))" }}
     >
       {children}
     </h4>
@@ -159,7 +159,7 @@ export const mdxComponents: MDXComponents = {
 
     if (isRef) {
       return (
-        <p className="text-xs font-sans tracking-wide mt-1 mb-6" style={{ color: "color-mix(in oklch, var(--muted-foreground) 70%, transparent)" }}>
+        <p className="text-xs font-sans tracking-wide mt-1 mb-6" style={{ color: "hsl(var(--muted-foreground) / 0.7)" }}>
           {children}
         </p>
       )
@@ -168,26 +168,26 @@ export const mdxComponents: MDXComponents = {
     return (
       <p
         className="font-sans text-base leading-[1.8] mb-4"
-        style={{ color: "var(--foreground)" }}
+        style={{ color: "hsl(var(--foreground))" }}
       >
         {processParagraphChildren(children)}
       </p>
     )
   },
   strong: ({ children }) => (
-    <strong style={{ color: "var(--foreground)", fontWeight: 600 }}>
+    <strong style={{ color: "hsl(var(--foreground))", fontWeight: 600 }}>
       {children}
     </strong>
   ),
   em: ({ children }) => (
-    <em style={{ color: "var(--foreground)", fontStyle: "italic" }}>{children}</em>
+    <em style={{ color: "hsl(var(--foreground))", fontStyle: "italic" }}>{children}</em>
   ),
   code: ({ children }) => (
     <code
       className="font-mono text-sm px-1.5 py-0.5 rounded-sm"
       style={{
-        backgroundColor: "var(--surface)",
-        color: "var(--foreground)",
+        backgroundColor: "hsl(var(--muted))",
+        color: "hsl(var(--foreground))",
       }}
     >
       {children}
@@ -197,8 +197,8 @@ export const mdxComponents: MDXComponents = {
     <pre
       className="font-mono text-sm p-4 rounded-sm overflow-x-auto my-6"
       style={{
-        backgroundColor: "var(--surface)",
-        color: "var(--foreground)",
+        backgroundColor: "hsl(var(--muted))",
+        color: "hsl(var(--foreground))",
       }}
     >
       {children}
@@ -208,9 +208,9 @@ export const mdxComponents: MDXComponents = {
     <blockquote
       className="my-8 pl-6 py-1 font-sans text-base leading-[1.9]"
       style={{
-        borderLeft: "2px solid var(--border)",
+        borderLeft: "2px solid hsl(var(--border-shadcn))",
         fontStyle: "italic",
-        color: "color-mix(in oklch, var(--foreground) 72%, transparent)",
+        color: "hsl(var(--foreground) / 0.72)",
       }}
     >
       {children}
@@ -219,7 +219,7 @@ export const mdxComponents: MDXComponents = {
   ul: ({ children }) => (
     <ul
       className="font-sans text-base leading-[1.8] mb-4 pl-6 list-disc space-y-1"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </ul>
@@ -227,7 +227,7 @@ export const mdxComponents: MDXComponents = {
   ol: ({ children }) => (
     <ol
       className="font-sans text-base leading-[1.8] mb-4 pl-6 list-decimal space-y-1"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </ol>
@@ -235,7 +235,7 @@ export const mdxComponents: MDXComponents = {
   li: ({ children }) => (
     <li
       className="relative pl-1"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </li>
@@ -274,12 +274,12 @@ export const mdxComponents: MDXComponents = {
     )
   },
   thead: ({ children }) => (
-    <thead style={{ backgroundColor: "color-mix(in oklch, var(--surface) 50%, transparent)" }}>{children}</thead>
+    <thead style={{ backgroundColor: "hsl(var(--muted) / 0.5)" }}>{children}</thead>
   ),
   th: ({ children }) => (
     <th
       className="px-4 py-3 text-left text-xs uppercase tracking-[0.1em] font-medium"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </th>
@@ -287,13 +287,13 @@ export const mdxComponents: MDXComponents = {
   td: ({ children }) => (
     <td
       className="px-4 py-3"
-      style={{ color: "var(--foreground)" }}
+      style={{ color: "hsl(var(--foreground))" }}
     >
       {children}
     </td>
   ),
   tr: ({ children }) => (
-    <tr className="transition-colors" style={{ borderBottom: "1px solid color-mix(in oklch, var(--border) 30%, transparent)" }}>
+    <tr className="transition-colors" style={{ borderBottom: "1px solid hsl(var(--border-shadcn) / 0.3)" }}>
       {children}
     </tr>
   ),
@@ -313,7 +313,7 @@ export const mdxComponents: MDXComponents = {
       <a
         href={resolvedHref}
         className="underline underline-offset-2 transition-colors hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-        style={{ color: "var(--foreground)", outlineColor: "var(--foreground)" }}
+        style={{ color: "hsl(var(--foreground))", outlineColor: "hsl(var(--foreground))" }}
       >
         {children}
       </a>

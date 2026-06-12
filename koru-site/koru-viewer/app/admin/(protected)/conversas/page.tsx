@@ -200,7 +200,7 @@ function ConversationItem({ conv }: { conv: ConversationRow }) {
   return (
     <details
       className="group rounded-xl glass-card overflow-hidden"
-      style={{ background: "var(--surface)" }}
+      style={{ background: "hsl(var(--card))" }}
     >
       <summary
         className="flex cursor-pointer items-center gap-4 px-4 py-3 transition-colors hover:bg-admin-hover list-none"
@@ -242,7 +242,7 @@ function ConversationItem({ conv }: { conv: ConversationRow }) {
       {/* Timeline */}
       <div
         className="border-t px-4 py-4 space-y-3"
-        style={{ borderColor: "var(--border)" }}
+        style={{ borderColor: "hsl(var(--border-shadcn))" }}
       >
         {messages.length === 0 ? (
           <p
@@ -264,11 +264,11 @@ function ConversationItem({ conv }: { conv: ConversationRow }) {
                 style={{
                   background:
                     m.role === "user"
-                      ? "var(--accent)"
+                      ? "hsl(var(--primary))"
                       : "color-mix(in oklch, var(--foreground) 6%, transparent)",
                   color:
                     m.role === "user"
-                      ? "var(--accent-foreground)"
+                      ? "hsl(var(--primary-foreground))"
                       : "var(--foreground)",
                   borderBottomRightRadius:
                     m.role === "user" ? "0.375rem" : undefined,

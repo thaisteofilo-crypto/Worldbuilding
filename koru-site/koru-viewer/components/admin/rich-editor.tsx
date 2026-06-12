@@ -208,7 +208,7 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
                   width: '16px',
                   height: '16px',
                   fontSize: '10px',
-                  border: '1px solid var(--border)',
+                  border: '1px solid hsl(var(--border-shadcn))',
                   color: 'var(--muted-foreground)',
                   background: 'transparent',
                   cursor: 'pointer',
@@ -250,8 +250,8 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
                           style={{
                             fontFamily: 'monospace',
                             fontSize: '11px',
-                            color: 'var(--accent)',
-                            background: 'color-mix(in oklch, var(--accent) 10%, transparent)',
+                            color: 'hsl(var(--primary))',
+                            background: 'color-mix(in oklch, hsl(var(--primary)) 10%, transparent)',
                             padding: '0.05em 0.3em',
                             borderRadius: '0.2rem',
                             whiteSpace: 'nowrap',
@@ -399,7 +399,7 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
 
           /* Blockquote — matches site */
           .koru-editor blockquote {
-            border-left: 2px solid var(--border);
+            border-left: 2px solid hsl(var(--border-shadcn));
             margin: 2rem 0;
             padding: 0.25rem 0 0.25rem 1.5rem;
             color: color-mix(in oklch, var(--foreground) 72%, transparent);
@@ -428,7 +428,7 @@ export const RichEditor = forwardRef<RichEditorRef, RichEditorProps>(
 
           .koru-editor hr {
             border: none;
-            border-top: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+            border-top: 1px solid color-mix(in oklch, hsl(var(--border-shadcn)) 60%, transparent);
             margin: 2rem 0;
           }
 

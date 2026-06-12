@@ -19,9 +19,9 @@ const COLUMNS: { key: Task['status']; label: string }[] = [
 ]
 
 const CATEGORY_COLORS: Record<Task['category'], string> = {
-  conto: 'var(--accent)',
-  capitulo: 'var(--gold)',
-  biblia: 'var(--blue-cold)',
+  conto: 'hsl(var(--primary))',
+  capitulo: 'var(--color-mel)',
+  biblia: 'var(--color-jala)',
   site: 'oklch(0.65 0.09 150)',
   outro: 'var(--muted-foreground)',
 }
@@ -247,7 +247,7 @@ export default function TasksPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           {COLUMNS.map((col) => (
             <Card key={col.key} className="overflow-hidden">
-              <div className="px-4 py-3 flex items-center justify-between" style={{ background: "var(--surface)" }}>
+              <div className="px-4 py-3 flex items-center justify-between" style={{ background: "hsl(var(--card))" }}>
                 <Skeleton className="h-3 w-24" />
                 <Skeleton className="h-4 w-5 rounded-full opacity-60" />
               </div>
@@ -392,7 +392,7 @@ export default function TasksPage() {
               <div
                 className="flex flex-col gap-1.5 min-h-[60px] rounded-lg transition-colors"
                 style={isOverEmpty ? {
-                  outline: '1px dashed var(--border)',
+                  outline: '1px dashed hsl(var(--border-shadcn))',
                   background: 'color-mix(in oklch, var(--foreground) 3%, transparent)',
                 } : {}}
                 onDragOver={(e) => {
@@ -589,10 +589,10 @@ function TaskCard({
       onDrop={onDrop}
       className="rounded-md px-2.5 py-2 transition-all"
       style={{
-        borderColor: isDragOver ? 'var(--accent)' : undefined,
+        borderColor: isDragOver ? 'hsl(var(--primary))' : undefined,
         opacity: isDragging ? 0.4 : 1,
         background: isDragOver
-          ? 'color-mix(in oklch, var(--accent) 8%, transparent)'
+          ? 'color-mix(in oklch, hsl(var(--primary)) 8%, transparent)'
           : undefined,
         cursor: 'grab',
       }}

@@ -46,7 +46,7 @@ const TABS: TabDef[] = [
     id: "all",
     label: "Visão geral",
     description: "Leitura atenta do mundo inteiro: o que está respirando, o que ainda procura forma, a voz da autora e por onde começar agora.",
-    accentVar: "var(--accent)",
+    accentVar: "hsl(var(--primary))",
     icon: <Globe size={14} />,
   },
   {
@@ -60,28 +60,28 @@ const TABS: TabDef[] = [
     id: "feedback",
     label: "Voz narrativa",
     description: "Leitura literária do livro e dos contos. Temperatura, ritmo, onde a voz vacila, trechos que ilustram.",
-    accentVar: "var(--gold)",
+    accentVar: "var(--color-mel)",
     icon: <BookOpen size={14} />,
   },
   {
     id: "report",
     label: "Estado do projeto",
     description: "Onde o projeto está hoje, o que tem densidade, o que ainda é esqueleto, por onde começar agora.",
-    accentVar: "var(--blue-cold)",
+    accentVar: "var(--color-jala)",
     icon: <BarChart2 size={14} />,
   },
   {
     id: "arc",
     label: "Arco de Temiku",
     description: "Como Temiku evolui capítulo a capítulo e conto a conto — estado físico, emocional, descontinuidades, o que o arco ainda pede.",
-    accentVar: "var(--accent)",
+    accentVar: "hsl(var(--primary))",
     icon: <ArrowLeftRight size={14} />,
   },
   {
     id: "rhythm",
     label: "Ritmo",
     description: "Análise de abertura, alternância longa/curta, frases nominais, parênteses e fechamento em contenção — ouvindo os textos em voz alta.",
-    accentVar: "var(--gold)",
+    accentVar: "var(--color-mel)",
     icon: <Activity size={14} />,
   },
 ]
@@ -140,7 +140,7 @@ function renderInline(text: string, key: string | number): React.ReactNode {
   while ((m = pattern.exec(text))) {
     if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index))
     if (m[1]) parts.push(<strong key={`${key}-b${i++}`} style={{ color: "var(--foreground)" }}>{m[1]}</strong>)
-    else if (m[2]) parts.push(<code key={`${key}-c${i++}`} className="rounded px-1 py-0.5 text-[0.85em]" style={{ background: "var(--surface)", color: "var(--accent)" }}>{m[2]}</code>)
+    else if (m[2]) parts.push(<code key={`${key}-c${i++}`} className="rounded px-1 py-0.5 text-[0.85em]" style={{ background: "hsl(var(--card))", color: "hsl(var(--primary))" }}>{m[2]}</code>)
     else if (m[3]) parts.push(<em key={`${key}-i${i++}`}>{m[3]}</em>)
     lastIdx = m.index + m[0].length
   }
@@ -395,9 +395,9 @@ export function AIAnalysisPanel() {
                 variant="outline"
                 className="gap-1.5 rounded-full font-sans text-[10px] uppercase tracking-[0.15em] shrink-0"
                 style={{
-                  background: "color-mix(in oklch, var(--accent) 14%, transparent)",
-                  borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)",
-                  color: "var(--accent)",
+                  background: "color-mix(in oklch, hsl(var(--primary)) 14%, transparent)",
+                  borderColor: "color-mix(in oklch, hsl(var(--primary)) 30%, transparent)",
+                  color: "hsl(var(--primary))",
                 }}
               >
                 <Star size={10} aria-hidden="true" />
@@ -465,7 +465,7 @@ export function AIAnalysisPanel() {
               style={{
                 background: active ? "color-mix(in oklch, var(--foreground) 8%, transparent)" : "transparent",
                 color: active ? "var(--foreground)" : "var(--muted-foreground)",
-                border: `1px solid ${active ? "var(--border)" : "transparent"}`,
+                border: `1px solid ${active ? "hsl(var(--border-shadcn))" : "transparent"}`,
               }}
             >
               <span style={{ color: tab.accentVar }}>{tab.icon}</span>
@@ -507,9 +507,9 @@ export function AIAnalysisPanel() {
         {streaming && !hasContent && (
           <div className="flex items-center gap-2 py-6 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
             <span className="flex gap-1">
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "0ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "150ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)", animationDelay: "300ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "hsl(var(--primary))", animationDelay: "0ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "hsl(var(--primary))", animationDelay: "150ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "hsl(var(--primary))", animationDelay: "300ms" }} />
             </span>
             Lendo bíblia, livro e contos…
           </div>
@@ -528,7 +528,7 @@ export function AIAnalysisPanel() {
             </div>
 
             {!streaming && (
-              <div className="mt-4 pt-3 flex items-center justify-between gap-2 border-t" style={{ borderColor: "var(--border)" }}>
+              <div className="mt-4 pt-3 flex items-center justify-between gap-2 border-t" style={{ borderColor: "hsl(var(--border-shadcn))" }}>
                 <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>
                   {current ? `Gerado ${timeAgo(current.generatedAt)}` : "Rascunho"} · modelo Claude Sonnet
                 </span>
@@ -561,10 +561,10 @@ export function AIAnalysisPanel() {
                     {followUpThread.map((item, i) => (
                       <div key={i} className="flex flex-col gap-2">
                         <div className="flex items-start gap-2">
-                          <span className="font-sans text-[10px] uppercase tracking-[0.12em] shrink-0 mt-0.5" style={{ color: "var(--accent)" }}>Pergunta</span>
+                          <span className="font-sans text-[10px] uppercase tracking-[0.12em] shrink-0 mt-0.5" style={{ color: "hsl(var(--primary))" }}>Pergunta</span>
                           <p className="font-sans text-sm" style={{ color: "var(--foreground)" }}>{item.question}</p>
                         </div>
-                        <div className="pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)" }}>
+                        <div className="pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, hsl(var(--primary)) 30%, transparent)" }}>
                           <MarkdownView source={item.answer} />
                         </div>
                       </div>
@@ -574,7 +574,7 @@ export function AIAnalysisPanel() {
 
                 {/* Live follow-up streaming */}
                 {followUpStreaming && followUpLive && (
-                  <div className="mt-4 pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, var(--accent) 30%, transparent)" }}>
+                  <div className="mt-4 pl-4 border-l-2" style={{ borderColor: "color-mix(in oklch, hsl(var(--primary)) 30%, transparent)" }}>
                     <MarkdownView source={followUpLive} />
                     <span className="inline-block w-2 h-4 ml-0.5 align-middle animate-pulse" style={{ background: "var(--foreground)" }} />
                   </div>
@@ -618,8 +618,8 @@ function EmptyState({ onRun }: { onRun: () => void }) {
       <div
         className="rounded-lg p-3"
         style={{
-          background: "color-mix(in oklch, var(--accent) 10%, transparent)",
-          color: "var(--accent)",
+          background: "color-mix(in oklch, hsl(var(--primary)) 10%, transparent)",
+          color: "hsl(var(--primary))",
         }}
       >
         <Star size={18} aria-hidden="true" />

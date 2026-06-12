@@ -1569,16 +1569,16 @@ export default function EditorPage() {
             top: 24,
             left: '50%',
             zIndex: 100,
-            background: 'color-mix(in oklch, var(--accent) 90%, transparent)',
+            background: 'color-mix(in oklch, hsl(var(--primary)) 90%, transparent)',
             color: 'white',
             fontSize: 12,
             fontFamily: 'var(--font-sans), Inter, sans-serif',
             fontWeight: 500,
             letterSpacing: '0.02em',
-            boxShadow: '0 8px 24px color-mix(in oklch, var(--accent) 40%, transparent)',
+            boxShadow: '0 8px 24px color-mix(in oklch, hsl(var(--primary)) 40%, transparent)',
             opacity: toastPhase === 'in' ? 1 : 0,
             transform: `translate(-50%, ${toastPhase === 'in' ? '0' : '-8px'})`,
-            transition: 'opacity 260ms var(--ease-smooth), transform 260ms var(--ease-smooth)',
+            transition: 'opacity 260ms cubic-bezier(0.22, 1, 0.36, 1), transform 260ms cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

@@ -45,7 +45,7 @@ export function DocumentEditor({ document }: { document: Document }) {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 rounded border border-border bg-background px-3 py-1.5 font-sans text-sm text-foreground outline-none focus:border-[var(--accent)]"
+          className="flex-1 rounded border border-border bg-background px-3 py-1.5 font-sans text-sm text-foreground outline-none focus:border-[hsl(var(--primary))]"
           placeholder="Título"
         />
         <div className="flex items-center gap-2">

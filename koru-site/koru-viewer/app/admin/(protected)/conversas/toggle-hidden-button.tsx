@@ -74,7 +74,7 @@ export function ToggleHiddenButton({
           : {
               background: "color-mix(in oklch, var(--foreground) 8%, transparent)",
               color: "var(--muted-foreground)",
-              borderColor: "var(--border)",
+              borderColor: "hsl(var(--border-shadcn))",
             }
       }
       aria-disabled={busy}

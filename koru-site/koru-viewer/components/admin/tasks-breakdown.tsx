@@ -27,8 +27,8 @@ export function TasksBreakdown({ taskStats }: Props) {
 
   const pills = [
     { label: "Todo", value: todo, color: "var(--muted-foreground)" },
-    { label: "Em progresso", value: inProgress, color: "var(--gold)" },
-    { label: "Feitas", value: done, color: "var(--accent)" },
+    { label: "Em progresso", value: inProgress, color: "var(--color-mel)" },
+    { label: "Feitas", value: done, color: "hsl(var(--primary))" },
   ]
 
   return (
@@ -81,7 +81,7 @@ export function TasksBreakdown({ taskStats }: Props) {
                 className="rounded-lg px-3 py-2.5"
                 style={{
                   background: "color-mix(in oklch, var(--foreground) 4%, transparent)",
-                  border: "1px solid var(--border)",
+                  border: "1px solid hsl(var(--border-shadcn))",
                 }}
               >
                 <div className="flex items-baseline justify-between gap-1 mb-2">

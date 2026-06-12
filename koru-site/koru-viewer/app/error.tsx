@@ -17,12 +17,12 @@ export default function Error({
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center"
-      style={{ backgroundColor: "var(--background)" }}
+      style={{ backgroundColor: "hsl(var(--background))" }}
     >
       <div>
         <p
           className="text-xs uppercase tracking-[0.2em] font-sans mb-4"
-          style={{ color: "var(--blue-cold)" }}
+          style={{ color: "var(--color-jala)" }}
         >
           Erro
         </p>
@@ -30,14 +30,14 @@ export default function Error({
           className="font-serif text-4xl mb-4"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
+            color: "hsl(var(--foreground))",
           }}
         >
           Algo saiu do ciclo
         </h1>
         <p
           className="text-sm font-sans max-w-sm"
-          style={{ color: "var(--muted-foreground)" }}
+          style={{ color: "hsl(var(--muted-foreground))" }}
         >
           Ocorreu um erro inesperado.
         </p>
@@ -46,7 +46,7 @@ export default function Error({
         <button
           onClick={reset}
           className="text-sm font-sans underline underline-offset-4 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-          style={{ color: "var(--accent)", outlineColor: "var(--accent)" }}
+          style={{ color: "hsl(var(--primary))", outlineColor: "hsl(var(--primary))" }}
         >
           Tentar novamente
         </button>
@@ -54,8 +54,8 @@ export default function Error({
           href="/"
           className="text-sm font-sans underline underline-offset-4 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
           style={{
-            color: "var(--muted-foreground)",
-            outlineColor: "var(--accent)",
+            color: "hsl(var(--muted-foreground))",
+            outlineColor: "hsl(var(--primary))",
           }}
         >
           Voltar ao início

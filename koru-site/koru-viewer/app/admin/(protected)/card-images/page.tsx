@@ -99,7 +99,7 @@ function CardTile({ slot, imageUrl, onUpload, onDelete, uploading }: CardTilePro
         style={{
           aspectRatio: '2/3',
           background: 'var(--card)',
-          border: '1px solid var(--border)',
+          border: '1px solid hsl(var(--border-shadcn))',
           flexShrink: 0,
         }}
         onClick={handleClick}
@@ -419,12 +419,12 @@ export default function CardImagesPage() {
           className="fixed bottom-6 right-6 z-50 px-4 py-3 text-sm font-sans flex items-center gap-2 shadow-lg text-foreground"
           style={{
             borderColor: toast.type === 'success'
-              ? 'color-mix(in oklch, var(--accent) 35%, transparent)'
+              ? 'color-mix(in oklch, hsl(var(--primary)) 35%, transparent)'
               : 'color-mix(in oklch, var(--destructive) 35%, transparent)',
           }}
         >
           {toast.type === 'success' ? (
-            <Check size={13} className="shrink-0" style={{ color: 'var(--accent)' }} />
+            <Check size={13} className="shrink-0" style={{ color: 'hsl(var(--primary))' }} />
           ) : (
             <AlertCircle size={13} className="shrink-0 text-destructive" />
           )}

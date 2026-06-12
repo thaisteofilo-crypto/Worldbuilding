@@ -19,7 +19,7 @@ export default function ViewerError({
       <div>
         <p
           className="text-xs uppercase tracking-[0.2em] font-sans mb-4"
-          style={{ color: "var(--blue-cold)" }}
+          style={{ color: "var(--color-jala)" }}
         >
           Erro ao carregar documento
         </p>
@@ -27,14 +27,14 @@ export default function ViewerError({
           className="font-serif text-3xl mb-4"
           style={{
             fontFamily: "var(--font-serif), Georgia, serif",
-            color: "var(--foreground)",
+            color: "hsl(var(--foreground))",
           }}
         >
           O documento não pôde ser lido
         </h2>
         <p
           className="text-sm font-sans max-w-sm"
-          style={{ color: "var(--muted-foreground)" }}
+          style={{ color: "hsl(var(--muted-foreground))" }}
         >
           Verifique se o arquivo existe e tente novamente.
         </p>
@@ -43,7 +43,7 @@ export default function ViewerError({
         <button
           onClick={reset}
           className="text-sm font-sans underline underline-offset-4 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
-          style={{ color: "var(--accent)", outlineColor: "var(--accent)" }}
+          style={{ color: "hsl(var(--primary))", outlineColor: "hsl(var(--primary))" }}
         >
           Tentar novamente
         </button>
@@ -51,8 +51,8 @@ export default function ViewerError({
           href="/"
           className="text-sm font-sans underline underline-offset-4 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 rounded-sm"
           style={{
-            color: "var(--muted-foreground)",
-            outlineColor: "var(--accent)",
+            color: "hsl(var(--muted-foreground))",
+            outlineColor: "hsl(var(--primary))",
           }}
         >
           Início

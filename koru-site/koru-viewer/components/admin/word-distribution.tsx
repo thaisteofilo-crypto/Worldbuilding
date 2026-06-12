@@ -27,8 +27,8 @@ function TensionDot({ score }: { score: number }) {
     score > 15
       ? "oklch(0.55 0.18 25)"
       : score >= 8
-      ? "var(--gold)"
-      : "var(--blue-cold)"
+      ? "var(--color-mel)"
+      : "var(--color-jala)"
   return (
     <span
       aria-hidden="true"
@@ -117,9 +117,9 @@ export function WordDistribution({
   const totalAll = sectionWords.biblia + sectionWords.livro + sectionWords.contos
 
   const pills: Array<{ label: string; words: number; color: string }> = [
-    { label: "Bíblia", words: sectionWords.biblia, color: "var(--blue-cold)" },
-    { label: "Livro", words: sectionWords.livro, color: "var(--accent)" },
-    { label: "Contos", words: sectionWords.contos, color: "var(--gold)" },
+    { label: "Bíblia", words: sectionWords.biblia, color: "var(--color-jala)" },
+    { label: "Livro", words: sectionWords.livro, color: "hsl(var(--primary))" },
+    { label: "Contos", words: sectionWords.contos, color: "var(--color-mel)" },
   ]
 
   return (
@@ -181,7 +181,7 @@ export function WordDistribution({
 
       <div
         className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x"
-        style={{ borderTop: "1px solid var(--border)", borderColor: "var(--border)" }}
+        style={{ borderTop: "1px solid hsl(var(--border-shadcn))", borderColor: "hsl(var(--border-shadcn))" }}
       >
         <div className="px-5 py-4 flex flex-col gap-3">
           <h3
@@ -202,7 +202,7 @@ export function WordDistribution({
                   label={truncate(ch.title, 20)}
                   words={ch.words}
                   maxWords={maxChapterWords}
-                  barColor="color-mix(in oklch, var(--accent) 40%, transparent)"
+                  barColor="color-mix(in oklch, hsl(var(--primary)) 40%, transparent)"
                   extra={<TensionDot score={ch.tensionScore} />}
                 />
               ))}
@@ -229,7 +229,7 @@ export function WordDistribution({
                   label={slug.charAt(0).toUpperCase() + slug.slice(1)}
                   words={contoWordCounts[slug] ?? 0}
                   maxWords={maxContoWords}
-                  barColor="color-mix(in oklch, var(--gold) 40%, transparent)"
+                  barColor="color-mix(in oklch, var(--color-mel) 40%, transparent)"
                 />
               ))}
             </div>
@@ -255,7 +255,7 @@ export function WordDistribution({
                   label={e.label}
                   words={e.words}
                   maxWords={maxBibliaWords}
-                  barColor="color-mix(in oklch, var(--blue-cold) 40%, transparent)"
+                  barColor="color-mix(in oklch, var(--color-jala) 40%, transparent)"
                 />
               ))}
             </div>

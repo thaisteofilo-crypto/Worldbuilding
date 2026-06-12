@@ -140,9 +140,9 @@ export default function ConfiguracoesPage() {
             {/* API logo mark */}
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'color-mix(in oklch, var(--accent) 14%, transparent)' }}
+              style={{ background: 'color-mix(in oklch, hsl(var(--primary)) 14%, transparent)' }}
             >
-              <Lock size={16} style={{ color: 'var(--accent)' }} />
+              <Lock size={16} style={{ color: 'hsl(var(--primary))' }} />
             </div>
           </div>
         </GlassCardHeader>
@@ -153,9 +153,9 @@ export default function ConfiguracoesPage() {
             <div
               className="rounded-lg px-3 py-2 font-mono text-xs"
               style={{
-                background: 'color-mix(in oklch, var(--accent) 8%, transparent)',
-                color: 'var(--accent)',
-                border: '1px solid color-mix(in oklch, var(--accent) 20%, transparent)',
+                background: 'color-mix(in oklch, hsl(var(--primary)) 8%, transparent)',
+                color: 'hsl(var(--primary))',
+                border: '1px solid color-mix(in oklch, hsl(var(--primary)) 20%, transparent)',
               }}
             >
               {savedPreview}

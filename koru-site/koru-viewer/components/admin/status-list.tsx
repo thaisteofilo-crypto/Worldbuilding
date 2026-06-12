@@ -93,7 +93,7 @@ export function StatusList({ statusByDoc, counts }: Props) {
           return (
             <div
               key={status}
-              style={{ borderTop: "1px solid var(--border)" }}
+              style={{ borderTop: "1px solid hsl(var(--border-shadcn))" }}
             >
               <button
                 type="button"

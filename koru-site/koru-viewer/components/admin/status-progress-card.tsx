@@ -83,7 +83,7 @@ export function StatusProgressCard({ counts, totalTracked, withoutStatus }: Prop
                   : "transparent",
                 border: "1px solid " + (count > 0
                   ? "color-mix(in oklch, " + s.color + " 25%, transparent)"
-                  : "var(--border)"),
+                  : "hsl(var(--border-shadcn))"),
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">

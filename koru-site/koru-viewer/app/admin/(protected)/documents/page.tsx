@@ -155,7 +155,7 @@ export default function DocumentsPage() {
                   value={selectedSection}
                   onChange={(e) => setSelectedSection(e.target.value)}
                   className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none appearance-none"
-                  style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--foreground)" }}
+                  style={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border-shadcn))", color: "var(--foreground)" }}
                 >
                   <option value="">Auto-detectar</option>
                   {SECTIONS.map((s) => (
@@ -213,9 +213,9 @@ export default function DocumentsPage() {
           {[1,2,3].map((i) => (
             <div key={i}>
               <Skeleton className="h-3 w-24 mb-3" />
-              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid hsl(var(--border-shadcn))" }}>
                 {[1,2].map((j) => (
-                  <div key={j} className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: j < 2 ? "1px solid var(--border)" : "none" }}>
+                  <div key={j} className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: j < 2 ? "1px solid hsl(var(--border-shadcn))" : "none" }}>
                     <div>
                       <Skeleton className="h-3.5 w-48 mb-1" />
                       <Skeleton className="h-2.5 w-28 opacity-60" />
@@ -255,7 +255,7 @@ export default function DocumentsPage() {
                     key={doc.id}
                     className="flex items-center justify-between px-5 py-3.5 group transition-colors"
                     style={{
-                      borderBottom: i < sectionDocs.length - 1 ? "1px solid var(--border)" : "none",
+                      borderBottom: i < sectionDocs.length - 1 ? "1px solid hsl(var(--border-shadcn))" : "none",
                     }}
                   >
                     <div className="flex-1 min-w-0">
