@@ -319,7 +319,7 @@ export function KoruChat() {
             "fixed bottom-[5.5rem] right-6 z-50 flex flex-col overflow-hidden rounded-2xl",
             "w-[min(380px,calc(100vw-3rem))] h-[60vh] max-h-[640px]",
             "bg-card text-card-foreground",
-            "shadow-[0_16px_48px_-12px_rgba(9,14,23,0.35)]",
+            "border border-border/50",
             "animate-[koru-chat-in_220ms_ease-out_forwards]"
           )}
         >

@@ -72,11 +72,6 @@ function livroUrlSlug(filename: string): string {
   return filename.replace(/^capitulo-/, '')
 }
 
-// Card image key for livro entries
-function livroCardKey(filename: string): string {
-  return `livro-${livroUrlSlug(filename)}`
-}
-
 
 function ImagePlaceholder() {
   return (
@@ -90,10 +85,9 @@ function ImagePlaceholder() {
   )
 }
 
-// Placeholder elegante para capítulos do Livro sem imagem de capa:
+// Visual padrão de TODOS os cards do Livro (01–12 e Epílogo):
 // a cor sólida da marca (livroColor, no card) fica visível sob um scrim
-// suave + número do capítulo em serifa. Mantém 07–12 e o Epílogo
-// visualmente consistentes com os 01–06.
+// suave + número do capítulo em serifa, garantindo uniformidade no carrossel.
 function LivroCardPlaceholder({ slug }: { slug: string }) {
   const isEpilogo = slug === "epilogo"
   return (
@@ -544,17 +538,12 @@ export default async function HomePage() {
           {finalLivroDocs.map((doc) => {
             const filename = pathFilename(doc.path)
             const urlSlug = livroUrlSlug(filename)
-            const cardKey = livroCardKey(filename)
             const title = get(siteContent, `livro.${urlSlug}.title`) || doc.label
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
               <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: livroColor(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
-                {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
-                ) : (
-                  <LivroCardPlaceholder slug={urlSlug} />
-                )}
+                <LivroCardPlaceholder slug={urlSlug} />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
                 <div className="absolute bottom-0 left-0 right-0 p-3 md:p-5 z-20">

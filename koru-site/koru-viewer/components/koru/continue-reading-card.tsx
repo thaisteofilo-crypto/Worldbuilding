@@ -45,17 +45,17 @@ export function ContinueReadingCard() {
     <section className="px-4 sm:px-8 md:px-16 py-6 animate-fade-up" aria-label="Continuar lendo">
       <Link
         href={href}
-        className="group flex items-center gap-4 max-w-3xl rounded-2xl border border-border/40 bg-card px-5 py-4 transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-card"
+        className="group flex items-center gap-4 max-w-3xl rounded-2xl border border-border/40 bg-background px-5 py-4 transition-colors duration-300 hover:border-primary/50"
       >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
           <BookOpen size={15} aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-sans text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span className="block font-sans text-[11px] uppercase tracking-[0.18em] text-foreground/70">
             Continuar lendo{lastRead.section ? ` · ${lastRead.section}` : ""}
           </span>
           <span
-            className="block truncate font-serif text-xl leading-snug text-card-foreground mt-0.5"
+            className="block truncate font-serif text-xl leading-snug text-foreground mt-0.5"
             style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
           >
             {lastRead.title}
