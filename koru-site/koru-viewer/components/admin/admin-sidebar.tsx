@@ -14,9 +14,9 @@ import {
 const navItems = [
   { href: '/admin', label: 'Dashboard', exact: true, icon: <LayoutDashboard size={16} /> },
   { href: '/admin/characters', label: 'Personagens', icon: <Users size={16} /> },
-  { href: '/admin/banners', label: 'Banners', icon: <Image size={16} /> },
+  { href: '/admin/banners', label: 'Banners da Homepage', icon: <Image size={16} /> },
   { href: '/admin/card-images', label: 'Cards', icon: <Monitor size={16} /> },
-  { href: '/admin/gallery', label: 'Galeria', icon: <Images size={16} /> },
+  { href: '/admin/gallery', label: 'Galeria de Arte', icon: <Images size={16} /> },
   { href: '/admin/conteudo', label: 'Conteúdo', icon: <Pencil size={16} /> },
   { href: '/admin/editor', label: 'Editor', icon: <FileEdit size={16} /> },
   { href: '/admin/publicacao', label: 'Publicação', icon: <Lock size={16} /> },

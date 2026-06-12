@@ -26,19 +26,19 @@ const SLOT_COLORS: Record<string, string> = {
 const IMAGE_SLOTS = [
   { key: "hero", label: "Hero", description: "Imagem de fundo da tela inicial", accept: "image/*", dims: "1920×1080 recomendado" },
   { key: "personagens", label: "Personagens", description: "Os seres do Akwu", accept: "image/*", dims: "1920×1080 recomendado" },
-  { key: "biblia", label: "Biblia", description: "O arquivo vivo", accept: "image/*", dims: "1920×1080 recomendado" },
-  { key: "livro", label: "Livro", description: "A historia de Temiku", accept: "image/*", dims: "1920×1080 recomendado" },
+  { key: "biblia", label: "Bíblia", description: "O arquivo vivo", accept: "image/*", dims: "1920×1080 recomendado" },
+  { key: "livro", label: "Livro", description: "A história de Temiku", accept: "image/*", dims: "1920×1080 recomendado" },
   { key: "contos", label: "Contos", description: "Vozes do Akwu", accept: "image/*", dims: "1920×1080 recomendado" },
   { key: "footer", label: "Footer", description: "Banner final da home", accept: "image/*", dims: "1920×600 recomendado" },
 ]
 
 const VIDEO_SLOTS = [
-  { key: "hero-video", label: "Hero", description: "Video de fundo da tela inicial", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
-  { key: "personagens-video", label: "Personagens", description: "Video de fundo da secao Personagens", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
-  { key: "biblia-video", label: "Biblia", description: "Video de fundo da secao Biblia", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
-  { key: "livro-video", label: "Livro", description: "Video de fundo da secao Livro", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
-  { key: "contos-video", label: "Contos", description: "Video de fundo da secao Contos", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
-  { key: "footer-video", label: "Footer", description: "Video de fundo do banner final", accept: "video/*", dims: "1920×600 · MP4 ou WebM" },
+  { key: "hero-video", label: "Hero", description: "Vídeo de fundo da tela inicial", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
+  { key: "personagens-video", label: "Personagens", description: "Vídeo de fundo da seção Personagens", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
+  { key: "biblia-video", label: "Bíblia", description: "Vídeo de fundo da seção Bíblia", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
+  { key: "livro-video", label: "Livro", description: "Vídeo de fundo da seção Livro", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
+  { key: "contos-video", label: "Contos", description: "Vídeo de fundo da seção Contos", accept: "video/*", dims: "1920×1080 · MP4 ou WebM" },
+  { key: "footer-video", label: "Footer", description: "Vídeo de fundo do banner final", accept: "video/*", dims: "1920×600 · MP4 ou WebM" },
 ]
 
 // Banners for internal Bíblia pages — each doc has its own hero banner
@@ -122,10 +122,10 @@ export default function BannersPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
-          Galeria de Cenas
+          Banners da Homepage
         </h1>
         <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
-          Banners do mundo de Koru — cada secao da home recebe imagem e video
+          Banners do mundo de Korú — cada seção da home recebe imagem e vídeo
         </p>
       </div>
 
@@ -169,7 +169,7 @@ export default function BannersPage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
           <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
-            Videos
+            Vídeos
           </p>
           <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
           <Badge variant="outline" className="text-[10px]" style={{ color: "var(--blue-cold)", borderColor: "color-mix(in oklch, var(--blue-cold) 40%, transparent)", background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)" }}>
@@ -299,7 +299,7 @@ function BannerSlot({
             )}
             <div className="text-center">
               <p className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-                Sem {isVideo ? "video" : "imagem"}
+                Sem {isVideo ? "vídeo" : "imagem"}
               </p>
               <p className="font-sans text-[10px] mt-0.5" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>
                 {slot.dims}
@@ -338,7 +338,7 @@ function BannerSlot({
                   background: `color-mix(in oklch, ${accentColor} 14%, transparent)`,
                 }}
               >
-                {isVideo ? "video" : "imagem"}
+                {isVideo ? "vídeo" : "imagem"}
               </Badge>
             </div>
             <p className="font-sans text-xs truncate" style={{ color: "var(--muted-foreground)" }}>

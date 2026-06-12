@@ -45,6 +45,7 @@ export const PERSONAGENS_ITEMS = [
   { slug: "beku", title: "Beku" },
   { slug: "obaru", title: "Obaru" },
   { slug: "kemdi", title: "Kemdi" },
+  { slug: "temi", title: "Temi" },
   { slug: "orike", title: "Orike" },
   { slug: "kairo", title: "Kairo" },
 ]

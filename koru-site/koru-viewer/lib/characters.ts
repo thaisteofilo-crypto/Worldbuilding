@@ -153,6 +153,28 @@ export const characters: Record<string, Character> = {
       { name: "Obaru", slug: "obaru", type: "Relação — a ser revelada" },
     ],
   },
+  temi: {
+    name: "Temi",
+    role: "Onkweri — nômade, figura de apoio",
+    gradient:
+      "linear-gradient(160deg, oklch(0.12 0.01 280) 0%, oklch(0.24 0.06 65) 50%, oklch(0.14 0.01 280) 100%)",
+    accentColor: "var(--foreground)",
+    morphology:
+      "Onkweri, quadrúpede com chifres menores e mais flexíveis que a média. Substância levemente dispersa: camadas de lugares diferentes sobrepostas em ângulos irregulares.",
+    ability:
+      "Leitura empírica do teto do Akwu e sincronia instintiva com o Ngurui. O passo se move com o pulso do mundo, não contra ele.",
+    status: "Em trânsito — vida nômade no Bomi-Weh, a caminho de Orunjó",
+    origin: "Onkweri. Nômade das planícies do Bomi-Weh.",
+    description:
+      "Temi é Onkweri nômade — substância mais dispersa que a dos Onkweri de cidade, cada lugar onde passou deixou frequência nas camadas do corpo. O nomadismo não é liberdade heroica: é a forma que encontrou de não ter que escolher quando nenhum lugar tinha espaço. No livro, oferece cuidado sem exigência — de quem sabe o que é não ter onde pousar.",
+    species: "Onkweri",
+    location: "Bomi-Weh — planícies abertas, sem dossel de Ariku",
+    mark: "Isilo-Ori na testa e bordas dos olhos.",
+    quote: "O presente é o único lugar que se tem. O resto é direção.",
+    relations: [
+      { name: "Temiku", slug: "temiku", type: "Vínculo — cuidado sem exigência" },
+    ],
+  },
   orike: {
     name: "Orike",
     role: "Perspectiva do Bomi Veh",
@@ -198,6 +220,7 @@ export const characterOrder = [
   "beku",
   "obaru",
   "kemdi",
+  "temi",
   "orike",
   "kairo",
 ] as const

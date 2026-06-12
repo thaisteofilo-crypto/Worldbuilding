@@ -7,6 +7,12 @@ import {
   DocumentStatus,
   getStatusDef,
 } from "@/lib/document-status"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface Props {
   value: DocumentStatus | null | undefined
@@ -234,60 +240,72 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
     document.body
   ) : null
 
+  // Texto explicativo do ícone — mesmo conteúdo no tooltip e no aria-label,
+  // pra ficar acessível por mouse e por leitor de tela.
+  const tooltipText = def
+    ? "Status do texto: " + def.label + " — " + def.description
+    : "Sem status — clique para definir o status do texto"
+
   return (
     <>
-      <button
-        ref={btnRef}
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          e.preventDefault()
-          setOpen((v) => !v)
-        }}
-        className={compact ? "inline-flex items-center justify-center rounded-full transition-all w-5 h-5" : "inline-flex items-center justify-center rounded-full transition-all"}
-        style={compact ? {
-          // Compact mode: ícone fixo 20×20, sem pill/border/bg.
-          padding: 2,
-          background: "transparent",
-          border: "none",
-          color: def ? labelColor : "var(--muted-foreground)",
-          opacity: def ? 1 : 0.35,
-        } : {
-          // Full mode: pill tradicional (usado em cards/dropdowns).
-          padding: "3px 9px",
-          background: def ? "color-mix(in oklch, " + def.color + " 14%, transparent)" : "transparent",
-          border: def ? "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)" : "1px dashed color-mix(in oklch, var(--border) 70%, transparent)",
-          color: labelColor,
-          fontSize: 10,
-          lineHeight: 1,
-          letterSpacing: "0.06em",
-          opacity: def ? 1 : 0.55,
-          gap: 6,
-        }}
-        title={def ? def.label + " — " + def.description : "Definir status"}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={def ? "Status: " + def.label : "Sem status — definir"}
-      >
-        {compact ? (
-          <StatusIcon status={value} />
-        ) : (
-          <>
-            <span
-              className="rounded-full shrink-0"
-              style={{
-                width: dotSize,
-                height: dotSize,
-                background: def ? dotColor : "transparent",
-                border: def ? "none" : "1px dashed color-mix(in oklch, var(--muted-foreground) 55%, transparent)",
-                boxShadow: def ? "0 0 0 3px color-mix(in oklch, " + def.color + " 16%, transparent)" : "none",
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              ref={btnRef}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                setOpen((v) => !v)
               }}
-              aria-hidden
-            />
-            <span className="font-sans uppercase tracking-[0.08em] whitespace-nowrap">{fullLabel}</span>
-          </>
-        )}
-      </button>
+              className={compact ? "inline-flex items-center justify-center rounded-full transition-all w-5 h-5" : "inline-flex items-center justify-center rounded-full transition-all"}
+              style={compact ? {
+                // Compact mode: ícone fixo 20×20, sem pill/border/bg.
+                padding: 2,
+                background: "transparent",
+                border: "none",
+                color: def ? labelColor : "var(--muted-foreground)",
+                opacity: def ? 1 : 0.35,
+              } : {
+                // Full mode: pill tradicional (usado em cards/dropdowns).
+                padding: "3px 9px",
+                background: def ? "color-mix(in oklch, " + def.color + " 14%, transparent)" : "transparent",
+                border: def ? "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)" : "1px dashed color-mix(in oklch, var(--border) 70%, transparent)",
+                color: labelColor,
+                fontSize: 10,
+                lineHeight: 1,
+                letterSpacing: "0.06em",
+                opacity: def ? 1 : 0.55,
+                gap: 6,
+              }}
+              aria-haspopup="menu"
+              aria-expanded={open}
+              aria-label={tooltipText}
+            >
+              {compact ? (
+                <StatusIcon status={value} />
+              ) : (
+                <>
+                  <span
+                    className="rounded-full shrink-0"
+                    style={{
+                      width: dotSize,
+                      height: dotSize,
+                      background: def ? dotColor : "transparent",
+                      border: def ? "none" : "1px dashed color-mix(in oklch, var(--muted-foreground) 55%, transparent)",
+                      boxShadow: def ? "0 0 0 3px color-mix(in oklch, " + def.color + " 16%, transparent)" : "none",
+                    }}
+                    aria-hidden
+                  />
+                  <span className="font-sans uppercase tracking-[0.08em] whitespace-nowrap">{fullLabel}</span>
+                </>
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">{tooltipText}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       {menu}
     </>
   )

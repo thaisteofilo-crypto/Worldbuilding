@@ -124,9 +124,26 @@ const characters = [
     accent_color: 'var(--accent)',
   },
   {
+    slug: 'temi',
+    name: 'Temi',
+    order_index: 6,
+    role: 'Onkweri — nômade, figura de apoio',
+    species: 'Onkweri',
+    morphology: 'Onkweri — quadrúpede com chifres menores e mais flexíveis que a média. Substância levemente dispersa: camadas de lugares diferentes sobrepostas em ângulos irregulares. Postura fluida, sem a estratificação horizontal dos Onkweri sedentários.',
+    ability: 'Leitura empírica do teto do Akwu e sincronia instintiva com o Ngurui — o passo se move com o pulso do mundo, não contra ele. O rastro que deixa no Bomi Veh é menos profundo que o de Onkweri de cidade.',
+    status: 'Em trânsito — vida nômade no Bomi-Weh, a caminho de Orunjó',
+    origin: 'Onkweri. Nômade das planícies do Bomi-Weh.',
+    location: 'Bomi-Weh — planícies abertas, sem dossel de Ariku',
+    mark: 'Isilo-Ori na testa e bordas dos olhos.',
+    quote: 'O presente é o único lugar que se tem. O resto é direção.',
+    description: 'Temi é Onkweri nômade — substância mais dispersa que a dos Onkweri de cidade, cada lugar onde passou deixou frequência nas camadas do corpo. O nomadismo não é liberdade heroica: é a forma que encontrou de não ter que escolher quando nenhum lugar tinha espaço. No livro, oferece cuidado sem exigência — de quem sabe o que é não ter onde pousar.',
+    gradient: 'linear-gradient(160deg, oklch(0.07 0.008 280) 0%, oklch(0.18 0.05 65) 50%, oklch(0.10 0.008 280) 100%)',
+    accent_color: 'var(--gold)',
+  },
+  {
     slug: 'orike',
     name: 'Orike',
-    order_index: 6,
+    order_index: 7,
     role: 'Perspectiva do Bomi Veh — conto especial',
     species: 'Bomi Veh',
     morphology: 'Bomi Veh — campo de memória fosforescente. Sem forma física definida. Sem chifres, sem patas. Presença que permeia o Akwu inteiro.',
@@ -172,5 +189,5 @@ for (const char of characters) {
   console.log(`  ✓ ${char.name}`)
 }
 
-console.log('\nAll 7 characters seeded successfully.')
+console.log(`\nAll ${characters.length} characters seeded successfully.`)
 await client.end()
