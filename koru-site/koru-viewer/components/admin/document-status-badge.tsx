@@ -97,8 +97,8 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
   const dotSize = size === "sm" ? 6 : 8
   const fullLabel = def?.label ?? "Sem status"
   const shortLabel = def?.short ?? ""
-  const labelColor = def?.color ?? "var(--muted-foreground)"
-  const dotColor = def?.dotColor ?? "var(--border)"
+  const labelColor = def?.color ?? "hsl(var(--muted-foreground))"
+  const dotColor = def?.dotColor ?? "hsl(var(--border-shadcn))"
 
   // SVG icon per status — 16×16, used inside the compact button
   function StatusIcon({ status }: { status: string | null | undefined }) {
@@ -166,9 +166,9 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
         left: coords.left,
         width: 240,
         zIndex: 100,
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        boxShadow: "0 12px 36px oklch(0 0 0 / 0.35)",
+        background: "hsl(var(--card))",
+        border: "1px solid hsl(var(--border-shadcn))",
+        boxShadow: "var(--shadow-card)",
       }}
       role="menu"
     >
@@ -186,10 +186,10 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
                 }}
                 className="w-full text-left px-3 py-2 transition-colors flex items-start gap-2.5"
                 style={{
-                  background: active ? "color-mix(in oklch, " + s.color + " 12%, transparent)" : "transparent",
+                  background: active ? "color-mix(in srgb, " + s.color + " 12%, transparent)" : "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  if (!active) e.currentTarget.style.background = "color-mix(in oklch, var(--foreground) 5%, transparent)"
+                  if (!active) e.currentTarget.style.background = "hsl(var(--foreground) / 0.05)"
                 }}
                 onMouseLeave={(e) => {
                   if (!active) e.currentTarget.style.background = "transparent"
@@ -202,10 +202,10 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
                   aria-hidden
                 />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-sans text-xs font-medium" style={{ color: "var(--foreground)" }}>
+                  <span className="block font-sans text-xs font-medium" style={{ color: "hsl(var(--foreground))" }}>
                     {s.label}
                   </span>
-                  <span className="block font-sans text-[10px] leading-tight mt-0.5" style={{ color: "var(--muted-foreground)" }}>
+                  <span className="block font-sans text-[10px] leading-tight mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
                     {s.description}
                   </span>
                 </span>
@@ -215,7 +215,7 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
         })}
         {value && (
           <>
-            <li><div style={{ height: 1, margin: "4px 10px", background: "var(--border)" }} /></li>
+            <li><div style={{ height: 1, margin: "4px 10px", background: "hsl(var(--border-shadcn))" }} /></li>
             <li>
               <button
                 type="button"
@@ -225,8 +225,8 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
                   setOpen(false)
                 }}
                 className="w-full text-left px-3 py-2 transition-colors font-sans text-xs"
-                style={{ color: "var(--muted-foreground)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "color-mix(in oklch, var(--foreground) 5%, transparent)" }}
+                style={{ color: "hsl(var(--muted-foreground))" }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "hsl(var(--foreground) / 0.05)" }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent" }}
                 role="menuitem"
               >
@@ -265,13 +265,13 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
                 padding: 2,
                 background: "transparent",
                 border: "none",
-                color: def ? labelColor : "var(--muted-foreground)",
+                color: def ? labelColor : "hsl(var(--muted-foreground))",
                 opacity: def ? 1 : 0.35,
               } : {
                 // Full mode: pill tradicional (usado em cards/dropdowns).
                 padding: "3px 9px",
-                background: def ? "color-mix(in oklch, " + def.color + " 14%, transparent)" : "transparent",
-                border: def ? "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)" : "1px dashed color-mix(in oklch, var(--border) 70%, transparent)",
+                background: def ? "color-mix(in srgb, " + def.color + " 14%, transparent)" : "transparent",
+                border: def ? "1px solid color-mix(in srgb, " + def.color + " 30%, transparent)" : "1px dashed hsl(var(--border-shadcn) / 0.7)",
                 color: labelColor,
                 fontSize: 10,
                 lineHeight: 1,
@@ -293,8 +293,8 @@ export function DocumentStatusBadge({ value, onChange, size = "sm", compact = fa
                       width: dotSize,
                       height: dotSize,
                       background: def ? dotColor : "transparent",
-                      border: def ? "none" : "1px dashed color-mix(in oklch, var(--muted-foreground) 55%, transparent)",
-                      boxShadow: def ? "0 0 0 3px color-mix(in oklch, " + def.color + " 16%, transparent)" : "none",
+                      border: def ? "none" : "1px dashed hsl(var(--muted-foreground) / 0.55)",
+                      boxShadow: def ? "0 0 0 3px color-mix(in srgb, " + def.color + " 16%, transparent)" : "none",
                     }}
                     aria-hidden
                   />

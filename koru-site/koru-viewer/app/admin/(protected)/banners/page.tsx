@@ -9,18 +9,18 @@ import { GlassCard } from "@/components/ui/glass-card"
 import { Image as ImageIcon, Video } from "lucide-react"
 
 const SLOT_COLORS: Record<string, string> = {
-  hero: "var(--gold)",
-  "hero-video": "var(--gold)",
-  personagens: "var(--accent)",
-  "personagens-video": "var(--accent)",
-  biblia: "var(--gold)",
-  "biblia-video": "var(--gold)",
-  livro: "var(--blue-cold)",
-  "livro-video": "var(--blue-cold)",
-  contos: "var(--accent)",
-  "contos-video": "var(--accent)",
-  footer: "var(--muted-foreground)",
-  "footer-video": "var(--muted-foreground)",
+  hero: "var(--color-mel)",
+  "hero-video": "var(--color-mel)",
+  personagens: "hsl(var(--primary))",
+  "personagens-video": "hsl(var(--primary))",
+  biblia: "var(--color-mel)",
+  "biblia-video": "var(--color-mel)",
+  livro: "var(--color-jala)",
+  "livro-video": "var(--color-jala)",
+  contos: "hsl(var(--primary))",
+  "contos-video": "hsl(var(--primary))",
+  footer: "hsl(var(--muted-foreground))",
+  "footer-video": "hsl(var(--muted-foreground))",
 }
 
 const IMAGE_SLOTS = [
@@ -121,18 +121,17 @@ export default function BannersPage() {
     <div className="max-w-5xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
+        <h1 className="font-serif text-3xl text-foreground">
           Banners da Homepage
         </h1>
-        <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+        <p className="mt-1 font-sans text-sm text-muted-foreground">
           Banners do mundo de Korú — cada seção da home recebe imagem e vídeo
         </p>
       </div>
 
       {message && (
         <GlassCard
-          className="mb-6 px-4 py-3 font-sans text-sm"
-          style={{ color: "var(--foreground)" }}
+          className="mb-6 px-4 py-3 font-sans text-sm text-foreground"
         >
           {message}
         </GlassCard>
@@ -141,11 +140,11 @@ export default function BannersPage() {
       {/* Image banners section */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Imagens
           </p>
-          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--gold)", borderColor: "color-mix(in oklch, var(--gold) 40%, transparent)", background: "color-mix(in oklch, var(--gold) 12%, transparent)" }}>
+          <div className="flex-1 h-px bg-border" />
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--color-mel)", borderColor: "color-mix(in srgb, var(--color-mel) 40%, transparent)", background: "color-mix(in srgb, var(--color-mel) 12%, transparent)" }}>
             {IMAGE_SLOTS.filter((s) => banners[s.key]).length}/{IMAGE_SLOTS.length} configurados
           </Badge>
         </div>
@@ -168,11 +167,11 @@ export default function BannersPage() {
       {/* Video banners section */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Vídeos
           </p>
-          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--blue-cold)", borderColor: "color-mix(in oklch, var(--blue-cold) 40%, transparent)", background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)" }}>
+          <div className="flex-1 h-px bg-border" />
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--color-jala)", borderColor: "color-mix(in srgb, var(--color-jala) 40%, transparent)", background: "color-mix(in srgb, var(--color-jala) 12%, transparent)" }}>
             {VIDEO_SLOTS.filter((s) => banners[s.key]).length}/{VIDEO_SLOTS.length} configurados
           </Badge>
         </div>
@@ -195,11 +194,11 @@ export default function BannersPage() {
       {/* Bíblia page banners — hero of each internal page */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Bíblia · Páginas Internas (Imagens)
           </p>
-          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--gold)", borderColor: "color-mix(in oklch, var(--gold) 40%, transparent)", background: "color-mix(in oklch, var(--gold) 12%, transparent)" }}>
+          <div className="flex-1 h-px bg-border" />
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--color-mel)", borderColor: "color-mix(in srgb, var(--color-mel) 40%, transparent)", background: "color-mix(in srgb, var(--color-mel) 12%, transparent)" }}>
             {BIBLIA_DOC_IMAGE_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_IMAGE_SLOTS.length} configurados
           </Badge>
         </div>
@@ -213,7 +212,7 @@ export default function BannersPage() {
               uploading={uploading === slot.key}
               onUpload={(file) => handleUpload(slot.key, file)}
               onDelete={() => handleDelete(slot.key)}
-              accentColor="var(--gold)"
+              accentColor="var(--color-mel)"
             />
           ))}
         </div>
@@ -221,11 +220,11 @@ export default function BannersPage() {
 
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <p className="font-sans text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             Bíblia · Páginas Internas (Vídeos)
           </p>
-          <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--blue-cold)", borderColor: "color-mix(in oklch, var(--blue-cold) 40%, transparent)", background: "color-mix(in oklch, var(--blue-cold) 12%, transparent)" }}>
+          <div className="flex-1 h-px bg-border" />
+          <Badge variant="outline" className="text-[10px]" style={{ color: "var(--color-jala)", borderColor: "color-mix(in srgb, var(--color-jala) 40%, transparent)", background: "color-mix(in srgb, var(--color-jala) 12%, transparent)" }}>
             {BIBLIA_DOC_VIDEO_SLOTS.filter((s) => banners[s.key]).length}/{BIBLIA_DOC_VIDEO_SLOTS.length} configurados
           </Badge>
         </div>
@@ -239,7 +238,7 @@ export default function BannersPage() {
               uploading={uploading === slot.key}
               onUpload={(file) => handleUpload(slot.key, file)}
               onDelete={() => handleDelete(slot.key)}
-              accentColor="var(--blue-cold)"
+              accentColor="var(--color-jala)"
             />
           ))}
         </div>
@@ -269,7 +268,7 @@ function BannerSlot({
   return (
     <GlassCard className="overflow-hidden">
       {/* Media area */}
-      <div className="relative" style={{ backgroundColor: "var(--background)" }}>
+      <div className="relative bg-background">
         {imageUrl && (isVideo || /\.(mp4|webm|mov)(\?|$)/i.test(imageUrl)) ? (
           <div style={{ aspectRatio: "16/9" }}>
             <video
@@ -288,7 +287,7 @@ function BannerSlot({
         ) : (
           <div
             className="flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-colors"
-            style={{ aspectRatio: "16/9", background: "var(--surface)" }}
+            style={{ aspectRatio: "16/9", background: "hsl(var(--muted))" }}
             onClick={() => inputRef.current?.click()}
             title="Clique para fazer upload"
           >
@@ -298,10 +297,10 @@ function BannerSlot({
               <ImageIcon size={36} className="opacity-20 text-muted-foreground" strokeWidth={0.8} />
             )}
             <div className="text-center">
-              <p className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
+              <p className="font-sans text-xs text-muted-foreground">
                 Sem {isVideo ? "vídeo" : "imagem"}
               </p>
-              <p className="font-sans text-[10px] mt-0.5" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>
+              <p className="font-sans text-[10px] mt-0.5 text-muted-foreground" style={{ opacity: 0.6 }}>
                 {slot.dims}
               </p>
             </div>
@@ -311,7 +310,7 @@ function BannerSlot({
         {uploading && (
           <div
             className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: "var(--overlay, oklch(0 0 0 / 0.55))" }}
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.55)" }}
           >
             <div className="flex flex-col items-center gap-2">
               <div className="w-5 h-5 rounded-full border-2 animate-spin" style={{ borderColor: "rgba(255,255,255,0.3)", borderTopColor: "white" }} />
@@ -326,7 +325,7 @@ function BannerSlot({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <p className="font-sans text-sm font-medium" style={{ color: "var(--foreground)" }}>
+              <p className="font-sans text-sm font-medium text-foreground">
                 {slot.label}
               </p>
               <Badge
@@ -334,18 +333,18 @@ function BannerSlot({
                 className="rounded-full font-sans text-[9px] uppercase tracking-[0.12em] shrink-0"
                 style={{
                   color: accentColor,
-                  borderColor: `color-mix(in oklch, ${accentColor} 40%, transparent)`,
-                  background: `color-mix(in oklch, ${accentColor} 14%, transparent)`,
+                  borderColor: `color-mix(in srgb, ${accentColor} 40%, transparent)`,
+                  background: `color-mix(in srgb, ${accentColor} 14%, transparent)`,
                 }}
               >
                 {isVideo ? "vídeo" : "imagem"}
               </Badge>
             </div>
-            <p className="font-sans text-xs truncate" style={{ color: "var(--muted-foreground)" }}>
+            <p className="font-sans text-xs truncate text-muted-foreground">
               {slot.description}
             </p>
             {!imageUrl && (
-              <p className="font-sans text-[10px] mt-0.5" style={{ color: "var(--muted-foreground)", opacity: 0.55 }}>
+              <p className="font-sans text-[10px] mt-0.5 text-muted-foreground" style={{ opacity: 0.55 }}>
                 {slot.dims}
               </p>
             )}

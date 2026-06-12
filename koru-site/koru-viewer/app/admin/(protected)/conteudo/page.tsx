@@ -104,7 +104,7 @@ const GROUPS: GroupDef[] = [
   {
     id: "hero",
     title: "Hero",
-    color: "oklch(0.45 0.12 290)",
+    color: "var(--color-jambo)",
     fields: [
       { key: "hero.tagline", label: "Tagline principal" },
       { key: "hero.cta_primary_text", label: "Botão primário — Texto" },
@@ -116,7 +116,7 @@ const GROUPS: GroupDef[] = [
   {
     id: "sections",
     title: "Seções da Homepage",
-    color: "oklch(0.48 0.12 65)",
+    color: "var(--color-mel)",
     fields: [
       { key: "section.personagens.label", label: "Personagens — Label" },
       { key: "section.personagens.title", label: "Personagens — Título" },
@@ -135,7 +135,7 @@ const GROUPS: GroupDef[] = [
   {
     id: "footer",
     title: "Rodapé",
-    color: "oklch(0.42 0.10 230)",
+    color: "var(--color-omi)",
     fields: [
       { key: "footer.copyright", label: "Texto de copyright" },
     ],
@@ -143,7 +143,7 @@ const GROUPS: GroupDef[] = [
   {
     id: "biblia",
     title: "Bíblia — Títulos dos Cards",
-    color: "oklch(0.48 0.12 65)",
+    color: "var(--color-mel)",
     fields: [
       { key: "biblia.manifesto.title", label: "Manifesto" },
       { key: "biblia.parte-00.title", label: "Parte 00" },
@@ -162,7 +162,7 @@ const GROUPS: GroupDef[] = [
   {
     id: "livro",
     title: "Livro — Títulos dos Cards",
-    color: "oklch(0.42 0.10 230)",
+    color: "var(--color-omi)",
     fields: [
       { key: "livro.01.title", label: "Capítulo 1" },
       { key: "livro.02.title", label: "Capítulo 2" },
@@ -245,7 +245,7 @@ function EditableField({
           className="mt-1 font-sans text-xs h-7"
           style={
             linkInvalid
-              ? { borderColor: "color-mix(in oklch, oklch(0.7 0.14 70) 60%, transparent)" }
+              ? { borderColor: "color-mix(in srgb, var(--color-mel) 60%, transparent)" }
               : undefined
           }
           onKeyDown={(e) => {
@@ -256,7 +256,7 @@ function EditableField({
         {linkInvalid && (
           <p
             className="mt-1 font-sans text-[10px] leading-snug"
-            style={{ color: "oklch(0.7 0.14 70)" }}
+            style={{ color: "var(--color-mel)" }}
           >
             Link fora do formato esperado — use http(s):// ou um caminho começando com /. Você ainda pode salvar.
           </p>
@@ -288,19 +288,17 @@ function EditableField({
 
   return (
     <div
-      className="group cursor-pointer rounded border border-transparent px-1 py-0.5 transition-colors hover:border-[var(--border)] hover:bg-[var(--surface)]"
+      className="group cursor-pointer rounded border border-transparent px-1 py-0.5 transition-colors hover:border-border hover:bg-muted"
       onClick={startEdit}
       title="Clique para editar"
     >
       <p
-        className="font-sans text-[10px] tracking-[0.12em] uppercase"
-        style={{ color: "var(--muted-foreground)" }}
+        className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground"
       >
         {label}
       </p>
       <p
-        className="mt-0.5 font-sans text-xs leading-relaxed flex items-center gap-1"
-        style={{ color: "var(--foreground)" }}
+        className="mt-0.5 font-sans text-xs leading-relaxed flex items-center gap-1 text-foreground"
       >
         {renderAsLink ? (
           <a
@@ -309,22 +307,22 @@ function EditableField({
             rel={external ? "noopener noreferrer" : undefined}
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 underline underline-offset-2 transition-opacity hover:opacity-75"
-            style={{ color: "var(--foreground)", textDecorationColor: "var(--muted-foreground)" }}
+            style={{ color: "hsl(var(--foreground))", textDecorationColor: "hsl(var(--muted-foreground))" }}
             title={external ? "Abrir em nova aba" : "Abrir link"}
           >
             <span>{value}</span>
             {external && <ExternalLink size={10} className="shrink-0" />}
           </a>
         ) : (
-          <span>{value || <span style={{ color: "var(--muted-foreground)", fontStyle: "italic" }}>vazio</span>}</span>
+          <span>{value || <span className="italic text-muted-foreground">vazio</span>}</span>
         )}
         {saved && (
-          <span className="font-sans text-[10px]" style={{ color: "oklch(0.65 0.15 150)" }}>
+          <span className="font-sans text-[10px]" style={{ color: "var(--color-mata)" }}>
             salvo
           </span>
         )}
         <span className="inline-block opacity-0 transition-opacity group-hover:opacity-100">
-          <Pencil size={10} className="inline" style={{ color: "var(--muted-foreground)" }} />
+          <Pencil size={10} className="inline text-muted-foreground" />
         </span>
       </p>
     </div>
@@ -351,7 +349,7 @@ function CollapsibleGroup({
         variant="ghost"
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between px-5 py-4 h-auto rounded-none transition-colors"
-        style={{ background: "color-mix(in oklch, var(--surface) 80%, transparent)" }}
+        style={{ background: "hsl(var(--muted) / 0.8)" }}
       >
         <div className="flex items-center gap-3">
           <div
@@ -376,7 +374,7 @@ function CollapsibleGroup({
       {open && (
         <GlassCardContent
           className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3"
-          style={{ borderTop: "1px solid var(--border)" }}
+          style={{ borderTop: "1px solid hsl(var(--border-shadcn))" }}
         >
           {group.fields.map((field) => (
             <EditableField
@@ -468,7 +466,7 @@ export default function ConteudoPage() {
       <div>
         {/* Page header skeleton */}
         <div className="mb-8">
-          <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
+          <h1 className="font-serif text-3xl text-foreground">
             Conteúdo do Site
           </h1>
           <div className="mt-1">
@@ -483,7 +481,7 @@ export default function ConteudoPage() {
               {/* Header bar */}
               <div
                 className="flex items-center gap-3 px-5 py-4"
-                style={{ background: "color-mix(in oklch, var(--surface) 80%, transparent)" }}
+                style={{ background: "hsl(var(--muted) / 0.8)" }}
               >
                 <div className="w-2 h-2 rounded-full" style={{ background: group.color, opacity: 0.5 }} />
                 <Skeleton className="h-3 w-32" />
@@ -492,7 +490,7 @@ export default function ConteudoPage() {
               {/* Fields placeholder */}
               <GlassCardContent
                 className="px-5 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3"
-                style={{ borderTop: "1px solid var(--border)" }}
+                style={{ borderTop: "1px solid hsl(var(--border-shadcn))" }}
               >
                 {group.fields.slice(0, Math.min(group.fields.length, 4)).map((f) => (
                   <div key={f.key}>
@@ -512,18 +510,16 @@ export default function ConteudoPage() {
     <div>
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
+        <h1 className="font-serif text-3xl text-foreground">
           Conteúdo do Site
         </h1>
-        <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
+        <p className="mt-1 font-sans text-xs text-muted-foreground">
           Edite textos da homepage sem tocar no código.
         </p>
         <p
-          className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-flex items-center gap-2"
+          className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-flex items-center gap-2 text-muted-foreground border border-border"
           style={{
-            color: "var(--muted-foreground)",
-            background: "color-mix(in oklch, var(--surface) 70%, transparent)",
-            border: "1px solid var(--border)",
+            background: "hsl(var(--muted) / 0.7)",
           }}
         >
           <Pencil size={11} className="shrink-0" />
@@ -533,9 +529,9 @@ export default function ConteudoPage() {
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
             style={{
-              color: "var(--destructive)",
-              background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
-              border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
+              color: "hsl(var(--destructive))",
+              background: "hsl(var(--destructive) / 0.08)",
+              border: "1px solid hsl(var(--destructive) / 0.25)",
             }}
           >
             {error}

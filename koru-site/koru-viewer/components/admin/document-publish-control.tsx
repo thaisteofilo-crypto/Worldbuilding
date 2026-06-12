@@ -24,7 +24,7 @@ interface StateOption {
   label: string
   short: string
   description: string
-  // OKLCH colors aligned with the editorial palette already used by status badges.
+  // Cores da marca alinhadas com a paleta editorial usada pelos status badges.
   color: string
   dotColor: string
 }
@@ -35,24 +35,24 @@ const STATE_OPTIONS: StateOption[] = [
     label: "Publicado",
     short: "Pub",
     description: "Visível agora pra qualquer visitante.",
-    color: "oklch(0.70 0.09 155)",
-    dotColor: "oklch(0.64 0.10 155)",
+    color: "var(--color-mata)",
+    dotColor: "var(--color-mata)",
   },
   {
     id: "scheduled",
     label: "Agendado",
     short: "Sched",
     description: "Aparece automaticamente na data marcada.",
-    color: "oklch(0.72 0.08 75)",
-    dotColor: "oklch(0.66 0.10 72)",
+    color: "var(--color-mel)",
+    dotColor: "var(--color-mel)",
   },
   {
     id: "draft",
     label: "Rascunho",
     short: "Drft",
     description: "Oculto — card aparece com cadeado, página não abre.",
-    color: "oklch(0.58 0.01 280)",
-    dotColor: "oklch(0.50 0.01 280)",
+    color: "hsl(var(--muted-foreground))",
+    dotColor: "hsl(var(--muted-foreground) / 0.8)",
   },
 ]
 
@@ -193,9 +193,9 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
         left: coords.left,
         width: 260,
         zIndex: 100,
-        background: "var(--card)",
-        border: "1px solid var(--border)",
-        boxShadow: "0 12px 36px oklch(0 0 0 / 0.35)",
+        background: "hsl(var(--card))",
+        border: "1px solid hsl(var(--border-shadcn))",
+        boxShadow: "var(--shadow-card)",
       }}
       role="menu"
     >
@@ -213,10 +213,10 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
                 }}
                 className="w-full text-left px-3 py-2 transition-colors flex items-start gap-2.5"
                 style={{
-                  background: active ? "color-mix(in oklch, " + s.color + " 12%, transparent)" : "transparent",
+                  background: active ? "color-mix(in srgb, " + s.color + " 12%, transparent)" : "transparent",
                 }}
                 onMouseEnter={(e) => {
-                  if (!active) e.currentTarget.style.background = "color-mix(in oklch, var(--foreground) 5%, transparent)"
+                  if (!active) e.currentTarget.style.background = "hsl(var(--foreground) / 0.05)"
                 }}
                 onMouseLeave={(e) => {
                   if (!active) e.currentTarget.style.background = "transparent"
@@ -231,10 +231,10 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
                   <StateIcon state={s.id} size={14} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-sans text-xs font-medium" style={{ color: "var(--foreground)" }}>
+                  <span className="block font-sans text-xs font-medium" style={{ color: "hsl(var(--foreground))" }}>
                     {s.label}
                   </span>
-                  <span className="block font-sans text-[10px] leading-tight mt-0.5" style={{ color: "var(--muted-foreground)" }}>
+                  <span className="block font-sans text-[10px] leading-tight mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
                     {s.description}
                   </span>
                 </span>
@@ -243,8 +243,8 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
           )
         })}
         {value.state === "scheduled" && (
-          <li className="px-3 py-2 border-t" style={{ borderColor: "var(--border)" }}>
-            <label className="block font-sans text-[10px] uppercase tracking-wider mb-1" style={{ color: "var(--muted-foreground)" }}>
+          <li className="px-3 py-2 border-t" style={{ borderColor: "hsl(var(--border-shadcn))" }}>
+            <label className="block font-sans text-[10px] uppercase tracking-wider mb-1" style={{ color: "hsl(var(--muted-foreground))" }}>
               Liberar em
             </label>
             <input
@@ -256,9 +256,9 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
               }}
               className="w-full rounded px-2 py-1 font-sans text-xs"
               style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--foreground)",
+                background: "hsl(var(--muted))",
+                border: "1px solid hsl(var(--border-shadcn))",
+                color: "hsl(var(--foreground))",
               }}
             />
           </li>
@@ -299,8 +299,8 @@ export function DocumentPublishControl({ value, onChange, size = "sm", showLabel
               className="inline-flex items-center justify-center rounded-md transition-all"
               style={{
                 padding: "4px 6px",
-                background: "color-mix(in oklch, " + def.color + " 12%, transparent)",
-                border: "1px solid color-mix(in oklch, " + def.color + " 30%, transparent)",
+                background: "color-mix(in srgb, " + def.color + " 12%, transparent)",
+                border: "1px solid color-mix(in srgb, " + def.color + " 30%, transparent)",
                 color: labelColor,
                 gap: 5,
               }}

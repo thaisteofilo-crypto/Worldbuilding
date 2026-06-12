@@ -92,10 +92,8 @@ function ViewImageSlot({
   return (
     <div className="flex flex-col">
       <div
-        className="relative overflow-hidden rounded-xl"
+        className="relative overflow-hidden rounded-xl bg-muted border border-border"
         style={{
-          background: "var(--surface)",
-          border: "1px solid var(--border)",
           ...(!displayUrl ? { aspectRatio: "16/9" } : {}),
         }}
       >
@@ -141,7 +139,7 @@ function ViewImageSlot({
       )}
 
       <div className="mt-2 flex items-center justify-between">
-        <span className="font-sans text-xs tracking-[0.08em] uppercase" style={{ color: "var(--muted-foreground)" }}>
+        <span className="font-sans text-xs tracking-[0.08em] uppercase text-muted-foreground">
           {view.label}
         </span>
         <div className="flex gap-1">
@@ -202,7 +200,7 @@ function EditableField({
   if (editing) {
     return (
       <div>
-        <p className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>{label}</p>
+        <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">{label}</p>
         {multiline ? (
           <Textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} autoFocus
             className="mt-1 min-h-0 font-sans text-xs leading-relaxed resize-vertical py-1"
@@ -226,9 +224,9 @@ function EditableField({
   }
 
   return (
-    <div className="group cursor-pointer rounded px-1 py-0.5 transition-colors hover:bg-[var(--surface)]" onClick={startEdit}>
-      <p className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>{label}</p>
-      <p className="mt-0.5 font-sans text-xs leading-relaxed" style={{ color: "var(--foreground)" }}>
+    <div className="group cursor-pointer rounded px-1 py-0.5 transition-colors hover:bg-muted" onClick={startEdit}>
+      <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">{label}</p>
+      <p className="mt-0.5 font-sans text-xs leading-relaxed text-foreground">
         {value}
         <span className="ml-1 inline-block opacity-0 transition-opacity group-hover:opacity-50">
           <Pencil size={10} className="inline" />
@@ -291,7 +289,7 @@ function NewCharacterForm({ onCreated }: { onCreated: (char: Character) => void 
     <GlassCard>
       <GlassCardContent className="pt-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-serif text-lg" style={{ color: "var(--foreground)" }}>Novo personagem</h3>
+        <h3 className="font-serif text-lg text-foreground">Novo personagem</h3>
         <Button
           onClick={() => setOpen(false)}
           variant="outline"
@@ -517,7 +515,7 @@ export default function CharactersPage() {
   if (loading) {
     return (
       <div>
-        <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
+        <h1 className="font-serif text-3xl text-foreground">Personagens</h1>
         {/* Character card skeletons */}
         <SkeletonContainer className="mt-6 flex flex-col gap-4">
           {[1, 2, 3].map((i) => (
@@ -553,8 +551,8 @@ export default function CharactersPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>Personagens</h1>
-          <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
+          <h1 className="font-serif text-3xl text-foreground">Personagens</h1>
+          <p className="mt-1 font-sans text-xs text-muted-foreground">
             {isFiltering
               ? `${filteredCharacters.length} de ${characters.length} personagens`
               : `${characters.length} personagens`}
@@ -564,9 +562,9 @@ export default function CharactersPage() {
             <p
               className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
               style={{
-                color: "var(--destructive)",
-                background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
-                border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
+                color: "hsl(var(--destructive))",
+                background: "hsl(var(--destructive) / 0.08)",
+                border: "1px solid hsl(var(--destructive) / 0.25)",
               }}
             >
               {loadError}
@@ -582,8 +580,7 @@ export default function CharactersPage() {
           <div className="relative">
             <Search
               size={13}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-              style={{ color: "var(--muted-foreground)" }}
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
             />
             <Input
               value={search}
@@ -595,7 +592,7 @@ export default function CharactersPage() {
           </div>
           {speciesOptions.length > 1 && (
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="font-sans text-[10px] tracking-[0.12em] uppercase" style={{ color: "var(--muted-foreground)" }}>
+              <span className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted-foreground">
                 Espécie
               </span>
               {speciesOptions.map((sp) => {
@@ -608,9 +605,9 @@ export default function CharactersPage() {
                     size="xs"
                     className="font-sans"
                     style={active ? {
-                      background: "color-mix(in oklch, var(--accent) 18%, transparent)",
-                      borderColor: "var(--accent)",
-                      color: "var(--foreground)",
+                      background: "hsl(var(--primary) / 0.18)",
+                      borderColor: "hsl(var(--primary))",
+                      color: "hsl(var(--foreground))",
                       fontWeight: 600,
                     } : undefined}
                   >
@@ -637,14 +634,14 @@ export default function CharactersPage() {
       <div className="mt-8 flex flex-col gap-8">
         {characters.length === 0 ? (
           <GlassCard className="px-5 py-10 text-center">
-            <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>Nenhum personagem encontrado.</p>
-            <p className="mt-1 font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>
-              Execute <code className="font-mono" style={{ color: "var(--foreground)" }}>node scripts/seed-characters.mjs</code> para popular.
+            <p className="font-sans text-sm text-muted-foreground">Nenhum personagem encontrado.</p>
+            <p className="mt-1 font-sans text-xs text-muted-foreground">
+              Execute <code className="font-mono text-foreground">node scripts/seed-characters.mjs</code> para popular.
             </p>
           </GlassCard>
         ) : filteredCharacters.length === 0 ? (
           <GlassCard className="px-5 py-10 text-center">
-            <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <p className="font-sans text-sm text-muted-foreground">
               Nenhum personagem corresponde à busca ou aos filtros.
             </p>
           </GlassCard>
@@ -654,8 +651,8 @@ export default function CharactersPage() {
               {/* Character name header */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-8 w-8 shrink-0 rounded" style={{
-                  background: char.gradient ?? `color-mix(in oklch, ${char.accent_color ?? "var(--accent)"} 30%, var(--surface))`,
-                  border: `1px solid ${char.accent_color ?? "var(--border)"}`,
+                  background: char.gradient ?? `color-mix(in srgb, ${char.accent_color ?? "hsl(var(--primary))"} 30%, hsl(var(--muted)))`,
+                  border: `1px solid ${char.accent_color ?? "hsl(var(--border-shadcn))"}`,
                 }} />
                 {/* Reorder buttons */}
                 <div className="flex flex-col gap-0.5">
@@ -680,8 +677,8 @@ export default function CharactersPage() {
                     <ChevronDown size={10} />
                   </Button>
                 </div>
-                <h2 className="font-serif text-xl flex-1" style={{ color: "var(--foreground)" }}>{char.name}</h2>
-                <span className="font-sans text-xs" style={{ color: "var(--muted-foreground)" }}>{char.slug}</span>
+                <h2 className="font-serif text-xl flex-1 text-foreground">{char.name}</h2>
+                <span className="font-sans text-xs text-muted-foreground">{char.slug}</span>
                 {/* Incomplete badge — shown when any required narrative field is empty */}
                 {(["morphology", "ability", "mark", "origin", "location", "quote", "description"] as const).some(
                   (field) => !char[field] || (char[field] as string).trim() === ""
@@ -724,36 +721,36 @@ export default function CharactersPage() {
 
               {/* Quote */}
               {char.quote && (
-                <div className="mb-4 px-4 py-3 rounded-lg" style={{ background: "var(--surface)", borderLeft: "2px solid var(--muted-foreground)" }}>
-                  <p className="font-serif text-sm italic leading-relaxed" style={{ color: "var(--foreground)", opacity: 0.8 }}>
+                <div className="mb-4 px-4 py-3 rounded-lg bg-muted" style={{ borderLeft: "2px solid hsl(var(--muted-foreground))" }}>
+                  <p className="font-serif text-sm italic leading-relaxed text-foreground" style={{ opacity: 0.8 }}>
                     &ldquo;{char.quote}&rdquo;
                   </p>
                 </div>
               )}
 
               {/* Character details — identity */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-4 border-t border-border">
                 <EditableField label="Papel" value={char.role ?? ""} onSave={(v) => saveField(char.id, "role", v)} />
                 <EditableField label="Especie" value={char.species ?? ""} onSave={(v) => saveField(char.id, "species", v)} />
                 <EditableField label="Status" value={char.status ?? ""} onSave={(v) => saveField(char.id, "status", v)} />
               </div>
 
               {/* Character details — physical */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2 border-t border-border/50">
                 <EditableField label="Morfologia" value={char.morphology ?? ""} onSave={(v) => saveField(char.id, "morphology", v)} multiline />
                 <EditableField label="Habilidade" value={char.ability ?? ""} onSave={(v) => saveField(char.id, "ability", v)} multiline />
                 <EditableField label="Marca (Isilo-Ori)" value={char.mark ?? ""} onSave={(v) => saveField(char.id, "mark", v)} multiline />
               </div>
 
               {/* Character details — world */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-2 pt-3 mt-2 border-t border-border/50">
                 <EditableField label="Origem" value={char.origin ?? ""} onSave={(v) => saveField(char.id, "origin", v)} />
                 <EditableField label="Localização" value={char.location ?? ""} onSave={(v) => saveField(char.id, "location", v)} />
                 <EditableField label="Citação" value={char.quote ?? ""} onSave={(v) => saveField(char.id, "quote", v)} />
               </div>
 
               {/* Description — full width */}
-              <div className="pt-3 mt-2" style={{ borderTop: "1px solid color-mix(in oklch, var(--border) 50%, transparent)" }}>
+              <div className="pt-3 mt-2 border-t border-border/50">
                 <EditableField label="Descrição" value={char.description ?? ""} onSave={(v) => saveField(char.id, "description", v)} multiline />
               </div>
             </GlassCard>
@@ -768,11 +765,11 @@ export default function CharactersPage() {
       >
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle className="font-serif" style={{ color: "var(--foreground)" }}>
+            <DialogTitle className="font-serif text-foreground">
               Remover personagem
             </DialogTitle>
             <DialogDescription className="font-sans">
-              Remover <strong style={{ color: "var(--foreground)" }}>{confirmDelete?.name}</strong>?
+              Remover <strong className="text-foreground">{confirmDelete?.name}</strong>?
               {" "}Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>

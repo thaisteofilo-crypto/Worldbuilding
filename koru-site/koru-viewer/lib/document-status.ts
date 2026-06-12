@@ -9,48 +9,48 @@ export interface StatusDef {
   dotColor: string
 }
 
-// Colors: chroma reduzido (tom editorial/contemplativo, não SaaS).
-// Para uso em fundo escuro, dot lightness ~0.62, color (texto) ~0.70.
+// Colors: tokens do design system Korú (cores da marca + semânticas).
+// rascunho/arquivar = cinza/muted; aprimorar = Mel; revisar = Jambo; completo = Mata.
 export const DOCUMENT_STATUSES: StatusDef[] = [
   {
     id: "rascunho",
     label: "Rascunho",
     short: "Rasc",
     description: "Primeira forma, ainda procurando estrutura.",
-    color: "oklch(0.70 0.02 280)",
-    dotColor: "oklch(0.62 0.03 280)",
+    color: "hsl(var(--muted-foreground))",
+    dotColor: "hsl(var(--muted-foreground) / 0.8)",
   },
   {
     id: "aprimorar",
     label: "Aprimorar",
     short: "Aprim",
     description: "Tem forma, mas precisa de camada ou polimento.",
-    color: "oklch(0.72 0.08 75)",
-    dotColor: "oklch(0.66 0.10 72)",
+    color: "var(--color-mel)",
+    dotColor: "var(--color-mel)",
   },
   {
     id: "revisar",
     label: "Revisar",
     short: "Rev",
     description: "Precisa de leitura crítica ou correção pontual.",
-    color: "oklch(0.68 0.12 25)",
-    dotColor: "oklch(0.62 0.14 25)",
+    color: "var(--color-jambo)",
+    dotColor: "var(--color-jambo)",
   },
   {
     id: "completo",
     label: "Completo",
     short: "OK",
     description: "Fechado, consistente, pode publicar.",
-    color: "oklch(0.70 0.09 155)",
-    dotColor: "oklch(0.64 0.10 155)",
+    color: "var(--color-mata)",
+    dotColor: "var(--color-mata)",
   },
   {
     id: "arquivar",
     label: "Arquivar",
     short: "Arq",
     description: "Fora do fluxo ativo, guardado por referência.",
-    color: "oklch(0.58 0.01 280)",
-    dotColor: "oklch(0.50 0.01 280)",
+    color: "hsl(var(--muted-foreground) / 0.7)",
+    dotColor: "hsl(var(--muted-foreground) / 0.55)",
   },
 ]
 

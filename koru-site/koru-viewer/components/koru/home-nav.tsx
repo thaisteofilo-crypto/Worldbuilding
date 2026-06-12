@@ -27,7 +27,6 @@ export function HomeNav() {
         background: "hsl(var(--background) / 0.45)",
         backdropFilter: "blur(20px) saturate(1.5)",
         WebkitBackdropFilter: "blur(20px) saturate(1.5)",
-        borderBottom: "1px solid hsl(var(--border-shadcn) / 0.4)",
       }}
     >
       <nav

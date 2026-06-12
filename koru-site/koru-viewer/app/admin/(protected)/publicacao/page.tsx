@@ -43,9 +43,9 @@ function fromDatetimeLocal(value: string): string | null {
 }
 
 const STATE_COLORS: Record<PublishState, { bg: string; border: string; fg: string }> = {
-  published: { bg: "oklch(0.70 0.09 155 / 0.12)", border: "oklch(0.70 0.09 155 / 0.4)", fg: "oklch(0.70 0.09 155)" },
-  scheduled: { bg: "oklch(0.72 0.08 75 / 0.12)", border: "oklch(0.72 0.08 75 / 0.4)", fg: "oklch(0.72 0.08 75)" },
-  draft:     { bg: "oklch(0.58 0.01 280 / 0.18)", border: "oklch(0.58 0.01 280 / 0.5)", fg: "oklch(0.78 0.01 280)" },
+  published: { bg: "color-mix(in srgb, var(--color-mata) 12%, transparent)", border: "color-mix(in srgb, var(--color-mata) 40%, transparent)", fg: "var(--color-mata)" },
+  scheduled: { bg: "color-mix(in srgb, var(--color-mel) 12%, transparent)", border: "color-mix(in srgb, var(--color-mel) 40%, transparent)", fg: "var(--color-mel)" },
+  draft:     { bg: "hsl(var(--muted-foreground) / 0.12)", border: "hsl(var(--muted-foreground) / 0.4)", fg: "hsl(var(--muted-foreground))" },
 }
 
 function StateButton({
@@ -113,7 +113,7 @@ export default function PublicacaoPage() {
   // Personagens use a virtual path "personagens/<slug>" since they aren't MD files.
   const personagemGroup: DocGroup = useMemo(() => ({
     section: "Personagens",
-    color: "var(--accent)",
+    color: "hsl(var(--primary))",
     docs: personagens.map((p) => ({ label: p.title, path: `personagens/${p.slug}` })),
   }), [personagens])
 
@@ -166,9 +166,9 @@ export default function PublicacaoPage() {
         {/* Stats cards skeleton */}
         <div className="flex gap-3 mb-8">
           {[
-            "oklch(0.70 0.09 155 / 0.10)",
-            "oklch(0.72 0.08 75 / 0.10)",
-            "oklch(0.58 0.01 280 / 0.15)",
+            "color-mix(in srgb, var(--color-mata) 10%, transparent)",
+            "color-mix(in srgb, var(--color-mel) 10%, transparent)",
+            "hsl(var(--muted-foreground) / 0.10)",
           ].map((bg, i) => (
             <Card
               key={i}
@@ -190,7 +190,7 @@ export default function PublicacaoPage() {
                 <div
                   key={i}
                   className="flex items-center gap-3 px-4 py-3"
-                  style={{ borderTop: i === 0 ? "none" : "1px solid var(--border)" }}
+                  style={{ borderTop: i === 0 ? "none" : "1px solid hsl(var(--border-shadcn))" }}
                 >
                   <div className="flex-1 min-w-0">
                     <Skeleton className="h-3.5 w-48 mb-1 opacity-8" />
@@ -216,7 +216,7 @@ export default function PublicacaoPage() {
         <h1 className="font-serif text-3xl mb-2" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
           Publicação
         </h1>
-        <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+        <p className="font-sans text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
           Controla quais cards aparecem destrancados na home. Default = publicado.
           Cards em rascunho ou agendado-pra-frente aparecem com cadeado e não abrem.
         </p>
@@ -224,9 +224,9 @@ export default function PublicacaoPage() {
           <p
             className="mt-2 font-sans text-xs rounded-lg px-3 py-2 inline-block"
             style={{
-              color: "var(--destructive)",
-              background: "color-mix(in oklch, var(--destructive) 8%, transparent)",
-              border: "1px solid color-mix(in oklch, var(--destructive) 25%, transparent)",
+              color: "hsl(var(--destructive))",
+              background: "hsl(var(--destructive) / 0.08)",
+              border: "1px solid hsl(var(--destructive) / 0.25)",
             }}
           >
             {loadError}
@@ -235,23 +235,23 @@ export default function PublicacaoPage() {
       </div>
 
       <div className="flex gap-3 mb-8">
-        <Card className="px-4 py-3" style={{ background: "oklch(0.70 0.09 155 / 0.10)", borderColor: "oklch(0.70 0.09 155 / 0.3)" }}>
-          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.70 0.09 155)" }}>Publicados</div>
-          <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.pub}</div>
+        <Card className="px-4 py-3" style={{ background: STATE_COLORS.published.bg, borderColor: "color-mix(in srgb, var(--color-mata) 30%, transparent)" }}>
+          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: STATE_COLORS.published.fg }}>Publicados</div>
+          <div className="font-serif text-2xl mt-0.5" style={{ color: "hsl(var(--foreground))" }}>{stats.pub}</div>
         </Card>
-        <Card className="px-4 py-3" style={{ background: "oklch(0.72 0.08 75 / 0.10)", borderColor: "oklch(0.72 0.08 75 / 0.3)" }}>
-          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.72 0.08 75)" }}>Agendados</div>
-          <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.sch}</div>
+        <Card className="px-4 py-3" style={{ background: STATE_COLORS.scheduled.bg, borderColor: "color-mix(in srgb, var(--color-mel) 30%, transparent)" }}>
+          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: STATE_COLORS.scheduled.fg }}>Agendados</div>
+          <div className="font-serif text-2xl mt-0.5" style={{ color: "hsl(var(--foreground))" }}>{stats.sch}</div>
         </Card>
-        <Card className="px-4 py-3" style={{ background: "oklch(0.58 0.01 280 / 0.15)", borderColor: "oklch(0.58 0.01 280 / 0.4)" }}>
-          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: "oklch(0.78 0.01 280)" }}>Rascunho</div>
-          <div className="font-serif text-2xl mt-0.5" style={{ color: "var(--foreground)" }}>{stats.dft}</div>
+        <Card className="px-4 py-3" style={{ background: STATE_COLORS.draft.bg, borderColor: "hsl(var(--muted-foreground) / 0.3)" }}>
+          <div className="font-sans text-[10px] uppercase tracking-wider" style={{ color: STATE_COLORS.draft.fg }}>Rascunho</div>
+          <div className="font-serif text-2xl mt-0.5" style={{ color: "hsl(var(--foreground))" }}>{stats.dft}</div>
         </Card>
       </div>
 
       {allGroups.map((group) => (
         <section key={group.section} className="mb-10">
-          <h2 className="font-sans text-xs uppercase tracking-[0.2em] mb-3" style={{ color: "var(--muted-foreground)" }}>
+          <h2 className="font-sans text-xs uppercase tracking-[0.2em] mb-3" style={{ color: "hsl(var(--muted-foreground))" }}>
             {group.section} <span style={{ opacity: 0.5 }}>· {group.docs.length}</span>
           </h2>
           <Card className="overflow-hidden">
@@ -265,19 +265,19 @@ export default function PublicacaoPage() {
                   key={doc.path}
                   className="flex items-center gap-3 px-4 py-3"
                   style={{
-                    borderTop: idx === 0 ? "none" : "1px solid var(--border)",
+                    borderTop: idx === 0 ? "none" : "1px solid hsl(var(--border-shadcn))",
                     opacity: visible ? 1 : 0.7,
                   }}
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="font-sans text-sm truncate" style={{ color: "var(--foreground)" }}>
+                    <div className="font-sans text-sm truncate" style={{ color: "hsl(var(--foreground))" }}>
                       {doc.label}
                     </div>
-                    <div className="font-mono text-[10px] truncate" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>
+                    <div className="font-mono text-[10px] truncate" style={{ color: "hsl(var(--muted-foreground))", opacity: 0.6 }}>
                       {doc.path}
                     </div>
                     {err && (
-                      <div className="font-sans text-[11px] mt-1" style={{ color: "oklch(0.65 0.2 25)" }}>
+                      <div className="font-sans text-[11px] mt-1" style={{ color: "hsl(var(--destructive))" }}>
                         Erro ao salvar: {err}
                       </div>
                     )}
@@ -324,7 +324,7 @@ export default function PublicacaoPage() {
                   )}
 
                   {saving && (
-                    <span className="font-sans text-[10px]" style={{ color: "var(--muted-foreground)" }}>salvando…</span>
+                    <span className="font-sans text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>salvando…</span>
                   )}
                 </div>
               )

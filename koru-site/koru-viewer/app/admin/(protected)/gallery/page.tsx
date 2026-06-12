@@ -252,16 +252,16 @@ export default function GalleryPage() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="font-serif text-3xl" style={{ color: "var(--foreground)" }}>
+            <h1 className="font-serif text-3xl text-foreground">
               Galeria de Arte
             </h1>
-            <p className="mt-1 font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <p className="mt-1 font-sans text-sm text-muted-foreground">
               Cenas e artes do mundo de Korú
             </p>
           </div>
           <div className="flex items-center gap-3">
             {!loading && !selectMode && (
-              <span className="font-sans text-xs tabular-nums" style={{ color: "var(--muted-foreground)" }}>
+              <span className="font-sans text-xs tabular-nums text-muted-foreground">
                 {`${filtered.length}${filtered.length !== images.length ? ` de ${images.length}` : ""} ${images.length === 1 ? "imagem" : "imagens"}`}
               </span>
             )}
@@ -344,9 +344,9 @@ export default function GalleryPage() {
               rows={2}
               className="w-full rounded-lg px-3 py-2 font-sans text-sm outline-none resize-y"
               style={{
-                background: "var(--background)",
-                border: "1px solid var(--border)",
-                color: "var(--foreground)",
+                background: "hsl(var(--background))",
+                border: "1px solid hsl(var(--border-shadcn))",
+                color: "hsl(var(--foreground))",
               }}
             />
           </div>
@@ -405,7 +405,7 @@ export default function GalleryPage() {
       ) : images.length === 0 ? (
         <div
           className="rounded-xl py-16 text-center"
-          style={{ border: "1px solid var(--border)" }}
+          style={{ border: "1px solid hsl(var(--border-shadcn))" }}
         >
           <ImageIcon size={48} className="mx-auto mb-4 opacity-30 text-muted-foreground" strokeWidth={0.8} />
           <p className="font-sans text-sm text-muted-foreground">
@@ -415,9 +415,9 @@ export default function GalleryPage() {
       ) : filtered.length === 0 ? (
         <div
           className="rounded-xl py-16 text-center"
-          style={{ border: "1px solid var(--border)" }}
+          style={{ border: "1px solid hsl(var(--border-shadcn))" }}
         >
-          <p className="font-sans text-sm" style={{ color: "var(--muted-foreground)" }}>
+          <p className="font-sans text-sm text-muted-foreground">
             Nenhuma imagem encontrada para esta busca.
           </p>
         </div>
@@ -431,7 +431,7 @@ export default function GalleryPage() {
                 className="group relative mb-2 break-inside-avoid cursor-pointer overflow-hidden rounded-xl"
                 style={{
                   breakInside: "avoid",
-                  outline: selectMode && isChecked ? "2px solid var(--accent)" : "none",
+                  outline: selectMode && isChecked ? "2px solid hsl(var(--primary))" : "none",
                   outlineOffset: "-2px",
                 }}
                 onClick={() => {
@@ -455,8 +455,8 @@ export default function GalleryPage() {
                   <div
                     className="absolute top-2 left-2 w-4 h-4 rounded flex items-center justify-center pointer-events-none"
                     style={{
-                      background: isChecked ? "var(--accent)" : "oklch(0 0 0 / 0.5)",
-                      border: `1.5px solid ${isChecked ? "var(--accent)" : "oklch(1 0 0 / 0.5)"}`,
+                      background: isChecked ? "hsl(var(--primary))" : "oklch(0 0 0 / 0.5)",
+                      border: `1.5px solid ${isChecked ? "hsl(var(--primary))" : "oklch(1 0 0 / 0.5)"}`,
                     }}
                   >
                     {isChecked && (
@@ -474,9 +474,9 @@ export default function GalleryPage() {
                     style={{
                       fontSize: "9px",
                       padding: "2px 4px",
-                      background: "color-mix(in oklch, var(--accent) 15%, transparent)",
-                      border: "1px solid var(--accent)",
-                      color: "var(--accent)",
+                      background: "hsl(var(--primary) / 0.15)",
+                      border: "1px solid hsl(var(--primary))",
+                      color: "hsl(var(--primary))",
                     }}
                   >
                     AI
@@ -584,8 +584,7 @@ export default function GalleryPage() {
                 onClick={() => handleDelete(selected.name)}
                 variant="ghost"
                 size="sm"
-                className="font-sans text-xs"
-                style={{ color: "var(--muted-foreground)" }}
+                className="font-sans text-xs text-muted-foreground"
               >
                 Excluir
               </Button>
