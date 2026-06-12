@@ -54,6 +54,29 @@ export async function getCardImages(): Promise<Record<string, string>> {
   }
 }
 
+// Placeholder blur dos banners: miniatura de 24px em base64, gerada no
+// servidor e cacheada por URL (o ?v= de cache-bust renova quando a imagem
+// muda). Permite pintar o hero instantaneamente enquanto a imagem real carrega.
+const blurCache = new Map<string, string>()
+
+export async function getBannerBlur(url: string | undefined): Promise<string | undefined> {
+  if (!url) return undefined
+  const cached = blurCache.get(url)
+  if (cached) return cached
+  try {
+    const { default: sharp } = await import("sharp")
+    const res = await fetch(url)
+    if (!res.ok) return undefined
+    const buf = Buffer.from(await res.arrayBuffer())
+    const tiny = await sharp(buf).resize(24).webp({ quality: 30 }).toBuffer()
+    const dataUrl = `data:image/webp;base64,${tiny.toString("base64")}`
+    blurCache.set(url, dataUrl)
+    return dataUrl
+  } catch {
+    return undefined
+  }
+}
+
 export async function getGalleryImages(): Promise<{ name: string; url: string }[]> {
   try {
     const admin = createAdminClient()

@@ -9,7 +9,7 @@ import React, { useRef, useState, useEffect, useLayoutEffect, useCallback } from
  * Usage: <Image sizes={CAROUSEL_IMAGE_SIZES} ... />
  */
 export const CAROUSEL_IMAGE_SIZES =
-  "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+  "(max-width: 640px) 170px, (max-width: 1440px) 27vw, 340px"
 
 /** Instantly set scrollLeft, bypassing the container's scroll-smooth. */
 function jumpTo(el: HTMLElement, left: number) {
@@ -95,8 +95,9 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
     const el = scrollRef.current
     if (!el) return
     const cardWidth = el.querySelector(":scope > *")?.clientWidth ?? 300
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 8
     el.scrollBy({
-      left: direction === "left" ? -cardWidth - 8 : cardWidth + 8,
+      left: direction === "left" ? -(cardWidth + gap) : cardWidth + gap,
       behavior: "smooth",
     })
   }
@@ -136,7 +137,7 @@ export function CardCarousel({ children }: { children: React.ReactNode }) {
           borda e corta o primeiro card. */}
       <div
         ref={scrollRef}
-        className="flex gap-2 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-6 -my-6 px-4 md:px-16 scroll-px-4 md:scroll-px-16"
+        className="flex gap-2 md:gap-3 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-6 -my-6 px-4 md:px-16 scroll-px-4 md:scroll-px-16"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",

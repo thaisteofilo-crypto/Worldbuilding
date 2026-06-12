@@ -6,7 +6,7 @@ import { getCharactersForViewer } from "@/lib/characters-db"
 import { HomeNav } from "@/components/koru/home-nav"
 import { CardCarousel } from "@/components/koru/card-carousel"
 import { ContinueReadingCard } from "@/components/koru/continue-reading-card"
-import { getBannerUrls, getCardImages } from "@/lib/banners"
+import { getBannerUrls, getCardImages, getBannerBlur } from "@/lib/banners"
 import { getSiteContent, get } from "@/lib/site-content"
 import { getBibliaItems, getLivroItems, getContosItems } from "@/lib/content"
 import { collectPublishConfigs, isPublic, PublishConfig } from "@/lib/document-publish"
@@ -194,7 +194,14 @@ function FullSection({
 }) {
   const hasBanner = !!(videoUrl || bannerUrl)
   return (
-    <section id={id} className="relative flex flex-col justify-center overflow-hidden min-h-[100svh] py-20 md:py-24 px-4 md:px-16 scroll-mt-16">
+    // Com banner a seção é imersiva (tela cheia); sem banner ela abraça o
+    // conteúdo — min-h de viewport sem imagem de fundo vira faixa vazia.
+    <section
+      id={id}
+      className={`relative flex flex-col justify-center overflow-hidden px-4 md:px-16 scroll-mt-16 ${
+        hasBanner ? "min-h-[100svh] py-20 md:py-24" : "py-16 md:py-24"
+      }`}
+    >
       {videoUrl ? (
         <>
           <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" src={videoUrl} poster={bannerUrl} />
@@ -255,6 +262,11 @@ export default async function HomePage() {
     getCardImages(),
     getSiteContent(),
     getCharactersForViewer(),
+  ])
+
+  const [heroBlur, footerBlur] = await Promise.all([
+    getBannerBlur(banners.hero),
+    getBannerBlur(banners.footer),
   ])
 
   const publishConfigs = collectPublishConfigs(siteContent)
@@ -347,7 +359,16 @@ export default async function HomePage() {
           </>
         ) : banners.hero ? (
           <>
-            <Image src={banners.hero} alt="Korú" fill className="object-cover" priority />
+            <Image
+              src={banners.hero}
+              alt="Korú"
+              fill
+              className="object-cover"
+              priority
+              fetchPriority="high"
+              placeholder={heroBlur ? "blur" : "empty"}
+              blurDataURL={heroBlur}
+            />
             <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.4)" }} />
           </>
         ) : (
@@ -417,9 +438,9 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: bibliaColor(filename), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: bibliaColor(filename), width: "clamp(160px, 26vw, 340px)" }}>
                 {cardImages[cardKey] ? (
-                  <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
+                  <Image src={cardImages[cardKey]} alt={title} fill sizes="(max-width: 640px) 170px, (max-width: 1440px) 27vw, 340px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -463,9 +484,9 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(160px, 26vw, 340px)" }}>
                 {cardImages[`char-${key}`] ? (
-                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
+                  <Image src={cardImages[`char-${key}`]} alt={char.name} fill sizes="(max-width: 640px) 170px, (max-width: 1440px) 27vw, 340px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -502,9 +523,9 @@ export default async function HomePage() {
             const cfg = cfgFor(docPath)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: charColor(key), width: "clamp(160px, 26vw, 340px)" }}>
                 {cardImages[`conto-${key}`] ? (
-                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill sizes="(max-width: 768px) 140px, (max-width: 1280px) 200px, 260px" className="object-cover koru-card-img" />
+                  <Image src={cardImages[`conto-${key}`]} alt={char.name} fill sizes="(max-width: 640px) 170px, (max-width: 1440px) 27vw, 340px" className="object-cover koru-card-img" />
                 ) : (
                   <ImagePlaceholder />
                 )}
@@ -542,7 +563,7 @@ export default async function HomePage() {
             const cfg = cfgFor(doc.path)
             const open = isPublic(cfg, now)
             const cardInner = (
-              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: livroColor(urlSlug), width: "clamp(140px, 20vw, 260px)" }}>
+              <div className="relative" style={{ aspectRatio: "2/3", backgroundColor: livroColor(urlSlug), width: "clamp(160px, 26vw, 340px)" }}>
                 <LivroCardPlaceholder slug={urlSlug} />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0 0 0 / 0.6) 0%, transparent 50%)" }} />
                 {!open && <LockedCardOverlay releaseAt={cfg.at} />}
@@ -577,7 +598,14 @@ export default async function HomePage() {
           </>
         ) : banners.footer ? (
           <>
-            <Image src={banners.footer} alt="" fill className="object-cover" />
+            <Image
+              src={banners.footer}
+              alt=""
+              fill
+              className="object-cover"
+              placeholder={footerBlur ? "blur" : "empty"}
+              blurDataURL={footerBlur}
+            />
             <div className="absolute inset-0" style={{ background: "oklch(0 0 0 / 0.4)" }} />
           </>
         ) : (
