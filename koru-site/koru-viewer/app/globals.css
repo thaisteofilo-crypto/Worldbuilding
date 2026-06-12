@@ -243,31 +243,13 @@ article .mdx-article :is(p, li, blockquote) {
   display: none;
 }
 
-/* Cards responsivos: N por viewport */
+/* A largura do card vem do conteúdo: o div interno define
+   width: clamp(140px, 20vw, 260px) inline (design da stage).
+   Não fixar largura aqui — uma segunda largura na caixa externa
+   descola o arredondamento/clip do card visível e cria vão interno. */
 .carousel-card {
-  width: calc((100% - 8px) / 2);    /* mobile: 2 cards */
   scroll-snap-align: start;
   flex-shrink: 0;
-}
-@media (min-width: 640px) {
-  .carousel-card {
-    width: calc((100% - 16px) / 3);  /* sm: 3 cards */
-  }
-}
-@media (min-width: 1024px) {
-  .carousel-card {
-    width: calc((100% - 24px) / 3);  /* lg: 3 cards */
-  }
-}
-@media (min-width: 1280px) {
-  .carousel-card {
-    width: calc((100% - 32px) / 5);  /* xl: 5 cards */
-  }
-}
-@media (max-width: 320px) {
-  .carousel-card {
-    width: calc(100% - 16px);        /* telas muito pequenas: 1 card */
-  }
 }
 
 /* ─── Hero entrance ─── */
